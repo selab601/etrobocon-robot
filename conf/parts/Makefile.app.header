@@ -1,0 +1,16 @@
+#
+# Makefile for a Loadable User Module (LEGO Mindstorms EV3)
+#
+
+#
+# Include the common Makefile of an EV3RT project
+#
+include ../common/Makefile.prj.common
+
+# Specify the directory of HRP2 source
+KERNELDIR = @(SRCDIR)
+TARGETDIR = $(KERNELDIR)/target/ev3_gcc
+LOADERDIR = $(KERNELDIR)/target/ev3_gcc/dmloader
+SRCDIRS = $(KERNELDIR)/target/ev3_gcc/TLSF-2.4.6/src \
+          ../common/ev3api/src
+
