@@ -60,6 +60,8 @@ namespace drive{
 
         void run(int maxPwm, float_t target = 0);
 
+        void setPID(float_t kp, float_t ki, float_t kd);
+
         /**
          * @brief PID制御の計算を行う
          * @details ターゲット値よりも黒寄りにいる時、負の値を返す

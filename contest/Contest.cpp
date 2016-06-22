@@ -1,5 +1,7 @@
 #include "Contest.h"
 
+#include "../drive/LineTrace.h"
+
 namespace contest {
 
   /* メンバ */
@@ -41,7 +43,9 @@ namespace contest {
         {
             if (!initialized) {
                 initialized = true;
+                drive::LineTrace::getInstance()->setPID(1.0, 1.0, 1.0);
             }
+            drive::LineTrace::getInstance()->run(40, 0.5);
             break;
         }
           case 'R':

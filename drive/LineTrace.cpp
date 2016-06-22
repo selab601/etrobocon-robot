@@ -38,6 +38,11 @@ namespace drive{
                 (calculatePid(mColor->getBrightness(), mClock.now()) * (float)100) );
     }
 
+    void LineTrace::setPID(float_t kp, float_t ki, float_t kd){
+        mKp = kp;
+        mKi = ki;
+        mKd = kd;
+    }
 
     float_t LineTrace::getRateByDeltaRad(int deltaRad){
         return 100 / (TREAD * deltaRad + 100);
