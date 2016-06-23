@@ -56,10 +56,31 @@ namespace drive{
 
     public:
 
+        /**
+         * @brief インスタンスを取得する
+         *
+         * @return インスタンスのポインタ
+         * @author Nagaoka
+         */
         static LineTrace* getInstance();
 
+        /**
+         * @brief ライントレースを行う
+         *
+         * @param maxPwm モータのPWMの最大値
+         * @param target ターゲット値 ( Black 0 < target < 1 White) default:0.6
+         * @author Nagaoka
+         */
         void run(int maxPwm, float_t target = 0);
 
+        /**
+         * @brief PIDパラーメータをセットする
+         * @param kp P制御の係数
+         * @param ki I制御の係数
+         * @param kd D制御の係数
+         * @sa run
+         * @author Nagaoka
+         */
         void setPID(float_t kp = DEFAULT_KP, float_t ki = DEFAULT_KI, float_t kd = DEFAULT_KD);
 
         /**
@@ -71,15 +92,32 @@ namespace drive{
 
 
         /**
-         * @brief 進んだ距離あたりの角度の変化（Milli rad)外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
+         * @brief 内側のタイヤが進んだ距離あたりの角度の変化[milli rad]から、外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
          * @details
-         * @param deltaRad 進んだ距離あたりの角度の変化(Milli rad)
+         * @param deltaRad 内側のタイヤが進んだ距離あたりの車体の角度の変化(deltarad >= 0)[milli rad]
          * @author Nagaoka
          **/
         float_t getRateByDeltaRad(int deltaRad);
 
+        /**
+         * @brief 未実装
+         *
+         * @param deltaRad
+         * @param higherPwm
+         *
+         * @return hoge
+         * @author Nagaoka
+         */
         int getLowerPwmByTimeDifferential(int deltaRad, int higherPwm);
 
+
+        /**
+         * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
+         *
+         * @param maxPwm モータのPWMの最大値
+         * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 右側に曲がるときが正の値
+         * @author Nagaoka
+         */
         void setPwm(int maxPwm, int deltaRad);
 
         /**
