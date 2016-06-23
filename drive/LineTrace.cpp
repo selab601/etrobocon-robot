@@ -7,6 +7,8 @@
 
 #include "./LineTrace.h"
 
+#include "../device/display.h"
+
 namespace drive{
 
     LineTrace* LineTrace::mInstance = 0;
@@ -18,6 +20,7 @@ namespace drive{
         mRMotor = Motor(PORT_B);
         mClock = Clock();
         reset();
+        setPID();
     }
 
     LineTrace* LineTrace::getInstance(){
@@ -35,7 +38,7 @@ namespace drive{
             setTarget(DEFAULT_TARGET);
 
         setPwm(maxPwm, (int)
-                (calculatePid(mColor->getBrightness(), mClock.now()) * (float)100) );
+                (calculatePid(mColor->getBrightness(), mClock.now()) * (float)1000) );
     }
 
     void LineTrace::setPID(float_t kp, float_t ki, float_t kd){
@@ -45,8 +48,9 @@ namespace drive{
     }
 
     float_t LineTrace::getRateByDeltaRad(int deltaRad){
-        return 100 / (TREAD * deltaRad + 100);
+        return 1000.0F / (float_t)(TREAD * deltaRad + 1000);
     }
+
 
     void LineTrace::setPwm(int maxPwm, int deltaRad){
         int lPwm;
@@ -54,12 +58,19 @@ namespace drive{
         if (deltaRad < 0 ){
             deltaRad *= -1;
             lPwm = maxPwm;
-            rPwm = getRateByDeltaRad(deltaRad) * maxPwm;
+            rPwm = getRateByDeltaRad(deltaRad) * (float)maxPwm;
         }
         else{
             rPwm = maxPwm;
-            lPwm = getRateByDeltaRad(deltaRad) * maxPwm;
+            lPwm = getRateByDeltaRad(deltaRad) * (float)maxPwm;
         }
+
+        // Debug
+        Display::getInstance()->updateDisplay("L motor:", lPwm, 4);
+        Display::getInstance()->updateDisplay("R motor:", rPwm, 5);
+        Display::getInstance()->updateDisplay("deltaRad:", deltaRad, 6);
+        Display::getInstance()->updateDisplay("rate:", getRateByDeltaRad(deltaRad) * 100.0F, 7);
+
         mLMotor.setPWM(lPwm);
         mRMotor.setPWM(rPwm);
     }
@@ -81,13 +92,23 @@ namespace drive{
         // 積分の計算
         mIntegrated += timeDiff * (mDiff[1] + mDiff[0]) / 2;
 
+        // Debug
+        Display::getInstance()->updateDisplay("brightness:", brightness, 8);
+        Display::getInstance()->updateDisplay("mTarget:", mTarget, 9);
+
+
+        float_t turn;
         // I、D制御の情報が揃っていない時、P制御の値を返す
         if (mCounter < 2)
-            return  mKp * (float_t)mDiff[0];
+            turn =  mKp * (float_t)mDiff[0];
         else
-            return  mKp * (float_t)mDiff[0] +
+            turn =  mKp * (float_t)mDiff[0] +
                 mKi * (float_t)mIntegrated +
                 mKd * (float_t)(mDiff[1] - mDiff[0]) / (float_t)timeDiff;
+
+        // Debug
+        Display::getInstance()->updateDisplay("pid turn:", turn * 1000.0F, 10);
+        return turn;
     }
 
     /**
@@ -96,8 +117,8 @@ namespace drive{
      * @author Nagaoka
      **/
     void LineTrace::setTarget(float_t target){
-        mBlackValue = mColor->getBlackCalibratedValue();
-        mWhiteValue = mColor->getWhiteCalibratedValue();
+        mBlackValue = 10 * mColor->getBlackCalibratedValue();
+        mWhiteValue = 10 * mColor->getWhiteCalibratedValue();
         mTarget = mBlackValue + (mWhiteValue - mBlackValue) * target;
     }
 

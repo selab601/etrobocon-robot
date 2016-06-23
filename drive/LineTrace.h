@@ -13,12 +13,12 @@
 #include <Motor.h>
 #include <Clock.h>
 
-#define DEFAULT_KP          50.000F /* PID処理のデフォルトのP値 */
-#define DEFAULT_KI          0.000F  /* PID処理のデフォルトのI値 */
-#define DEFAULT_KD          0.000F  /* PID処理のデフォルトのD値 */
-#define DEFAULT_TARGET      0.5F
+#define DEFAULT_KP          0.0144F /* PID処理のデフォルトのP値 */
+#define DEFAULT_KI          0.0F    /* PID処理のデフォルトのI値 */
+#define DEFAULT_KD          0.72F   /* PID処理のデフォルトのD値 */
+#define DEFAULT_TARGET      0.6F
 
-#define TREAD               100
+#define TREAD               1
 
 using namespace ev3api;
 
@@ -60,7 +60,7 @@ namespace drive{
 
         void run(int maxPwm, float_t target = 0);
 
-        void setPID(float_t kp, float_t ki, float_t kd);
+        void setPID(float_t kp = DEFAULT_KP, float_t ki = DEFAULT_KI, float_t kd = DEFAULT_KD);
 
         /**
          * @brief PID制御の計算を行う
@@ -71,12 +71,14 @@ namespace drive{
 
 
         /**
-         * @brief 進んだ距離あたりの角度の変化（10Milli rad)外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
+         * @brief 進んだ距離あたりの角度の変化（Milli rad)外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
          * @details
-         * @param deltaRad 進んだ距離あたりの角度の変化(10Milli rad)
+         * @param deltaRad 進んだ距離あたりの角度の変化(Milli rad)
          * @author Nagaoka
          **/
         float_t getRateByDeltaRad(int deltaRad);
+
+        int getLowerPwmByTimeDifferential(int deltaRad, int higherPwm);
 
         void setPwm(int maxPwm, int deltaRad);
 
