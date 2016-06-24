@@ -13,14 +13,22 @@ namespace drive{
 
     LineTrace* LineTrace::mInstance = 0;
     LineTrace::LineTrace():
-        mLMotor(PORT_A),
-        mRMotor(PORT_B){
+        mLMotor(PORT_D),
+        mRMotor(PORT_A),
+        mShippo(PORT_C, true, MEDIUM_MOTOR) {
+
         mColor = Color::getInstance();
-        mLMotor = Motor(PORT_A);
-        mRMotor = Motor(PORT_B);
         mClock = Clock();
         reset();
         setPID();
+
+        // アームを固定する
+        // 走っているときに光センサの向きが変わらないように
+        // アームのデバイスクラスができたらこれはいらない
+        Motor arm = Motor(PORT_B);
+        arm.setPWM(0);
+
+        mShippo.setPWM(100);
     }
 
     LineTrace* LineTrace::getInstance(){
@@ -30,7 +38,7 @@ namespace drive{
     }
 
 
-    void LineTrace::run(int maxPwm, float_t target){
+    void LineTrace::run(int maxPwm, double target){
         if ( target > 0)
             setTarget(target);
         else
@@ -38,31 +46,33 @@ namespace drive{
             setTarget(DEFAULT_TARGET);
 
         setPwm(maxPwm, (int)
-                (calculatePid(mColor->getBrightness(), mClock.now()) * (float)1000) );
+                (calculatePid(mColor->getBrightness(), mClock.now()) * (double)1000) );
     }
 
-    void LineTrace::setPID(float_t kp, float_t ki, float_t kd){
+    void LineTrace::setPID(double kp, double ki, double kd){
         mKp = kp;
         mKi = ki;
         mKd = kd;
     }
 
-    float_t LineTrace::getRateByDeltaRad(int deltaRad){
-        return 1000.0F / (float_t)(TREAD * deltaRad + 1000);
+    double LineTrace::getRateByDeltaRad(int deltaRad){
+        return 1000.0F / (double)(TREAD * deltaRad + 1000);
     }
 
 
     void LineTrace::setPwm(int maxPwm, int deltaRad){
         int lPwm;
         int rPwm;
+        int shippoPwm = deltaRad;
+
         if (deltaRad < 0 ){
             deltaRad *= -1;
             lPwm = maxPwm;
-            rPwm = getRateByDeltaRad(deltaRad) * (float)maxPwm;
+            rPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
         }
         else{
             rPwm = maxPwm;
-            lPwm = getRateByDeltaRad(deltaRad) * (float)maxPwm;
+            lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
         }
 
         // Debug
@@ -73,6 +83,15 @@ namespace drive{
 
         mLMotor.setPWM(lPwm);
         mRMotor.setPWM(rPwm);
+
+
+        shippoPwm /= 3;
+        if (shippoPwm > 100)
+            shippoPwm = 100;
+        if (shippoPwm < -100)
+            shippoPwm = -100;
+
+        mShippo.setPWM(shippoPwm);
     }
 
     /**
@@ -80,7 +99,7 @@ namespace drive{
      * @details ターゲット値よりも黒寄りにいる時、
      * @author Nagaoka
      **/
-    float_t LineTrace::calculatePid(int brightness, int timeMs){
+    double LineTrace::calculatePid(int brightness, int timeMs){
         mCounter++;
         mDiff[1] = mDiff[0];
         mTimeMs[1] = mTimeMs[0];
@@ -97,14 +116,14 @@ namespace drive{
         Display::getInstance()->updateDisplay("mTarget:", mTarget, 9);
 
 
-        float_t turn;
+        double turn;
         // I、D制御の情報が揃っていない時、P制御の値を返す
         if (mCounter < 2)
-            turn =  mKp * (float_t)mDiff[0];
+            turn =  mKp * (double)mDiff[0];
         else
-            turn =  mKp * (float_t)mDiff[0] +
-                mKi * (float_t)mIntegrated +
-                mKd * (float_t)(mDiff[1] - mDiff[0]) / (float_t)timeDiff;
+            turn =  mKp * (double)mDiff[0] +
+                mKi * (double)mIntegrated +
+                mKd * (double)(mDiff[1] - mDiff[0]) / (double)timeDiff;
 
         // Debug
         Display::getInstance()->updateDisplay("pid turn:", turn * 1000.0F, 10);
@@ -116,7 +135,7 @@ namespace drive{
      * @details 0.0 ~ 1.0 の値から、ターゲット値をセットする
      * @author Nagaoka
      **/
-    void LineTrace::setTarget(float_t target){
+    void LineTrace::setTarget(double target){
         mBlackValue = 10 * mColor->getBlackCalibratedValue();
         mWhiteValue = 10 * mColor->getWhiteCalibratedValue();
         mTarget = mBlackValue + (mWhiteValue - mBlackValue) * target;

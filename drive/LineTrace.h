@@ -43,15 +43,17 @@ namespace drive{
 
         int mMaxPwm;
 
-        float_t mKp;
-        float_t mKi;
-        float_t mKd;
+        double  mKp;
+        double  mKi;
+        double  mKd;
 
         // Device
         Color* mColor;
         Motor mLMotor;
         Motor mRMotor;
         Clock mClock;
+
+        Motor mShippo; // しっぽ
 
 
     public:
@@ -71,7 +73,7 @@ namespace drive{
          * @param target ターゲット値 ( Black 0 < target < 1 White) default:0.6
          * @author Nagaoka
          */
-        void run(int maxPwm, float_t target = 0);
+        void run(int maxPwm, double  target = 0);
 
         /**
          * @brief PIDパラーメータをセットする
@@ -81,14 +83,14 @@ namespace drive{
          * @sa run
          * @author Nagaoka
          */
-        void setPID(float_t kp = DEFAULT_KP, float_t ki = DEFAULT_KI, float_t kd = DEFAULT_KD);
+        void setPID(double  kp = DEFAULT_KP, double  ki = DEFAULT_KI, double  kd = DEFAULT_KD);
 
         /**
          * @brief PID制御の計算を行う
          * @details ターゲット値よりも黒寄りにいる時、負の値を返す
          * @author Nagaoka
          **/
-        float_t calculatePid(int brightness, int timeMs);
+        double  calculatePid(int brightness, int timeMs);
 
 
         /**
@@ -97,7 +99,7 @@ namespace drive{
          * @param deltaRad 内側のタイヤが進んだ距離あたりの車体の角度の変化(deltarad >= 0)[milli rad]
          * @author Nagaoka
          **/
-        float_t getRateByDeltaRad(int deltaRad);
+        double  getRateByDeltaRad(int deltaRad);
 
         /**
          * @brief 未実装
@@ -125,7 +127,7 @@ namespace drive{
          * @details 0.0 ~ 1.0 の値から、ターゲット値をセットする
          * @author Nagaoka
          **/
-        void setTarget(float_t target);
+        void setTarget(double  target);
 
         /**
          * @brief PID制御の内部の情報をリセットする

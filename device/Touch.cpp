@@ -19,5 +19,5 @@ bool Touch::isPressed(){
 //コンストラクタ
 //ポートを指定している
 Touch::Touch()
-	:touchSensor(PORT_2)
+	:touchSensor(PORT_4)
 	{}
