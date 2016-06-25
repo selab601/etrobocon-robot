@@ -2,101 +2,104 @@
 #define MOTORS_H_
 
 #include "ev3api.h"
-#include "Motor.h"
+#include "/home/vagrant/hrp2/sdk/common/library/libcpp-ev3/include/Motor.h"
 #include "Steering.h"
 
-using namespace ev3api;
-
-enum motor_kind {
-    MOTOR_ARM,
-    MOTOR_LEFT,
-    MOTOR_RIGHT,
-    MOTOR_TAIL
-};
-
-class Motors
+namespace device
 {
-private:
-    // 各モータのデバイスオブジェクト
-    Motor armMotor;
-    Motor leftMotor;
-    Motor rightMotor;
-    Motor tailMotor;
+    using namespace ev3api;
 
-    // ステアリング用デバイスオブジェクト
-    Steering steering;
+    enum motor_kind {
+        MOTOR_ARM,
+        MOTOR_LEFT,
+        MOTOR_RIGHT,
+        MOTOR_TAIL
+    };
 
-    //! 共有インスタンス
-    static Motors* _instance;
+    class Motors
+    {
+    private:
+        // 各モータのデバイスオブジェクト
+        Motor armMotor;
+        Motor leftMotor;
+        Motor rightMotor;
+        Motor tailMotor;
 
-    //! 前回のアームモータエンコーダ値
-    int32_t preArmMotorCount;
-    //! 前回の左輪モータエンコーダ値
-    int32_t preLeftMotorCount;
-    //! 前回の右輪モータエンコーダ値
-    int32_t preRightMotorCount;
-    //! 前回の尻尾モータエンコーダ値
-    int32_t preTailMotorCount;
+        // ステアリング用デバイスオブジェクト
+        Steering steering;
 
-private:
-    Motors();
+        //! 共有インスタンス
+        static Motors* _instance;
 
-    /**
-     * @brief 種類に応じたモータオブジェクトを取得する
-     * @throw 予期しないモータ種類が与えられた際のエラー
-     */
-    Motor getObject(motor_kind kind);
+        //! 前回のアームモータエンコーダ値
+        int32_t preArmMotorCount;
+        //! 前回の左輪モータエンコーダ値
+        int32_t preLeftMotorCount;
+        //! 前回の右輪モータエンコーダ値
+        int32_t preRightMotorCount;
+        //! 前回の尻尾モータエンコーダ値
+        int32_t preTailMotorCount;
 
-public:
-    static Motors* getInstance();
+    private:
+        Motors();
 
-    /**
-     * @brief 前回のエンコーダ値更新
-     */
-    void updateCount();
+        /**
+         * @brief 種類に応じたモータオブジェクトを取得する
+         * @throw 予期しないモータ種類が与えられた際のエラー
+         */
+        Motor getObject(motor_kind kind);
 
-    /**
-     * @brief 全モータのリセット．モータ停止及び角位置を0にリセットする．
-     */
-    void reset();
+    public:
+        static Motors* getInstance();
 
-    /**
-     * @brief 全モータのエンコーダ値のオフセットを初期化する．
-     */
-    void initCount();
+        /**
+         * @brief 前回のエンコーダ値更新
+         */
+        void updateCount();
 
-    /**
-     * @brief 各モータのエンコーダ値取得
-     * @param kind モータ種類
-     * @throw 予期しないモータ種類が与えられた際のエラー
-     * @return エンコーダ値
-     */
-    int32_t getCount(motor_kind kind);
+        /**
+         * @brief 全モータのリセット．モータ停止及び角位置を0にリセットする．
+         */
+        void reset();
 
-    /**
-     * @brief 各モータの更新前エンコーダ値取得
-     * @param kind モータ種類
-     * @throw 予期しないモータ種類が与えられた際のエラー
-     * @return 更新前のエンコーダ値
-     */
-    int32_t getPreCount(motor_kind kind);
+        /**
+         * @brief 全モータのエンコーダ値のオフセットを初期化する．
+         */
+        void initCount();
 
-    /**
-     * @brief 各モータへのPWM値のセット
-     * @param kind モータ種類
-     * @param pwm 設定するPWM値
-     * @throw 予期しないモータ種類が与えられた際のエラー
-     */
-    void setPWM(motor_kind kind, int pwm);
+        /**
+         * @brief 各モータのエンコーダ値取得
+         * @param kind モータ種類
+         * @throw 予期しないモータ種類が与えられた際のエラー
+         * @return エンコーダ値
+         */
+        int32_t getCount(motor_kind kind);
 
-    void setWheelPWM(int leftPWM, int rightPWM);
+        /**
+         * @brief 各モータの更新前エンコーダ値取得
+         * @param kind モータ種類
+         * @throw 予期しないモータ種類が与えられた際のエラー
+         * @return 更新前のエンコーダ値
+         */
+        int32_t getPreCount(motor_kind kind);
 
-    /**
-     * @brief ステアリング操作を行う
-     * @param power モータのパワー [-100..+100]．マイナスの値は後退
-     * @param turnRatio ステアリングの度合い [-100..+100]．マイナスは左，プラスは右への転回
-     */
-    void steerWheel(int power, int turnRatio);
-};
+        /**
+         * @brief 各モータへのPWM値のセット
+         * @param kind モータ種類
+         * @param pwm 設定するPWM値
+         * @throw 予期しないモータ種類が与えられた際のエラー
+         */
+        void setPWM(motor_kind kind, int pwm);
+
+        void setWheelPWM(int leftPWM, int rightPWM);
+
+        /**
+         * @brief ステアリング操作を行う
+         * @param power モータのパワー [-100..+100]．マイナスの値は後退
+         * @param turnRatio ステアリングの度合い [-100..+100]．マイナスは左，プラスは右への転回
+         */
+        void steerWheel(int power, int turnRatio);
+    };
+}
 
 #endif
