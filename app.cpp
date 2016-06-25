@@ -1,11 +1,7 @@
-/**
- * @file app.cpp
- * @brief メインファイル
- */
-
 #include <stdio.h>
 #include "ev3api.h"
 #include "app.h"
+#include "device/Display.h"
 
 #if defined(BUILD_MODULE)
 #include "module_cfg.h"
@@ -13,13 +9,15 @@
 #include "kernel_cfg.h"
 #endif
 
+using namespace device;
+
 extern void main_task(intptr_t unused);
 
 void main_task(intptr_t unused)
 {
     /* LCD画面表示 */
-    ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);
-    ev3_lcd_draw_string("ET2016!!", 0, 8);
+    Display* disp = Display::getInstance();
+    disp->updateDisplay("ET2016!!", 1);
 
     /**
      * Main loop
