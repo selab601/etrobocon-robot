@@ -11,12 +11,7 @@ Touch* Touch::getInstance(){
     return _instance;
 }
 
-Touch::Touch()
+Touch::Touch() :
     // ポートの指定
-    :touchSensor(PORT_4)
+    TouchSensor(PORT_4)
 {}
-
-bool Touch::isPressed(){
-    return touchSensor.isPressed();
-}
-

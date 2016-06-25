@@ -7,6 +7,13 @@
 
 using namespace ev3api;
 
+enum motor_kind {
+    MOTOR_ARM,
+    MOTOR_LEFT,
+    MOTOR_RIGHT,
+    MOTOR_TAIL
+};
+
 class Motors
 {
 private:
@@ -34,6 +41,12 @@ private:
 private:
     Motors();
 
+    /**
+     * @brief 種類に応じたモータオブジェクトを取得する
+     * @throw 予期しないモータ種類が与えられた際のエラー
+     */
+    Motor getObject(motor_kind kind);
+
 public:
     static Motors* getInstance();
 
@@ -48,32 +61,34 @@ public:
     void reset();
 
     /**
-     * @brief 左右の車輪のモータエンコーダ値のオフセットを初期化する．
-     */
-    void initWheelCount();
-
-    /**
      * @brief 全モータのエンコーダ値のオフセットを初期化する．
      */
-    void initAllCount();
+    void initCount();
 
-    // エンコーダ値取得
-    int32_t getArmCount();
-    int32_t getLeftCount();
-    int32_t getRightCount();
-    int32_t getTailCount();
+    /**
+     * @brief 各モータのエンコーダ値取得
+     * @param kind モータ種類
+     * @throw 予期しないモータ種類が与えられた際のエラー
+     * @return エンコーダ値
+     */
+    int32_t getCount(motor_kind kind);
 
-    // 更新前エンコーダ値取得
-    int32_t getPreArmCount();
-    int32_t getPreLeftCount();
-    int32_t getPreRightCount();
-    int32_t getPreTailCount();
+    /**
+     * @brief 各モータの更新前エンコーダ値取得
+     * @param kind モータ種類
+     * @throw 予期しないモータ種類が与えられた際のエラー
+     * @return 更新前のエンコーダ値
+     */
+    int32_t getPreCount(motor_kind kind);
 
-    // PWMセット
-    void setArmPWM(int pwm);
-    void setLeftPWM(int pwm);
-    void setRightPWM(int pwm);
-    void setTailPWM(int pwm);
+    /**
+     * @brief 各モータへのPWM値のセット
+     * @param kind モータ種類
+     * @param pwm 設定するPWM値
+     * @throw 予期しないモータ種類が与えられた際のエラー
+     */
+    void setPWM(motor_kind kind, int pwm);
+
     void setWheelPWM(int leftPWM, int rightPWM);
 
     /**

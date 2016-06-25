@@ -5,12 +5,9 @@
 
 using namespace ev3api;
 
-class Touch
+class Touch : ev3api::TouchSensor
 {
 private:
-    //! デバイスオブジェクト
-    TouchSensor touchSensor;
-
     static Touch* _instance;
 
 private:
@@ -18,12 +15,6 @@ private:
 
 public:
     static Touch* getInstance();
-
-    /**
-     * @brief タッチセンサ値を返す
-     * @return タッチセンサ値 (押されていたら true)
-     */
-    bool isPressed();
 };
 
 #endif

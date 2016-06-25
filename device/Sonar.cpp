@@ -15,9 +15,9 @@ Sonar* Sonar::getInstance(){
     return _instance;
 }
 
-Sonar::Sonar()
+Sonar::Sonar() :
     // ポートを指定している
-    :sonarSensor(PORT_2)
+    SonarSensor(PORT_2)
 {
     Sonar::IGNORE_INSTANCE_CREATION = false;
 }
@@ -28,12 +28,4 @@ void Sonar::ignoreSonar() {
 
 void Sonar::considerSonar() {
     Sonar::IGNORE_INSTANCE_CREATION = false;
-}
-
-int16_t Sonar::getSonarValue(){
-    return sonarSensor.getDistance();
-}
-
-bool Sonar::listen(){
-    return sonarSensor.listen();
 }

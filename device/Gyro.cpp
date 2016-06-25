@@ -11,24 +11,7 @@ Gyro* Gyro::getInstance(){
     return _instance;
 }
 
-Gyro::Gyro()
+Gyro::Gyro() :
     // ポートの指定
-    :gyroSensor(PORT_1)
+    GyroSensor(PORT_1)
 {}
-
-void Gyro::reset(){
-    gyroSensor.reset();
-}
-
-void Gyro::setOffset(int16_t offset){
-    this->offset = offset;
-    gyroSensor.setOffset(offset);
-}
-
-int16_t Gyro::getAnglerVelocity(){
-    return gyroSensor.getAnglerVelocity();
-}
-
-int16_t Gyro::getAngle(){
-    return gyroSensor.getAngle();
-}

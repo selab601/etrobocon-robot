@@ -30,6 +30,22 @@ Motors::Motors()
     preTailMotorCount = 0;
 }
 
+Motor Motors::getObject(motor_kind kind){
+    switch (kind){
+    case MOTOR_ARM:
+        return armMotor; break;
+    case MOTOR_LEFT:
+        return leftMotor; break;
+    case MOTOR_RIGHT:
+        return rightMotor; break;
+    case MOTOR_TAIL:
+        return tailMotor; break;
+    }
+
+    // TODO: きちんと例外処理する
+    throw;
+}
+
 void Motors::updateCount(){
     preArmMotorCount = armMotor.getCount();
     preLeftMotorCount = leftMotor.getCount();
@@ -44,67 +60,45 @@ void Motors::reset(){
     tailMotor.reset();
 }
 
-void Motors::initAllCount(){
+void Motors::initCount(){
     // setCount は，引数のエンコーダ値と現在のエンコーダ値の差分をオフセットとして設定する
     // getCount は，現在のエンコーダ値を返す
     // 従って，getCount によって得られたエンコーダ値を setCount の引数にとることによって．
     // エンコーダ値のオフセットを 0 に設定することができる．
     armMotor.setCount(armMotor.getCount());
     tailMotor.setCount(tailMotor.getCount());
-    Motors::initWheelCount();
-}
-
-void Motors::initWheelCount(){
     leftMotor.setCount(leftMotor.getCount());
     rightMotor.setCount(rightMotor.getCount());
 }
 
-int32_t Motors::getArmCount(){
-    return armMotor.getCount();
+int32_t Motors::getCount(motor_kind kind){
+    return Motors::getObject(kind).getCount();
 }
 
-int32_t Motors::getLeftCount(){
-    return leftMotor.getCount();
+int32_t Motors::getPreCount(motor_kind kind){
+    int32_t preCount = -1;
+
+    switch (kind){
+    case MOTOR_ARM:
+        preCount = preArmMotorCount; break;
+    case MOTOR_LEFT:
+        preCount = preLeftMotorCount; break;
+    case MOTOR_RIGHT:
+        preCount = preRightMotorCount; break;
+    case MOTOR_TAIL:
+        preCount = preTailMotorCount; break;
+    }
+
+    if (preCount != -1) {
+        return preCount;
+    } else {
+        // TODO: きちんと例外処理する
+        throw;
+    }
 }
 
-int32_t Motors::getRightCount(){
-    return rightMotor.getCount();
-}
-
-int32_t Motors::getTailCount(){
-    return tailMotor.getCount();
-}
-
-int32_t Motors::getPreArmCount(){
-    return preArmMotorCount;
-}
-
-int32_t Motors::getPreLeftCount(){
-    return preLeftMotorCount;
-}
-
-int32_t Motors::getPreRightCount(){
-    return preRightMotorCount;
-}
-
-int32_t Motors::getPreTailCount(){
-    return preTailMotorCount;
-}
-
-void Motors::setArmPWM(int pwm){
-    armMotor.setPWM(pwm);
-}
-
-void Motors::setLeftPWM(int pwm){
-    leftMotor.setPWM(pwm);
-}
-
-void Motors::setRightPWM(int pwm){
-    rightMotor.setPWM(pwm);
-}
-
-void Motors::setTailPWM(int pwm){
-    tailMotor.setPWM(pwm);
+void Motors::setPWM(motor_kind kind, int pwm){
+    Motors::getObject(kind).setPWM(pwm);
 }
 
 void Motors::setWheelPWM(int leftPWM, int rightPWM){

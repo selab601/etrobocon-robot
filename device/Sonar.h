@@ -5,13 +5,9 @@
 
 using namespace ev3api;
 
-class Sonar
+class Sonar : ev3api::SonarSensor
 {
 private:
-    //! デバイスオブジェクト
-    SonarSensor sonarSensor;
-
-    //! 共有インスタンス
     static Sonar* _instance;
 
     // ソナーのインスタンス生成無視のフラグ．(無視するなら true, 無視しないなら false)
@@ -42,20 +38,6 @@ public:
      * @brief ソナーのインスタンス生成を有効化
      */
     static void considerSonar();
-
-    /**
-     * @brief ソナーセンサで測った距離を返す
-     * @return 障害物までの距離[cm]
-     */
-    int16_t getSonarValue();
-
-    /**
-     * @brief 超音波信号を検出する
-     * @return
-     *   true  検出した
-     *   false 検出しなかった
-     */
-    bool listen();
 };
 
 #endif

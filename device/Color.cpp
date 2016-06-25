@@ -13,7 +13,7 @@ Color* Color::getInstance(){
 
 Color::Color() :
     // ポートの指定
-    colorSensor(PORT_3),
+    ColorSensor(PORT_3),
     white_calibrated_value_(0),
     black_calibrated_value_(0)
 {}
@@ -29,20 +29,4 @@ int8_t Color::getWhiteCalibratedValue(){
 
 int8_t Color::getBlackCalibratedValue(){
     return black_calibrated_value_;
-}
-
-int8_t Color::getBrightness(){
-    return colorSensor.getBrightness();
-}
-
-uint8_t Color::getAmbient(){
-    return colorSensor.getAmbient();
-}
-
-colorid_t Color::getColor(){
-    return colorSensor.getColorNumber();
-}
-
-void Color::getRawColor(rgb_raw_t &rgb){
-    colorSensor.getRawColor(rgb);
 }
