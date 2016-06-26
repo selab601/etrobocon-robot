@@ -9,8 +9,8 @@
 #define STARTER_
 
 #include "Starter.h"
-#include "../device/Touch.h"
- #include "../device/display.h"
+#include "../device/TouchSensor.h"
+#include "../device/Display.h"
 
 
 namespace contest{
@@ -40,10 +40,10 @@ namespace contest{
 
 
         // タッチセンサ
-        Touch* touch;
+        device::TouchSensor* touch;
 
         // ディスプレイ
-        Display* display;
+        device::Display* display;
 
         //コンストラクタ
         Starter();

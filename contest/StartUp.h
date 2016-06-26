@@ -9,9 +9,9 @@
 #ifndef START_UP_
 #define START_UP_
 
-#include "../device/Color.h"
-#include "../device/Touch.h"
- #include "../device/display.h"
+#include "../device/ColorSensor.h"
+#include "../device/TouchSensor.h"
+#include "../device/Display.h"
 
 namespace contest{
 	class StartUp{
@@ -45,10 +45,10 @@ namespace contest{
 		char selectedCourse = 0;	// 選択されたコース (Lコース； 'L', Rコース：'R')
 
 		// 走行体情報
-		Color* brightnessInfo;
+    device::ColorSensor* brightnessInfo;
 		// Gyro* gyro;  // test
-		Touch* touch;
-		Display* display;
+    device::TouchSensor* touch;
+    device::Display* display;
 
 		//コンストラクタ
 		StartUp();

@@ -10,8 +10,8 @@ namespace contest{
     Starter* Starter::instance = 0;
 
     Starter::Starter(){
-        touch = Touch::getInstance();
-        display = Display::getInstance();
+        touch = device::TouchSensor::getInstance();
+        display = device::Display::getInstance();
 
    }
 

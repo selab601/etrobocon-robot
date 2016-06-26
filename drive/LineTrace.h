@@ -9,8 +9,8 @@
 #define LINE_TRACE_
 
 #include <math.h>
-#include "../device/Color.h"
-#include <Motor.h>
+#include "../device/ColorSensor.h"
+#include "../device/Motors.h"
 #include <Clock.h>
 
 #define DEFAULT_KP          0.0144F /* PID処理のデフォルトのP値 */
@@ -48,12 +48,9 @@ namespace drive{
         double  mKd;
 
         // Device
-        Color* mColor;
-        Motor mLMotor;
-        Motor mRMotor;
+        device::ColorSensor* mColor;
+        device::Motors* mMotors;
         Clock mClock;
-
-        Motor mShippo; // しっぽ
 
 
     public:

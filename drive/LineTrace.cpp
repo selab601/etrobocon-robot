@@ -7,28 +7,25 @@
 
 #include "./LineTrace.h"
 
-#include "../device/display.h"
+#include "../device/Display.h"
 
 namespace drive{
 
     LineTrace* LineTrace::mInstance = 0;
-    LineTrace::LineTrace():
-        mLMotor(PORT_D),
-        mRMotor(PORT_A),
-        mShippo(PORT_C, true, MEDIUM_MOTOR) {
-
-        mColor = Color::getInstance();
+    LineTrace::LineTrace()
+    {
+        mMotors = device::Motors::getInstance();
+        mColor = device::ColorSensor::getInstance();
         mClock = Clock();
         reset();
         setPID();
-
+        device::Display::getInstance()->updateDisplay("end", 11);
         // アームを固定する
         // 走っているときに光センサの向きが変わらないように
         // アームのデバイスクラスができたらこれはいらない
-        Motor arm = Motor(PORT_B);
-        arm.setPWM(0);
+        mMotors->setPWM(device::MOTOR_ARM, 0);
 
-        mShippo.setPWM(100);
+        mMotors->setPWM(device::MOTOR_TAIL, 100);
     }
 
     LineTrace* LineTrace::getInstance(){
@@ -76,14 +73,13 @@ namespace drive{
         }
 
         // Debug
-        Display::getInstance()->updateDisplay("L motor:", lPwm, 4);
-        Display::getInstance()->updateDisplay("R motor:", rPwm, 5);
-        Display::getInstance()->updateDisplay("deltaRad:", deltaRad, 6);
-        Display::getInstance()->updateDisplay("rate:", getRateByDeltaRad(deltaRad) * 100.0F, 7);
+        device::Display::getInstance()->updateDisplay("L motor:", lPwm, 4);
+        device::Display::getInstance()->updateDisplay("R motor:", rPwm, 5);
+        device::Display::getInstance()->updateDisplay("deltaRad:", deltaRad, 6);
+        device::Display::getInstance()->updateDisplay("rate:", getRateByDeltaRad(deltaRad) * 100.0F, 7);
 
-        mLMotor.setPWM(lPwm);
-        mRMotor.setPWM(rPwm);
-
+        mMotors->setPWM(device::MOTOR_LEFT, lPwm);
+        mMotors->setPWM(device::MOTOR_RIGHT, rPwm);
 
         shippoPwm /= 3;
         if (shippoPwm > 100)
@@ -91,7 +87,7 @@ namespace drive{
         if (shippoPwm < -100)
             shippoPwm = -100;
 
-        mShippo.setPWM(shippoPwm);
+        mMotors->setPWM(device::MOTOR_TAIL, shippoPwm);
     }
 
     /**
@@ -112,8 +108,8 @@ namespace drive{
         mIntegrated += timeDiff * (mDiff[1] + mDiff[0]) / 2;
 
         // Debug
-        Display::getInstance()->updateDisplay("brightness:", brightness, 8);
-        Display::getInstance()->updateDisplay("mTarget:", mTarget, 9);
+        device::Display::getInstance()->updateDisplay("brightness:", brightness, 8);
+        device::Display::getInstance()->updateDisplay("mTarget:", mTarget, 9);
 
 
         double turn;
@@ -126,7 +122,7 @@ namespace drive{
                 mKd * (double)(mDiff[1] - mDiff[0]) / (double)timeDiff;
 
         // Debug
-        Display::getInstance()->updateDisplay("pid turn:", turn * 1000.0F, 10);
+        device::Display::getInstance()->updateDisplay("pid turn:", turn * 1000.0F, 10);
         return turn;
     }
 

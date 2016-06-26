@@ -7,7 +7,6 @@
  */
 #include "StartUp.h"
 #include "stdio.h"
-#include "device/Color.h"
 
 #define COURSES_NUM 	2 // コースの数
 
@@ -16,9 +15,9 @@ namespace contest{
 StartUp* StartUp::instance = 0;
 
 StartUp::StartUp(){
-	brightnessInfo = Color::getInstance();
-	touch = Touch::getInstance();
-	display = Display::getInstance();
+    brightnessInfo = device::ColorSensor::getInstance();
+    touch = device::TouchSensor::getInstance();
+    display = device::Display::getInstance();
 	// gyro = Gyro::getInstance();
 }
 
