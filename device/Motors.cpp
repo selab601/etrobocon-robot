@@ -32,22 +32,6 @@ namespace device
         preTailMotorCount = 0;
     }
 
-    Motor Motors::getObject(motor_kind kind){
-        switch (kind){
-        case MOTOR_ARM:
-            return armMotor; break;
-        case MOTOR_LEFT:
-            return leftMotor; break;
-        case MOTOR_RIGHT:
-            return rightMotor; break;
-        case MOTOR_TAIL:
-            return tailMotor; break;
-        }
-
-        // TODO: きちんと例外処理する
-        throw;
-    }
-
     void Motors::updateCount(){
         preArmMotorCount = armMotor.getCount();
         preLeftMotorCount = leftMotor.getCount();
@@ -74,11 +58,27 @@ namespace device
     }
 
     int32_t Motors::getCount(motor_kind kind){
-        return Motors::getObject(kind).getCount();
+        int32_t count = 0;
+
+        switch (kind){
+        case MOTOR_ARM:
+            count = armMotor.getCount(); break;
+        case MOTOR_LEFT:
+            count = leftMotor.getCount(); break;
+        case MOTOR_RIGHT:
+            count = rightMotor.getCount(); break;
+        case MOTOR_TAIL:
+            count = tailMotor.getCount(); break;
+        default:
+            // TODO: きちんと例外処理する
+            throw;
+        }
+
+        return count;
     }
 
     int32_t Motors::getPreCount(motor_kind kind){
-        int32_t preCount = -1;
+        int32_t preCount = 0;
 
         switch (kind){
         case MOTOR_ARM:
@@ -89,18 +89,28 @@ namespace device
             preCount = preRightMotorCount; break;
         case MOTOR_TAIL:
             preCount = preTailMotorCount; break;
-        }
-
-        if (preCount != -1) {
-            return preCount;
-        } else {
+        default:
             // TODO: きちんと例外処理する
             throw;
         }
+
+        return preCount;
     }
 
     void Motors::setPWM(motor_kind kind, int pwm){
-        Motors::getObject(kind).setPWM(pwm);
+        switch (kind){
+        case MOTOR_ARM:
+            armMotor.setPWM(pwm); break;
+        case MOTOR_LEFT:
+            leftMotor.setPWM(pwm); break;
+        case MOTOR_RIGHT:
+            rightMotor.setPWM(pwm); break;
+        case MOTOR_TAIL:
+            tailMotor.setPWM(pwm); break;
+        default:
+            // TODO: きちんと例外処理する
+            throw;
+        }
     }
 
     void Motors::setWheelPWM(int leftPWM, int rightPWM){
