@@ -43,12 +43,6 @@ namespace device
     private:
         Motors();
 
-        /**
-         * @brief 種類に応じたモータオブジェクトを取得する
-         * @throw 予期しないモータ種類が与えられた際のエラー
-         */
-        Motor getObject(motor_kind kind);
-
     public:
         static Motors* getInstance();
 
