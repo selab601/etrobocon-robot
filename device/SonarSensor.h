@@ -5,7 +5,7 @@
 
 namespace device
 {
-    class SonarSensor : ev3api::SonarSensor
+    class SonarSensor : public ev3api::SonarSensor
     {
     private:
         static SonarSensor* _instance;

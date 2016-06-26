@@ -5,7 +5,7 @@
 
 namespace device
 {
-    class ColorSensor : ev3api::ColorSensor
+    class ColorSensor : public ev3api::ColorSensor
     {
     private:
         static ColorSensor* instance_;

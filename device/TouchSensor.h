@@ -5,7 +5,7 @@
 
 namespace device
 {
-    class TouchSensor : ev3api::TouchSensor
+    class TouchSensor : public ev3api::TouchSensor
     {
     private:
         static TouchSensor* _instance;
