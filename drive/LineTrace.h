@@ -114,7 +114,7 @@ namespace drive{
          * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
          *
          * @param maxPwm モータのPWMの最大値
-         * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 右側に曲がるときが正の値
+         * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 左側に曲がるときが正の値
          * @author Nagaoka
          */
         void setPwm(int maxPwm, int deltaRad);
