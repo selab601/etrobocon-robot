@@ -4,3 +4,4 @@ GPATH
 conf/Makefile.app
 conf/Makefile.inc
 conf/app.cfg
+*.swp
