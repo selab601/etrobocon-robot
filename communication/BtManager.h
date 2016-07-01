@@ -1,16 +1,15 @@
-#ifndef ET2015_COMMUNICATION_BTMANAGER_H_
-#define ET2015_COMMUNICATION_BTMANAGER_H_
+#ifndef ET2016_COMMUNICATION_BTMANAGER_H_
+#define ET2016_COMMUNICATION_BTMANAGER_H_
 
 #include <stdio.h>
 #include <string.h>
 #include <Clock.h>
 #include "ev3api.h"
-#include "../device/Color.h"
-#include "../device/Gyro.h"
-#include "../device/Sonar.h"
-#include "../device/Touch.h"
-#include "../device/TrikeMotor.h"
-#include "../underlyingTechnology/Localization.h"
+#include "../device/ColorSensor.h"
+#include "../device/GyroSensor.h"
+#include "../device/Motors.h"
+#include "../device/SonarSensor.h"
+#include "../device/TouchSensor.h"
 
 /* メッセージの長さ */
 #define MESSAGE_LEN  128
@@ -36,40 +35,40 @@ namespace communication
 
         private:
             /* このクラスのインスタンス */
-            static BtManager* instance;
+            static BtManager* mInstance;
 
             /* 通信先 */
-            FILE* bt;
+            FILE* mBtSerialPort;
 
             /* 時間情報 */
-            Clock* clock;
+            ev3api::Clock* mClock;
 
             /* 光情報 */
-            Color* color;
+            device::ColorSensor* mColor;
 
             /* ジャイルセンサ情報 */
-            Gyro* gyro;
+            device::GyroSensor* mGyro;
 
             /* ソナーセンサ情報 */
-            Sonar* sonar;
+            device::SonarSensor* mSonar;
 
             /* タッチセンサ情報 */
-            Touch* touch;
+            device::TouchSensor* mTouch;
 
             /* モータ情報 */
-            TrikeMotor* motor;
+            device::Motors* mMotors;
 
-            /* 走行情報 */
-            Localization* loc;
+            /* 自己位置情報 */
+            // Localization* mLoc; // TODO: enable
 
             /* 送信メッセージ */
-            char message[MESSAGE_LEN];
+            char mMessage[MESSAGE_LEN];
 
             /* 受信メッセージ */
-            char r_message[MESSAGE_LEN];
+            char mReceivedMessage[MESSAGE_LEN];
 
             /* 接続状態 */
-            BT_STATE state;
+            BT_STATE mState;
 
         public:
             /**
@@ -119,12 +118,6 @@ namespace communication
             void receive();
 
             /**
-             * @brief メッセージ送信
-             * 改行またはnullまでを送信
-             */
-            // void send(const char[]);
-
-            /**
              * @brief 送信データのセット
              * 送信メッセージをセットします
              */
@@ -136,7 +129,6 @@ namespace communication
              * 外部から呼び出せません。
              */
             BtManager();
-
 
     };
 }

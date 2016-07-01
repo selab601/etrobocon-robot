@@ -1,30 +1,32 @@
 #include "BtManager.h"
 
+using namespace ev3api;
+
 namespace communication {
 
     /* メンバ */
-    BtManager* BtManager::instance = 0;
-    // FILE* BtManager::bt;
-    // char BtManager::message[] = {0};
+    BtManager* BtManager::mInstance = 0;
+    // FILE* BtManager::mBtSerialPort;
+    // char BtManager::mMessage[] = {0};
 
     /* コンストラクタ */
     BtManager::BtManager() {
-        clock = new Clock();
-        color = Color::getInstance();
-        gyro  = Gyro::getInstance();
-        touch = Touch::getInstance();
-        motor = TrikeMotor::getInstance();
-        loc = Localization::getInstance();
-        bt = NULL;
-        state = BT_WATING;
+        mClock  = new Clock();
+        mColor  = device::ColorSensor::getInstance();
+        mGyro   = device::GyroSensor::getInstance();
+        mTouch  = device::TouchSensor::getInstance();
+        mMotors = device::Motors::getInstance();
+        // loc = Localization::getInstance(); // TODO: enable
+        mBtSerialPort = NULL;
+        mState = BT_WATING;
     }
 
     /* インスタンス取得 */
     BtManager* BtManager::getInstance() {
-        if (instance == 0) {
-            instance = new BtManager();
+        if (mInstance == 0) {
+            mInstance = new BtManager();
         }
-        return instance;
+        return mInstance;
     }
 
     /* Bluetooth接続 */
@@ -59,14 +61,14 @@ namespace communication {
             ev3_lcd_draw_string("connected !", 0, 0);
 
             /* 接続先ポート(を、ファイルとして開く) */
-            bt = ev3_serial_open_file(EV3_SERIAL_BT);
+            mBtSerialPort = ev3_serial_open_file(EV3_SERIAL_BT);
 
             /* 接続開始送信 */
             //char msg[10] = {0};
             //sprintf(msg, "start\r\n");
             //setMessage(msg);
 
-            state = BT_CONNECTED;
+            mState = BT_CONNECTED;
         }
         return true;
     }
@@ -78,9 +80,9 @@ namespace communication {
 
     /* Bluetooth切断 */
     void BtManager::close() {
-        state = BT_CLOSED;
-        if (bt != NULL) {
-            fclose(bt);
+        mState = BT_CLOSED;
+        if (mBtSerialPort != NULL) {
+            fclose(mBtSerialPort);
         }
     }
 
@@ -88,37 +90,39 @@ namespace communication {
     /* 走行体情報送信 */
     void BtManager::send() {
         /* メッセージがなかったら情報取得 */
-        if (message[0] == '\0') {
+        if (mMessage[0] == '\0') {
             /*
-               sprintf(message, "bligh:%.3d, touch:%.1d, gyro :% .3d, sonar:%.3d, dist :%.8ld\r\n",
-               color->getBrightness(),
-               touch->isPressed() ? 1 : 0,
-               gyro->getGyroValue(),
-               sonar->getSonarValue(),
-               loc->get_migrationLength());
+               sprintf(mMessage, "bligh:%.3d, touch:%.1d, gyro :% .3d, sonar:%.3d, dist :%.8ld\r\n",
+               mColor->getBrightness(),
+               mTouch->isPressed() ? 1 : 0,
+               mGyro->getAnglerVelocity(),
+               sonar->getSonarValue()
+            // loc->get_migrationLength());
+            );
              */
-            sprintf(message, "%ld,%d,%d,%d,%d,%ld,%ld,%ld,%d,%d,%d,%ld,%ld,%d\n",
-                    clock->now(),
-                    color->getBrightness(),
-                    gyro->getGyroValue(),
+            sprintf(mMessage, "%ld,%d,%d,%d,%d,%ld,%ld,%ld,%d,%d,%d,%ld,%ld,%d\n",
+                    mClock->now(),
+                    mColor->getBrightness(),
+                    mGyro->getAnglerVelocity(),
                     0,
-                    touch->isPressed() ? 1 : 0,
-                    motor->getFrontCount(),
-                    motor->getLeftCount(),
-                    motor->getRightCount(),
+                    mTouch->isPressed() ? 1 : 0,
+                    mMotors->getCount(device::MOTOR_ARM),
+                    mMotors->getCount(device::MOTOR_LEFT),
+                    mMotors->getCount(device::MOTOR_RIGHT),
                     0,
                     0,
                     0,
-                    motor->getFrontAngle(),
-                    loc->get_migrationLength(),
-                    loc->getAngle());
+                    0
+                    // loc->get_migrationLength(),
+                    // loc->getAngle());
+                );
         }
 
         /* 送信 */
-        int size = sizeof(message);
+        int size = sizeof(mMessage);
         int result;
         if (size > 0) {
-            result = fprintf(bt, message);
+            result = fprintf(mBtSerialPort, mMessage);
         }
 
         /* 送信失敗したら通信終了 */
@@ -128,19 +132,19 @@ namespace communication {
 
         /* メッセージ初期化 */
         for (int i = 0; i < MESSAGE_LEN; i++) {
-            message[i] = '\0';
+            mMessage[i] = '\0';
         }
     }
 
     /* メッセージ受信 */
     void BtManager::receive() {
-        //        if (touch->isPressed()) {
+        //        if (mTouch->isPressed()) {
         char r_tmp[MESSAGE_LEN];
-        //int size = fscanf(bt, "%s", r_tmp);
-        int size = fread(r_tmp, 1, MESSAGE_LEN - 1, bt);
-        //fseek(bt, 0, SEEK_END);
-        //int size = ftell(bt);
-        //fgets(r_tmp, MESSAGE_LEN - 1, bt);
+        //int size = fscanf(mBtSerialPort, "%s", r_tmp);
+        int size = fread(r_tmp, 1, MESSAGE_LEN - 1, mBtSerialPort);
+        //fseek(mBtSerialPort, 0, SEEK_END);
+        //int size = ftell(mBtSerialPort);
+        //fgets(r_tmp, MESSAGE_LEN - 1, mBtSerialPort);
         ev3_speaker_play_tone(500, 100);
         if (size > 0) {
             //strcpy(r_message, r_tmp);
@@ -155,11 +159,11 @@ namespace communication {
 
     /* 指定メッセージ送信 */
     void BtManager::setMessage(const char msg[]) {
-        sprintf(message, "%s", msg);
+        sprintf(mMessage, "%s", msg);
     }
 
     /* ステータス更新 */
     BtManager::BT_STATE BtManager::getState() {
-        return state;
+        return mState;
     }
 }
