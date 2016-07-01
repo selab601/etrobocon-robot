@@ -11,6 +11,7 @@ namespace contest {
   Contest::Contest() {
     su = StartUp::getInstance();
     starter = Starter::getInstance();
+    starter = Starter::getInstance();
     // state = STARTUP;
   }
 

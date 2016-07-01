@@ -18,7 +18,6 @@ StartUp::StartUp(){
     brightnessInfo = device::ColorSensor::getInstance();
     touch = device::TouchSensor::getInstance();
     display = device::Display::getInstance();
-	// gyro = Gyro::getInstance();
 }
 
 StartUp* StartUp::getInstance(){
