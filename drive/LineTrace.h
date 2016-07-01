@@ -70,7 +70,7 @@ namespace drive{
          * @param target ターゲット値 ( Black 0 < target < 1 White) default:0.6
          * @author Nagaoka
          */
-        void run(int maxPwm, double  target = 0);
+        void run(int maxPwm, double target = 0);
 
         /**
          * @brief PIDパラーメータをセットする
@@ -80,14 +80,14 @@ namespace drive{
          * @sa run
          * @author Nagaoka
          */
-        void setPID(double  kp = DEFAULT_KP, double  ki = DEFAULT_KI, double  kd = DEFAULT_KD);
+        void setPID(double kp = DEFAULT_KP, double ki = DEFAULT_KI, double kd = DEFAULT_KD);
 
         /**
          * @brief PID制御の計算を行う
          * @details ターゲット値よりも黒寄りにいる時、負の値を返す
          * @author Nagaoka
          **/
-        double  calculatePid(int brightness, int timeMs);
+        double calculatePid(int brightness, int timeMs);
 
 
         /**
@@ -96,7 +96,7 @@ namespace drive{
          * @param deltaRad 内側のタイヤが進んだ距離あたりの車体の角度の変化(deltarad >= 0)[milli rad]
          * @author Nagaoka
          **/
-        double  getRateByDeltaRad(int deltaRad);
+        double getRateByDeltaRad(int deltaRad);
 
         /**
          * @brief 未実装

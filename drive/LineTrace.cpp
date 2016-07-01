@@ -19,13 +19,6 @@ namespace drive{
         mClock = Clock();
         reset();
         setPID();
-        device::Display::getInstance()->updateDisplay("end", 11);
-        // アームを固定する
-        // 走っているときに光センサの向きが変わらないように
-        // アームのデバイスクラスができたらこれはいらない
-        mMotors->setPWM(device::MOTOR_ARM, 0);
-
-        mMotors->setPWM(device::MOTOR_TAIL, 100);
     }
 
     LineTrace* LineTrace::getInstance(){
@@ -71,12 +64,6 @@ namespace drive{
             rPwm = maxPwm;
             lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
         }
-
-        // Debug
-        device::Display::getInstance()->updateDisplay("L motor:", lPwm, 4);
-        device::Display::getInstance()->updateDisplay("R motor:", rPwm, 5);
-        device::Display::getInstance()->updateDisplay("deltaRad:", deltaRad, 6);
-        device::Display::getInstance()->updateDisplay("rate:", getRateByDeltaRad(deltaRad) * 100.0F, 7);
 
         mMotors->setPWM(device::MOTOR_LEFT, lPwm);
         mMotors->setPWM(device::MOTOR_RIGHT, rPwm);
