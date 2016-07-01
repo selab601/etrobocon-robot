@@ -1,6 +1,6 @@
 /**
  * @file IStrategy.h
- * @brief 戦略クラス
+ * @brief 戦略インターフェースクラス
  * @author usui kakeru
  */
 
@@ -15,7 +15,7 @@ namespace strategy{
          * @brief 戦略を攻略する
          * @return true:攻略完了 false:未攻略
          */
-        virtual bool WalkThrough() = 0;
+        virtual bool captureStrategy() = 0;
     };
 }
 #endif

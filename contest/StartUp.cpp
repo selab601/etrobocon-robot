@@ -1,16 +1,14 @@
-
 /**
  * @file StartUp.cpp
- * @date 2015/07/08
  * @note  スタートアップクラス
- * @author motoki nagaoka
+ * @author usui kakeru
  */
 #include "StartUp.h"
 #include "stdio.h"
 
 #define COURSES_NUM 	2 // コースの数
 
-namespace contest{
+namespace contest_pkg{
 
 StartUp* StartUp::instance = 0;
 
@@ -27,7 +25,7 @@ StartUp* StartUp::getInstance(){
     return instance;
 }
 
-bool StartUp::startUp(){
+bool StartUp::isFinished(){
 	return selectCourse() && calibrate();
 }
 
@@ -63,8 +61,6 @@ bool StartUp::calibrate(){
 	// カラーセンサ（白）のキャリブレーション
 	if ( !isCalibratedWhite){
 		calibrated = false;
-		//ev3_lcd_fill_rect( 0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);
-
 		display-> updateDisplay("      - CALIBRATION -      ",  0);
 		display-> updateDisplay("Color sensor [WHITE]        ",  1);
 		int16_t tmpValue = brightnessInfo->getBrightness();
@@ -85,7 +81,6 @@ bool StartUp::calibrate(){
 	// カラーセンサ（黒）のキャリブレーション
 	else if ( !isCalibratedBlack){
 		calibrated = false;
-		//ev3_lcd_fill_rect( 0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);
 		display-> updateDisplay("      - CALIBRATION -      ",  0);
 		display-> updateDisplay("Color sensor [BLACK]       ",  1);
 		int16_t tmpValue = brightnessInfo->getBrightness();
@@ -107,7 +102,6 @@ bool StartUp::calibrate(){
 	// ジャイロセンサのキャリブレーション
 	else if (!isCalibratedGyro) {
 		calibrated = false;
-		//ev3_lcd_fill_rect( 0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);
 		display-> updateDisplay("      - CALIBRATION -      ",  0);
 		display-> updateDisplay("Gyro sensor              ", 1);
 		// int16_t tmpValue = gyro->getGyroValue();
@@ -131,7 +125,6 @@ bool StartUp::calibrate(){
 	// キャリブレーションの確認
 	else if (!isConfirmed){
 		calibrated = false;
-		//ev3_lcd_fill_rect( 0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);
 		display-> updateDisplay("      - CALIBRATION -      ", 0);
 		display-> updateDisplay("CALIBRATION FINISHED        ", 1);
 
@@ -149,7 +142,6 @@ bool StartUp::calibrate(){
 	}
 	else {
 		calibrated = true;
-		//ev3_lcd_fill_rect( 0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);
 	}
 
 	return calibrated;
@@ -160,7 +152,7 @@ bool StartUp::selectCourse(){
 	static bool courseSelected = false;
 	static bool confirmed = false;
 
-		// 前回にタッチセンサが押されていたらtrue
+	// 前回にタッチセンサが押されていたらtrue
 	static bool hasPressed = true;
 
 	//　前回にタッチセンサが押されていて、まだ離されていないとき
@@ -227,6 +219,28 @@ bool StartUp::selectCourse(){
 
 	return courseSelected && confirmed;
 }
+//スタートを受け入れる
+bool StartUp::acceptStart(){
+	    static bool started = false;
+    static bool hasPressed = true;
+    if  ( !touch->isPressed() )
+        hasPressed = false;
 
+    if ( !started && !hasPressed && touch->isPressed()){
+        started = true;
+
+        display-> updateDisplay ("                            ", 0);
+        display-> updateDisplay ("                            ", 1);
+        display-> updateDisplay ("                            ", 2);
+        display-> updateDisplay ("         S T A R T          ", 3);
+    }
+    else if ( !started ){
+        display-> updateDisplay ("                            ", 0);
+        display-> updateDisplay ("                            ", 1);
+        display-> updateDisplay ("                            ", 2);
+        display-> updateDisplay ("         R E A D Y          ", 3);
+    }
+    return started;
+}
 
 }

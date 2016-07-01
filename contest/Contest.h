@@ -1,44 +1,29 @@
 /**
  * @file Contest.h
- * @author maruyama
+ * @brief 競技クラス
+ * @author usui kakeru
  */
 #ifndef	 CONTEST_
 #define CONTEST_
 
 #include "StartUp.h"
-#include "Starter.h"
-//#include "Starter.h"
+#include "Course.h"
 
-namespace contest {
+namespace contest_pkg {
 
-	/**
-	 * @brief 走行体クラス
-	 * control関数を呼び出しと、走行準備(スタートアップ)、コース攻略を行います。
-	 * シングルトンによって実装されているので、インスタンスを取得する場合はgetInstanceを呼び出してください。
-	 */
 	class Contest {
 		public:
-			/*
-			enum TR_STATE
-			{
-				STARTUP,
-				RUN
-			};
-			*/
 
 		private:
-			/* インスタンス */
+			//インスタンス
 			static Contest* instance;
 
-			/* スタートアップ */
-			StartUp* su;
+			//スタートアップ
+			StartUp* startUp;
 
-			/* スタータ */
-			Starter* starter;
-
-
-			/* 状態 */
-			// TR_STATE state;
+			//コース
+			Course* courseL;
+			Course* courseR;
 
 		public:
 			/**

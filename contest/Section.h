@@ -1,7 +1,7 @@
 /**
  * @file Section.h
  * @brief 区間クラス
- * @author 薄井　翔
+ * @author usui kakeru
  */
 #ifndef SECTION_H_
 #define SECTION_H_
@@ -12,9 +12,8 @@
 #include "stdio.h"
 
 using namespace strategy;
-//using namespace ev3api;
 
-namespace contest{
+namespace contest_pkg{
 
 	class Section{
 		private:
@@ -33,7 +32,7 @@ namespace contest{
 		    // スタートした位置
 		    int startDistance;
 
-		    // スタートした
+		    // スタートしたかどうか
 		    int isStarted;
 			
 			//戦略：戦略

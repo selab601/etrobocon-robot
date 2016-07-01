@@ -1,7 +1,7 @@
 /**
  * @file Course.h
  * @brief コースクラス
- * @author 薄井　翔
+ * @author usui kakeru
  */
 
 #ifndef COURSE_H_
@@ -12,33 +12,33 @@
 
 
 
-//ライントレースや難所などの戦略をincludeする
-#include "../strategy/TestStrategy.h"
+//ライントレースや戦略をincludeする
 //#include "../strategy/aaa.h"
 
 using namespace strategy;
 using namespace std;
 
-namespace contest{
+namespace contest_pkg{
 
 	class Course{
 		private:
 
 			//選択されたコース
-			char selectCourse;
+			char selectedCourse;
 
+			//現在攻略している戦略
 			unsigned int sectionNumber;
 
 			//区間(Section)型の動的配列
-			std::vector<Section> sections;
+			vector<Section> sections;
 
 
 		public:
 			/**
 			 * @brief コンストラクタ
-			 * @param course 攻略するコース
+			 * @param selectedCourse 選択されたコース
 			 */
-			Course(char selectCourse);
+			Course(char selectedCourse);
 
 
 			/**

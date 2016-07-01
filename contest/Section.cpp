@@ -6,7 +6,7 @@
 #include "Section.h"
 
 
-namespace contest{
+namespace contest_pkg{
 
 
 	/* コンストラクタ */
@@ -18,23 +18,23 @@ namespace contest{
 
 		isCaptured = false;
 		isChecked = false;
-        isStarted = false;
-        this->useRelativeDistance = useRelativeDistance;
-        this->startDistance = 123;
+    isStarted = false;
+    this->useRelativeDistance = useRelativeDistance;
+    this->startDistance = 123;
 	}
 
 	/* 区間攻略 */
 	bool Section::captureSection(){
-      char message[30];
-      sprintf (message, "rel:%d, start:%d, dst:%d", useRelativeDistance, startDistance, sectionDistance);
-      ev3_lcd_draw_string(message, 0, 0);
-      // 区間の始まりの位置を記録する
-      if ( ! isStarted ){
-        //this->startDistance = localization->get_migrationLength();
-        isStarted = true;
-      }
+    char message[30];
+    sprintf (message, "rel:%d, start:%d, dst:%d", useRelativeDistance, startDistance, sectionDistance);
+    ev3_lcd_draw_string(message, 0, 0);
+    // 区間の始まりの位置を記録する
+    if ( ! isStarted ){
+      //this->startDistance = localization->get_migrationLength();
+      isStarted = true;
+    }
 		//戦略を攻略する
-		if ( strategy->WalkThrough() ){
+		if ( strategy->captureStrategy() ){
 			isCaptured = true;
 		}
 

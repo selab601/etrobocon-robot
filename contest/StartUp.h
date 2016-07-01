@@ -1,8 +1,7 @@
 /**
  * @file StartUp.h
  * @brief スタートアップクラス
- * @author motoki nagaoka
- * @date 2015/07/08
+ * @author usui kakeru
  */
 
 
@@ -13,7 +12,8 @@
 #include "../device/TouchSensor.h"
 #include "../device/Display.h"
 
-namespace contest{
+using namespace device;
+namespace contest_pkg{
 	class StartUp{
 		public:
 		/**
@@ -28,7 +28,7 @@ namespace contest{
 		*
 		*
 		*/
-		bool startUp();
+		bool isFinished();
 		/**
 		 * @brief 選択されたコースを取得する
 		 * @details Lコース：L, Rコース：R
@@ -38,6 +38,13 @@ namespace contest{
 		 */
 		char getSelectedCourse();
 
+		/**
+         * @brief スタートを受け付ける
+         * @details タッチセンサが押されるまでまつ
+         * @return タッチセンサが押されたらtrue
+         */
+        bool acceptStart();
+
 	private:
 
 		static StartUp* instance;	// インスタンス
@@ -45,10 +52,10 @@ namespace contest{
 		char selectedCourse = 0;	// 選択されたコース (Lコース； 'L', Rコース：'R')
 
 		// 走行体情報
-    device::ColorSensor* brightnessInfo;
-		// Gyro* gyro;  // test
-    device::TouchSensor* touch;
-    device::Display* display;
+	    device::ColorSensor* brightnessInfo;
+		// Gyro* gyro;
+	    device::TouchSensor* touch;
+	    device::Display* display;
 
 		//コンストラクタ
 		StartUp();

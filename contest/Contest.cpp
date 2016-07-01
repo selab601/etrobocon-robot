@@ -1,7 +1,13 @@
+/**
+ * @file Contest.cpp
+ * @brief 競技クラス
+ * @author usui kakeru
+ */
+
 #include "Contest.h"
 
 
-namespace contest {
+namespace contest_pkg {
 
   /* メンバ */
   Contest* Contest::instance = 0;
@@ -9,10 +15,7 @@ namespace contest {
 
   /* コンストラクタ */
   Contest::Contest() {
-    su = StartUp::getInstance();
-    starter = Starter::getInstance();
-    starter = Starter::getInstance();
-    // state = STARTUP;
+    startUp = StartUp::getInstance();
   }
 
   /* インスタンス取得 */
@@ -25,40 +28,36 @@ namespace contest {
 
   /* 走行体制御 */
     void Contest::perform() {
-        static bool initialized = false;
-    /* スタートアップ */
-    /*
-    if (state == STARTUP) {
-      if (su->startUp()) {
-        state = RUN;
-      }
-    } else if (state == RUN) {
-      */
+      static bool initialized = false;
 
       /*スタートアップ*/
-      if ( su->startUp() ){
+      if ( startUp->isFinished() ){
         /*選択されたコースのインスタンスを生成する */
-        switch(su->getSelectedCourse()){
+        switch(startUp->getSelectedCourse()){
         case 'L':
         {
             if (!initialized) {
+                courseL = new Course('L');
                 initialized = true;
             }
             break;
         }
           case 'R':
               if (!initialized) {
+                courseR = new Course('R');
                   initialized = true;
               }
           break;
         }
 
         /* スタート受付 */
-        if ( starter->start() ){
-          switch (su->getSelectedCourse() ){
+        if ( startUp->acceptStart() ){
+          switch (startUp->getSelectedCourse() ){
           case 'L':
+            courseL->captureCourse();
             break;
           case 'R':
+            courseR->captureCourse();
             break;
           }
         }
