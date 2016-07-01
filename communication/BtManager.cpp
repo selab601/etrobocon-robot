@@ -15,6 +15,7 @@ namespace communication {
         mColor  = device::ColorSensor::getInstance();
         mGyro   = device::GyroSensor::getInstance();
         mTouch  = device::TouchSensor::getInstance();
+        mSonar = device::SonarSensor::getInstance();
         mMotors = device::Motors::getInstance();
         // loc = Localization::getInstance(); // TODO: enable
         mBtSerialPort = NULL;
@@ -91,15 +92,6 @@ namespace communication {
     void BtManager::send() {
         /* メッセージがなかったら情報取得 */
         if (mMessage[0] == '\0') {
-            /*
-               sprintf(mMessage, "bligh:%.3d, touch:%.1d, gyro :% .3d, sonar:%.3d, dist :%.8ld\r\n",
-               mColor->getBrightness(),
-               mTouch->isPressed() ? 1 : 0,
-               mGyro->getAnglerVelocity(),
-               sonar->getSonarValue()
-            // loc->get_migrationLength());
-            );
-             */
             sprintf(mMessage, "%ld,%d,%d,%d,%d,%ld,%ld,%ld,%d,%d,%d,%ld,%ld,%d\n",
                     mClock->now(),
                     mColor->getBrightness(),
@@ -109,7 +101,7 @@ namespace communication {
                     mMotors->getCount(device::MOTOR_ARM),
                     mMotors->getCount(device::MOTOR_LEFT),
                     mMotors->getCount(device::MOTOR_RIGHT),
-                    0,
+                    mSonar != 0? mSonar->getDistance(); 0,
                     0,
                     0,
                     0

@@ -6,5 +6,7 @@ INCLUDE("ev3api.cfg");
 
 DOMAIN(TDOM_APP) {
   CRE_TSK(MAIN_TASK, { TA_ACT , 0, main_task, TMIN_APP_TPRI + 2, STACK_SIZE, NULL });
+  CRE_TSK(BT_TASK, { TA_ACT , 0, bt_task, TMIN_APP_TPRI + 1, STACK_SIZE, NULL });
+  EV3_CRE_CYC(CYC_BLUETOOTH, { TA_STA, 0, bt_task, 100, 0 });
 }
 
