@@ -101,7 +101,9 @@ namespace communication {
                     mMotors->getCount(device::MOTOR_ARM),
                     mMotors->getCount(device::MOTOR_LEFT),
                     mMotors->getCount(device::MOTOR_RIGHT),
-                    mSonar != 0? mSonar->getDistance(); 0,
+                    mSonar != 0? mSonar->getDistance(): 0,
+                    0,
+                    0,
                     0,
                     0,
                     0
