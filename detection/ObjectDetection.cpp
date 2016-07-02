@@ -2,31 +2,24 @@
  * @file ObjectDetection.cpp
  * @brief 障害物検知クラス
  */
-
 #include "ObjectDetection.h"
-#include "ev3api.h"
-#include "../device/display.h"
-#include "../device/SonarSensor.h"
 
+using namespace ev3api;
 
-namespace detection
-{
-    //コンストラクタ
+namespace detection{
+    /* コンストラクタ */
     ObjectDetection::ObjectDetection(){
-        display_   = Display::getInstance();
-        sonar_       = SonarSensor::getInstance();
+        display_ = device::Display::getInstance();
+        sonar_   = device::SonarSensor::getInstance();
         detect_distance_    = 0;
     }
 
     bool ObjectDetection::isDetected(){
-        if(sonar_ -> getSonarValue() <= detect_distance_){
-        	display_->updateDisplay("Object is detected !",  7);
+        if(sonar_->getDistance() <= detect_distance_){
         	return true;
         }
-
         return false;
     }
-
     void ObjectDetection::setDetectDistance(long distance){
         detect_distance_ = distance;
     }

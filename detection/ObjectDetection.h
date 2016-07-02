@@ -1,49 +1,40 @@
 /**
- * @file TrainDetection.h
- * @brief 新幹線検知クラス
- * @author sisido
+ * @file ObjectDetection.h
+ * @brief 障害物検知クラス
  */
 
-#ifndef _TRAIN_DETECTION_H
-#define _TRAIN_DETECTION_H
+#ifndef _OBJECT_DETECTION_H
+#define _OBJECT_DETECTION_H
 
-#include "IDetection.h"
 #include "ev3api.h"
-#include "../device/display.h"
-#include "../device/Sonar.h"
+#include "../device/Display.h"
+#include "../device/SonarSensor.h"
 
 
-namespace detection{
-
-    class TrainDetection : public IDetection {
+namespace detection
+{
+    class ObjectDetection
+    {
     private:
-        /* 目標とする対象までの測定距離 */
-        long  detect_distance_;
-
-        Display* display_;
-        Sonar* sonar_;
+        device::Display* display_;
+        device::SonarSensor* sonar_;
+        long detect_distance_;
 
     public:
         /**
          * @brief コンストラクタ
-         * @author sisido
          */
-        TrainDetection();
-
+        ObjectDetection();
 
         /**
-         * @brief 検知クラス．
-         * ソナーセンサで検知した対象までの距離が検知距離以内なら音が鳴ります。
-         * lcdモニタにも検出していることを表示します。
-         * @return 目標距離以内に対象物がある{true}, ない{false}
-         * @author sisido
+         * @brief 障害物検知
+         * @return 検知したらreturnを返す
          */
         bool isDetected();
 
         /**
-         * @brief ソナーで検知する対象までの距離を設定する
-         * 単位は[cm]です
-         * @author sisido
+         * @brief 検知する距離の設定
+         * 単位はcm
          */
         void setDetectDistance(long distance);
     };
