@@ -27,7 +27,7 @@ namespace contest_pkg{
 			unsigned int sectionNumber;
 
 			//区間(Section)型の動的配列
-			vector<Section> sections;
+			std::vector<Section> sections;
 
 
 		public:
