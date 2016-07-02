@@ -16,7 +16,6 @@ namespace detection
     class ObjectDetection
     {
     private:
-        device::Display* display_;
         device::SonarSensor* sonar_;
         long detect_distance_;
 
