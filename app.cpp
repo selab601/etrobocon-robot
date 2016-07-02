@@ -33,15 +33,19 @@ void main_task(intptr_t unused)
 /* Bluetoothタスク */
 void bt_task(intptr_t unused)
 {
-  communication::BtManager* btManager = communication::BtManager::getInstance();
-  if (btManager->getState() == btManager->BT_WATING) {
-    /* 接続 */
-    btManager->connect();
-  } else if(btManager->getState() == btManager->BT_CONNECTED) {
-    /* メッセージ送信 */
-    btManager->send();
-  }
-  ext_tsk();
+    communication::BtManager* btManager = communication::BtManager::getInstance();
+
+    while(1){
+        tslp_tsk(100); /* 100msec 周期起動 */
+
+        if (btManager->getState() == btManager->BT_WATING) {
+            /* 接続 */
+            btManager->connect();
+        } else if(btManager->getState() == btManager->BT_CONNECTED) {
+            /* メッセージ送信 */
+            btManager->send();
+        }
+    }
+
+    ext_tsk();
 }
-
-
