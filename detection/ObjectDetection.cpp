@@ -6,14 +6,15 @@
 #include "ObjectDetection.h"
 #include "ev3api.h"
 #include "../device/display.h"
-#include "../device/Sonar.h"
+#include "../device/SonarSensor.h"
 
 
-namespace detection{
-    //constructer
+namespace detection
+{
+    //コンストラクタ
     ObjectDetection::ObjectDetection(){
         display_   = Display::getInstance();
-        sonar_       = Sonar::getInstance();
+        sonar_       = SonarSensor::getInstance();
         detect_distance_    = 0;
     }
 
