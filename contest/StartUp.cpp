@@ -8,6 +8,8 @@
 
 #define COURSES_NUM 	2 // コースの数
 
+using namespace device;
+
 namespace contest_pkg{
 
 StartUp* StartUp::instance = 0;

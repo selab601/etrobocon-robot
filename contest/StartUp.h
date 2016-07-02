@@ -12,7 +12,6 @@
 #include "../device/TouchSensor.h"
 #include "../device/Display.h"
 
-using namespace device;
 namespace contest_pkg{
 	class StartUp{
 		public:
