@@ -11,7 +11,6 @@
 #include "../strategy/IStrategy.h"
 #include "stdio.h"
 
-using namespace strategy;
 
 namespace contest_pkg{
 

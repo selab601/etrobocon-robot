@@ -6,6 +6,8 @@
 #include "Section.h"
 
 
+using namespace strategy;
+
 namespace contest_pkg{
 
 

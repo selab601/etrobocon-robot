@@ -5,6 +5,9 @@
  */
 #include "Course.h"
 
+using namespace strategy;
+using namespace std;
+
 namespace contest_pkg{
 
 	/* コンストラクタ */

@@ -15,9 +15,6 @@
 //ライントレースや戦略をincludeする
 //#include "../strategy/aaa.h"
 
-using namespace strategy;
-using namespace std;
-
 namespace contest_pkg{
 
 	class Course{
