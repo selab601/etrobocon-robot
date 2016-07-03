@@ -23,8 +23,8 @@ namespace contest_pkg{
 		static StartUp* getInstance();
 
 		/**
-		* @brief スタートアップする
-		*
+		* @brief コース選択とキャリブレーションの終了を確認
+		* @return 終了したらtrue
 		*
 		*/
 		bool isFinished();
