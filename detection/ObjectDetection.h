@@ -7,35 +7,28 @@
 #define _OBJECT_DETECTION_H
 
 #include "ev3api.h"
-#include "../device/Display.h"
 #include "../device/SonarSensor.h"
-
 
 namespace detection
 {
     class ObjectDetection
     {
     private:
-        device::SonarSensor* sonar_;
-        long detect_distance_;
+        device::SonarSensor* Sonar;
+        u_int DetectDistance;
 
     public:
         /**
          * @brief コンストラクタ
+         * @param Distance 検知する距離.単位はcm
          */
-        ObjectDetection();
+        ObjectDetection(u_int Distance);
 
         /**
          * @brief 障害物検知
-         * @return 検知したらreturnを返す
+         * @return 検知したらtrueを返す
          */
         bool isDetected();
-
-        /**
-         * @brief 検知する距離の設定
-         * 単位はcm
-         */
-        void setDetectDistance(long distance);
     };
 };
 
