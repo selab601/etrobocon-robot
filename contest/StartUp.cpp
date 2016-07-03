@@ -37,95 +37,55 @@ namespace contest_pkg{
 
 	bool StartUp::calibrate(){
 		//キャリブレーションの状態
-		static int8_t whiteValue = 0;
-		static int8_t blackValue = 0;
-		static bool isCalibratedWhite = false; // 白の値のキャリブレーションが終わっているか
+		static int8_t whiteValue = 0;			//白の値
+		static int8_t blackValue = 0;			//黒の値
+		static int8_t colorValue = 0;			//キャリブレーションの値
+		static bool isCalibratedWhite = false;	// 白の値のキャリブレーションが終わっているか
 		static bool isCalibratedBlack = false;	// 黒の値のキャリブレーションが終わっているか
-		static bool isCalibratedGyro = false;	// ジャイロのキャリブレーションが終わっているか
-		static bool isConfirmed = false; 		//  キャリブレーションの結果の確認が終わっているか
+		static bool isConfirmed = false;		//  キャリブレーションの結果の確認が終わっているか
 
-		// 前回にタッチセンサが押されていたらtrue
+		// タッチセンサの押下状態を保持する静的変数,押下されたらtrue,離れたらfalseにする
 		static bool hasPressed = true;
 
-		bool calibrated = isCalibratedWhite
-						&& isCalibratedBlack
-						&& isCalibratedGyro
-						&& isConfirmed; //すべてのキャリブレーションが終わっていたらtrue
+		// キャリブレーションが終了し、結果確認が終わっているか
+		bool calibrated = isCalibratedWhite && isCalibratedBlack && isConfirmed;
 
 		char message[100];
 
-		//　前回にタッチセンサが押されていて、まだ離されていないとき
-		if ( hasPressed && touch->isPressed() )
+		//　タッチセンサの押下状態の更新(長押し中に処理が進まないようにするため)
+		if ( hasPressed && touch->isPressed() ){
 			return calibrated;
-		else // タッチセンサが離されたとき
+		}
+		else{
 			hasPressed = false;
+		}
 
 		// カラーセンサ（白）のキャリブレーション
-		if ( !isCalibratedWhite){
+		if ( !isCalibratedWhite ){
 			calibrated = false;
-			display-> updateDisplay("      - CALIBRATION -      ",  0);
-			display-> updateDisplay("Color sensor [WHITE]        ",  1);
-			int16_t tmpValue = brightnessInfo->getBrightness();
-			sprintf( message, "current value: %2d          ", tmpValue);
-			display-> updateDisplay(message,  2);
-			display-> updateDisplay("                            ",  3);
-
-
-			if ( touch->isPressed() ){
+			colorValue = colorCalibrate(WHITE);
+			if( colorValue != -1 ){
 				hasPressed = true;
-				whiteValue = tmpValue;
+				whiteValue = colorValue;
 				isCalibratedWhite = true;
 
-				// 音を出す
-				ev3_speaker_play_tone ( 500, 100);
 			}
 		}
 		// カラーセンサ（黒）のキャリブレーション
-		else if ( !isCalibratedBlack){
+		else if ( !isCalibratedBlack ){
 			calibrated = false;
-			display-> updateDisplay("      - CALIBRATION -      ",  0);
-			display-> updateDisplay("Color sensor [BLACK]       ",  1);
-			int16_t tmpValue = brightnessInfo->getBrightness();
-			sprintf( message, "current value: %2d          ", tmpValue);
-			display-> updateDisplay(message, 2);
-
-			if ( touch->isPressed() ){
+			colorValue = colorCalibrate(BLACK);
+			if( colorValue != -1 ){
 				hasPressed = true;
-				blackValue = tmpValue;
+				blackValue = colorValue;
 				isCalibratedBlack = true;
-
-				// キャリブレーション値をセットする
+				//キャリブレーションの値を保存
 				brightnessInfo->setCalibrateValue(whiteValue, blackValue);
-
-				// 音を出す
-				ev3_speaker_play_tone ( 500, 100);
 			}
-		}
-		// ジャイロセンサのキャリブレーション
-		else if (!isCalibratedGyro) {
-			calibrated = false;
-			display-> updateDisplay("      - CALIBRATION -      ",  0);
-			display-> updateDisplay("Gyro sensor              ", 1);
-			// int16_t tmpValue = gyro->getGyroValue();
-			// sprintf( message, "current value: %d          ", tmpValue);
-			display-> updateDisplay(message, 2);
 
-			if ( touch->isPressed() ){
-				hasPressed = true;
-
-				// キャリブレーション値をセットする（角速度0のときの値）
-				// gyro->setGyroOffset(tmpValue);
-				// ジャイロセンサの角位置0をリセットする
-				// gyro->gyroReset();
-
-				isCalibratedGyro = true;
-
-				// 音を出す
-				ev3_speaker_play_tone ( 500, 100);
-			}
 		}
 		// キャリブレーションの確認
-		else if (!isConfirmed){
+		else if ( !isConfirmed ){
 			calibrated = false;
 			display-> updateDisplay("      - CALIBRATION -      ", 0);
 			display-> updateDisplay("CALIBRATION FINISHED        ", 1);
@@ -135,8 +95,6 @@ namespace contest_pkg{
 				brightnessInfo->getBlackCalibratedValue(),
 				brightnessInfo->getBrightness() );
 			display-> updateDisplay(message, 2);
-			// sprintf( message, "Gyro (current value): %d   ", gyro->getGyroValue() );
-			display-> updateDisplay(message, 3);
 			if ( touch->isPressed() ){
 				hasPressed = true;
 				isConfirmed = true;
@@ -154,80 +112,90 @@ namespace contest_pkg{
 		static bool courseSelected = false;
 		static bool confirmed = false;
 
-		// 前回にタッチセンサが押されていたらtrue
+		// タッチセンサの押下状態を保持する静的変数,押下されたらtrue,離れたらfalseにする
 		static bool hasPressed = true;
 
-		//　前回にタッチセンサが押されていて、まだ離されていないとき
+		//　タッチセンサの押下状態の更新(長押し中に処理が進まないようにするため)
 		if ( hasPressed &&
-			(touch->isPressed() || ev3_button_is_pressed (UP_BUTTON) || ev3_button_is_pressed (DOWN_BUTTON) || ev3_button_is_pressed (ENTER_BUTTON)) )
+			(touch->isPressed() || ev3_button_is_pressed (UP_BUTTON) 
+				|| ev3_button_is_pressed (DOWN_BUTTON) || ev3_button_is_pressed (ENTER_BUTTON)) ){
 			return courseSelected && confirmed;
+		}
 		else // タッチセンサが離されたとき
+		{
 			hasPressed = false;
+		}
 
+		// ↑ ボタンが押されたとき
+		if ( ev3_button_is_pressed (UP_BUTTON) ){
+			hasPressed = true;
+			index--;
+		}
+		// ↓ ボタンが押されたとき
+		else if ( ev3_button_is_pressed (DOWN_BUTTON)){
+			hasPressed = true;
+			index++;
+		}
+		// エンターボタンが押されたとき
+		else if ( ev3_button_is_pressed (ENTER_BUTTON)){
+			hasPressed = true;
+			courseSelected = true;
+			switch( index ){
+			case 0:
+				selectedCourse = 'L';
+				break;
+			case 1:
+				selectedCourse = 'R';
+				break;
+			}
+			// 音を出す
+			ev3_speaker_play_tone ( 500, 100);
+		}
 
-			// ↑ ボタンが押されたとき
-			if (ev3_button_is_pressed (UP_BUTTON) ){
+		//indexが範囲外の場合
+		if ( index < 0 ){
+			index = 0;
+		}
+		if ( index >= COURSES_NUM ){
+			index = COURSES_NUM - 1;
+		}
+
+		char courseNames[COURSES_NUM][30] = {"   Course L                ","   Course R                "};
+		courseNames[index][1] = '>';
+
+		//コースが選択されていないとき
+		if ( !courseSelected ){
+			display-> updateDisplay("                            ", 0);
+			display-> updateDisplay("        SELECT COURSE       ", 1);
+			display-> updateDisplay(courseNames[0], 2);
+			display-> updateDisplay(courseNames[1], 3);
+		}
+		//コースが選択された時
+		else if ( courseSelected && !confirmed ){
+			if (ev3_button_is_pressed (ENTER_BUTTON) || touch->isPressed() ){
 				hasPressed = true;
-				index--;
+				confirmed = true;
 			}
-			// ↓ ボタンが押されたとき
-			else if (ev3_button_is_pressed (DOWN_BUTTON)){
-				hasPressed = true;
-				index++;
-			}
-			// エンターボタンが押されたとき
-			else if (ev3_button_is_pressed (ENTER_BUTTON)){
-				hasPressed = true;
-				courseSelected = true;
-				switch(index){
-				case 0:
-					selectedCourse = 'L';
-					break;
-				case 1:
-					selectedCourse = 'R';
-					break;
-				}
-				// 音を出す
-				ev3_speaker_play_tone ( 500, 100);
-			}
-			if (index < 0)
-				index = 0;
-			if (index >= COURSES_NUM)
-				index = COURSES_NUM - 1;
 
-			char courseNames[COURSES_NUM][30] = {"   Course L                ",
-												"   Course R                "};
-			courseNames[index][1] = '>';
-
-			if (!courseSelected){
-				display-> updateDisplay("                            ", 0);
-				display-> updateDisplay("        SELECT COURSE       ", 1);
-				display-> updateDisplay(courseNames[0], 2);
-				display-> updateDisplay(courseNames[1], 3);
-			}
-			else if (courseSelected && !confirmed){
-				if (ev3_button_is_pressed (ENTER_BUTTON) || touch->isPressed() ){
-					hasPressed = true;
-					confirmed = true;
-				}
-
-				char message[30];
-				sprintf(message, "  SELECTED COURSE: %c", selectedCourse);
-				display-> updateDisplay("                            ", 0);
-				display-> updateDisplay("                            ", 1);
-				display-> updateDisplay("                            ", 2);
-				display-> updateDisplay(message, 3);
-			}
+			char message[30];
+			sprintf(message, "  SELECTED COURSE: %c", selectedCourse);
+			display-> updateDisplay("                            ", 0);
+			display-> updateDisplay("                            ", 1);
+			display-> updateDisplay("                            ", 2);
+			display-> updateDisplay(message, 3);
+		}
 
 		return courseSelected && confirmed;
 	}
 	//スタートを受け入れる
 	bool StartUp::acceptStart(){
 		static bool started = false;
+
+		// タッチセンサの押下状態を保持する静的変数,押下されたらtrue,離れたらfalseにする
 		static bool hasPressed = true;
-		if  ( !touch->isPressed() )
+		if  ( !touch->isPressed() ){
 			hasPressed = false;
-		
+		}
 		if ( !started && !hasPressed && touch->isPressed()){
 			started = true;
 
@@ -243,6 +211,34 @@ namespace contest_pkg{
 			display-> updateDisplay ("         R E A D Y          ", 3);
 		}
 		return started;
+	}
+	//カラーのキャリブレーション
+	int8_t StartUp::colorCalibrate(calibrationColor color){
+		int8_t tmpValue;
+		char calibrationColorMessage[100];
+		char currentValueMessage[100];
+		char colorStr[6];
+		switch(color){
+			case WHITE:
+				strcpy(colorStr,"WHITE"); break;
+			case BLACK:
+				strcpy(colorStr,"BLACK"); break;
+		}
+
+		display-> updateDisplay("      - CALIBRATION -      ",  0);
+		sprintf( calibrationColorMessage, "Color sensor [%s]       ",colorStr);
+		display->updateDisplay(calibrationColorMessage,1);
+		tmpValue = brightnessInfo->getBrightness();
+		sprintf( currentValueMessage, "current value: %2d          ", tmpValue);
+		display-> updateDisplay(currentValueMessage, 2);
+
+		if ( touch->isPressed() ){
+			// 音を出す
+			ev3_speaker_play_tone ( 500, 100);
+			return tmpValue;
+		}
+
+		return -1;
 	}
 
 }

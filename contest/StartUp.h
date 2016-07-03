@@ -48,19 +48,29 @@ namespace contest_pkg{
 
 		static StartUp* instance;	// インスタンス
 
+		//コンストラクタ
+		StartUp();
+
 		char selectedCourse = 0;	// 選択されたコース (Lコース； 'L', Rコース：'R')
 
 		// 走行体情報
 		device::ColorSensor* brightnessInfo;
-		// Gyro* gyro;
 		device::TouchSensor* touch;
 		device::Display* display;
 
-		//コンストラクタ
-		StartUp();
-
+		//キャリブレーションする色
+		enum calibrationColor
+		{
+			WHITE,
+			BLACK
+		};
 		bool calibrate();		// キャリブレーションする
 		bool selectCourse();	// コースを選択する
+		/**
+		 * @brief 色のキャリブレーションをする
+		 * @return タッチボタンが押された時のカラーセンサの値
+		 */
+		int8_t colorCalibrate(calibrationColor color);
 
 	};
 }
