@@ -14,8 +14,8 @@ namespace detection
     class ObjectDetection
     {
     private:
-        device::SonarSensor* Sonar;
-        u_int DetectDistance;
+        device::SonarSensor* sonar;
+        u_int detectDistance;
 
     public:
         /**
@@ -28,7 +28,7 @@ namespace detection
          * @brief 障害物検知
          * @return 検知したらtrueを返す
          */
-        bool isDetected();
+        bool getResult();
     };
 };
 
