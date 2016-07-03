@@ -55,7 +55,7 @@ namespace contest_pkg{
 			 * @details 戦略クラスの攻略するを呼び出す
 			 * @return 攻略済み:true,攻略中:false
 			 */
-			bool captureSection();
+			bool capture();
 
 			/**
 			 * @brief 走行距離を確認する

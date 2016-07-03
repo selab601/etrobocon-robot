@@ -57,10 +57,10 @@ namespace contest_pkg {
 			if ( startUp->acceptStart() ){
 				switch (startUp->getSelectedCourse() ){
 					case 'L':
-					courseL->captureCourse();
+					courseL->capture();
 					break;
 					case 'R':
-					courseR->captureCourse();
+					courseR->capture();
 					break;
 				}
 			}

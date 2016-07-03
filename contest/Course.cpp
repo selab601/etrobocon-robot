@@ -27,9 +27,9 @@ namespace contest_pkg{
 	}
 
 	/* コース攻略 */
-	void Course::captureCourse(){
+	void Course::capture(){
 		while(sectionNumber != sections.size()){
-			if(sections[sectionNumber].captureSection()){
+			if(sections[sectionNumber].capture()){
 				sectionNumber++;
 			}
 		}

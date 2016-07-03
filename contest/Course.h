@@ -42,7 +42,7 @@ namespace contest_pkg{
 			 * @brief コースを攻略する
 			 * @details 区間を切り替えながら攻略していく
 			 */
-			void captureCourse();
+			void capture();
 
 	};
 }

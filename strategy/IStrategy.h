@@ -15,7 +15,7 @@ namespace strategy{
 		 * @brief 戦略を攻略する
 		 * @return true:攻略完了 false:未攻略
 		 */
-		virtual bool captureStrategy() = 0;
+		virtual bool capture() = 0;
 	};
 }
 #endif

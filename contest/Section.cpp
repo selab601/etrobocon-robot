@@ -26,7 +26,7 @@ namespace contest_pkg{
 	}
 
 	/* 区間攻略 */
-	bool Section::captureSection(){
+	bool Section::capture(){
 		char message[30];
 		sprintf (message, "rel:%d, start:%d, dst:%d", useRelativeDistance, startDistance, sectionDistance);
 		ev3_lcd_draw_string(message, 0, 0);
@@ -36,7 +36,7 @@ namespace contest_pkg{
 			isStarted = true;
 		}
 		//戦略を攻略する
-		if ( strategy->captureStrategy() ){
+		if ( strategy->capture() ){
 			isCaptured = true;
 		}
 
