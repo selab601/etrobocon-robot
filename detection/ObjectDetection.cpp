@@ -9,8 +9,8 @@ using namespace ev3api;
 namespace detection{
     /* コンストラクタ */
     ObjectDetection::ObjectDetection(u_int Distance){
-        sonar   = device::SonarSensor::getInstance();
-        u_int detectDistance    = Distance;
+        sonar = device::SonarSensor::getInstance();
+        u_int detectDistance = Distance;
     }
 
     bool ObjectDetection::getResult(){
