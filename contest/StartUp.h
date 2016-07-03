@@ -38,11 +38,11 @@ namespace contest_pkg{
 		char getSelectedCourse();
 
 		/**
-         * @brief スタートを受け付ける
-         * @details タッチセンサが押されるまでまつ
-         * @return タッチセンサが押されたらtrue
-         */
-        bool acceptStart();
+		 * @brief スタートを受け付ける
+		 * @details タッチセンサが押されるまでまつ
+		 * @return タッチセンサが押されたらtrue
+		 */
+		bool acceptStart();
 
 	private:
 
@@ -51,10 +51,10 @@ namespace contest_pkg{
 		char selectedCourse = 0;	// 選択されたコース (Lコース； 'L', Rコース：'R')
 
 		// 走行体情報
-	    device::ColorSensor* brightnessInfo;
+		device::ColorSensor* brightnessInfo;
 		// Gyro* gyro;
-	    device::TouchSensor* touch;
-	    device::Display* display;
+		device::TouchSensor* touch;
+		device::Display* display;
 
 		//コンストラクタ
 		StartUp();

@@ -9,13 +9,13 @@
 
 namespace strategy{
 
-    class IStrategy{
-        public:
-        /**
-         * @brief 戦略を攻略する
-         * @return true:攻略完了 false:未攻略
-         */
-        virtual bool captureStrategy() = 0;
-    };
+	class IStrategy{
+		public:
+		/**
+		 * @brief 戦略を攻略する
+		 * @return true:攻略完了 false:未攻略
+		 */
+		virtual bool captureStrategy() = 0;
+	};
 }
 #endif

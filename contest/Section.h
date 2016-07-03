@@ -25,14 +25,14 @@ namespace contest_pkg{
 			//走行距離確認完了
 			bool isChecked;
 
-		    // 相対距離を使って区間を切り替えるかどうか
-		    bool useRelativeDistance;
+			// 相対距離を使って区間を切り替えるかどうか
+			bool useRelativeDistance;
 
-		    // スタートした位置
-		    int startDistance;
+			// スタートした位置
+			int startDistance;
 
-		    // スタートしたかどうか
-		    int isStarted;
+			// スタートしたかどうか
+			int isStarted;
 			
 			//戦略：戦略
 			strategy::IStrategy* strategy;
@@ -49,7 +49,7 @@ namespace contest_pkg{
 			 * @param strategy 戦略
              * @param useRelativeDistance 相対距離を使って区間を切り替えるとき:true
 			 */
-      		Section(int sectionDistance,strategy::IStrategy* strategy, bool useRelativeDistance = false);
+			Section(int sectionDistance,strategy::IStrategy* strategy, bool useRelativeDistance = false);
 			/**
 			 * @brief 区間を攻略する
 			 * @details 戦略クラスの攻略するを呼び出す
