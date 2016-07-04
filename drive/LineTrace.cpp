@@ -11,20 +11,20 @@
 
 namespace drive{
 
-    LineTrace* LineTrace::mInstance = 0;
+    LineTrace* LineTrace::Instance = 0;
     LineTrace::LineTrace()
     {
-        mMotors = device::Motors::getInstance();
-        mColor = device::ColorSensor::getInstance();
-        mClock = Clock();
+        Motors = device::Motors::getInstance();
+        Color = device::ColorSensor::getInstance();
+        Clock = Clock();
         reset();
         setPID();
     }
 
     LineTrace* LineTrace::getInstance(){
-        if (NULL == mInstance)
-            mInstance = new LineTrace();
-        return mInstance;
+        if (NULL == Instance)
+            Instance = new LineTrace();
+        return Instance;
     }
 
 
@@ -32,17 +32,17 @@ namespace drive{
         if ( target > 0)
             setTarget(target);
         else
-        if (mTarget == 0)
+        if (Target == 0)
             setTarget(DEFAULT_TARGET);
 
         setPwm(maxPwm, (int)
-                (calculatePid(mColor->getBrightness(), mClock.now()) * (double)1000) );
+                (calculatePid(Color->getBrightness(), Clock.now()) * (double)1000) );
     }
 
     void LineTrace::setPID(double kp, double ki, double kd){
-        mKp = kp;
-        mKi = ki;
-        mKd = kd;
+        this.Kp = kp;
+        this.Ki = ki;
+        this.Kd = kd;
     }
 
     double LineTrace::getRateByDeltaRad(int deltaRad){
@@ -65,8 +65,8 @@ namespace drive{
             lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
         }
 
-        mMotors->setPWM(device::MOTOR_LEFT, lPwm);
-        mMotors->setPWM(device::MOTOR_RIGHT, rPwm);
+        Motors->setPWM(device::MOTOR_LEFT, lPwm);
+        Motors->setPWM(device::MOTOR_RIGHT, rPwm);
 
         shippoPwm /= 3;
         if (shippoPwm > 100)
@@ -74,7 +74,7 @@ namespace drive{
         if (shippoPwm < -100)
             shippoPwm = -100;
 
-        mMotors->setPWM(device::MOTOR_TAIL, shippoPwm);
+        Motors->setPWM(device::MOTOR_TAIL, shippoPwm);
     }
 
     /**
@@ -83,30 +83,30 @@ namespace drive{
      * @author Nagaoka
      **/
     double LineTrace::calculatePid(int brightness, int timeMs){
-        mCounter++;
-        mDiff[1] = mDiff[0];
-        mTimeMs[1] = mTimeMs[0];
-        mDiff[0] = brightness*10 - mTarget;
-        mTimeMs[0] = timeMs;
+        Counter++;
+        Diff[1] = Diff[0];
+        TimeMs[1] = TimeMs[0];
+        Diff[0] = brightness*10 - Target;
+        TimeMs[0] = timeMs;
 
-        int timeDiff = mTimeMs[1] - mTimeMs[0];
+        int timeDiff = TimeMs[1] - TimeMs[0];
 
         // 積分の計算
-        mIntegrated += timeDiff * (mDiff[1] + mDiff[0]) / 2;
+        Integrated += timeDiff * (Diff[1] + Diff[0]) / 2;
 
         // Debug
         device::Display::getInstance()->updateDisplay("brightness:", brightness, 8);
-        device::Display::getInstance()->updateDisplay("mTarget:", mTarget, 9);
+        device::Display::getInstance()->updateDisplay("Target:", Target, 9);
 
 
         double turn;
         // I、D制御の情報が揃っていない時、P制御の値を返す
-        if (mCounter < 2)
-            turn =  mKp * (double)mDiff[0];
+        if (Counter < 2)
+            turn =  Kp * (double)Diff[0];
         else
-            turn =  mKp * (double)mDiff[0] +
-                mKi * (double)mIntegrated +
-                mKd * (double)(mDiff[1] - mDiff[0]) / (double)timeDiff;
+            turn =  Kp * (double)Diff[0] +
+                Ki * (double)Integrated +
+                Kd * (double)(Diff[1] - Diff[0]) / (double)timeDiff;
 
         // Debug
         device::Display::getInstance()->updateDisplay("pid turn:", turn * 1000.0F, 10);
@@ -119,9 +119,9 @@ namespace drive{
      * @author Nagaoka
      **/
     void LineTrace::setTarget(double target){
-        mBlackValue = 10 * mColor->getBlackCalibratedValue();
-        mWhiteValue = 10 * mColor->getWhiteCalibratedValue();
-        mTarget = mBlackValue + (mWhiteValue - mBlackValue) * target;
+        BlackValue = 10 * Color->getBlackCalibratedValue();
+        WhiteValue = 10 * Color->getWhiteCalibratedValue();
+        Target = BlackValue + (WhiteValue - BlackValue) * target;
     }
 
 
@@ -132,10 +132,10 @@ namespace drive{
      * @author Nagaoka
      **/
     void LineTrace::reset(){
-        mCounter = 0;
-        mIntegrated = 0;
-        mDiff[1] = mDiff[0] = 0;
-        mTimeMs[1] = mTimeMs[0] = 0;
+        Counter = 0;
+        Integrated = 0;
+        Diff[1] = Diff[0] = 0;
+        TimeMs[1] = TimeMs[0] = 0;
     }
 
 };

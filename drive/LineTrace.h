@@ -31,26 +31,26 @@ namespace drive{
 
 
         // キャリブレーション値
-        int mWhiteValue;
-        int mBlackValue;
+        int WhiteValue;
+        int BlackValue;
 
-        int mTarget = 0;        // 明るさセンサの値を10倍したときのターゲット値
+        int Target = 0;        // 明るさセンサの値を10倍したときのターゲット値
 
-        int mDiff[2];       // 明るさの値を10倍し、ターゲット値との差分をとったもの
-        int mTimeMs[2];
-        int mIntegrated = 0;
-        int mCounter = 0;
+        int Diff[2];       // 明るさの値を10倍し、ターゲット値との差分をとったもの
+        int TimeMs[2];
+        int Integrated = 0;
+        int Counter = 0;
 
-        int mMaxPwm;
+        int MaxPwm;
 
-        double  mKp;
-        double  mKi;
-        double  mKd;
+        double  Kp;
+        double  Ki;
+        double  Kd;
 
         // Device
-        device::ColorSensor* mColor;
-        device::Motors* mMotors;
-        Clock mClock;
+        device::ColorSensor* Color;
+        device::Motors* Motors;
+        Clock Clock;
 
 
     public:
