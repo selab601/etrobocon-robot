@@ -110,7 +110,7 @@ namespace measurement
 		Coordinates location;
 		//測定点
 		Coordinates measurePoint;
-		//NXT本体向き 小数点部分
+		//EV3本体向き 小数点部分
 		double angle;
 		//増分時間
 		uint32_t deltaTime;
@@ -119,9 +119,9 @@ namespace measurement
 		//右モータエンコーダ値バッファ
 		int32_t rightBuf;
 		//本体 速度
-		double velocityNXT;
+		double velocityEV3;
 		//本体 回転角速度
-		double angularNXT;
+		double angularEV3;
 		//左 車輪 角速度
 		double angularVL;
 		//右 車輪 角速度

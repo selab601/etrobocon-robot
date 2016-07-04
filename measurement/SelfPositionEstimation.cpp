@@ -21,8 +21,8 @@ namespace measurement
 		deltaTime = 0;
 		leftBuf = 0;
 		rightBuf = 0;
-		velocityNXT = 0;
-		angularNXT = 0;
+		velocityEV3 = 0;
+		angularEV3 = 0;
 		angularVL = 0;
 		angularVR = 0;
 		migrationLength = 0;
@@ -37,16 +37,16 @@ namespace measurement
 		angularVL = (double)(countL - leftBuf)*M_PI*2 / (double)(ENCORDER_GEAR*deltaTime);
 		angularVR = (double)(countR - rightBuf)*M_PI*2 / (double)(ENCORDER_GEAR*deltaTime);
 
-		//NXT本体の速度，回転速度計算
-		velocityNXT = (WHEEL_RADIUS/2)*angularVL + (WHEEL_RADIUS/2)*angularVR;
-		angularNXT =  ((double)WHEEL_RADIUS/(double)TREAD)*angularVR - ((double)WHEEL_RADIUS/(double)TREAD)*angularVL;
+		//EV3本体の速度，回転速度計算
+		velocityEV3 = (WHEEL_RADIUS/2)*angularVL + (WHEEL_RADIUS/2)*angularVR;
+		angularEV3 =  ((double)WHEEL_RADIUS/(double)TREAD)*angularVR - ((double)WHEEL_RADIUS/(double)TREAD)*angularVL;
 
 		//向きの計算
-		angle += angularNXT * (double)deltaTime;
+		angle += angularEV3 * (double)deltaTime;
 		//位置の計算
-		location.add_xy(velocityNXT * cos(angle) * deltaTime,velocityNXT * sin(angle) * deltaTime);
+		location.add_xy(velocityEV3 * cos(angle) * deltaTime,velocityEV3 * sin(angle) * deltaTime);
 		//移動距離の計算
-		ml += (velocityNXT > 0 ? velocityNXT : (-1) * velocityNXT) *  (double)deltaTime;
+		ml += (velocityEV3 > 0 ? velocityEV3 : (-1) * velocityEV3) *  (double)deltaTime;
 		migrationLength += (int)ml;
 		ml = ml - (int)ml;
 
@@ -98,8 +98,8 @@ namespace measurement
 		location.init();
 		measurePoint.init();
 		angle = 0;
-		velocityNXT = 0;
-		angularNXT = 0;
+		velocityEV3 = 0;
+		angularEV3 = 0;
 		angularVL = 0;
 		angularVR = 0;
 		migrationLength = 0;
