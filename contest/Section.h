@@ -47,7 +47,7 @@ namespace contest_pkg{
 			 *
 			 * @param sectionDistance 区間距離
 			 * @param strategy 戦略
-             * @param useRelativeDistance 相対距離を使って区間を切り替えるとき:true
+			 * @param useRelativeDistance 相対距離を使って区間を切り替えるとき:true
 			 */
 			Section(int sectionDistance,strategy::IStrategy* strategy, bool useRelativeDistance = false);
 			/**
