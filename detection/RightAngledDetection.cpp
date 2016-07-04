@@ -14,13 +14,12 @@ namespace detection{
         }
 
     }
-  bool RightAngledDetection::isDetected(){
-    return isDetected(CHANGE_RATE);
-  }
 
-  bool RightAngledDetection::isDetected(float minChnageRate){
-        bool isDetected = false;
+    bool RightAngledDetection::isDetected(){
+        return isDetected(CHANGE_RATE);
+    }
 
+    bool RightAngledDetection::isDetected(float minChangeRate){
         if (counter < RAD_DATA_SIZE)
             counter++;
 
@@ -30,30 +29,23 @@ namespace detection{
             distanceHistory[i] = distanceHistory[i - 1];
         }
         brightnessHistory[0] = color->getBrightness();
-        distanceHistory[0] = localization->get_migrationLength();
-
-
-        char str[128] = "";
-        sprintf (str, "count: %d, brigh: %d, dst: %ld\r\n", counter, brightnessHistory[0], distanceHistory[0]);
-        sendMessage(str);
-
+        distanceHistory[0] = selfPos->getMigrationLength();
 
        for (int start = 1;  start < counter;  start++){
            int8_t  brightnessChanges = brightnessHistory[0] - brightnessHistory[start];
-            brightnessChanges = brightnessChanges < 0? -brightnessChanges: brightnessChanges;
-
+           brightnessChanges = brightnessChanges < 0? -brightnessChanges: brightnessChanges;
            long distanceChanges = distanceHistory[0] - distanceHistory[start];
+
+           //距離の変化が小さすぎると誤検知が多いかもしれないので
            if (distanceChanges <= 3) continue;
 
+            //条件判定
            float changeRate = (float)brightnessChanges / (float)distanceChanges;
-           if  ( changeRate >= minChnageRate ){
-                isDetected = true;
-                // sprintf (str, "start: %d, c_br: %d, c_dst: %ld\r\nbr:%d, dst:%ld \r\n[detected]\r\n", start, brightnessChanges, distanceChanges, brightnessHistory[0], distanceHistory[0]);
-                // sendMessage(str);
 
-                break;
+           if  ( changeRate >= minChangeRate ){
+                return true;
            }
        }
-       return isDetected;
+       return false;
     }
 }

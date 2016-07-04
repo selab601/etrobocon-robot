@@ -1,7 +1,6 @@
 /**
  * @file RightAngledDetection.h
  * @brief  直角検知クラス
- * @author motoki nagaoka
  */
  #ifndef _RIGHT_ANGLED_DETECTION_H
  #define _RIGHT_ANGLED_DETECTION_H
@@ -10,7 +9,7 @@
 #include "../measurement/SelfPositionEstimation.h"
 #include "../measurement/Coordinates.h"
 
-#define RAD_DATA_SIZE 30
+#define RAD_DATA_SIZE 30    //RADはRightAngledDetectionの
  #define CHANGE_RATE 4.5
 
 namespace detection{
@@ -40,12 +39,8 @@ namespace detection{
         bool isDetected(float changeRate);
 
     private:
-
-        /* 自己位置推定 */
-        selfPos* SelfPositionEstimation;
-
-        /* カラーセンサ*/
-        Color* color;
+        measurement::SelfPositionEstimation* selfPos;
+        device::ColorSensor* color;
 
         /* カラーセンサの値*/
         int8_t brightnessHistory[RAD_DATA_SIZE];
