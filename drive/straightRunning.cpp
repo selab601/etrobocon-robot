@@ -1,23 +1,23 @@
-#include "straightRunning.h"
+#include "StraightRunning.h"
 
 namespace drive{
 	//メンバ
-	straightRunning* straightRunning::instance = 0;
+	StraightRunning* StraightRunning::instance = 0;
 
 	//コンストラクタ
-	straightRunning::straightRunning(){
-		motor_	= Motors::getInstance();
+	StraightRunning::StraightRunning(){
+		motor_	= device::Motors::getInstance();
 	}
 
 	//インスタンス取得
-	straightRunning* straightRunning::getInstance(){
+	StraightRunning* StraightRunning::getInstance(){
 		if(instance == 0){
-			instance = new straightRunning();
+			instance = new StraightRunning();
 		}
 		return instance;
 	}
 
-	void straightRunning::runStraight(int speed){
+	void StraightRunning::run(int speed){
 		motor_->setWheelPWM(speed,speed);
 	}
 }

@@ -5,29 +5,29 @@
 #include "ev3api.h"
 
 namespace drive{
-	using namespace device;
+	//using namespace device;
 
-	class straightRunning{
+	class StraightRunning{
 
 		private:
-			Motors* motor_;
+			device::Motors* motor_;
 
 			//インスタンス
-			static straightRunning* instance;
+			static StraightRunning* instance;
 			
 		public:
 			//インスタンス取得
-			static straightRunning* getInstance();
+			static StraightRunning* getInstance();
 
 			/**
 			 * @brief 直進する．
 		 	 * @param speed (-100~100)．	正の値で前進，負の値で後退
 			 */
-			void runStraight(int speed);
+			void run(int speed);
 
 		private:
 			//コンストラクタ
-			straightRunning();
+			StraightRunning();
 	};
 };
 #endif

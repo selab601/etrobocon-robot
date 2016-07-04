@@ -5,19 +5,19 @@
 #include "ev3api.h"
 
 namespace drive{
-	using namespace device;
+	//using namespace device;
 
-	class curveRunning{
+	class CurveRunning{
 
 		private:
-			Motors* motor_;
+			device::Motors* motor_;
 
 			//インスタンス
-			static curveRunning* instance;
+			static CurveRunning* instance;
 			
 		public:
 			//インスタンス取得
-			static curveRunning* getInstance();
+			static CurveRunning* getInstance();
 
 			/**
 			 * @brief カーブ走行  引数に左右のタイヤのPWM値を直接入れる  
@@ -25,11 +25,11 @@ namespace drive{
 			 * 		
 		 	 * @param speed (-100~100)．	正の値で前進，負の値で後退
 			 */
-			void runCurve(int Rspeed,int Lspeed);
+			void run(int Rspeed,int Lspeed);
 
 		private:
 			//コンストラクタ
-			curveRunning();
+			CurveRunning();
 	};
 };
 #endif

@@ -1,24 +1,24 @@
-#include "curveRunning.h"
+#include "CurveRunning.h"
 
 namespace drive{
 	//メンバ
-	curveRunning* curveRunning::instance = 0;
+	CurveRunning* CurveRunning::instance = 0;
 
 	//コンストラクタ
-	curveRunning::curveRunning(){
-		motor_	= Motors::getInstance();
+	CurveRunning::CurveRunning(){
+		motor_	= device::Motors::getInstance();
 	}
 
 	//インスタンス取得
-	curveRunning* curveRunning::getInstance(){
+	CurveRunning* CurveRunning::getInstance(){
 		if(instance == 0){
-			instance = new curveRunning();
+			instance = new CurveRunning();
 		}
 		return instance;
 	}
 
-	void curveRunning::runCurve(int Rspeed,int Lspeed){
-		motor_->setPWM(MOTOR_RIGHT,Rspeed);
-		motor_->setPWM(MOTOR_LEFT,Lspeed);
+	void CurveRunning::run(int Rspeed,int Lspeed){
+		motor_->setPWM(device::MOTOR_RIGHT,Rspeed);
+		motor_->setPWM(device::MOTOR_LEFT,Lspeed);
 	}
 }
