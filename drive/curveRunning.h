@@ -5,7 +5,6 @@
 #include "ev3api.h"
 
 namespace drive{
-	//using namespace device;
 
 	class CurveRunning{
 
