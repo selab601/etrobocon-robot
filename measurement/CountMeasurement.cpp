@@ -1,16 +1,16 @@
-#include "CountDetection.h"
+#include "CountMeasurement.h"
 
 namespace measurement{
 
 
-  CountDetection::CountDetection(MotorKind KIND, int32_t targetCount, int32_t baseCount){
+  CountMeasurement::CountMeasurement(MotorKind KIND, int32_t targetCount, int32_t baseCount){
     motor         = device::Motors::getInstance();
     targetCount_ = targetCount;
     KIND_         = KIND;
     this->setBaseCount(baseCount);
   }
 
-  bool CountDetection::getResult(){
+  bool CountMeasurement::getResult(){
     int32_t nowCount = -1;
     switch (KIND_) {
     case MotorKind::RIGHT:
@@ -23,7 +23,7 @@ namespace measurement{
     return false;
   }
 
-  void CountDetection::setBaseCount(int32_t baseCount){
+  void CountMeasurement::setBaseCount(int32_t baseCount){
     if (baseCount == -1){
       switch (KIND_) {
       case MotorKind::RIGHT:
@@ -37,20 +37,20 @@ namespace measurement{
     }
   }
 
-  void CountDetection::setTargetCount(int32_t targetCount){
+  void CountMeasurement::setTargetCount(int32_t targetCount){
     targetCount_ = targetCount;
   }
 
-  void CountDetection::setCountConfig(int32_t targetCount, int32_t baseCount){
+  void CountMeasurement::setCountConfig(int32_t targetCount, int32_t baseCount){
     this->setBaseCount(baseCount);
     this->setTargetCount(targetCount);
   }
 
-  void CountDetection::setTargetMotor(MotorKind KIND){
+  void CountMeasurement::setTargetMotor(MotorKind KIND){
     KIND_ = KIND;
   }
 
-  measurement::PlusOrMinus CountDetection::comparedWithTargetCount(){
+  measurement::PlusOrMinus CountMeasurement::comparedWithTargetCount(){
     int32_t nowCount = -1;
     switch (KIND_) {
     case MotorKind::RIGHT:

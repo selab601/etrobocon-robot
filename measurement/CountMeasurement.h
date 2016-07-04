@@ -1,5 +1,5 @@
-#ifndef _COUNT_DETECTION_H
-#define _COUNT_DETECTION_H
+#ifndef _COUNT_MEASUREMENT_H
+#define _COUNT_MEASUREMENT_H
 
 #include "../device/Motors.h"
 #include "ev3api.h"
@@ -21,7 +21,7 @@ namespace measurement{
       MINUS  //!< 負の値
     };
 
-  class CountDetection {
+  class CountMeasurement {
 
   private:
     device::Motors* motor; //!< モータ駆動用のオブジェクト
@@ -39,7 +39,7 @@ namespace measurement{
      * @param target_count 基底エンコーダ値から見た目標エンコーダ値を設定する.
      * @param base_count 基底エンコーダ値を設定する. 省略した場合は現在のエンコーダ値を設定する.
      */
-    CountDetection(MotorKind KIND, int32_t targetCount, int32_t baseCount = -1);
+    CountMeasurement(MotorKind KIND, int32_t targetCount, int32_t baseCount = -1);
 
     /**
      * @brief 回転量を検知する.

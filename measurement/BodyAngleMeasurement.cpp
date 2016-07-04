@@ -1,18 +1,18 @@
-#include "BodyAngleDetection.h"
+#include "BodyAngleMeasurement.h"
 
 namespace measurement {
 
 
-  BodyAngleDetection::BodyAngleDetection() {
+  BodyAngleMeasurement::BodyAngleMeasurement() {
     baceAngle_ = 0;
     selfpositionestimation = SelfPositionEstimation::getInstance();
   }
 
-  void BodyAngleDetection::setBaceAngle() {
+  void BodyAngleMeasurement::setBaceAngle() {
     baceAngle_ = selfpositionestimation->getAngle();
   }
 
-  int BodyAngleDetection::getBodyAngle() {
+  int BodyAngleMeasurement::getBodyAngle() {
     int currentAngle = selfpositionestimation->getAngle();
     return (currentAngle - baceAngle_);
   }

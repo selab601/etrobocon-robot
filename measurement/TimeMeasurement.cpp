@@ -1,13 +1,13 @@
-#include "TimeDetection.h"
+#include "TimeMeasurement.h"
 
 namespace measurement{
-  TimeDetection::TimeDetection(){
+  TimeMeasurement::TimeMeasurement(){
     clock           = ev3api::Clock();
     baseTime_      = 0;
     targetTime_    = 0;
   }
 
-  bool TimeDetection::getResult(){
+  bool TimeMeasurement::getResult(){
     uint32_t nowTime_ = clock.now();
     uint32_t def = nowTime_ - baseTime_;
 
@@ -16,11 +16,11 @@ namespace measurement{
     }return false;
   }
 
-  void TimeDetection::setBaseTime (){
+  void TimeMeasurement::setBaseTime (){
     baseTime_ = clock.now();
   }
 
-  void TimeDetection::setTargetTime(uint32_t targetTime){
+  void TimeMeasurement::setTargetTime(uint32_t targetTime){
     targetTime_ = targetTime;
   }
 };

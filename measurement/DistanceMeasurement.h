@@ -1,5 +1,5 @@
-#ifndef _DISTANCE_DETECTION_H
-#define _DISTANCE_DETECTION_H
+#ifndef _DISTANCE_MEASUREMENT_H
+#define _DISTANCE_MEASUREMENT_H
 
 #include "SelfPositionEstimation.h"
 #include "ev3api.h"
@@ -8,7 +8,7 @@ namespace measurement{
   /**
    * @brief 距離検知クラス
    */
-  class DistanceDetection {
+  class DistanceMeasurement {
   private:
     //! 基底距離
     long baseDistance;
@@ -23,7 +23,7 @@ namespace measurement{
     /**
      * @brief コンストラクタ
      */
-    DistanceDetection();
+    DistanceMeasurement();
 
     /**
      * @brief 目標距離に達したかどうかを検知します
@@ -35,7 +35,7 @@ namespace measurement{
     /**
      * @brief 現在までの走行距離を基底距離として設定します
      */
-    void startDetection();
+    void startMeasurement();
 
     /**
      * @brief 目標距離を設定します

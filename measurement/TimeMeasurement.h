@@ -1,11 +1,11 @@
-#ifndef _TIME_DETECTION_H
-#define _TIME_DETECTION_H
+#ifndef _TIME_MEASUREMENT_H
+#define _TIME_MEASUREMENT_H
 
 #include "ev3api.h"
 #include "Clock.h"
 
 namespace measurement{
-  class TimeDetection {
+  class TimeMeasurement {
 
   private:
     //! 時間取得
@@ -21,7 +21,7 @@ namespace measurement{
     /**
      * @brief コンストラクタ
       */
-    TimeDetection();
+    TimeMeasurement();
 
     /**
      * @brief 目標時間に達したかどうかを検知する

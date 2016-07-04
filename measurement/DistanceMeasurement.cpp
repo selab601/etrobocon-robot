@@ -1,13 +1,13 @@
-#include "DistanceDetection.h"
+#include "DistanceMeasurement.h"
 
 namespace measurement {
-  DistanceDetection::DistanceDetection() {
+  DistanceMeasurement::DistanceMeasurement() {
     baseDistance = 0;
     targetDistance = 0;
     selfpositionestimation = SelfPositionEstimation::getInstance();
   }
 
-  bool DistanceDetection::getResult() {
+  bool DistanceMeasurement::getResult() {
     long currentDistance = selfpositionestimation->getMigrationLength();
     long def = currentDistance - baseDistance;
 
@@ -19,11 +19,11 @@ namespace measurement {
     return false;
   }
 
-  void DistanceDetection::startDetection() {
+  void DistanceMeasurement::startMeasurement() {
     baseDistance = selfpositionestimation->getMigrationLength();
   }
 
-  void DistanceDetection::setTargetDistance(int distance) {
+  void DistanceMeasurement::setTargetDistance(int distance) {
     targetDistance = distance;
   }
 };
