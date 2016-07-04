@@ -3,8 +3,6 @@
 #include "app.h"
 #include "device/Display.h"
 
-#include "./contest/Contest.h"
-
 #if defined(BUILD_MODULE)
 #include "module_cfg.h"
 #else
@@ -25,7 +23,6 @@ void main_task(intptr_t unused)
      * Main loop
      */
     while(1) {
-        contest::Contest::getInstance()->perform();
         tslp_tsk(4); /* 4msec 周期起動 */
     }
 
