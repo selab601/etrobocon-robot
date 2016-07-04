@@ -15,11 +15,11 @@ namespace detection{
 
     }
 
-    bool RightAngledDetection::isDetected(){
-        return isDetected(CHANGE_RATE);
+    bool RightAngledDetection::getResult(){
+        return getResult(CHANGE_RATE);
     }
 
-    bool RightAngledDetection::isDetected(float minChangeRate){
+    bool RightAngledDetection::getResult(float minChangeRate){
         if (counter < RAD_DATA_SIZE)
             counter++;
 
@@ -36,12 +36,11 @@ namespace detection{
            brightnessChanges = brightnessChanges < 0? -brightnessChanges: brightnessChanges;
            long distanceChanges = distanceHistory[0] - distanceHistory[start];
 
-           //距離の変化が小さすぎると誤検知が多いかもしれないので
+           //距離の変化が小さすぎると誤検知が多いかもしれないので枝切り
            if (distanceChanges <= 3) continue;
 
             //条件判定
            float changeRate = (float)brightnessChanges / (float)distanceChanges;
-
            if  ( changeRate >= minChangeRate ){
                 return true;
            }

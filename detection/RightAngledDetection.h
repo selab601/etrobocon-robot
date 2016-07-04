@@ -19,7 +19,18 @@ namespace detection{
      * ライントレースの速度を遅くする必要がある（ライントレースの速度補正50くらい)
      * @author motoki nagaoka
      */
-    class RightAngledDetection {
+    class RightAngledDetection
+    {
+    private:
+        measurement::SelfPositionEstimation* selfPos;
+        device::ColorSensor* color;
+
+        /* カラーセンサの値*/
+        int8_t brightnessHistory[RAD_DATA_SIZE];
+        /* 進んだ距離 */
+        long distanceHistory[RAD_DATA_SIZE];
+        /* 現在のデータ数 */
+        int counter;
 
     public:
         /**
@@ -34,25 +45,9 @@ namespace detection{
          *
          * @return 直角を検知したとき: true, 検知していないとき: false
          */
-        bool isDetected();
+        bool getResult();
 
-        bool isDetected(float changeRate);
-
-    private:
-        measurement::SelfPositionEstimation* selfPos;
-        device::ColorSensor* color;
-
-        /* カラーセンサの値*/
-        int8_t brightnessHistory[RAD_DATA_SIZE];
-
-        /* 進んだ距離 */
-        long distanceHistory[RAD_DATA_SIZE];
-
-        /* 現在のデータ数 */
-        int counter;
-
-      bool sendMessage(char* string);
+        bool getResult(float changeRate);
     };
-
 }
  #endif
