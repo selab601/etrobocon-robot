@@ -106,30 +106,33 @@ namespace measurement
 		//シングルトンなのでプライベート
 		SelfPositionEstimation();
 
-	//自己位置に使用する変数たち
-		Coordinates location;	    //場所 コンスタンスもしくはinitが呼び出された位置を原点としています
-		Coordinates measurePoint;	//測定点
-		double angle;	//NXT本体向き 小数点部分
-		uint32_t deltaTime; 	//増分時間
-		int32_t leftBuf;	//左モータエンコーダ値バッファ
-		int32_t rightBuf;	//右モータエンコーダ値バッファ
-		double velocityNXT;//本体 速度
-		double angularNXT; //本体 回転角速度
-		double angularVL;	//左 車輪 角速度
-		double angularVR;	//右 車輪 角速度
-		ev3api::Clock clock;	//時間取得
-		long migrationLength; //移動距離
-		double ml; //小数点計算用
-
+		//場所 コンスタンスもしくはinitが呼び出された位置を原点としています
+		Coordinates location;
+		//測定点
+		Coordinates measurePoint;
+		//NXT本体向き 小数点部分
+		double angle;
+		//増分時間
+		uint32_t deltaTime;
+		//左モータエンコーダ値バッファ
+		int32_t leftBuf;
+		//右モータエンコーダ値バッファ
+		int32_t rightBuf;
+		//本体 速度
+		double velocityNXT;
+		//本体 回転角速度
+		double angularNXT;
+		//左 車輪 角速度
+		double angularVL;
+		//右 車輪 角速度
+		double angularVR;
+		//時間取得
+		ev3api::Clock clock;
+		//移動距離
+		long migrationLength;
+		//小数点計算用
+		double ml;
 	};
 }
 
 #endif
-
-
-
-
-
-
-
-
