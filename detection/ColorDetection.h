@@ -2,17 +2,15 @@
 #define _COLOR_DETECTION_H
 
 #include "../device/ColorSensor.h"
-#include "../device/display.h"
+#include "../device/Display.h"
 #include <ev3api.h>
-
 
 namespace detection{
   class ColorDetection{
   private:
-
-  	int colornumber;
-    
-	//enum color_detection_;
+    int colornumber;
+    int brightnessnumber;
+    char message;
 
     device::ColorSensor* colorSensor_;
     device::Display* display_;
@@ -20,9 +18,7 @@ namespace detection{
   public:
     ColorDetection();
 
-    bool isDetected();
-
-};
-
+    bool getResult();
+  };
 }
 #endif
