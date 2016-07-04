@@ -1,26 +1,26 @@
 #include "TimeDetection.h"
 
-namespace detection{
+namespace measurement{
   TimeDetection::TimeDetection(){
-    clock           = Clock();
-    base_time_      = 0;
-    target_time_    = 0;
+    clock           = ev3api::Clock();
+    baseTime_      = 0;
+    targetTime_    = 0;
   }
 
   bool TimeDetection::isDetected(){
-    uint32_t now_time_ = clock.now();
-    uint32_t def = now_time_ - base_time_;
+    uint32_t nowTime_ = clock.now();
+    uint32_t def = nowTime_ - baseTime_;
 
-    if(def >= target_time_){
+    if(def >= targetTime_){
       return true;
     }return false;
   }
 
   void TimeDetection::setBaseTime (){
-    base_time_ = clock.now();
+    baseTime_ = clock.now();
   }
 
-  void TimeDetection::setTargetTime(uint32_t target_time){
-    target_time_ = target_time;
+  void TimeDetection::setTargetTime(uint32_t targetTime){
+    targetTime_ = targetTime;
   }
 };

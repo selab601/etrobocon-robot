@@ -5,8 +5,6 @@
 #include "ev3api.h"
 
 namespace measurement{
-  class CountDetection {
-  public:
     /**
      * @brief モータの種類
      */
@@ -23,10 +21,12 @@ namespace measurement{
       MINUS  //!< 負の値
     };
 
+  class CountDetection {
+
   private:
     device::Motors* motor; //!< モータ駆動用のオブジェクト
-    int base_count_;   //!< 基底エンコーダ値
-    int target_count_; //!< 目標エンコーダ値
+    int baseCount_;   //!< 基底エンコーダ値
+    int targetCount_; //!< 目標エンコーダ値
     MotorKind KIND_;   //!< 監視対象のモータ
 
   public:
@@ -39,7 +39,7 @@ namespace measurement{
      * @param target_count 基底エンコーダ値から見た目標エンコーダ値を設定する.
      * @param base_count 基底エンコーダ値を設定する. 省略した場合は現在のエンコーダ値を設定する.
      */
-    CountDetection(MotorKind KIND, int32_t target_count, int32_t base_count = -1);
+    CountDetection(MotorKind KIND, int32_t targetCount, int32_t baseCount = -1);
 
     /**
      * @brief 回転量を検知する.
@@ -55,13 +55,13 @@ namespace measurement{
      * 省略した場合は現在のエンコーダ値になる.
      * @param base_count 基底エンコーダ値(角度)
      */
-    void setBaseCount(int32_t base_count = -1);
+    void setBaseCount(int32_t baseCount = -1);
 
     /**
      * @brief 目標エンコーダ値をセットする
      * @param target_count 目標エンコーダ値(角度)
      */
-    void setTargetCount(int32_t target_count);
+    void setTargetCount(int32_t targetCount);
 
     /**
      * @brief 各エンコーダ値設定をセットする.
@@ -70,7 +70,7 @@ namespace measurement{
      * @param target_count 目標エンコーダ値(角度)
      * @param base_count 基底エンコーダ値(角度)
      */
-    void setCountConfig(int32_t target_count, int32_t base_count = -1);
+    void setCountConfig(int32_t targetCount, int32_t baseCount = -1);
 
     /**
      * @brief 監視対象のモータを設定する.

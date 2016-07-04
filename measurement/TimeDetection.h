@@ -4,19 +4,17 @@
 #include "ev3api.h"
 #include "Clock.h"
 
-using namespace ev3api;
-
-namespace detection{
+namespace measurement{
   class TimeDetection {
 
   private:
     //! 時間取得
-    Clock clock;
+    ev3api::Clock clock;
 
     //! 基底時間 
-    uint32_t base_time_;
+    uint32_t baseTime_;
     //! 目標時間 
-    uint32_t target_time_;
+    uint32_t targetTime_;
 
 
   public:
@@ -41,7 +39,7 @@ namespace detection{
      * @brief 目標時間をセットする
      * 単位はミリ秒なので10秒を目標時間にしたかったら「10000」を引数に指定してください
       */
-    void setTargetTime(uint32_t target_time);
+    void setTargetTime(uint32_t targetTime);
   };
 };
 

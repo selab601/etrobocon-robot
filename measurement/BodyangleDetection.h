@@ -8,30 +8,29 @@ namespace measurement{
   /**
    * 車体角度検知クラス
    */
-  class BodyangleDetection{
+  class BodyAngleDetection{
   private:
     //! 基底角度
-    int baceAngle;
+    int baceAngle_;
     
     //! 自己位置推定
     SelfPositionEstimation* selfpositionestimation;
-  
-  
+
   public:
     /**
-     * @brief コンストラクタ
+     * @brief コンストラククタ
      */
-    BodyangleDetection();
+    BodyAngleDetection();
 
     /**
-     * @brief 現在の角度を基底角度として設定します
+     * @brief 現在の角度を基底角度として設定する
      */  
-    void startDetection();
+    void setBaceAngle();
 
     /**
      * @brief 基底角度からの現在の角度を返す
      */  
-    int getBodyangleDetection();
+    int getBodyAngle();
   
   };
 };

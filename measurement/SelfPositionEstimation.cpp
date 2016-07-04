@@ -2,6 +2,8 @@
 
 namespace measurement
 {
+	using namespace ev3api;
+
 	SelfPositionEstimation* SelfPositionEstimation::_instance = 0;
 
 	SelfPositionEstimation* SelfPositionEstimation::getInstance(){
@@ -15,12 +17,10 @@ namespace measurement
 		location = Coordinates();
 		measurePoint = Coordinates();
 		clock = Clock();
-	//	angle_rad = 0;
 		angle = 0;
 		deltaTime = 0;
-	//	front_buf = 0;
-		left_buf = 0;
-		right_buf = 0;
+		leftBuf = 0;
+		rightBuf = 0;
 		velocityNXT = 0;
 		angularNXT = 0;
 		angularVL = 0;
@@ -34,12 +34,8 @@ namespace measurement
 		//増分時間の計算，左項のdeltaTimeは前回の呼び出し時間になっている
 		deltaTime = clock.now() - deltaTime;
 
-	//	各車輪の角速度計算
-	//	angularVL = (countL - left_buf)*M_PI*2 / (ENCORDER*(GEAR2_TOOTH/GEAR1_TOOTH)*deltaTime);
-	//	angularVR = (countR - right_buf)*M_PI*2 / (ENCORDER*(GEAR2_TOOTH/GEAR1_TOOTH)*deltaTime);
-
-		angularVL = (double)(countL - left_buf)*M_PI*2 / (double)(ENCORDER_GEAR*deltaTime);
-		angularVR = (double)(countR - right_buf)*M_PI*2 / (double)(ENCORDER_GEAR*deltaTime);
+		angularVL = (double)(countL - leftBuf)*M_PI*2 / (double)(ENCORDER_GEAR*deltaTime);
+		angularVR = (double)(countR - rightBuf)*M_PI*2 / (double)(ENCORDER_GEAR*deltaTime);
 
 		//NXT本体の速度，回転速度計算
 		velocityNXT = (WHEEL_RADIUS/2)*angularVL + (WHEEL_RADIUS/2)*angularVR;
@@ -54,20 +50,9 @@ namespace measurement
 		migrationLength += (int)ml;
 		ml = ml - (int)ml;
 
-	// #ifdef COMPLETE_RUN_MODE
-	// 	//距離による補正
-	// 	if(iniC != -1){
-	// 		if(iniC == 1 && migrationLength > 2700){
-	// 			angle = 0;
-	// 			location.set_xy(migrationLength,0);
-	// 			iniC++;
-	// 		}
-	// 	}
-	// #endif
-
 		//エンコーダ値バッファ更新
-		left_buf = countL;
-		right_buf = countR;
+		leftBuf = countL;
+		rightBuf = countR;
 		//呼び出し現在時間保持
 		deltaTime = clock.now();
 	}
@@ -112,17 +97,11 @@ namespace measurement
 	void SelfPositionEstimation::initMap(){
 		location.init();
 		measurePoint.init();
-	//	angle_rad = 0;
 		angle = 0;
-	//	deltaTime = 0;
-	//	front_buf = 0;
-	//	left_buf = 0;
-	//	right_buf = 0;
 		velocityNXT = 0;
 		angularNXT = 0;
 		angularVL = 0;
 		angularVR = 0;
-	//	clock.reset();
 		migrationLength = 0;
 		ml = 0;
 	}

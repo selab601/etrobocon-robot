@@ -8,7 +8,7 @@
 
 namespace measurement
 {
-	using namespace ev3api;
+
 
 	/* ギア比 */
 	#define ENCORDER_GEAR 360 //360*(GEAR2_TOOTH/GEAR1_TOOTH)
@@ -109,17 +109,15 @@ namespace measurement
 	//自己位置に使用する変数たち
 		Coordinates location;	    //場所 コンスタンスもしくはinitが呼び出された位置を原点としています
 		Coordinates measurePoint;	//測定点
-	//	long angle_rad;	//NXT本体の向き 整数 使っていない
 		double angle;	//NXT本体向き 小数点部分
 		uint32_t deltaTime; 	//増分時間
-	//	int32_t front_buf;	//前モータエンコーダ値バッファ 使わない
-		int32_t left_buf;	//左モータエンコーダ値バッファ
-		int32_t right_buf;	//右モータエンコーダ値バッファ
+		int32_t leftBuf;	//左モータエンコーダ値バッファ
+		int32_t rightBuf;	//右モータエンコーダ値バッファ
 		double velocityNXT;//本体 速度
 		double angularNXT; //本体 回転角速度
 		double angularVL;	//左 車輪 角速度
 		double angularVR;	//右 車輪 角速度
-		Clock clock;	//時間取得
+		ev3api::Clock clock;	//時間取得
 		long migrationLength; //移動距離
 		double ml; //小数点計算用
 

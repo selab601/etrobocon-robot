@@ -4,8 +4,6 @@
 #include "SelfPositionEstimation.h"
 #include "ev3api.h"
 
-using namespace device;
-
 namespace measurement{
   /**
    * @brief 距離検知クラス

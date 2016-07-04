@@ -1,72 +1,66 @@
-#include "../device/display.h"
-device::Display* disp = device::Display::getInstance();
-
 #include "CountDetection.h"
 
-using namespace device;
-
 namespace measurement{
-  CountDetection::CountDetection(MotorKind KIND, int32_t target_count, int32_t base_count){
-    motor         = Motors::getInstance();
-    target_count_ = target_count;
+
+
+  CountDetection::CountDetection(MotorKind KIND, int32_t targetCount, int32_t baseCount){
+    motor         = device::Motors::getInstance();
+    targetCount_ = targetCount;
     KIND_         = KIND;
-    this->setBaseCount(base_count);
+    this->setBaseCount(baseCount);
   }
 
   bool CountDetection::isDetected(){
-    int32_t now_count = -1;
+    int32_t nowCount = -1;
     switch (KIND_) {
     case MotorKind::RIGHT:
-      now_count = motor->getCount(MOTOR_RIGHT);
+      nowCount = motor->getCount(device::MOTOR_RIGHT);
       break;
     case MotorKind::LEFT:
-      now_count = motor->getCount(MOTOR_LEFT);
+      nowCount = motor->getCount(device::MOTOR_LEFT);
     }
-    disp->updateDisplay("now",now_count,10);
-    disp->updateDisplay("base",base_count_,11);
-    disp->updateDisplay("tar",target_count_,12);
-    if (target_count_+base_count_ == now_count){ return true; }
+    if (targetCount_+baseCount_ == nowCount){ return true; }
     return false;
   }
 
-  void CountDetection::setBaseCount(int32_t base_count){
-    if (base_count == -1){
+  void CountDetection::setBaseCount(int32_t baseCount){
+    if (baseCount == -1){
       switch (KIND_) {
       case MotorKind::RIGHT:
-	base_count_ = motor->getCount(MOTOR_RIGHT);
+	baseCount_ = motor->getCount(device::MOTOR_RIGHT);
 	break;
       case MotorKind::LEFT:
-	base_count_ = motor->getCount(MOTOR_LEFT);
+	baseCount_ = motor->getCount(device::MOTOR_LEFT);
       }
     } else {
-      base_count_ = base_count;
+      baseCount_ = baseCount;
     }
   }
 
-  void CountDetection::setTargetCount(int32_t target_count){
-    target_count_ = target_count;
+  void CountDetection::setTargetCount(int32_t targetCount){
+    targetCount_ = targetCount;
   }
 
-  void CountDetection::setCountConfig(int32_t target_count, int32_t base_count){
-    this->setBaseCount(base_count);
-    this->setTargetCount(target_count);
+  void CountDetection::setCountConfig(int32_t targetCount, int32_t baseCount){
+    this->setBaseCount(baseCount);
+    this->setTargetCount(targetCount);
   }
 
   void CountDetection::setTargetMotor(MotorKind KIND){
     KIND_ = KIND;
   }
 
-  CountDetection::PlusOrMinus CountDetection::comparedWithTargetCount(){
-    int32_t now_count = -1;
+  measurement::PlusOrMinus CountDetection::comparedWithTargetCount(){
+    int32_t nowCount = -1;
     switch (KIND_) {
     case MotorKind::RIGHT:
-      now_count = motor->getCount(MOTOR_RIGHT);
+      nowCount = motor->getCount(device::MOTOR_RIGHT);
       break;
     case MotorKind::LEFT:
-      now_count = motor->getCount(MOTOR_LEFT);
+      nowCount = motor->getCount(device::MOTOR_LEFT);
     }
 
-    if (target_count_+base_count_ > now_count){
+    if (targetCount_+baseCount_ > nowCount){
       return PlusOrMinus::PLUS;
     }
     return PlusOrMinus::MINUS;
