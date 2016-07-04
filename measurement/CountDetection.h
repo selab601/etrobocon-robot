@@ -48,7 +48,7 @@ namespace measurement{
      * 下記のメソッドを利用して設定を行う.
      * @return 現在の回転量が目標回転量である(true), 目標回転量でない(false)
      */
-    bool isDetected();
+    bool getResult();
 
     /**
      * @brief 基底エンコーダ値をセットする.

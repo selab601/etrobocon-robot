@@ -7,7 +7,7 @@ namespace measurement{
     targetTime_    = 0;
   }
 
-  bool TimeDetection::isDetected(){
+  bool TimeDetection::getResult(){
     uint32_t nowTime_ = clock.now();
     uint32_t def = nowTime_ - baseTime_;
 

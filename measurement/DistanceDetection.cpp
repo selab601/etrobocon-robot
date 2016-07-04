@@ -7,7 +7,7 @@ namespace measurement {
     selfpositionestimation = SelfPositionEstimation::getInstance();
   }
 
-  bool DistanceDetection::isDetected() {
+  bool DistanceDetection::getResult() {
     long currentDistance = selfpositionestimation->getMigrationLength();
     long def = currentDistance - baseDistance;
 

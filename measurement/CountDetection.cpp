@@ -10,7 +10,7 @@ namespace measurement{
     this->setBaseCount(baseCount);
   }
 
-  bool CountDetection::isDetected(){
+  bool CountDetection::getResult(){
     int32_t nowCount = -1;
     switch (KIND_) {
     case MotorKind::RIGHT:

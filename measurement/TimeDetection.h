@@ -28,7 +28,7 @@ namespace measurement{
      * 目標時間は基底時間からの経過時間を指す
      * @return 目標時間に達した(true)，してない(false)
       */
-    bool isDetected();
+    bool getResult();
     
     /**
      * @brief 基底時間をセットする

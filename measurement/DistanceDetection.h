@@ -30,7 +30,7 @@ namespace measurement{
      * 目標距離は基底距離から進みたい長さを指します
      * @return 目標距離に到達した(true), していない(false)
      */
-    bool isDetected();
+    bool getResult();
 
     /**
      * @brief 現在までの走行距離を基底距離として設定します
