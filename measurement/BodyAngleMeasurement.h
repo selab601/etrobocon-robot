@@ -30,7 +30,7 @@ namespace measurement{
     /**
      * @brief 基底角度からの現在の角度を返す
      */  
-    int getBodyAngle();
+    int getResult();
   
   };
 };

@@ -12,7 +12,7 @@ namespace measurement {
     baceAngle_ = selfpositionestimation->getAngle();
   }
 
-  int BodyAngleMeasurement::getBodyAngle() {
+  int BodyAngleMeasurement::getResult() {
     int currentAngle = selfpositionestimation->getAngle();
     return (currentAngle - baceAngle_);
   }
