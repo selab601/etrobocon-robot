@@ -25,32 +25,32 @@ using namespace ev3api;
 namespace drive{
     class LineTrace{
     private:
-        static LineTrace* mInstance;
+        static LineTrace* instance;
 
         LineTrace();
 
 
         // キャリブレーション値
-        int WhiteValue;
-        int BlackValue;
+        int whiteValue;
+        int blackValue;
 
-        int Target = 0;        // 明るさセンサの値を10倍したときのターゲット値
+        int target = 0;        // 明るさセンサの値を10倍したときのターゲット値
 
-        int Diff[2];       // 明るさの値を10倍し、ターゲット値との差分をとったもの
-        int TimeMs[2];
-        int Integrated = 0;
-        int Counter = 0;
+        int diff[2];       // 明るさの値を10倍し、ターゲット値との差分をとったもの
+        int timeMs[2];
+        int integrated = 0;
+        int counter = 0;
 
-        int MaxPwm;
+        int maxPwm;
 
-        double  Kp;
-        double  Ki;
-        double  Kd;
+        double  kp;
+        double  ki;
+        double  kd;
 
         // Device
-        device::ColorSensor* Color;
-        device::Motors* Motors;
-        Clock Clock;
+        device::ColorSensor* color;
+        device::Motors* motors;
+        Clock clock;
 
 
     public:
