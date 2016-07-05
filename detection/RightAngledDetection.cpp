@@ -4,9 +4,9 @@
 
 namespace detection{
     RightAngledDetection::RightAngledDetection(){
-        selfPos = measurement::SelfPositionEstimation::getInstance();
-        color = device::ColorSensor::getInstance();
-        counter = 0;
+        selfPos_ = measurement::SelfPositionEstimation::getInstance();
+        color_ = device::ColorSensor::getInstance();
+        counter_ = 0;
 
         for (int i = 0; i  < RAD_DATA_SIZE; i++){
             brightnessHistory[i] = 0;
@@ -20,18 +20,18 @@ namespace detection{
     }
 
     bool RightAngledDetection::getResult(float minChangeRate){
-        if (counter < RAD_DATA_SIZE)
-            counter++;
+        if (counter_ < RAD_DATA_SIZE)
+            counter_++;
 
         /* 情報を更新する */
         for (int i = RAD_DATA_SIZE - 1;  0 < i ;  i--){
             brightnessHistory[i] = brightnessHistory[i - 1];
             distanceHistory[i] = distanceHistory[i - 1];
         }
-        brightnessHistory[0] = color->getBrightness();
-        distanceHistory[0] = selfPos->getMigrationLength();
+        brightnessHistory[0] = color_->getBrightness();
+        distanceHistory[0] = selfPos_->getMigrationLength();
 
-       for (int start = 1;  start < counter;  start++){
+       for (int start = 1;  start < counter_;  start++){
            int8_t  brightnessChanges = brightnessHistory[0] - brightnessHistory[start];
            brightnessChanges = brightnessChanges < 0? -brightnessChanges: brightnessChanges;
            long distanceChanges = distanceHistory[0] - distanceHistory[start];

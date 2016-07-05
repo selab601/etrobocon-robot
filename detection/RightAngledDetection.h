@@ -2,35 +2,33 @@
  * @file RightAngledDetection.h
  * @brief  直角検知クラス
  */
- #ifndef _RIGHT_ANGLED_DETECTION_H
- #define _RIGHT_ANGLED_DETECTION_H
+#ifndef _RIGHT_ANGLED_DETECTION_H
+#define _RIGHT_ANGLED_DETECTION_H
 
- #include "../device/ColorSensor.h"
+#include "../device/ColorSensor.h"
 #include "../measurement/SelfPositionEstimation.h"
-#include "../measurement/Coordinates.h"
 
-#define RAD_DATA_SIZE 30    //RADはRightAngledDetectionの
- #define CHANGE_RATE 4.5
+#define RAD_DATA_SIZE 30    //RADはRightAngledDetectionの略
+#define CHANGE_RATE 4.5
 
 namespace detection{
     /**
      * @brief 直角検知クラス
      * @details 進んだ距離あたりのカラーセンサの値の変化量から直角検知を行う
      * ライントレースの速度を遅くする必要がある（ライントレースの速度補正50くらい)
-     * @author motoki nagaoka
      */
     class RightAngledDetection
     {
     private:
-        measurement::SelfPositionEstimation* selfPos;
-        device::ColorSensor* color;
+        measurement::SelfPositionEstimation* selfPos_;
+        device::ColorSensor* color_;
 
         /* カラーセンサの値*/
         int8_t brightnessHistory[RAD_DATA_SIZE];
         /* 進んだ距離 */
         long distanceHistory[RAD_DATA_SIZE];
         /* 現在のデータ数 */
-        int counter;
+        int counter_;
 
     public:
         /**
