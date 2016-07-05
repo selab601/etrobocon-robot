@@ -8,9 +8,9 @@
 namespace detection{
   class ColorDetection{
   private:
-    int colornumber;
-    int brightnessnumber;
-    char message;
+    int colorNumber_;                      //! 現在検知してる色
+    int brightnessNumber_;                 //! 現在の輝度
+    char message_[100];                    //! ディスプレイ出力用
 
     device::ColorSensor* colorSensor_;
     device::Display* display_;
@@ -18,7 +18,13 @@ namespace detection{
   public:
     ColorDetection();
 
-    bool getResult();
+  /**
+   * @brief 検知した色を返す
+   * @param light 現在の光センサ値
+   * @param edge  現在のエッジ
+   * @return ターン値
+   */
+     colorid_t getResult(); // namespace つけたほうがいいかも
   };
 }
 #endif
