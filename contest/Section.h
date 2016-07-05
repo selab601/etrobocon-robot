@@ -7,6 +7,7 @@
 #define SECTION_H_
 
 #include "ev3api.h"
+#include "../device/Display.h"
 #include "../strategy/IStrategy.h"
 #include "../measurement/SelfPositionEstimation.h"
 #include "stdio.h"
@@ -33,6 +34,9 @@ namespace contest_pkg{
 
             // スタートしたかどうか
             int isStarted;
+
+            //ディスプレイ
+            device::Display* display;
 
             //戦略：戦略
             strategy::IStrategy* strategy;

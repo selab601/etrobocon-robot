@@ -5,7 +5,7 @@
  */
 #include "Section.h"
 
-
+using namespace device;
 using namespace strategy;
 using namespace measurement;
 
@@ -13,24 +13,24 @@ namespace contest_pkg{
 
 
     /* コンストラクタ */
-    Section::Section(int sectionDistance, strategy::IStrategy* strategy, bool useRelativeDistance){
+    Section::Section(int sectionDistance, IStrategy* strategy, bool useRelativeDistance){
         this->sectionDistance = sectionDistance;
         this->strategy = strategy;
-
-        selfPositionEstimation = SelfPositionEstimation::getInstance();
-
+        this->useRelativeDistance = useRelativeDistance;
         isCaptured = false;
         isChecked = false;
         isStarted = false;
-        this->useRelativeDistance = useRelativeDistance;
-        startDistance = 123;
+        startDistance = 0;
+
+        selfPositionEstimation = SelfPositionEstimation::getInstance();
+        display = Display::getInstance();
     }
 
     /* 区間攻略 */
     bool Section::capture(){
         char message[30];
         sprintf (message, "rel:%d, start:%d, dst:%d", useRelativeDistance, startDistance, sectionDistance);
-        ev3_lcd_draw_string(message, 0, 0);
+        display->updateDisplay(message,0);
         // 区間の始まりの位置を記録する
         if ( ! isStarted ){
             startDistance = selfPositionEstimation->getMigrationLength();
