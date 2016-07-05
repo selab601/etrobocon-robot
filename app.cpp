@@ -2,6 +2,7 @@
 #include "ev3api.h"
 #include "app.h"
 #include "./device/Display.h"
+#include "./contest/Contest.h"
 #include "./communication/BtManager.h"
 
 #if defined(BUILD_MODULE)
@@ -24,6 +25,7 @@ void main_task(intptr_t unused)
      * Main loop
      */
     while(1) {
+        contest_pkg::Contest::getInstance()->perform();
         tslp_tsk(4); /* 4msec 周期起動 */
     }
 
