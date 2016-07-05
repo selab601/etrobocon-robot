@@ -42,7 +42,7 @@ namespace measurement
 		* @return x座標値
 		* @author 塩畑
 		*/
-		long getLocatinoX();
+		long getLocationX();
 		/*!
 		* @brief 位置のy座標を返す
 		* @return y座標値
