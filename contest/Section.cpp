@@ -54,14 +54,13 @@ namespace contest_pkg{
 
     /* 走行距離確認 */
     bool Section::checkDistance(){
-        // 絶対距離を使うとき
-        if ( !useRelativeDistance ){
-            return  selfPositionEstimation->getMigrationLength() > sectionDistance;
-        }
-
         // 相対距離を使うとき
-        else {
+        if ( useRelativeDistance ){
             return (selfPositionEstimation->getMigrationLength() - startDistance) > sectionDistance;
+        }
+        // 絶対距離を使うとき
+        else {
+            return  selfPositionEstimation->getMigrationLength() > sectionDistance;
         }
     }
 }
