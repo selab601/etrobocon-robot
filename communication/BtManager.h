@@ -36,40 +36,37 @@ namespace communication
 
         private:
             /* このクラスのインスタンス */
-            static BtManager* mInstance;
+            static BtManager* instance_;
 
             /* 通信先 */
-            FILE* mBtSerialPort;
+            FILE* btSerialPort_;
 
             /* 時間情報 */
-            ev3api::Clock* mClock;
+            ev3api::Clock* clock_;
 
             /* 光情報 */
-            device::ColorSensor* mColor;
+            device::ColorSensor* color_;
 
             /* ジャイルセンサ情報 */
-            device::GyroSensor* mGyro;
+            device::GyroSensor* gyro_;
 
             /* ソナーセンサ情報 */
-            device::SonarSensor* mSonar;
+            device::SonarSensor* sonar_;
 
             /* タッチセンサ情報 */
-            device::TouchSensor* mTouch;
+            device::TouchSensor* touch_;
 
             /* モータ情報 */
-            device::Motors* mMotors;
+            device::Motors* motors_;
 
             /* 自己位置情報 */
             measurement::SelfPositionEstimation* selfPositionEstimation_;
 
             /* 送信メッセージ */
-            char mMessage[MESSAGE_LEN];
-
-            /* 受信メッセージ */
-            char mReceivedMessage[MESSAGE_LEN];
+            char message_[MESSAGE_LEN];
 
             /* 接続状態 */
-            BT_STATE mState;
+            BT_STATE state_;
 
         public:
             /**
