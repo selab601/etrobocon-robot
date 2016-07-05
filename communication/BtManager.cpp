@@ -44,13 +44,16 @@ namespace communication {
             ev3_lcd_draw_string("Push enter to exit", 0, 10);
 
             /* 接続待機 */
-            int i = 0;
+            bool pressState = false;
             while(!ev3_bluetooth_is_connected()) {
                 if (ev3_button_is_pressed(ENTER_BUTTON)) {
-                    i++;
-                } else if (i > 0) {
-                    close();
-                    return false;
+                    pressState = true;
+                } else {
+                    // ボタンが離されていて，且つ過去に押されていたら
+                    if (pressState == true) {
+                        close();
+                        return false;
+                    }
                 }
             }
 
