@@ -7,6 +7,7 @@
 
 
 using namespace strategy;
+using namespace measurement;
 
 namespace contest_pkg{
 
@@ -16,13 +17,13 @@ namespace contest_pkg{
 		this->sectionDistance = sectionDistance;
 		this->strategy = strategy;
 
-		//localization = Localization::getInstance();
+		selfPositionEstimation = SelfPositionEstimation::getInstance();
 
 		isCaptured = false;
 		isChecked = false;
 		isStarted = false;
 		this->useRelativeDistance = useRelativeDistance;
-		this->startDistance = 123;
+		startDistance = 123;
 	}
 
 	/* 区間攻略 */
@@ -32,7 +33,7 @@ namespace contest_pkg{
 		ev3_lcd_draw_string(message, 0, 0);
 		// 区間の始まりの位置を記録する
 		if ( ! isStarted ){
-			//this->startDistance = localization->get_migrationLength();
+			startDistance = selfPositionEstimation->getMigrationLength();
 			isStarted = true;
 		}
 		//戦略を攻略する
@@ -55,14 +56,12 @@ namespace contest_pkg{
 	bool Section::checkDistance(){
 		// 絶対距離を使うとき
 		if ( !useRelativeDistance ){
-			//return  localization->get_migrationLength() > this->sectionDistance;
-			return true;
+			return  selfPositionEstimation->getMigrationLength() > sectionDistance;
 		}
 
 		// 相対距離を使うとき
 		else {
-			//return (localization->get_migrationLength() - startDistance) > this->sectionDistance;
-			return true;
+			return (selfPositionEstimation->getMigrationLength() - startDistance) > sectionDistance;
 		}
 	}
 }

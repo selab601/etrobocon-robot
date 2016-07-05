@@ -6,9 +6,9 @@
 #ifndef SECTION_H_
 #define SECTION_H_
 
-//#include "../underlyingTechnology/Localization.h"
 #include "ev3api.h"
 #include "../strategy/IStrategy.h"
+#include "../measurement/SelfPositionEstimation.h"
 #include "stdio.h"
 
 
@@ -18,10 +18,10 @@ namespace contest_pkg{
 		private:
 			//区間距離
 			int sectionDistance;
-			
+
 			//戦略完了
 			bool isCaptured;
-			
+
 			//走行距離確認完了
 			bool isChecked;
 
@@ -33,12 +33,12 @@ namespace contest_pkg{
 
 			// スタートしたかどうか
 			int isStarted;
-			
+
 			//戦略：戦略
 			strategy::IStrategy* strategy;
 
 			//自己位置推定
-			//Localization* localization;
+			measurement::SelfPositionEstimation* selfPositionEstimation;
 
 		public:
 			/**
