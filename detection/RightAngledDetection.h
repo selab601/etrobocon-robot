@@ -9,7 +9,7 @@
 #include "../measurement/SelfPositionEstimation.h"
 
 #define RAD_DATA_SIZE 30    //RADはRightAngledDetectionの略
-#define CHANGE_RATE 4.5
+#define CHANGE_RATE 1.0
 
 namespace detection{
     /**
@@ -40,7 +40,6 @@ namespace detection{
          * @brief 直角を検知する
          * @details 内部状態更新もこのメソッドで同時に行っているので、検知したい場所の前から何回も呼び出していなければならない
          * 白→黒・黒→白のどちらでも判定します
-         *
          * @return 直角を検知したとき: true, 検知していないとき: false
          */
         bool getResult();
