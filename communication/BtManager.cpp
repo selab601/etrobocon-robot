@@ -19,7 +19,7 @@ namespace communication {
         mMotors = device::Motors::getInstance();
         // loc = Localization::getInstance(); // TODO: enable
         mBtSerialPort = NULL;
-        mState = BT_WATING;
+        mState = BT_WAITING;
     }
 
     /* インスタンス取得 */

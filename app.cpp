@@ -38,7 +38,7 @@ void bt_task(intptr_t unused)
     while(1){
         tslp_tsk(100); /* 100msec 周期起動 */
 
-        if (btManager->getState() == btManager->BT_WATING) {
+        if (btManager->getState() == btManager->BT_WAITING) {
             /* 接続 */
             btManager->connect();
         } else if(btManager->getState() == btManager->BT_CONNECTED) {

@@ -30,7 +30,7 @@ namespace communication
             {
                 BT_CONNECTED,
                 BT_CLOSED,
-                BT_WATING,
+                BT_WAITING,
             };
 
         private:
