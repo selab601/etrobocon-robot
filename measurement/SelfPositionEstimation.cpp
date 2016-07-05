@@ -61,7 +61,7 @@ namespace measurement
 		return &location;
 	}
 	//x座標
-	long SelfPositionEstimation::getLocatinoX(){
+	long SelfPositionEstimation::getLocationX(){
 		return location.get_x();
 	}
 	//y座標
