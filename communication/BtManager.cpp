@@ -17,7 +17,7 @@ namespace communication {
         mTouch  = device::TouchSensor::getInstance();
         mSonar = device::SonarSensor::getInstance();
         mMotors = device::Motors::getInstance();
-        // loc = Localization::getInstance(); // TODO: enable
+        selfPositionEstimation_ = measurement::SelfPositionEstimation::getInstance();
         mBtSerialPort = NULL;
         mState = BT_WAITING;
     }
@@ -108,10 +108,8 @@ namespace communication {
                     0,
                     0,
                     (long int)0,
-                    (long int)0,
-                    0
-                    // loc->get_migrationLength(),
-                    // loc->getAngle());
+                    selfPositionEstimation_->getMigrationLength(),
+                    selfPositionEstimation_->getAngle()
                 );
         }
 

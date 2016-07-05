@@ -10,6 +10,7 @@
 #include "../device/Motors.h"
 #include "../device/SonarSensor.h"
 #include "../device/TouchSensor.h"
+#include "../measurement/SelfPositionEstimation.h"
 
 /* メッセージの長さ */
 #define MESSAGE_LEN  128
@@ -59,7 +60,7 @@ namespace communication
             device::Motors* mMotors;
 
             /* 自己位置情報 */
-            // Localization* mLoc; // TODO: enable
+            measurement::SelfPositionEstimation* selfPositionEstimation_;
 
             /* 送信メッセージ */
             char mMessage[MESSAGE_LEN];
