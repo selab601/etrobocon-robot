@@ -6,8 +6,6 @@ namespace communication {
 
     /* メンバ */
     BtManager* BtManager::mInstance = 0;
-    // FILE* BtManager::mBtSerialPort;
-    // char BtManager::mMessage[] = {0};
 
     /* コンストラクタ */
     BtManager::BtManager() {
@@ -66,11 +64,6 @@ namespace communication {
 
             /* 接続先ポート(を、ファイルとして開く) */
             mBtSerialPort = ev3_serial_open_file(EV3_SERIAL_BT);
-
-            /* 接続開始送信 */
-            //char msg[10] = {0};
-            //sprintf(msg, "start\r\n");
-            //setMessage(msg);
 
             mState = BT_CONNECTED;
         }
@@ -133,24 +126,13 @@ namespace communication {
 
     /* メッセージ受信 */
     void BtManager::receive() {
-        //        if (mTouch->isPressed()) {
         char r_tmp[MESSAGE_LEN];
-        //int size = fscanf(mBtSerialPort, "%s", r_tmp);
         int size = fread(r_tmp, 1, MESSAGE_LEN - 1, mBtSerialPort);
-        //fseek(mBtSerialPort, 0, SEEK_END);
-        //int size = ftell(mBtSerialPort);
-        //fgets(r_tmp, MESSAGE_LEN - 1, mBtSerialPort);
         ev3_speaker_play_tone(500, 100);
         if (size > 0) {
-            //strcpy(r_message, r_tmp);
-            //ev3_speaker_play_tone(300, 100);
-            //ev3_speaker_play_tone(400, 100);
             ev3_speaker_play_tone(500, 100);
         }
-        //}
     }
-
-
 
     /* 指定メッセージ送信 */
     void BtManager::setMessage(const char msg[]) {
