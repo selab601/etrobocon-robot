@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "ev3api.h"
 #include "app.h"
-#include "device/Display.h"
+#include "./device/Display.h"
 #include "./communication/BtManager.h"
 
 #if defined(BUILD_MODULE)

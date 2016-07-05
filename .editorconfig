@@ -1,0 +1,19 @@
+root = true                         # これより上のディレクトリを探索しない
+
+# すべてのファイル
+[*]
+end_of_line = lf                    # 改行コードlf (unix)
+charset = utf-8                     # 文字コードutf-8
+indent_style = space                # スペースでインデント
+indent_size = 4                     # インデントはスペース4つ
+trim_trailing_whitespace = false    # 行末のスペースを削除しない
+insert_final_newline = false        # ファイルの最後に改行をいれない
+
+# Markdown
+[*.md]
+insert_final_newline = true         # ファイルの最後に改行をいれる
+
+# ソースファイル
+[*.{js,java,go,c,cpp,h,hpp,tex}]
+trim_trailing_whitespace = true     # 行末のスペース削除
+insert_final_newline = true         # ファイルの最後に改行をいれる
