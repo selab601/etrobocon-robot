@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include "ev3api.h"
 #include "app.h"
-#include "device/Display.h"
-
-#include "./contest/Contest.h"
+#include "./device/Display.h"
+#include "./communication/BtManager.h"
 
 #if defined(BUILD_MODULE)
 #include "module_cfg.h"
@@ -25,8 +24,27 @@ void main_task(intptr_t unused)
      * Main loop
      */
     while(1) {
-        contest_pkg::Contest::getInstance()->perform();
         tslp_tsk(4); /* 4msec 周期起動 */
+    }
+
+    ext_tsk();
+}
+
+/* Bluetoothタスク */
+void bt_task(intptr_t unused)
+{
+    communication::BtManager* btManager = communication::BtManager::getInstance();
+
+    while(1){
+        tslp_tsk(100); /* 100msec 周期起動 */
+
+        if (btManager->getState() == btManager->BT_WAITING) {
+            /* 接続 */
+            btManager->connect();
+        } else if(btManager->getState() == btManager->BT_CONNECTED) {
+            /* メッセージ送信 */
+            btManager->send();
+        }
     }
 
     ext_tsk();
