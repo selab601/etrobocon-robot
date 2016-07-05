@@ -104,8 +104,8 @@ namespace communication {
                     mSonar != 0? mSonar->getDistance(): 0,
                     0,
                     0,
-                    0,
-                    0,
+                    (long int)0,
+                    (long int)0,
                     0
                     // loc->get_migrationLength(),
                     // loc->getAngle());
