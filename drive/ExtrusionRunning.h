@@ -29,25 +29,25 @@ namespace drive{
 
             RunningState runningState_;
 
+            //押し出しスピード
+            int extrusionSpeed_;
+
+            //押し出し距離
+            int extrusionDistance_;
+
         public:
-            //コンストラクタ
-            ExtrusionRunning();
+            /**
+             * @brief コンストラクタ
+             * @param extrusionSpeed 押し出すスピード
+             * @param extrusionDistance 押し出す距離
+             */
+            ExtrusionRunning(int extrusionSpeed, int extrusionDistance);
 
             /**
              * @brief 押し出し走行を行う
-             * @param speed (0 < speed ≦ 100) スピード
-             * @param distance (> 0)  押し出す距離
              * @return 走行終了:true,走行中:false
              */
-            bool run(int speed,int distance);
-
-        private:
-            /**
-             * @brief 指定距離走行
-             * @param speed (0 < speed ≦ 100) スピード
-             * @return 走行終了:true,走行中:false
-             */
-            bool specifiedDistanceRunning(int speed);
+            bool run();
     };
 };
 #endif

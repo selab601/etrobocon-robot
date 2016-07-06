@@ -5,26 +5,29 @@ using namespace measurement;
 namespace drive{
 
     //コンストラクタ
-    ExtrusionRunning::ExtrusionRunning(){
+    ExtrusionRunning::ExtrusionRunning(int extrusionSpeed, int extrusionDistance){
         straightRunning_ = StraightRunning::getInstance();
         distanceMeasurement_ = new DistanceMeasurement();
         timeMeasurement_ = new TimeMeasurement();
         runningState_ = INIT;
+        extrusionSpeed_ = extrusionSpeed;
+        extrusionDistance_ = extrusionDistance;
     }
 
 
-    bool ExtrusionRunning::run(int speed , int distance){
+    bool ExtrusionRunning::run(){
         switch(runningState_){
         //初期化...目標距離のセットをする
         case INIT:
-            distanceMeasurement_->setTargetDistance(distance);
+            distanceMeasurement_->setTargetDistance(extrusionDistance_);
             distanceMeasurement_->startMeasurement();
             runningState_ = FORWARD;
             break;
 
         //前進
         case FORWARD:
-            if(specifiedDistanceRunning(speed)){
+            straightRunning_->run(extrusionSpeed_);
+            if(distanceMeasurement_->getResult()){
                 timeMeasurement_->setBaseTime();
                 timeMeasurement_->setTargetTime(500);
                 runningState_ = STOP;
@@ -35,26 +38,18 @@ namespace drive{
         case STOP:
             straightRunning_->run(0);
             if(timeMeasurement_->getResult()){
-                distanceMeasurement_->setTargetDistance(distance);
+                distanceMeasurement_->setTargetDistance(extrusionDistance_);
                 distanceMeasurement_->startMeasurement();
                 runningState_ = BACKWARD;
             }
 
         //後退
         case BACKWARD:
-            if(specifiedDistanceRunning(-speed)){
+            straightRunning_->run(-extrusionSpeed_);
+            if(distanceMeasurement_->getResult()){
                 return true;
             }
             break;
-        }
-        return false;
-    }
-
-    //指定距離走行
-    bool ExtrusionRunning::specifiedDistanceRunning(int speed){
-        straightRunning_->run(speed);
-        if(distanceMeasurement_->getResult()){
-            return true;
         }
         return false;
     }
