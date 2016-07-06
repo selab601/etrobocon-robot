@@ -15,9 +15,12 @@ namespace drive{
     {
         motors_ = device::Motors::getInstance();
         colorSensor_ = device::ColorSensor::getInstance();
+        blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
+        whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
         clock_ = Clock();
         reset();
         setPid();
+        setTarget();
     }
 
     LineTrace* LineTrace::getInstance(){
@@ -99,9 +102,6 @@ namespace drive{
         else{
             setTarget(target);
         }
-
-        blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
-        whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
         target_ = blackValue_ + (whiteValue_ - blackValue_) * target_;
     }
 
