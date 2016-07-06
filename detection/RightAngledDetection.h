@@ -15,7 +15,7 @@ namespace detection{
     /**
      * @brief 直角検知クラス
      * @details 進んだ距離あたりのカラーセンサの値の変化量から直角検知を行う
-     * ライントレースの速度を遅くする必要がある（ライントレースの速度補正50くらい)
+     * ライントレースの速度を遅くする必要がある(pwm20以下で)
      */
     class RightAngledDetection
     {
