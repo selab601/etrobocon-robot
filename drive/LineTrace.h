@@ -1,8 +1,8 @@
 /**
  * @file LineTrace.h
  * @brief ライントレースクラス
- * @date 2015/07/29
- * @author Nagaoka
+ * @date 2016/07/05
+ * @author kuno
  */
 
 #ifndef LINE_TRACE_
@@ -16,41 +16,41 @@
 #define DEFAULT_KP          0.0144F /* PID処理のデフォルトのP値 */
 #define DEFAULT_KI          0.0F    /* PID処理のデフォルトのI値 */
 #define DEFAULT_KD          0.72F   /* PID処理のデフォルトのD値 */
-#define DEFAULT_TARGET      0.6F
+#define DEFAULT_TARGET      0.6F    /* 光センサのデフォルトのターゲット値*/
 
-#define TREAD               1
+#define DEFAULT_DELTARAD     1      /*deltaRadを使用しない時に 計算式に影響を与えないような定数*/
+#define LINETRACE_TREAD      1      /*未使用 きちんとした角速度に計算する定数*/
 
 using namespace ev3api;
 
 namespace drive{
     class LineTrace{
     private:
-        static LineTrace* instance;
-
+        static LineTrace* instance_;
         LineTrace();
 
 
         // キャリブレーション値
-        int whiteValue;
-        int blackValue;
+        int whiteValue_;            //白のキャリブレーション値を10倍したもの
+        int blackValue_;            //黒のキャリブレーション値を10倍したもの
 
-        int target = 0;        // 明るさセンサの値を10倍したときのターゲット値
+        int target_ = 0;            // 明るさセンサの値を10倍したときのターゲット値
 
-        int diff[2];       // 明るさの値を10倍し、ターゲット値との差分をとったもの
-        int timeMs[2];
-        int integrated = 0;
-        int counter = 0;
+        int diff_[2];               // 明るさの値を10倍し、ターゲット値との差分をとったもの
+        int timeMs_[2];
+        int integrated_ = 0;
+        int counter_ = 0;
 
-        int maxPwm;
+        int maxPwm_;
 
-        double  kp;
-        double  ki;
-        double  kd;
+        double  kp_;
+        double  ki_;
+        double  kd_;
 
         // Device
-        device::ColorSensor* color;
-        device::Motors* motors;
-        Clock clock;
+        device::ColorSensor* colorSensor_;
+        device::Motors* motors_;
+        Clock clock_;
 
 
     public:
@@ -70,7 +70,15 @@ namespace drive{
          * @param target ターゲット値 ( Black 0 < target < 1 White) default:0.6
          * @author Nagaoka
          */
-        void run(int maxPwm, double target = 0);
+        void run(int maxPwm, double target = DEFAULT_TARGET);
+
+        /**
+         * @brief PWMを変更してライントレースを行う
+         *
+         * @param maxPwm モータのPWMの最大値
+         * @author kuno
+         */
+         void changeSpeed(int maxPwm);
 
         /**
          * @brief PIDパラーメータをセットする
@@ -80,7 +88,7 @@ namespace drive{
          * @sa run
          * @author Nagaoka
          */
-        void setPID(double kp = DEFAULT_KP, double ki = DEFAULT_KI, double kd = DEFAULT_KD);
+        void setPid(double kp = DEFAULT_KP, double ki = DEFAULT_KI, double kd = DEFAULT_KD);
 
         /**
          * @brief PID制御の計算を行う
@@ -88,7 +96,6 @@ namespace drive{
          * @author Nagaoka
          **/
         double calculatePid(int brightness, int timeMs);
-
 
         /**
          * @brief 内側のタイヤが進んだ距離あたりの角度の変化[milli rad]から、外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
@@ -109,7 +116,6 @@ namespace drive{
          */
         int getLowerPwmByTimeDifferential(int deltaRad, int higherPwm);
 
-
         /**
          * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
          *
@@ -117,14 +123,15 @@ namespace drive{
          * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 左側に曲がるときが正の値
          * @author Nagaoka
          */
-        void setPwm(int maxPwm, int deltaRad);
+        void calculatePwm(int maxPwm, int deltaRad = DEFAULT_DELTARAD);
 
         /**
          * @brief ターゲット値をセットする
-         * @details 0.0 ~ 1.0 の値から、ターゲット値をセットする
+         * @details 0.0 < x < 1.0 の値から、ターゲット値をセットする
+                    x ≦ 0.0 || 1.0 ≦ x の場合 default値(0.6)を設定
          * @author Nagaoka
          **/
-        void setTarget(double  target);
+        void setTarget(double target);
 
         /**
          * @brief PID制御の内部の情報をリセットする
@@ -135,5 +142,4 @@ namespace drive{
 
     }; //end of class
 };
-
 #endif
