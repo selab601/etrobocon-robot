@@ -43,9 +43,7 @@ namespace detection{
          * @param changeRate 直角検知の精度を変える変数．与えられなければデフォルト値を与えて実行．
          * @return 直角を検知したとき: true, 検知していないとき: false
          */
-        bool getResult();
-
-        bool getResult(float changeRate);
+        bool getResult(float changeRate = CHANGE_RATE);
     };
 }
  #endif

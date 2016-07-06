@@ -13,10 +13,6 @@ namespace detection{
         }
     }
 
-    bool RightAngledDetection::getResult(){
-        return getResult(CHANGE_RATE);
-    }
-
     bool RightAngledDetection::getResult(float minChangeRate){
         if (counter_ < RAD_DATA_SIZE)
             counter_++;
