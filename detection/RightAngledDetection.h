@@ -6,10 +6,11 @@
 #define _RIGHT_ANGLED_DETECTION_H
 
 #include "../device/ColorSensor.h"
+#include "../device/Display.h"
 #include "../measurement/SelfPositionEstimation.h"
 
 #define RAD_DATA_SIZE 30    //RADはRightAngledDetectionの略
-#define CHANGE_RATE 1.0
+#define CHANGE_RATE 0.5
 
 namespace detection{
     /**
@@ -22,6 +23,7 @@ namespace detection{
     private:
         measurement::SelfPositionEstimation* selfPos_;
         device::ColorSensor* color_;
+        device::Display* disp_;
 
         /* カラーセンサの値*/
         int8_t brightnessHistory[RAD_DATA_SIZE];
