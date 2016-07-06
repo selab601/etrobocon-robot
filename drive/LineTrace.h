@@ -2,6 +2,7 @@
  * @file LineTrace.h
  * @brief ライントレースクラス
  * @date 2016/07/05
+ * @details setPid(),setTarget()で各種設定を行った後にrun()で走行
  * @author kuno
  */
 
@@ -98,7 +99,8 @@ namespace drive{
         double calculatePid(int brightness, int timeMs);
 
         /**
-         * @brief 内側のタイヤが進んだ距離あたりの角度の変化[milli rad]から、外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
+         * @brief 未実装
+                  内側のタイヤが進んだ距離あたりの角度の変化[milli rad]から、外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
          * @details
          * @param deltaRad 内側のタイヤが進んだ距離あたりの車体の角度の変化(deltarad >= 0)[milli rad]
          * @author Nagaoka
