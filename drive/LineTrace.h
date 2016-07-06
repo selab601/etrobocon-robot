@@ -82,6 +82,15 @@ namespace drive{
         void setPid(double kp = DEFAULT_KP, double ki = DEFAULT_KI, double kd = DEFAULT_KD);
 
         /**
+         * @brief ターゲット値をセットする
+         * @details 0.0 < x < 1.0 の値から、ターゲット値をセットする
+                    x ≦ 0.0 || 1.0 ≦ x の場合 default値(0.6)を設定
+         * @author Nagaoka
+         **/
+        void setTarget(double target = DEFAULT_TARGET);
+
+
+        /**
          * @brief PID制御の計算を行う
          * @details ターゲット値よりも黒寄りにいる時、負の値を返す
          * @author Nagaoka

@@ -47,7 +47,25 @@ namespace drive{
 
         motors_->setPWM(device::MOTOR_LEFT, lPwm);
         motors_->setPWM(device::MOTOR_RIGHT, rPwm);
+    }
 
+    void LineTrace::setPid(double kp, double ki, double kd){
+        kp_ = kp;
+        ki_ = ki;
+        kd_ = kd;
+    }
+
+    void LineTrace::setTarget(double target){
+        if(target <= 0.0 || 1.0 <= target){
+            target_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
+        }
+        else{
+            target_ = blackValue_ + (whiteValue_ - blackValue_) * target_;
+        }
+    }
+
+    double LineTrace::getRateByDeltaRad(int deltaRad){
+        return 1000.0F / (double)(LINETRACE_TREAD * deltaRad + 1000);
     }
 
     double LineTrace::calculatePid(int brightness, int timeMs){
@@ -74,17 +92,6 @@ namespace drive{
                    kd_ * (double)(diff_[1] - diff_[0]) / (double)timeDiff;
         }
         return turn;
-    }
-
-    void LineTrace::setTarget(double target){
-
-        if(target <= 0.0 || 1.0 <= target){
-            setTarget(DEFAULT_TARGET);
-        }
-        else{
-            setTarget(target);
-        }
-        target_ = blackValue_ + (whiteValue_ - blackValue_) * target_;
     }
 
     void LineTrace::reset(){
