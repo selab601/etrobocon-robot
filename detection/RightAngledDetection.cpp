@@ -8,8 +8,8 @@ namespace detection{
         counter_ = 0;
 
         for (int i = 0; i  < RAD_DATA_SIZE; i++){
-            brightnessHistory[i] = 0;
-            distanceHistory[i] = 0;
+            brightnessHistory_[i] = 0;
+            distanceHistory_[i] = 0;
         }
     }
 
@@ -23,16 +23,16 @@ namespace detection{
 
         /* 情報を更新する */
         for (int i = RAD_DATA_SIZE - 1;  0 < i ;  i--){
-            brightnessHistory[i] = brightnessHistory[i - 1];
-            distanceHistory[i] = distanceHistory[i - 1];
+            brightnessHistory_[i] = brightnessHistory_[i - 1];
+            distanceHistory_[i] = distanceHistory_[i - 1];
         }
-        brightnessHistory[0] = color_->getBrightness();
-        distanceHistory[0] = selfPos_->getMigrationLength();
+        brightnessHistory_[0] = color_->getBrightness();
+        distanceHistory_[0] = selfPos_->getMigrationLength();
 
        for (int start = 1;  start < counter_;  start++){
-           int8_t  brightnessChanges = brightnessHistory[0] - brightnessHistory[start];
+           int8_t  brightnessChanges = brightnessHistory_[0] - brightnessHistory_[start];
            brightnessChanges = brightnessChanges < 0? -brightnessChanges: brightnessChanges;
-           long distanceChanges = distanceHistory[0] - distanceHistory[start];
+           long distanceChanges = distanceHistory_[0] - distanceHistory_[start];
 
            //距離の変化が小さすぎると誤検知が多いかもしれないので枝切り
            if (distanceChanges <= 3) continue;

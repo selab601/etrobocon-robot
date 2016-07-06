@@ -24,9 +24,9 @@ namespace detection{
         device::ColorSensor* color_;
 
         /* カラーセンサの値*/
-        int8_t brightnessHistory[RAD_DATA_SIZE];
+        int8_t brightnessHistory_[RAD_DATA_SIZE];
         /* 進んだ距離 */
-        long distanceHistory[RAD_DATA_SIZE];
+        long distanceHistory_[RAD_DATA_SIZE];
         /* 現在のデータ数 */
         int counter_;
 
