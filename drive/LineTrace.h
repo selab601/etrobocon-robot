@@ -18,7 +18,6 @@
 #define DEFAULT_KD          0.72F   /* PID処理のデフォルトのD値 */
 #define DEFAULT_TARGET      0.6F    /* 光センサのデフォルトのターゲット値*/
 
-#define DEFAULT_DELTARAD     1      /*deltaRadを使用しない時に 計算式に影響を与えないような定数*/
 #define LINETRACE_TREAD      1      /*未使用 きちんとした角速度に計算する定数*/
 
 using namespace ev3api;
@@ -70,15 +69,7 @@ namespace drive{
          * @param target ターゲット値 ( Black 0 < target < 1 White) default:0.6
          * @author Nagaoka
          */
-        void run(int maxPwm, double target = DEFAULT_TARGET);
-
-        /**
-         * @brief PWMを変更してライントレースを行う
-         *
-         * @param maxPwm モータのPWMの最大値
-         * @author kuno
-         */
-         void changeSpeed(int maxPwm);
+        void run(int maxPwm);
 
         /**
          * @brief PIDパラーメータをセットする
@@ -115,23 +106,6 @@ namespace drive{
          * @author Nagaoka
          */
         int getLowerPwmByTimeDifferential(int deltaRad, int higherPwm);
-
-        /**
-         * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
-         *
-         * @param maxPwm モータのPWMの最大値
-         * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 左側に曲がるときが正の値
-         * @author Nagaoka
-         */
-        void calculatePwm(int maxPwm, int deltaRad = DEFAULT_DELTARAD);
-
-        /**
-         * @brief ターゲット値をセットする
-         * @details 0.0 < x < 1.0 の値から、ターゲット値をセットする
-                    x ≦ 0.0 || 1.0 ≦ x の場合 default値(0.6)を設定
-         * @author Nagaoka
-         **/
-        void setTarget(double target);
 
         /**
          * @brief PID制御の内部の情報をリセットする

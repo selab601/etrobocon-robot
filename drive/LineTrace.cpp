@@ -29,27 +29,9 @@ namespace drive{
         return instance_;
     }
 
-    void LineTrace::run(int maxPwm, double target){
-        setTarget(target);
-        calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) );
-    }
+    void LineTrace::run(int maxPwm){
 
-    void LineTrace::setPid(double kp, double ki, double kd){
-        kp_ = kp;
-        ki_ = ki;
-        kd_ = kd;
-    }
-
-    void LineTrace::changeSpeed(int maxPwm){
-        calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) );
-    }
-
-    double LineTrace::getRateByDeltaRad(int deltaRad){
-        return 1000.0F / (double)(LINETRACE_TREAD * deltaRad + 1000);
-    }
-
-    void LineTrace::calculatePwm(int maxPwm, int deltaRad){
-
+        int deltaRad = (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000);
         int lPwm;
         int rPwm;
 
