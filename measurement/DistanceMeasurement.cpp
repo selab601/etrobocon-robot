@@ -2,16 +2,16 @@
 
 namespace measurement {
   DistanceMeasurement::DistanceMeasurement() {
-    baseDistance = 0;
-    targetDistance = 0;
-    selfpositionestimation = SelfPositionEstimation::getInstance();
+    baseDistance_ = 0;
+    targetDistance_ = 0;
+    selfpositionestimation_ = SelfPositionEstimation::getInstance();
   }
 
   bool DistanceMeasurement::getResult() {
-    long currentDistance = selfpositionestimation->getMigrationLength();
-    long def = currentDistance - baseDistance;
+    long currentDistance = selfpositionestimation_->getMigrationLength();
+    long def = currentDistance - baseDistance_;
 
-    if (def >= targetDistance) {
+    if (def >= targetDistance_) {
       return true;
 
     }
@@ -20,10 +20,10 @@ namespace measurement {
   }
 
   void DistanceMeasurement::startMeasurement() {
-    baseDistance = selfpositionestimation->getMigrationLength();
+    baseDistance_ = selfpositionestimation_->getMigrationLength();
   }
 
   void DistanceMeasurement::setTargetDistance(int distance) {
-    targetDistance = distance;
+    targetDistance_ = distance;
   }
 };

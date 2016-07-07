@@ -21,13 +21,13 @@ namespace contest_pkg{
 		private:
 
 			//選択されたコース
-			char selectedCourse;
+			char selectedCourse_;
 
 			//現在攻略している戦略
-			unsigned int sectionNumber;
+			unsigned int sectionNumber_;
 
 			//区間(Section)型の動的配列
-			std::vector<Section> sections;
+			std::vector<Section> sections_;
 
 
 		public:

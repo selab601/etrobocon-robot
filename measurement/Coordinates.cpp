@@ -4,71 +4,71 @@
 namespace measurement
 {
 	Coordinates::Coordinates() :
-			x(0),
-			y(0),
-			dx(0),
-			dy(0) {}
+			x_(0),
+			y_(0),
+			dx_(0),
+			dy_(0) {}
 
 	Coordinates::Coordinates(long x, long y) :
-			x(x),
-			y(y),
-			dx(0),
-			dy(0) {}
+			x_(x),
+			y_(y),
+			dx_(0),
+			dy_(0) {}
 
 	void Coordinates::set_x(long x){
-		this->x = x;
+		this->x_ = x;
 	}
 
 	void Coordinates::set_y(long y){
-		this->y = y;
+		this->y_ = y;
 	}
 
 	void Coordinates::set_xy(long x,long y){
-		this->x = x;
-		this->y = y;
+		this->x_ = x;
+		this->y_ = y;
 	}
 
 	//引数の名前は，dxではなくxの方が良い
 	void Coordinates::set_x(double dx){
-		x = (int)dx;
-		this->dx = dx - (int)dx;
+		x_ = (int)dx;
+		this->dx_ = dx_ - (int)dx;
 	}
 
 	void Coordinates::set_y(double dy){
-		y = (int)dy;
-		this->dy = dy - (int)dy;
+		y_ = (int)dy;
+		this->dy_ = dy_ - (int)dy;
 	}
 
 	void Coordinates::set_xy(double dx,double dy){
-		x = (int)dx;
-		this->dx = dx - (int)dx;
-		y = (int)dy;
-		this->dy = dy - (int)dy;
+		x_ = (int)dx;
+		this->dx_ = dx_ - (int)dx;
+		y_ = (int)dy;
+		this->dy_ = dy_ - (int)dy;
 	}
 
 	long Coordinates::get_x(){
-		return x;
+		return x_;
 	}
 
 	long Coordinates::get_y(){
-		return y;
+		return y_;
 	}
 
 	void Coordinates::add_xy(long x,long y){
-		this->x += x;
-		this->y += y;
+		this->x_ += x;
+		this->y_ += y;
 	}
 
 	void Coordinates::add_xy(double X,double Y){
-		dx += X;
-		dy += Y;
-		x += (int)dx;
-		y += (int)dy;
-		dx = dx - (int)dx;
-		dy = dy - (int)dy;
+		dx_ += X;
+		dy_ += Y;
+		x_+= (int)dx_;
+		y_+= (int)dy_;
+		dx_ = dx_ - (int)dx_;
+		dy_ = dy_ - (int)dy_;
 	}
 
 	void Coordinates::init(){
-		x=0;y=0;dx=0;dy=0;
+		x_=0;y_=0;dx_=0;dy_=0;
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * @file Section.cpp
  * @brief 区間クラス
- * @author 薄井　翔
+ * @author 薄井翔
  */
 #include "Section.h"
 
@@ -14,38 +14,38 @@ namespace contest_pkg{
 
     /* コンストラクタ */
     Section::Section(int sectionDistance, IStrategy* strategy, bool useRelativeDistance){
-        this->sectionDistance = sectionDistance;
-        this->strategy = strategy;
-        this->useRelativeDistance = useRelativeDistance;
-        isCaptured = false;
-        isChecked = false;
-        isStarted = false;
-        startDistance = 0;
+        this->sectionDistance_ = sectionDistance;
+        this->strategy_ = strategy;
+        this->useRelativeDistance_ = useRelativeDistance;
+        isCaptured_ = false;
+        isChecked_ = false;
+        isStarted_ = false;
+        startDistance_ = 0;
 
-        selfPositionEstimation = SelfPositionEstimation::getInstance();
-        display = Display::getInstance();
+        selfPositionEstimation_ = SelfPositionEstimation::getInstance();
+        display_ = Display::getInstance();
     }
 
     /* 区間攻略 */
     bool Section::capture(){
         char message[30];
-        sprintf (message, "rel:%d, start:%d, dst:%d", useRelativeDistance, startDistance, sectionDistance);
-        display->updateDisplay(message,0);
+        sprintf (message, "rel:%d, start:%d, dst:%d", useRelativeDistance_, startDistance_, sectionDistance_);
+        display_->updateDisplay(message,0);
         // 区間の始まりの位置を記録する
-        if ( ! isStarted ){
-            startDistance = selfPositionEstimation->getMigrationLength();
-            isStarted = true;
+        if ( ! isStarted_ ){
+            startDistance_ = selfPositionEstimation_->getMigrationLength();
+            isStarted_ = true;
         }
         //戦略を攻略する
-        if ( strategy->capture() ){
-            isCaptured = true;
+        if ( strategy_->capture() ){
+            isCaptured_ = true;
         }
 
         if ( checkDistance() ){
-        isChecked = true;
+        isChecked_ = true;
         }
 
-        if ( isCaptured && isChecked == true ){
+        if ( isCaptured_ && isChecked_ == true ){
             return true;
         }
 
@@ -55,12 +55,12 @@ namespace contest_pkg{
     /* 走行距離確認 */
     bool Section::checkDistance(){
         // 相対距離を使うとき
-        if ( useRelativeDistance ){
-            return (selfPositionEstimation->getMigrationLength() - startDistance) > sectionDistance;
+        if ( useRelativeDistance_ ){
+            return (selfPositionEstimation_->getMigrationLength() - startDistance_) > sectionDistance_;
         }
         // 絶対距離を使うとき
         else {
-            return  selfPositionEstimation->getMigrationLength() > sectionDistance;
+            return  selfPositionEstimation_->getMigrationLength() > sectionDistance_;
         }
     }
 }

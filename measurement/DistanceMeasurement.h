@@ -11,13 +11,13 @@ namespace measurement{
   class DistanceMeasurement {
   private:
     //! 基底距離
-    long baseDistance;
+    long baseDistance_;
 
     //! 目標距離
-    long targetDistance;
+    long targetDistance_;
 
     //! 自己位置推定
-    SelfPositionEstimation* selfpositionestimation;
+    SelfPositionEstimation* selfpositionestimation_;
 
   public:
     /**

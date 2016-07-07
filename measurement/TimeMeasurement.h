@@ -11,9 +11,9 @@ namespace measurement{
     //! 時間取得
     ev3api::Clock clock;
 
-    //! 基底時間 
+    //! 基底時間
     uint32_t baseTime_;
-    //! 目標時間 
+    //! 目標時間
     uint32_t targetTime_;
 
 
@@ -29,12 +29,12 @@ namespace measurement{
      * @return 目標時間に達した(true)，してない(false)
       */
     bool getResult();
-    
+
     /**
      * @brief 基底時間をセットする
       */
     void setBaseTime();
-    
+
     /**
      * @brief 目標時間をセットする
      * 単位はミリ秒なので10秒を目標時間にしたかったら「10000」を引数に指定してください
@@ -44,4 +44,3 @@ namespace measurement{
 };
 
 #endif
-
