@@ -21,10 +21,11 @@ namespace drive{
             //走行状態
             enum RunningState
             {
-                INIT,       //初期化
+                INIT,       //初期状態
                 FORWARD,    //前進
                 STOP,       //一時停止
-                BACKWARD    //後退
+                BACKWARD,   //後退
+                END         //終了
             };
 
             RunningState runningState_;
