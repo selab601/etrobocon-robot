@@ -1,3 +1,7 @@
+/*
+ * @brief カーブ走行クラス
+ */
+
 #ifndef CURVE_RUNNING_H_
 #define CURVE_RUNNING_H_
 
@@ -11,12 +15,9 @@ namespace drive{
 		private:
 			device::Motors* motor_;
 
-			//インスタンス
-			static CurveRunning* instance;
-			
 		public:
-			//インスタンス取得
-			static CurveRunning* getInstance();
+			//コンストラクタ
+			CurveRunning();
 
 			/**
 			 * @brief カーブ走行  引数に左右のタイヤのPWM値を直接入れる  
@@ -25,10 +26,6 @@ namespace drive{
 		 	 * @param speed (-100~100)．	正の値で前進，負の値で後退
 			 */
 			void run(int Rspeed,int Lspeed);
-
-		private:
-			//コンストラクタ
-			CurveRunning();
 	};
 };
 #endif
