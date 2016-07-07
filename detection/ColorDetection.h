@@ -2,18 +2,14 @@
 #define _COLOR_DETECTION_H
 
 #include "../device/ColorSensor.h"
-#include "../device/Display.h"
 #include <ev3api.h>
 
 namespace detection{
   class ColorDetection{
   private:
-    int colorNumber_;                //! 現在検知してる色
-    rgb_raw_t rgbColor_;             //! rgb
-    double greenPerRed_,bluePerRed_;
+    rgb_raw_t rgbColor_;             //! rgb値
+    double greenPerRed_,bluePerRed_; //! g値/r値, b値/r値 
     device::ColorSensor* colorSensor_;
-    device::Display* display_;
-
   public:
     ColorDetection();
 

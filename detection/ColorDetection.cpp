@@ -3,7 +3,6 @@
 using namespace device;
 namespace detection{
   ColorDetection::ColorDetection(){
-    display_ = Display::getInstance();
     colorSensor_ = ColorSensor::getInstance();
   }
 
