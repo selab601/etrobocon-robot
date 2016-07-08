@@ -8,20 +8,22 @@
 #include "../device/ColorSensor.h"
 //#include "../measurement/SelfPosLINEonEstimation.h"
 
-#define LINE_DATA_SIZE 30    //RADはRightAngledDetectionの略
-#define CHANGE_RATE 70
+#define LINE_DATA_SIZE 30
+#define CHANGE_RATE 20     //緑とか検知しそうなので枝切り用
 
 namespace detection {
     /**
      * @brief ライン検知クラス
      * @details 進んだ距離あたりのカラーセンサの値の変化量からライン検知を行う
-     * 速度を遅くする必要がある(pwm20以下で)
      */
     class LineDetection {
         private:
             //measurement::SelfPositionEstimation* selfPos_;
             device::ColorSensor* color_;
             int8_t black_;
+            int8_t white_;
+            int8_t diff_;
+
             /* カラーセンサの値*/
             int8_t brightnessHistory_[LINE_DATA_SIZE];
             /* 現在のデータ数 */
