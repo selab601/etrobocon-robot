@@ -4,11 +4,11 @@ namespace measurement {
   DistanceMeasurement::DistanceMeasurement() {
     baseDistance_ = 0;
     targetDistance_ = 0;
-    selfpositionestimation_ = SelfPositionEstimation::getInstance();
+    selfPositionEstimation_ = SelfPositionEstimation::getInstance();
   }
 
   bool DistanceMeasurement::getResult() {
-    long currentDistance = selfpositionestimation_->getMigrationLength();
+    long currentDistance = selfPositionEstimation_->getMigrationLength();
     long def = currentDistance - baseDistance_;
 
     if (def >= targetDistance_) {
@@ -20,7 +20,7 @@ namespace measurement {
   }
 
   void DistanceMeasurement::startMeasurement() {
-    baseDistance_ = selfpositionestimation_->getMigrationLength();
+    baseDistance_ = selfPositionEstimation_->getMigrationLength();
   }
 
   void DistanceMeasurement::setTargetDistance(int distance) {

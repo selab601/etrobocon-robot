@@ -17,7 +17,7 @@ namespace measurement{
     long targetDistance_;
 
     //! 自己位置推定
-    SelfPositionEstimation* selfpositionestimation_;
+    SelfPositionEstimation* selfPositionEstimation_;
 
   public:
     /**
