@@ -4,7 +4,6 @@ using namespace measurement;
 
 namespace drive{
 
-    //コンストラクタ
     ExtrusionRunning::ExtrusionRunning(){
         straightRunning_ = new StraightRunning();
         distanceMeasurement_ = new DistanceMeasurement();
@@ -15,7 +14,7 @@ namespace drive{
 
     bool ExtrusionRunning::run(int speed, int distance){
         switch(runningState_){
-        //初期状態...目標距離のセットをする
+        //初期状態...目標距離セット
         case INIT:
                 distanceMeasurement_->setTargetDistance(distance);
                 distanceMeasurement_->startMeasurement();

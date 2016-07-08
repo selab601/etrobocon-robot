@@ -35,8 +35,8 @@ namespace drive{
 
             /**
              * @brief 押し出し走行を行う
-             * @param speed (0 < speed ≦ 100) 登壇スピード
-             * @param distance ( > 0) 登壇する距離
+             * @param speed (0 < speed ≦ 100) 押し出しスピード
+             * @param distance ( > 0) 押し出す距離
              * @return 走行終了:true,走行中:false
              */
             bool run(int speed, int distance);
