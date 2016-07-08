@@ -17,7 +17,7 @@ namespace detection{
    * @brief 検知した色を返す
    * @return 色
    */
-     colorid_t getResult(); // namespace つけたほうがいいかも
+     colorid_t getResult();
   };
 }
 #endif
