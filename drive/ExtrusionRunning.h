@@ -1,7 +1,7 @@
 #ifndef EXTRUSION_RUNNING_H_
 #define EXTRUSION_RUNNING_H_
 
-#include "straightRunning.h"
+#include "StraightRunning.h"
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/TimeMeasurement.h"
 
@@ -30,25 +30,17 @@ namespace drive{
 
             RunningState runningState_;
 
-            //押し出しスピード
-            int extrusionSpeed_;
-
-            //押し出し距離
-            int extrusionDistance_;
-
         public:
-            /**
-             * @brief コンストラクタ
-             * @param extrusionSpeed 押し出すスピード
-             * @param extrusionDistance 押し出す距離
-             */
-            ExtrusionRunning(int extrusionSpeed, int extrusionDistance);
+            //コンストラクタ
+            ExtrusionRunning();
 
             /**
              * @brief 押し出し走行を行う
+             * @param speed (0 < speed ≦ 100) 登壇スピード
+             * @param distance ( > 0) 登壇する距離
              * @return 走行終了:true,走行中:false
              */
-            bool run();
+            bool run(int speed, int distance);
     };
 };
 #endif

@@ -5,28 +5,26 @@ using namespace measurement;
 namespace drive{
 
     //コンストラクタ
-    ExtrusionRunning::ExtrusionRunning(int extrusionSpeed, int extrusionDistance){
-        straightRunning_ = StraightRunning::getInstance();
+    ExtrusionRunning::ExtrusionRunning(){
+        straightRunning_ = new StraightRunning();
         distanceMeasurement_ = new DistanceMeasurement();
         timeMeasurement_ = new TimeMeasurement();
         runningState_ = INIT;
-        extrusionSpeed_ = extrusionSpeed;
-        extrusionDistance_ = extrusionDistance;
     }
 
 
-    bool ExtrusionRunning::run(){
+    bool ExtrusionRunning::run(int speed, int distance){
         switch(runningState_){
         //初期状態...目標距離のセットをする
         case INIT:
-            distanceMeasurement_->setTargetDistance(extrusionDistance_);
+            distanceMeasurement_->setTargetDistance(distance);
             distanceMeasurement_->startMeasurement();
             runningState_ = FORWARD;
             break;
 
         //前進
         case FORWARD:
-            straightRunning_->run(extrusionSpeed_);
+            straightRunning_->run(speed);
             if(distanceMeasurement_->getResult()){
                 timeMeasurement_->setBaseTime();
                 timeMeasurement_->setTargetTime(500);
@@ -38,7 +36,7 @@ namespace drive{
         case STOP:
             straightRunning_->run(0);
             if(timeMeasurement_->getResult()){
-                distanceMeasurement_->setTargetDistance(extrusionDistance_);
+                distanceMeasurement_->setTargetDistance(distance);
                 distanceMeasurement_->startMeasurement();
                 runningState_ = BACKWARD;
             }
@@ -46,7 +44,7 @@ namespace drive{
 
         //後退
         case BACKWARD:
-            straightRunning_->run(-extrusionSpeed_);
+            straightRunning_->run(-speed);
             if(distanceMeasurement_->getResult()){
                 timeMeasurement_->setBaseTime();
                 timeMeasurement_->setTargetTime(100);
