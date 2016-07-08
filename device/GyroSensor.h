@@ -8,7 +8,7 @@ namespace device
     class GyroSensor : public ev3api::GyroSensor
     {
     private:
-        static GyroSensor* _instance;
+        static GyroSensor* instance_;
 
     private:
         GyroSensor();

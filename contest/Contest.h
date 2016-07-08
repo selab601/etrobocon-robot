@@ -16,14 +16,14 @@ namespace contest_pkg {
 
 		private:
 			//インスタンス
-			static Contest* instance;
+			static Contest* instance_;
 
 			//スタートアップ
-			StartUp* startUp;
+			StartUp* startUp_;
 
 			//コース
-			Course* courseL;
-			Course* courseR;
+			Course* courseL_;
+			Course* courseR_;
 
 		public:
 			/**

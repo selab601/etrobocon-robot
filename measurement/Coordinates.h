@@ -32,11 +32,11 @@ namespace measurement
 		void init();
 	private:
 		//座標の整数部分
-		long x;
-		long y;
+		long x_;
+		long y_;
 		//座標の小数部分
-		double dx;
-		double dy;
+		double dx_;
+		double dy_;
 	};
 }
 

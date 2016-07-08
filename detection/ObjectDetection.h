@@ -14,8 +14,8 @@ namespace detection
     class ObjectDetection
     {
     private:
-        device::SonarSensor* sonar;
-        u_int detectDistance;
+        device::SonarSensor* sonar_;
+        u_int detectDistance_;
 
     public:
         /**

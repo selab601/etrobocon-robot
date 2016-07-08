@@ -8,7 +8,7 @@ namespace device
     class SonarSensor : public ev3api::SonarSensor
     {
     private:
-        static SonarSensor* _instance;
+        static SonarSensor* instance_;
 
         // ソナーのインスタンス生成無視のフラグ．(無視するなら true, 無視しないなら false)
         static bool IGNORE_INSTANCE_CREATION;

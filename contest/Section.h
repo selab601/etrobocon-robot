@@ -18,31 +18,31 @@ namespace contest_pkg{
     class Section{
         private:
             //区間距離
-            int sectionDistance;
+            int sectionDistance_;
 
             //戦略完了
-            bool isCaptured;
+            bool isCaptured_;
 
             //走行距離確認完了
-            bool isChecked;
+            bool isChecked_;
 
             // 相対距離を使って区間を切り替えるかどうか
-            bool useRelativeDistance;
+            bool useRelativeDistance_;
 
             // スタートした位置
-            int startDistance;
+            int startDistance_;
 
             // スタートしたかどうか
-            int isStarted;
+            int isStarted_;
 
             //ディスプレイ
-            device::Display* display;
+            device::Display* display_;
 
             //戦略：戦略
-            strategy::IStrategy* strategy;
+            strategy::IStrategy* strategy_;
 
             //自己位置推定
-            measurement::SelfPositionEstimation* selfPositionEstimation;
+            measurement::SelfPositionEstimation* selfPositionEstimation_;
 
         public:
             /**

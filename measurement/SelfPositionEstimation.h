@@ -107,31 +107,31 @@ namespace measurement
 		SelfPositionEstimation();
 
 		//場所 コンスタンスもしくはinitが呼び出された位置を原点としています
-		Coordinates location;
+		Coordinates location_;
 		//測定点
-		Coordinates measurePoint;
+		Coordinates measurePoint_;
 		//EV3本体向き 小数点部分
-		double angle;
+		double angle_;
 		//増分時間
-		uint32_t deltaTime;
+		uint32_t deltaTime_;
 		//左モータエンコーダ値バッファ
-		int32_t leftBuf;
+		int32_t leftBuf_;
 		//右モータエンコーダ値バッファ
-		int32_t rightBuf;
+		int32_t rightBuf_;
 		//本体 速度
-		double velocityEV3;
+		double velocityEV3_;
 		//本体 回転角速度
-		double angularEV3;
+		double angularEV3_;
 		//左 車輪 角速度
-		double angularVL;
+		double angularVL_;
 		//右 車輪 角速度
-		double angularVR;
+		double angularVR_;
 		//時間取得
-		ev3api::Clock clock;
+		ev3api::Clock clock_;
 		//移動距離
-		long migrationLength;
+		long migrationLength_;
 		//小数点計算用
-		double ml;
+		double ml_;
 	};
 }
 
