@@ -18,17 +18,17 @@ namespace device
         setFont(EV3_FONT_SMALL);
     }
 
-    void Display::setFont(lcdfont_t font_type){
+    void Display::setFont(lcdfont_t fontType){
         // フォントのセット
-        ev3_lcd_set_font(font_type);
+        ev3_lcd_set_font(fontType);
         // フォントサイズの取得
-        ev3_font_get_size(font_type,
-                          &font_width_,
-                          &font_height_);
+        ev3_font_get_size(fontType,
+                          &fontWidth_,
+                          &fontHeight_);
         // 表示可能な文字数計算
-        max_output_chars_ = EV3_LCD_WIDTH/font_width_;
-        output_str_buffer_ =
-            (char *)malloc(sizeof(char) * max_output_chars_);
+        maxOutputChars_ = EV3_LCD_WIDTH/fontWidth_;
+        outputStrBuffer_ =
+            (char *)malloc(sizeof(char) * maxOutputChars_);
     }
 
     void Display::clearDisplay(){
@@ -38,24 +38,24 @@ namespace device
                           EV3_LCD_WIDTH,
                           EV3_LCD_HEIGHT,
                           EV3_LCD_WHITE);
-        free(output_str_buffer_);
+        free(outputStrBuffer_);
     }
 
     void Display::updateDisplay(const char* str, int col){
-        if (strlen(str) > max_output_chars_){
-            ev3_lcd_draw_string("message to output is too long", 0, font_height_ * col);
+        if (strlen(str) > maxOutputChars_){
+            ev3_lcd_draw_string("message to output is too long", 0, fontHeight_ * col);
         }
 
-        sprintf(output_str_buffer_, "%s", str);
-        ev3_lcd_draw_string(output_str_buffer_, 0, font_height_ * col);
+        sprintf(outputStrBuffer_, "%s", str);
+        ev3_lcd_draw_string(outputStrBuffer_, 0, fontHeight_ * col);
     }
 
     void Display::updateDisplay(const char* str, int num, int col){
-        if (strlen(str)+6 > max_output_chars_){
-            ev3_lcd_draw_string("message to output is too long", 0, font_height_ * col);
+        if (strlen(str)+6 > maxOutputChars_){
+            ev3_lcd_draw_string("message to output is too long", 0, fontHeight_ * col);
         }
 
-        sprintf(output_str_buffer_, "%s : %6d", str, num);
-        ev3_lcd_draw_string(output_str_buffer_, 0, font_height_ * col);
+        sprintf(outputStrBuffer_, "%s : %6d", str, num);
+        ev3_lcd_draw_string(outputStrBuffer_, 0, fontHeight_ * col);
     }
 }

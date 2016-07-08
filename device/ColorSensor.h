@@ -12,9 +12,9 @@ namespace device
 
         // キャリブレーション値
         //! 白基準値
-        int8_t white_calibrated_value_;
+        int8_t whiteCalibratedValue_;
         //! 黒基準値
-        int8_t black_calibrated_value_;
+        int8_t blackCalibratedValue_;
 
     private:
         ColorSensor();
@@ -22,7 +22,7 @@ namespace device
     public:
         static ColorSensor* getInstance();
 
-        void setCalibrateValue(int8_t white_value, int8_t black_value);
+        void setCalibrateValue(int8_t whiteValue, int8_t blackValue);
 
         int8_t getWhiteCalibratedValue();
 

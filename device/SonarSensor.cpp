@@ -3,7 +3,7 @@
 namespace device
 {
     // インスタンス変数初期化
-    SonarSensor* SonarSensor::_instance = 0;
+    SonarSensor* SonarSensor::instance_ = 0;
 
     bool SonarSensor::IGNORE_INSTANCE_CREATION = false;
 
@@ -11,10 +11,10 @@ namespace device
     SonarSensor* SonarSensor::getInstance(){
         if (SonarSensor::IGNORE_INSTANCE_CREATION) { return 0; }
 
-        if(_instance == 0){
-            _instance = new SonarSensor();
+        if(instance_ == 0){
+            instance_ = new SonarSensor();
         }
-        return _instance;
+        return instance_;
     }
 
     SonarSensor::SonarSensor() :

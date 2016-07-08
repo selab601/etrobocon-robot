@@ -20,25 +20,25 @@ namespace device
     {
     private:
         // 各モータのデバイスオブジェクト
-        Motor armMotor;
-        Motor leftMotor;
-        Motor rightMotor;
-        Motor tailMotor;
+        Motor armMotor_;
+        Motor leftMotor_;
+        Motor rightMotor_;
+        Motor tailMotor_;
 
         // ステアリング用デバイスオブジェクト
-        Steering steering;
+        Steering steering_;
 
         //! 共有インスタンス
-        static Motors* _instance;
+        static Motors* instance_;
 
         //! 前回のアームモータエンコーダ値
-        int32_t preArmMotorCount;
+        int32_t preArmMotorCount_;
         //! 前回の左輪モータエンコーダ値
-        int32_t preLeftMotorCount;
+        int32_t preLeftMotorCount_;
         //! 前回の右輪モータエンコーダ値
-        int32_t preRightMotorCount;
+        int32_t preRightMotorCount_;
         //! 前回の尻尾モータエンコーダ値
-        int32_t preTailMotorCount;
+        int32_t preTailMotorCount_;
 
     private:
         Motors();
