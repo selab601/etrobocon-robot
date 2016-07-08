@@ -17,9 +17,9 @@ namespace drive{
         switch(runningState_){
         //初期状態...目標距離のセットをする
         case INIT:
-            distanceMeasurement_->setTargetDistance(distance);
-            distanceMeasurement_->startMeasurement();
-            runningState_ = FORWARD;
+                distanceMeasurement_->setTargetDistance(distance);
+                distanceMeasurement_->startMeasurement();
+                runningState_ = FORWARD;
             break;
 
         //前進
@@ -27,7 +27,7 @@ namespace drive{
             straightRunning_->run(speed);
             if(distanceMeasurement_->getResult()){
                 timeMeasurement_->setBaseTime();
-                timeMeasurement_->setTargetTime(500);
+                timeMeasurement_->setTargetTime(200);
                 runningState_ = STOP;
             }
             break;
@@ -46,15 +46,6 @@ namespace drive{
         case BACKWARD:
             straightRunning_->run(-speed);
             if(distanceMeasurement_->getResult()){
-                timeMeasurement_->setBaseTime();
-                timeMeasurement_->setTargetTime(100);
-                runningState_ = END;
-            }
-            break;
-
-        case END:
-            straightRunning_->run(0);
-            if(timeMeasurement_->getResult()){
                 runningState_ = INIT;//初期状態に戻しておく
                 return true;
             }

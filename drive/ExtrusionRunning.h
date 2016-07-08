@@ -24,8 +24,7 @@ namespace drive{
                 INIT,       //初期状態
                 FORWARD,    //前進
                 STOP,       //一時停止
-                BACKWARD,   //後退
-                END         //終了
+                BACKWARD    //後退
             };
 
             RunningState runningState_;
