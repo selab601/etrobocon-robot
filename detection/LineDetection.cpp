@@ -1,13 +1,7 @@
 #include "LineDetection.h"
 #include "stdio.h"
 
-#include "../device/Display.h"
-
-using namespace device;
 namespace detection{
-
-    Display* disp_ = Display::getInstance();
-
     LineDetection::LineDetection(){
         color_ = device::ColorSensor::getInstance();
         counter_ = 0;
@@ -31,7 +25,7 @@ namespace detection{
 
         brightnessHistory_[0] = color_->getBrightness();
 
-       for(int start = 1;  start < counter_;  start++){
+        for(int start = 1;  start < counter_;  start++){
             int8_t  brightnessChanges = brightnessHistory_[0] - brightnessHistory_[start];
             brightnessChanges = brightnessChanges < 0
                                 ? -brightnessChanges

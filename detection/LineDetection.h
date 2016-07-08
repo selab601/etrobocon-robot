@@ -6,7 +6,6 @@
 #define _LINE_DETECTION_H
 
 #include "../device/ColorSensor.h"
-//#include "../measurement/SelfPosLINEonEstimation.h"
 
 #define LINE_DATA_SIZE 30
 #define CHANGE_RATE 20     //緑とか検知しそうなので枝切り用
@@ -18,7 +17,6 @@ namespace detection {
      */
     class LineDetection {
         private:
-            //measurement::SelfPositionEstimation* selfPos_;
             device::ColorSensor* color_;
             int8_t black_;
             int8_t white_;
