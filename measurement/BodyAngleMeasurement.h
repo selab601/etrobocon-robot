@@ -12,7 +12,7 @@ namespace measurement{
   private:
     //! 基底角度
     int baceAngle_;
-    
+
     //! 自己位置推定
     SelfPositionEstimation* selfpositionestimation;
 
@@ -24,14 +24,14 @@ namespace measurement{
 
     /**
      * @brief 現在の角度を基底角度として設定する
-     */  
+     */
     void setBaceAngle();
 
     /**
      * @brief 基底角度からの現在の角度を返す
-     */  
+     */
     int getResult();
-  
+
   };
 };
 

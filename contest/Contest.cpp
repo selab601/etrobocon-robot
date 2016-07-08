@@ -10,20 +10,20 @@
 namespace contest_pkg {
 
 	/* メンバ */
-	Contest* Contest::instance = 0;
+	Contest* Contest::instance_ = 0;
 
 
 	/* コンストラクタ */
 	Contest::Contest() {
-		startUp = StartUp::getInstance();
+		startUp_ = StartUp::getInstance();
 	}
 
 	/* インスタンス取得 */
 	Contest* Contest::getInstance() {
-		if (instance == 0) {
-			instance = new Contest();
+		if (instance_ == 0) {
+			instance_ = new Contest();
 		}
-		return instance;
+		return instance_;
 	}
 
 	/* 走行体制御 */
@@ -31,13 +31,13 @@ namespace contest_pkg {
 		static bool initialized = false;
 
 		/*スタートアップ*/
-		if ( startUp->isFinished() ){
+		if ( startUp_->isFinished() ){
 			/*選択されたコースのインスタンスを生成する */
-			switch(startUp->getSelectedCourse()){
+			switch(startUp_->getSelectedCourse()){
 			case 'L':
 			{
 				if (!initialized) {
-					courseL = new Course('L');
+					courseL_ = new Course('L');
 					initialized = true;
 				}
 				break;
@@ -46,7 +46,7 @@ namespace contest_pkg {
 			case 'R':
 			{
 				if (!initialized) {
-					courseR = new Course('R');
+					courseR_ = new Course('R');
 					initialized = true;
 				}
 				break;
@@ -54,13 +54,13 @@ namespace contest_pkg {
 		}
 
 			/* スタート受付 */
-			if ( startUp->acceptStart() ){
-				switch (startUp->getSelectedCourse() ){
+			if ( startUp_->acceptStart() ){
+				switch (startUp_->getSelectedCourse() ){
 					case 'L':
-					courseL->capture();
+					courseL_->capture();
 					break;
 					case 'R':
-					courseR->capture();
+					courseR_->capture();
 					break;
 				}
 			}

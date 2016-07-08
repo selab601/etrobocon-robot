@@ -3,14 +3,14 @@
 namespace device
 {
     // インスタンス変数初期化
-    TouchSensor* TouchSensor::_instance = 0;
+    TouchSensor* TouchSensor::instance_ = 0;
 
     // シングルトン
     TouchSensor* TouchSensor::getInstance(){
-        if(_instance == 0){
-            _instance = new TouchSensor();
+        if(instance_ == 0){
+            instance_ = new TouchSensor();
         }
-        return _instance;
+        return instance_;
     }
 
     TouchSensor::TouchSensor() :

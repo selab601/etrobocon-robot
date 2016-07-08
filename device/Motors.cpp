@@ -3,47 +3,47 @@
 namespace device
 {
     // インスタンス変数初期化
-    Motors* Motors::_instance = 0;
+    Motors* Motors::instance_ = 0;
 
     // シングルトン
     Motors* Motors::getInstance(){
-        if(_instance == 0){
-            _instance = new Motors();
+        if(instance_ == 0){
+            instance_ = new Motors();
         }
-        return _instance;
+        return instance_;
     }
 
     Motors::Motors()
         // ポートの指定
-        :armMotor(PORT_B),
-         leftMotor(PORT_D),
-         rightMotor(PORT_A),
-         tailMotor(PORT_C),
-         steering(leftMotor, rightMotor)
+        :armMotor_(PORT_B),
+         leftMotor_(PORT_D),
+         rightMotor_(PORT_A),
+         tailMotor_(PORT_C),
+         steering_(leftMotor_, rightMotor_)
     {
-        armMotor.reset();
-        leftMotor.reset();
-        rightMotor.reset();
-        tailMotor.reset();
+        armMotor_.reset();
+        leftMotor_.reset();
+        rightMotor_.reset();
+        tailMotor_.reset();
 
-        preArmMotorCount = 0;
-        preLeftMotorCount = 0;
-        preRightMotorCount = 0;
-        preTailMotorCount = 0;
+        preArmMotorCount_ = 0;
+        preLeftMotorCount_ = 0;
+        preRightMotorCount_ = 0;
+        preTailMotorCount_ = 0;
     }
 
     void Motors::updateCount(){
-        preArmMotorCount = armMotor.getCount();
-        preLeftMotorCount = leftMotor.getCount();
-        preRightMotorCount = rightMotor.getCount();
-        preTailMotorCount = tailMotor.getCount();
+        preArmMotorCount_ = armMotor_.getCount();
+        preLeftMotorCount_ = leftMotor_.getCount();
+        preRightMotorCount_ = rightMotor_.getCount();
+        preTailMotorCount_ = tailMotor_.getCount();
     }
 
     void Motors::reset(){
-        armMotor.reset();
-        leftMotor.reset();
-        rightMotor.reset();
-        tailMotor.reset();
+        armMotor_.reset();
+        leftMotor_.reset();
+        rightMotor_.reset();
+        tailMotor_.reset();
     }
 
     void Motors::initCount(){
@@ -51,10 +51,10 @@ namespace device
         // getCount は，現在のエンコーダ値を返す
         // 従って，getCount によって得られたエンコーダ値を setCount の引数にとることによって．
         // エンコーダ値のオフセットを 0 に設定することができる．
-        armMotor.setCount(armMotor.getCount());
-        tailMotor.setCount(tailMotor.getCount());
-        leftMotor.setCount(leftMotor.getCount());
-        rightMotor.setCount(rightMotor.getCount());
+        armMotor_.setCount(armMotor_.getCount());
+        tailMotor_.setCount(tailMotor_.getCount());
+        leftMotor_.setCount(leftMotor_.getCount());
+        rightMotor_.setCount(rightMotor_.getCount());
     }
 
     int32_t Motors::getCount(motor_kind kind){
@@ -62,13 +62,13 @@ namespace device
 
         switch (kind){
         case MOTOR_ARM:
-            count = armMotor.getCount(); break;
+            count = armMotor_.getCount(); break;
         case MOTOR_LEFT:
-            count = leftMotor.getCount(); break;
+            count = leftMotor_.getCount(); break;
         case MOTOR_RIGHT:
-            count = rightMotor.getCount(); break;
+            count = rightMotor_.getCount(); break;
         case MOTOR_TAIL:
-            count = tailMotor.getCount(); break;
+            count = tailMotor_.getCount(); break;
         default:
             // TODO: きちんと例外処理する
             throw;
@@ -82,13 +82,13 @@ namespace device
 
         switch (kind){
         case MOTOR_ARM:
-            preCount = preArmMotorCount; break;
+            preCount = preArmMotorCount_; break;
         case MOTOR_LEFT:
-            preCount = preLeftMotorCount; break;
+            preCount = preLeftMotorCount_; break;
         case MOTOR_RIGHT:
-            preCount = preRightMotorCount; break;
+            preCount = preRightMotorCount_; break;
         case MOTOR_TAIL:
-            preCount = preTailMotorCount; break;
+            preCount = preTailMotorCount_; break;
         default:
             // TODO: きちんと例外処理する
             throw;
@@ -100,13 +100,13 @@ namespace device
     void Motors::setPWM(motor_kind kind, int pwm){
         switch (kind){
         case MOTOR_ARM:
-            armMotor.setPWM(pwm); break;
+            armMotor_.setPWM(pwm); break;
         case MOTOR_LEFT:
-            leftMotor.setPWM(pwm); break;
+            leftMotor_.setPWM(pwm); break;
         case MOTOR_RIGHT:
-            rightMotor.setPWM(pwm); break;
+            rightMotor_.setPWM(pwm); break;
         case MOTOR_TAIL:
-            tailMotor.setPWM(pwm); break;
+            tailMotor_.setPWM(pwm); break;
         default:
             // TODO: きちんと例外処理する
             throw;
@@ -114,11 +114,11 @@ namespace device
     }
 
     void Motors::setWheelPWM(int leftPWM, int rightPWM){
-        leftMotor.setPWM(leftPWM);
-        rightMotor.setPWM(rightPWM);
+        leftMotor_.setPWM(leftPWM);
+        rightMotor_.setPWM(rightPWM);
     }
 
     void Motors::steerWheel(int power, int turnRatio){
-        steering.setPower(power, turnRatio);
+        steering_.setPower(power, turnRatio);
     }
 }
