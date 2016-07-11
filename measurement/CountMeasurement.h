@@ -9,8 +9,10 @@ namespace measurement{
      * @brief モータの種類
      */
     enum MotorKind {
+      ARM,     //!< アームモータ
       RIGHT,   //!< 後輪右モータ
-      LEFT     //!< 後輪左モータ
+      LEFT,    //!< 後輪左モータ
+      TAIL     //!< 尻尾モータ
     };
 
     /**
