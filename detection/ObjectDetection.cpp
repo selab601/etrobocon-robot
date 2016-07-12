@@ -4,17 +4,15 @@
  */
 #include "ObjectDetection.h"
 
-using namespace ev3api;
-
-namespace detection{
+namespace detection {
     /* コンストラクタ */
-    ObjectDetection::ObjectDetection(u_int Distance){
+    ObjectDetection::ObjectDetection(u_int distance) {
         sonar_ = device::SonarSensor::getInstance();
-        u_int detectDistance_ = Distance;
+        detectDistance_ = distance;
     }
 
-    bool ObjectDetection::getResult(){
-        if(u_int(sonar_->getDistance()) < detectDistance_){
+    bool ObjectDetection::getResult() {
+        if(u_int(sonar_->getDistance()) < detectDistance_) {
         	return true;
         }
         return false;

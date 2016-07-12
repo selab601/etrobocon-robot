@@ -9,27 +9,28 @@
 #include "ev3api.h"
 #include "../device/SonarSensor.h"
 
-namespace detection
-{
-    class ObjectDetection
-    {
-    private:
-        device::SonarSensor* sonar_;
-        u_int detectDistance_;
+#define DETECT_DISTANCE 20  //デフォルトでは20cm
 
-    public:
-        /**
-         * @brief コンストラクタ
-         * @param Distance 検知する距離.単位はcm
-         */
-        ObjectDetection(u_int Distance);
+namespace detection {
 
-        /**
-         * @brief 障害物検知
-         * @return 検知したらtrueを返す
-         */
-        bool getResult();
-    };
+    class ObjectDetection {
+        private:
+            device::SonarSensor* sonar_;
+            u_int detectDistance_;
+
+        public:
+            /**
+             * @brief コンストラクタ
+             * @param Distance 検知する距離.単位はcm
+             */
+            ObjectDetection(u_int distance = DETECT_DISTANCE);
+
+            /**
+             * @brief 障害物検知
+             * @return 検知したらtrueを返す
+             */
+            bool getResult();
+        };
 };
 
 #endif
