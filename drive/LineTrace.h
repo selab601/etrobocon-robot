@@ -70,7 +70,7 @@ namespace drive{
          * @param target ターゲット値 ( Black 0 < target < 1 White) default:0.6
          * @author Nagaoka
          */
-        void run(int maxPwm);
+        void run(int maxPwm,double target = DEFAULT_TARGET);
 
         /**
          * @brief PIDパラーメータをセットする
@@ -81,6 +81,16 @@ namespace drive{
          * @author Nagaoka
          */
         void setPid(double kp = DEFAULT_KP, double ki = DEFAULT_KI, double kd = DEFAULT_KD);
+
+                /**
+         * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
+         *
+         * @param maxPwm モータのPWMの最大値
+         * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 左側に曲がるときが正の値
+         * @author Nagaoka
+         */
+        void calculatePwm(int maxPwm, int deltaRad);
+
 
         /**
          * @brief ターゲット値をセットする

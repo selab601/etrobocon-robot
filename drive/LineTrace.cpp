@@ -15,23 +15,34 @@ namespace drive{
     {
         motors_ = device::Motors::getInstance();
         colorSensor_ = device::ColorSensor::getInstance();
-        blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
-        whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
         clock_ = Clock();
         reset();
         setPid();
-        setTarget();
     }
 
     LineTrace* LineTrace::getInstance(){
         if(instance_ == NULL)
-            instance_ = new LineTrace();
+        instance_ = new LineTrace();
         return instance_;
     }
 
-    void LineTrace::run(int maxPwm){
+    void LineTrace::run(int maxPwm, double target){
+        setTarget(target);
+        calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) );
+    }
 
-        int deltaRad = (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000);
+    void LineTrace::setPid(double kp, double ki, double kd){
+        kp_ = kp;
+        ki_ = ki;
+        kd_ = kd;
+    }
+
+    double LineTrace::getRateByDeltaRad(int deltaRad){
+        return 1000.0F / (double)(LINETRACE_TREAD * deltaRad + 1000);
+    }
+
+    void LineTrace::calculatePwm(int maxPwm, int deltaRad){
+
         int lPwm;
         int rPwm;
 
@@ -47,25 +58,7 @@ namespace drive{
 
         motors_->setPWM(device::MOTOR_LEFT, lPwm);
         motors_->setPWM(device::MOTOR_RIGHT, rPwm);
-    }
 
-    void LineTrace::setPid(double kp, double ki, double kd){
-        kp_ = kp;
-        ki_ = ki;
-        kd_ = kd;
-    }
-
-    void LineTrace::setTarget(double target){
-        if(target <= 0.0 || 1.0 <= target){
-            target_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
-        }
-        else{
-            target_ = blackValue_ + (whiteValue_ - blackValue_) * target_;
-        }
-    }
-
-    double LineTrace::getRateByDeltaRad(int deltaRad){
-        return 1000.0F / (double)(LINETRACE_TREAD * deltaRad + 1000);
     }
 
     double LineTrace::calculatePid(int brightness, int timeMs){
@@ -92,6 +85,19 @@ namespace drive{
                    kd_ * (double)(diff_[1] - diff_[0]) / (double)timeDiff;
         }
         return turn;
+    }
+
+    void LineTrace::setTarget(double target){
+
+        blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
+        whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
+
+        if(target <= 0.0 || 1.0 <= target){
+            target_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
+        }
+        else{
+            target_ = blackValue_ + (whiteValue_ - blackValue_) * target;
+        }
     }
 
     void LineTrace::reset(){
