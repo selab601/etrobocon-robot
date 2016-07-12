@@ -1,8 +1,3 @@
-/**
- * @file StartUp.cpp
- * @note  スタートアップクラス
- * @author usui kakeru
- */
 #include "StartUp.h"
 #include "stdio.h"
 

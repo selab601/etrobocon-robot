@@ -1,10 +1,3 @@
-/**
- * @file StartUp.h
- * @brief スタートアップクラス
- * @author usui kakeru
- */
-
-
 #ifndef START_UP_
 #define START_UP_
 
@@ -33,7 +26,6 @@ namespace contest_pkg{
              * @details Lコース：L, Rコース：R
              *
              * @return 'L', または 'R'
-             * @author motoki nagaoka
              */
             char getSelectedCourse();
 
