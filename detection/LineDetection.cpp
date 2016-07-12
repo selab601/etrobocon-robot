@@ -1,8 +1,8 @@
 #include "LineDetection.h"
 #include "stdio.h"
 
-namespace detection{
-    LineDetection::LineDetection(){
+namespace detection {
+    LineDetection::LineDetection() {
         color_ = device::ColorSensor::getInstance();
         counter_ = 0;
 
