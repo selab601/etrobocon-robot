@@ -15,6 +15,6 @@ namespace detection {
         if(u_int(sonar_->getDistance()) < detectDistance_) {
         	return true;
         }
-        return false;
+    return false;
     }
 };

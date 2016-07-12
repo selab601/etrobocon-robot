@@ -21,7 +21,7 @@ namespace detection {
         public:
             /**
              * @brief コンストラクタ
-             * @param Distance 検知する距離.単位はcm
+             * @param distance 検知する距離.単位はcm
              */
             ObjectDetection(u_int distance = DETECT_DISTANCE);
 
@@ -30,7 +30,7 @@ namespace detection {
              * @return 検知したらtrueを返す
              */
             bool getResult();
-        };
+    };
 };
 
 #endif
