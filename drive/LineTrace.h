@@ -109,24 +109,13 @@ namespace drive{
         double calculatePid(int brightness, int timeMs);
 
         /**
-         * @brief 未実装
-                  内側のタイヤが進んだ距離あたりの角度の変化[milli rad]から、外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
+         * @brief 内側のタイヤが進んだ距離あたりの角度の変化[milli rad]から、外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
+                  ソース内の計算式は上記の省略(証明略)
          * @details
          * @param deltaRad 内側のタイヤが進んだ距離あたりの車体の角度の変化(deltarad >= 0)[milli rad]
          * @author Nagaoka
          **/
         double getRateByDeltaRad(int deltaRad);
-
-        /**
-         * @brief 未実装
-         *
-         * @param deltaRad
-         * @param higherPwm
-         *
-         * @return hoge
-         * @author Nagaoka
-         */
-        int getLowerPwmByTimeDifferential(int deltaRad, int higherPwm);
 
         /**
          * @brief PID制御の内部の情報をリセットする
