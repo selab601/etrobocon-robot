@@ -9,61 +9,57 @@
 
 namespace contest_pkg {
 
-	/* メンバ */
-	Contest* Contest::instance_ = 0;
+    /* メンバ */
+    Contest* Contest::instance_ = 0;
 
 
-	/* コンストラクタ */
-	Contest::Contest() {
-		startUp_ = StartUp::getInstance();
-	}
+    /* コンストラクタ */
+    Contest::Contest() {
+        startUp_ = StartUp::getInstance();
+    }
 
-	/* インスタンス取得 */
-	Contest* Contest::getInstance() {
-		if (instance_ == 0) {
-			instance_ = new Contest();
-		}
-		return instance_;
-	}
+    /* インスタンス取得 */
+    Contest* Contest::getInstance() {
+        if (instance_ == 0) {
+            instance_ = new Contest();
+        }
+        return instance_;
+    }
 
-	/* 走行体制御 */
-	void Contest::perform() {
-		static bool initialized = false;
+    /* 走行体制御 */
+    void Contest::perform() {
+        static bool initialized = false;
 
-		/*スタートアップ*/
-		if ( startUp_->isFinished() ){
-			/*選択されたコースのインスタンスを生成する */
-			switch(startUp_->getSelectedCourse()){
-			case 'L':
-			{
-				if (!initialized) {
-					courseL_ = new Course('L');
-					initialized = true;
-				}
-				break;
-			}
+        /*スタートアップ*/
+        if ( startUp_->isFinished() ){
+            /*選択されたコースのインスタンスを生成する */
+            switch(startUp_->getSelectedCourse()){
+            case 'L':
+                if (!initialized) {
+                    courseL_ = new Course('L');
+                    initialized = true;
+                }
+                break;
 
-			case 'R':
-			{
-				if (!initialized) {
-					courseR_ = new Course('R');
-					initialized = true;
-				}
-				break;
-			}
-		}
+            case 'R':
+                if (!initialized) {
+                    courseR_ = new Course('R');
+                    initialized = true;
+                }
+                break;
+            }
 
-			/* スタート受付 */
-			if ( startUp_->acceptStart() ){
-				switch (startUp_->getSelectedCourse() ){
-					case 'L':
-					courseL_->capture();
-					break;
-					case 'R':
-					courseR_->capture();
-					break;
-				}
-			}
-		}
-	}
+            /* スタート受付 */
+            if ( startUp_->acceptStart() ){
+                switch (startUp_->getSelectedCourse() ){
+                    case 'L':
+                    courseL_->capture();
+                    break;
+                    case 'R':
+                    courseR_->capture();
+                    break;
+                }
+            }
+        }
+    }
 }
