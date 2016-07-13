@@ -1,9 +1,13 @@
 #include "StartUp.h"
 #include "stdio.h"
+#include "../measurement/DistanceMeasurement.h"
+#include <Clock.h>
 
 #define COURSES_NUM 	2 // コースの数
 
-using namespace device;
+using namespace drive;
+using namespace measurement;
+using namespace ev3api;
 
 namespace contest_pkg{
 
@@ -13,6 +17,8 @@ namespace contest_pkg{
         brightnessInfo_ = device::ColorSensor::getInstance();
         touch_ = device::TouchSensor::getInstance();
         display_ = device::Display::getInstance();
+        gyroSensor_ = device::GyroSensor::getInstance();
+        straightRunning_ = StraightRunning();
     }
 
     StartUp* StartUp::getInstance(){
@@ -23,7 +29,8 @@ namespace contest_pkg{
     }
 
     bool StartUp::isFinished(){
-        return selectCourse() && calibrate();
+        //return selectCourse() && calibrate();
+        return selectCourse() && calibrateAutomatically();
     }
 
     char StartUp::getSelectedCourse(){
@@ -236,4 +243,140 @@ namespace contest_pkg{
         return -1;
     }
 
+    bool StartUp::calibrateAutomatically(){
+        static DistanceMeasurement distanceMeasurement = DistanceMeasurement();
+        switch(autoCalibrationState_){
+            case AutoCalibrationState::INIT:
+                distanceMeasurement.setTargetDistance(100);
+                distanceMeasurement.startMeasurement();
+                autoCalibrationState_ = AutoCalibrationState::WAIT;
+                break;
+
+            case AutoCalibrationState::WAIT:
+                display_-> updateDisplay("    - AUTO CALIBRATION -   ", 2);
+                display_-> updateDisplay("      PUSH TO START         ", 4);
+                if (isClicked()){
+                    autoCalibrationState_ = AutoCalibrationState::FORWARD;
+                }
+                break;
+
+            case AutoCalibrationState::FORWARD:
+                display_-> updateDisplay("            FORWARD         ", 4);
+                findCalibratedValue();  // キャリブレーション値を探す
+
+                if (runAndStop(30, 40)){
+                    autoCalibrationState_ = AutoCalibrationState::STOP;
+                    timeMeasurement_ = TimeMeasurement();
+                    timeMeasurement_.setBaseTime();
+                    timeMeasurement_.setTargetTime(500);
+
+                    // キャリブレーション値をセットする
+                    brightnessInfo_->setCalibrateValue(whiteValue_, blackValue_);
+                }
+                break;
+
+            case AutoCalibrationState::STOP:
+                display_-> updateDisplay("            STOP            ", 4);
+                if (timeMeasurement_.getResult()){
+                    gyroSensor_->reset(); // ジャイロセンサをリセット
+
+                    autoCalibrationState_ = AutoCalibrationState::BACK;
+                    distanceMeasurement.setTargetDistance(100);
+                    distanceMeasurement.startMeasurement();
+                }
+                break;
+
+            case AutoCalibrationState::BACK:
+                display_-> updateDisplay("            BACK            ", 4);
+                if (runAndStop(-30, -40)){
+                display_-> updateDisplay("                           ", 2);
+                display_-> updateDisplay("                            ", 4);
+                autoCalibrationState_ = AutoCalibrationState::FINISHED;
+                }
+                break;
+
+            case AutoCalibrationState:: FINISHED:
+                {
+                    display_-> updateDisplay("CALIBRATION FINISHED        ", 2);
+
+                    char message[30];
+                    sprintf( message, "Color (W,B),C: (%d, %d), %d ",
+                            brightnessInfo_->getWhiteCalibratedValue(),
+                            brightnessInfo_->getBlackCalibratedValue(),
+                            brightnessInfo_->getBrightness() );
+                    display_-> updateDisplay(message, 4);
+                }
+                return true;
+        }
+        return false;
+    }
+
+    bool StartUp::isClicked(){
+        static bool hasPressed = false;
+        if (touch_->isPressed()){
+            hasPressed = true;
+        }
+        else if (hasPressed){
+            hasPressed = false;
+            return true;
+        }
+        return false;
+    }
+
+    bool StartUp::changeSpeed(int currentPwm, int targetPwm, int acceleration){
+        static Clock clock = Clock();
+        static bool initialized = false;
+        if ( !initialized ){
+            initialized = true;
+            currentTimeMs_ = clock.now();
+            currentPwm_ = currentPwm;
+            return false;
+        }
+
+        // 加速度[pwm/s] * 時間[s]
+        double diff = (double)acceleration * (double)(clock.now() - currentTimeMs_) / 1000;
+        currentTimeMs_ = clock.now();
+        currentPwm_ += diff;
+
+        bool speedChanged = false;
+        if ( (0 < acceleration && targetPwm < currentPwm_) ||
+                (0 > acceleration && targetPwm > currentPwm_) ){
+            currentPwm_ = targetPwm;
+            speedChanged = true;
+            initialized = false; // 初期化
+        }
+
+        straightRunning_.run((int)currentPwm_);
+        return speedChanged;
+    }
+
+    bool StartUp::runAndStop(int maxPwm, int acceleration){
+        static bool isAccelerating = true;
+        bool isFinished = false;
+        if (isAccelerating && changeSpeed(0, maxPwm, acceleration)){
+            isAccelerating = false;
+        }
+        else if ( !isAccelerating && changeSpeed(maxPwm, 0, -acceleration)){
+            isAccelerating = true; // 初期化
+            isFinished = true;
+        }
+        return isFinished;
+    }
+
+    void StartUp::findCalibratedValue(){
+        static bool initialized = false;
+        int brightness = brightnessInfo_->getBrightness();
+        if (!initialized){
+            initialized = true;
+            whiteValue_ = brightness;
+            blackValue_ = brightness;
+        }
+
+        if (brightness > whiteValue_){
+            whiteValue_ = brightness;
+        }
+        if (brightness < blackValue_){
+            blackValue_ = brightness;
+        }
+    }
 }
