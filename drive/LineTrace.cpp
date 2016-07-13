@@ -1,7 +1,7 @@
 /**
  * @file LineTrace.cpp
- * @brief ライントレースクラス
- * @date 2016/07/05
+ * @brief 右・左エッジでのライントレースとエッジの切り替えを行う(予定)
+ * @date 2016/07/13
  * @author kuno
  */
 
