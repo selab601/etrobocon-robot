@@ -36,79 +36,6 @@ namespace contest_pkg{
     char StartUp::getSelectedCourse(){
         return selectedCourse_;
     }
-
-    bool StartUp::calibrate(){
-        //キャリブレーションの状態
-        static int8_t whiteValue = 0;			//白の値
-        static int8_t blackValue = 0;			//黒の値
-        static int8_t colorValue = 0;			//キャリブレーションの値
-        static bool isCalibratedWhite = false;	// 白の値のキャリブレーションが終わっているか
-        static bool isCalibratedBlack = false;	// 黒の値のキャリブレーションが終わっているか
-        static bool isConfirmed = false;		//  キャリブレーションの結果の確認が終わっているか
-
-        // タッチセンサの押下状態を保持する静的変数,押下されたらtrue,離れたらfalseにする
-        static bool hasPressed = true;
-
-        // キャリブレーションが終了し、結果確認が終わっているか
-        bool calibrated = isCalibratedWhite && isCalibratedBlack && isConfirmed;
-
-        char message[100];
-
-        // タッチセンサの押下状態の更新(長押し中に処理が進まないようにするため)
-        if ( hasPressed && touch_->isPressed() ){
-            return calibrated;
-        }
-        else{
-            hasPressed = false;
-        }
-
-        // カラーセンサ（白）のキャリブレーション
-        if ( !isCalibratedWhite ){
-            calibrated = false;
-            colorValue = colorCalibrate(WHITE);
-            if( colorValue != -1 ){
-                hasPressed = true;
-                whiteValue = colorValue;
-                isCalibratedWhite = true;
-
-            }
-        }
-        // カラーセンサ（黒）のキャリブレーション
-        else if ( !isCalibratedBlack ){
-            calibrated = false;
-            colorValue = colorCalibrate(BLACK);
-            if( colorValue != -1 ){
-                hasPressed = true;
-                blackValue = colorValue;
-                isCalibratedBlack = true;
-                //キャリブレーションの値を保存
-                brightnessInfo_->setCalibrateValue(whiteValue, blackValue);
-            }
-
-        }
-        // キャリブレーションの確認
-        else if ( !isConfirmed ){
-            calibrated = false;
-            display_-> updateDisplay("      - CALIBRATION -      ", 0);
-            display_-> updateDisplay("CALIBRATION FINISHED        ", 1);
-
-            sprintf( message, "Color (W,B),C: (%d, %d), %d ",
-                    brightnessInfo_->getWhiteCalibratedValue(),
-                    brightnessInfo_->getBlackCalibratedValue(),
-                    brightnessInfo_->getBrightness() );
-            display_-> updateDisplay(message, 2);
-            if ( touch_->isPressed() ){
-                hasPressed = true;
-                isConfirmed = true;
-            }
-        }
-        else {
-            calibrated = true;
-        }
-
-        return calibrated;
-    }
-
     bool StartUp::selectCourse(){
         static int index = 0;
         static bool courseSelected = false;
@@ -189,6 +116,7 @@ namespace contest_pkg{
 
         return courseSelected && confirmed;
     }
+
     //スタートを受け入れる
     bool StartUp::acceptStart(){
         static bool started = false;
@@ -213,34 +141,6 @@ namespace contest_pkg{
             display_-> updateDisplay ("         R E A D Y          ", 3);
         }
         return started;
-    }
-    //カラーのキャリブレーション
-    int8_t StartUp::colorCalibrate(calibrationColor color){
-        int8_t tmpValue;
-        char calibrationColorMessage[100];
-        char currentValueMessage[100];
-        char colorStr[6];
-        switch(color){
-            case WHITE:
-                strcpy(colorStr,"WHITE"); break;
-            case BLACK:
-                strcpy(colorStr,"BLACK"); break;
-        }
-
-        display_-> updateDisplay("      - CALIBRATION -      ",  0);
-        sprintf( calibrationColorMessage, "Color sensor [%s]       ",colorStr);
-        display_->updateDisplay(calibrationColorMessage,1);
-        tmpValue = brightnessInfo_->getBrightness();
-        sprintf( currentValueMessage, "current value: %2d          ", tmpValue);
-        display_-> updateDisplay(currentValueMessage, 2);
-
-        if ( touch_->isPressed() ){
-            // 音を出す
-            ev3_speaker_play_tone ( 500, 100);
-            return tmpValue;
-        }
-
-        return -1;
     }
 
     bool StartUp::calibrateAutomatically(){

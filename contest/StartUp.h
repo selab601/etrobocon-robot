@@ -78,21 +78,7 @@ namespace contest_pkg{
                 FINISHED,
             } autoCalibrationState_ = AutoCalibrationState::INIT;
 
-
-            //キャリブレーションする色
-            enum calibrationColor
-            {
-                WHITE,
-                BLACK
-            };
-            bool calibrate();		// キャリブレーションする
             bool selectCourse();	// コースを選択する
-
-            /**
-             * @brief 色のキャリブレーションをする
-             * @return タッチボタンが押された時のカラーセンサの値
-             */
-            int8_t colorCalibrate(calibrationColor color);
 
             /**
              * @brief 自動でキャリブレーションする
