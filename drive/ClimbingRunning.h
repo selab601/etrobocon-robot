@@ -6,6 +6,8 @@
 #include "../measurement/CountMeasurement.h"
 #include "../device/Motors.h"
 
+#define CLIMB_ARM_TARGET_COUNT 50 //レールと土俵に当たらず走行できるアームの回転量
+
 namespace drive{
     class ClimbingRunning{
 
@@ -17,7 +19,7 @@ namespace drive{
             measurement::DistanceMeasurement* distanceMeasurement_;
 
             //回転量検知
-            //measurement::CountMeasurement* countMeasurement_;
+            measurement::CountMeasurement* countMeasurement_;
 
             //モーター
             device::Motors* motor_;
@@ -33,9 +35,6 @@ namespace drive{
             };
 
             RunningState runningState_;
-
-            int armBaseCount_;
-            int armTargetCount_;
 
         public:
 
