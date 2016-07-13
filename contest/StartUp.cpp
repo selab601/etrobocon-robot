@@ -102,16 +102,12 @@ namespace contest_pkg{
         //コースが選択された時
         else if ( courseSelected && !confirmed ){
             if (ev3_button_is_pressed (ENTER_BUTTON) || touch_->isPressed() ){
+                display_-> updateDisplay("                            ", 1);
+                display_-> updateDisplay("                            ", 2);
+                display_-> updateDisplay("                            ", 3);
                 hasPressed = true;
                 confirmed = true;
             }
-
-            char message[30];
-            sprintf(message, "  SELECTED COURSE: %c", selectedCourse_);
-            display_-> updateDisplay("                            ", 0);
-            display_-> updateDisplay("                            ", 1);
-            display_-> updateDisplay("                            ", 2);
-            display_-> updateDisplay(message, 3);
         }
 
         return courseSelected && confirmed;
@@ -189,17 +185,15 @@ namespace contest_pkg{
             case AutoCalibrationState::BACK:
                 display_-> updateDisplay("            BACK            ", 4);
                 if (runAndStop(-30, -40)){
-                display_-> updateDisplay("                           ", 2);
-                display_-> updateDisplay("                            ", 4);
-                autoCalibrationState_ = AutoCalibrationState::FINISHED;
-                }
+                autoCalibrationState_ = AutoCalibrationState::SHOW_RESULT;
                 // 終了したら音を出す
                 ev3_speaker_play_tone ( 500, 100);
+                }
                 break;
 
-            case AutoCalibrationState:: FINISHED:
+            case AutoCalibrationState::SHOW_RESULT:
                 {
-                    display_-> updateDisplay("CALIBRATION FINISHED        ", 2);
+                    display_-> updateDisplay("  CALIBRATION FINISHED  ", 2);
 
                     char message[30];
                     sprintf( message, "Color (W,B),C: (%d, %d), %d ",
@@ -207,7 +201,15 @@ namespace contest_pkg{
                             brightnessInfo_->getBlackCalibratedValue(),
                             brightnessInfo_->getBrightness() );
                     display_-> updateDisplay(message, 4);
+                    if (isClicked()){
+                        autoCalibrationState_ = AutoCalibrationState::FINISHED;
+                    display_-> updateDisplay("                           ", 2);
+                    display_-> updateDisplay("                           ", 4);
+                    }
                 }
+                break;
+
+            case AutoCalibrationState:: FINISHED:
                 return true;
         }
         return false;

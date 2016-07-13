@@ -75,6 +75,7 @@ namespace contest_pkg{
                 FORWARD,
                 STOP,
                 BACK,
+                SHOW_RESULT,
                 FINISHED,
             } autoCalibrationState_ = AutoCalibrationState::INIT;
 
