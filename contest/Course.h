@@ -17,11 +17,14 @@
 
 namespace contest_pkg{
 
+    //選択されたコース
+    enum class SelectedCourse{
+        R_COURSE,
+        L_COURSE
+    };
+
 	class Course{
 		private:
-
-			//選択されたコース
-			char selectedCourse_;
 
 			//現在攻略している戦略
 			unsigned int sectionNumber_;
@@ -33,9 +36,9 @@ namespace contest_pkg{
 		public:
 			/**
 			 * @brief コンストラクタ
-			 * @param selectedCourse 選択されたコース
+			 * @param course 選択されたコース
 			 */
-			Course(char selectedCourse);
+			Course(SelectedCourse course);
 
 
 			/**

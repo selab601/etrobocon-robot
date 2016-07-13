@@ -36,14 +36,14 @@ namespace contest_pkg {
             switch(startUp_->getSelectedCourse()){
             case 'L':
                 if (!initialized) {
-                    courseL_ = new Course('L');
+                    courseL_ = new Course(SelectedCourse::L_COURSE);
                     initialized = true;
                 }
                 break;
 
             case 'R':
                 if (!initialized) {
-                    courseR_ = new Course('R');
+                    courseR_ = new Course(SelectedCourse::R_COURSE);
                     initialized = true;
                 }
                 break;
