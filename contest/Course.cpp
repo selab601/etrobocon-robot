@@ -12,6 +12,7 @@ namespace contest_pkg{
 
 	/* コンストラクタ */
 	Course::Course(char selectedCourse){
+        selectedCourse_ = selectedCourse;
 		sectionNumber_ = 0;
 
 		//それぞれのコースの戦略やライントレースを追加していく
