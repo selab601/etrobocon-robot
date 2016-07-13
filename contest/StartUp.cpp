@@ -116,13 +116,7 @@ namespace contest_pkg{
     //スタートを受け入れる
     bool StartUp::acceptStart(){
         static bool started = false;
-
-        // タッチセンサの押下状態を保持する静的変数,押下されたらtrue,離れたらfalseにする
-        static bool hasPressed = true;
-        if  ( !touch_->isPressed() ){
-            hasPressed = false;
-        }
-        if ( !started && !hasPressed && touch_->isPressed()){
+        if ( !started && isClicked()){
             started = true;
 
             display_-> updateDisplay ("                            ", 0);
