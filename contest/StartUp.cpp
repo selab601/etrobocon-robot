@@ -293,6 +293,8 @@ namespace contest_pkg{
                 display_-> updateDisplay("                            ", 4);
                 autoCalibrationState_ = AutoCalibrationState::FINISHED;
                 }
+                // 終了したら音を出す
+                ev3_speaker_play_tone ( 500, 100);
                 break;
 
             case AutoCalibrationState:: FINISHED:
@@ -318,6 +320,8 @@ namespace contest_pkg{
         }
         else if (hasPressed){
             hasPressed = false;
+            // クリックされたら音を出す
+            ev3_speaker_play_tone ( 500, 100);
             return true;
         }
         return false;
