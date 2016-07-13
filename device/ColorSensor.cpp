@@ -16,20 +16,20 @@ namespace device
     ColorSensor::ColorSensor() :
         // ポートの指定
         ev3api::ColorSensor(PORT_3),
-        white_calibrated_value_(0),
-        black_calibrated_value_(0)
+        whiteCalibratedValue_(0),
+        blackCalibratedValue_(0)
     {}
 
-    void ColorSensor::setCalibrateValue(int8_t white_value, int8_t black_value){
-        this->white_calibrated_value_ = white_value;
-        this->black_calibrated_value_ = black_value;
+    void ColorSensor::setCalibrateValue(int8_t whiteValue, int8_t blackValue){
+        this->whiteCalibratedValue_ = whiteValue;
+        this->blackCalibratedValue_ = blackValue;
     }
 
     int8_t ColorSensor::getWhiteCalibratedValue(){
-        return white_calibrated_value_;
+        return whiteCalibratedValue_;
     }
 
     int8_t ColorSensor::getBlackCalibratedValue(){
-        return black_calibrated_value_;
+        return blackCalibratedValue_;
     }
 }

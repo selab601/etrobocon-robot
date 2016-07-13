@@ -46,17 +46,17 @@ namespace contest_pkg{
 
 	private:
 
-		static StartUp* instance;	// インスタンス
+		static StartUp* instance_;	// インスタンス
 
 		//コンストラクタ
 		StartUp();
 
-		char selectedCourse = 0;	// 選択されたコース (Lコース； 'L', Rコース：'R')
+		char selectedCourse_ = 0;	// 選択されたコース (Lコース； 'L', Rコース：'R')
 
 		// 走行体情報
-		device::ColorSensor* brightnessInfo;
-		device::TouchSensor* touch;
-		device::Display* display;
+		device::ColorSensor* brightnessInfo_;
+		device::TouchSensor* touch_;
+		device::Display* display_;
 
 		//キャリブレーションする色
 		enum calibrationColor

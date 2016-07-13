@@ -12,15 +12,15 @@ namespace contest_pkg{
 
 	/* コンストラクタ */
 	Course::Course(char selectedCourse){
-		sectionNumber = 0;
+		sectionNumber_ = 0;
 
 		//それぞれのコースの戦略やライントレースを追加していく
-		if(selectedCourse == 'R'){
+		if(selectedCourse_ == 'R'){
 		// sections.emplace_back(100,new TestStrategy());
 		// sections.emplace_back(200,new TestStrategy2());
 		}
 
-		if(selectedCourse == 'L'){
+		if(selectedCourse_ == 'L'){
 		// sections.emplace_back(100,new TestStrategy());
 		// sections.emplace_back(200,new TestStrategy2());
 		}
@@ -28,9 +28,9 @@ namespace contest_pkg{
 
 	/* コース攻略 */
 	void Course::capture(){
-		while(sectionNumber != sections.size()){
-			if(sections[sectionNumber].capture()){
-				sectionNumber++;
+		while(sectionNumber_ != sections_.size()){
+			if(sections_[sectionNumber_].capture()){
+				sectionNumber_++;
 			}
 		}
 	}

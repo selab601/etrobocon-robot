@@ -16,13 +16,13 @@ namespace device
         static Display* instance_;
 
         // フォントサイズ
-        int32_t font_width_;
-        int32_t font_height_;
+        int32_t fontWidth_;
+        int32_t fontHeight_;
 
         //! 出力可能文字数
-        uint8_t max_output_chars_;    //!< 出力可能文字数
+        uint8_t maxOutputChars_;    //!< 出力可能文字数
         //! 出力文字列のバッファ
-        char* output_str_buffer_;
+        char* outputStrBuffer_;
 
     private:
         Display();
@@ -34,7 +34,7 @@ namespace device
          * @brief 出力フォントを設定する
          * @param font_type 出力フォント(EV3_FONT_SMALL, EV3_FONT_MIDIUM)
          */
-        void setFont(lcdfont_t font_type);
+        void setFont(lcdfont_t fontType);
 
         /**
          * @brief LCDをクリアーする
