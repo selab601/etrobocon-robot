@@ -18,7 +18,6 @@ namespace contest_pkg{
         touch_ = device::TouchSensor::getInstance();
         display_ = device::Display::getInstance();
         gyroSensor_ = device::GyroSensor::getInstance();
-        straightRunning_ = StraightRunning();
     }
 
     StartUp* StartUp::getInstance(){
@@ -253,7 +252,8 @@ namespace contest_pkg{
             initialized = false; // 初期化
         }
 
-        straightRunning_.run((int)currentPwm_);
+        StraightRunning straightRunning = StraightRunning();
+        straightRunning.run((int)currentPwm_);
         return speedChanged;
     }
 

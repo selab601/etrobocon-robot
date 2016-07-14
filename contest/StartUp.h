@@ -59,9 +59,6 @@ namespace contest_pkg{
             device::Display* display_;
             device::GyroSensor* gyroSensor_;
 
-            // 走行（オートキャリブレーションで使う）
-            drive::StraightRunning straightRunning_;
-
             int whiteValue_ = 0;
             int blackValue_ = 0;
 
