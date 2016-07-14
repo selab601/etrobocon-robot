@@ -19,7 +19,7 @@ namespace drive{
             measurement::TimeMeasurement* timeMeasurement_;
 
             //走行状態
-            enum RunningState
+            enum class RunningState
             {
                 INIT,       //初期状態
                 FORWARD,    //前進

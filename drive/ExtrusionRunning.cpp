@@ -8,44 +8,44 @@ namespace drive{
         straightRunning_ = new StraightRunning();
         distanceMeasurement_ = new DistanceMeasurement();
         timeMeasurement_ = new TimeMeasurement();
-        runningState_ = INIT;
+        runningState_ = RunningState::INIT;
     }
 
 
     bool ExtrusionRunning::run(int speed, int distance){
         switch(runningState_){
         //初期状態...目標距離セット
-        case INIT:
+        case RunningState::INIT:
                 distanceMeasurement_->setTargetDistance(distance);
                 distanceMeasurement_->startMeasurement();
-                runningState_ = FORWARD;
+                runningState_ = RunningState::FORWARD;
             break;
 
         //前進
-        case FORWARD:
+        case RunningState::FORWARD:
             straightRunning_->run(speed);
             if(distanceMeasurement_->getResult()){
                 timeMeasurement_->setBaseTime();
                 timeMeasurement_->setTargetTime(200);
-                runningState_ = STOP;
+                runningState_ = RunningState::STOP;
             }
             break;
 
         //一時停止...いきなりバックすると車体がぶれるため
-        case STOP:
+        case RunningState::STOP:
             straightRunning_->run(0);
             if(timeMeasurement_->getResult()){
                 distanceMeasurement_->setTargetDistance(distance);
                 distanceMeasurement_->startMeasurement();
-                runningState_ = BACKWARD;
+                runningState_ = RunningState::BACKWARD;
             }
             break;
 
         //後退
-        case BACKWARD:
+        case RunningState::BACKWARD:
             straightRunning_->run(-speed);
             if(distanceMeasurement_->getResult()){
-                runningState_ = INIT;//初期状態に戻しておく
+                runningState_ = RunningState::INIT;//初期状態に戻しておく
                 return true;
             }
             break;
