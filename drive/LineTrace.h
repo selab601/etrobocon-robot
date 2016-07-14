@@ -1,7 +1,6 @@
 /**
  * @file LineTrace.h
  * @brief ライントレースクラス
- * @date 2016/07/05
  * @details setPid(),setTarget()で各種設定を行った後にrun()で走行
  * @author kuno
  */
