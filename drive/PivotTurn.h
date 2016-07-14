@@ -34,7 +34,7 @@ namespace drive
       device::Motors* motor_;
       measurement::BodyAngleMeasurement bodyAngleMeasurement_;
         
-      enum class Phase
+      enum Phase
       {
         STANDBY,
         IN_PROGRESS,
