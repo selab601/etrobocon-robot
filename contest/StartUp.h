@@ -1,6 +1,6 @@
 #ifndef START_UP_
 #define START_UP_
-#define BRIGHTNESS_DATA_NUM 30
+#define ARM_ANGLE 35        // アームの初期角度（アームが下側にぶつかっている状態からの角度(degree)
 
 #include "../device/ColorSensor.h"
 #include "../device/TouchSensor.h"
@@ -61,9 +61,6 @@ namespace contest_pkg{
             // 走行（オートキャリブレーションで使う）
             drive::StraightRunning straightRunning_;
 
-            // 計測（オートキャリブレーションで使う）
-            measurement::TimeMeasurement timeMeasurement_;
-
             int whiteValue_ = 0;
             int blackValue_ = 0;
 
@@ -72,6 +69,7 @@ namespace contest_pkg{
             enum class AutoCalibrationState{
                 INIT,
                 WAIT,
+                ADJUST_ARM,
                 FORWARD,
                 STOP,
                 BACK,
@@ -80,6 +78,14 @@ namespace contest_pkg{
             } autoCalibrationState_ = AutoCalibrationState::INIT;
 
             bool selectCourse();	// コースを選択する
+
+            // アームを真下に向ける時の状態
+            enum class ArmSettingState{
+                INIT,
+                PULL,
+                PUSH,
+                FINISHED,
+            } armSettingState_ = ArmSettingState::INIT;
 
             /**
              * @brief 自動でキャリブレーションする
@@ -123,6 +129,13 @@ namespace contest_pkg{
              * @details 最小値を黒の値、最大値を白の値とし、blackValue_, whiteValue_にセットする
              */
             void findCalibratedValue();
+
+            /**
+             * @brief アームを真下に向ける
+             *
+             * @return 終了した時true
+             */
+            bool setArmAngle();
     };
 }
 #endif

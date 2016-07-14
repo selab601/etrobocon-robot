@@ -1,13 +1,13 @@
 #include "StartUp.h"
 #include "stdio.h"
 #include "../measurement/DistanceMeasurement.h"
+#include "../device/Motors.h"
 #include <Clock.h>
 
 #define COURSES_NUM 	2 // コースの数
 
 using namespace drive;
 using namespace measurement;
-using namespace ev3api;
 
 namespace contest_pkg{
 
@@ -135,6 +135,8 @@ namespace contest_pkg{
 
     bool StartUp::calibrateAutomatically(){
         static DistanceMeasurement distanceMeasurement = DistanceMeasurement();
+        static TimeMeasurement timeMeasurement = TimeMeasurement();
+
         switch(autoCalibrationState_){
             case AutoCalibrationState::INIT:
                 distanceMeasurement.setTargetDistance(100);
@@ -146,6 +148,12 @@ namespace contest_pkg{
                 display_-> updateDisplay("    - AUTO CALIBRATION -   ", 2);
                 display_-> updateDisplay("      PUSH TO START         ", 4);
                 if (isClicked()){
+                    autoCalibrationState_ = AutoCalibrationState::ADJUST_ARM;
+                }
+                break;
+
+            case AutoCalibrationState::ADJUST_ARM:
+                if (setArmAngle()){
                     autoCalibrationState_ = AutoCalibrationState::FORWARD;
                 }
                 break;
@@ -156,9 +164,9 @@ namespace contest_pkg{
 
                 if (runAndStop(30, 40)){
                     autoCalibrationState_ = AutoCalibrationState::STOP;
-                    timeMeasurement_ = TimeMeasurement();
-                    timeMeasurement_.setBaseTime();
-                    timeMeasurement_.setTargetTime(500);
+                    timeMeasurement = TimeMeasurement();
+                    timeMeasurement.setBaseTime();
+                    timeMeasurement.setTargetTime(500);
 
                     // キャリブレーション値をセットする
                     brightnessInfo_->setCalibrateValue(whiteValue_, blackValue_);
@@ -167,7 +175,7 @@ namespace contest_pkg{
 
             case AutoCalibrationState::STOP:
                 display_-> updateDisplay("            STOP            ", 4);
-                if (timeMeasurement_.getResult()){
+                if (timeMeasurement.getResult()){
                     gyroSensor_->reset(); // ジャイロセンサをリセット
 
                     autoCalibrationState_ = AutoCalibrationState::BACK;
@@ -224,7 +232,7 @@ namespace contest_pkg{
     }
 
     bool StartUp::changeSpeed(int currentPwm, int targetPwm, int acceleration){
-        static Clock clock = Clock();
+        static ev3api::Clock clock = ev3api::Clock();
         static bool initialized = false;
         if ( !initialized ){
             initialized = true;
@@ -278,5 +286,48 @@ namespace contest_pkg{
         if (brightness < blackValue_){
             blackValue_ = brightness;
         }
+    }
+
+    bool StartUp::setArmAngle(){
+        static TimeMeasurement timeMeasurement = TimeMeasurement();
+        static int baseCount = 0;
+        device::Motors* motors = device::Motors::getInstance();
+        switch(armSettingState_){
+            case ArmSettingState::INIT:
+                display_-> updateDisplay("    - ARM ADJUSTING -      ", 2);
+                timeMeasurement.setTargetTime(800);
+                timeMeasurement.setBaseTime();
+                armSettingState_ = ArmSettingState::PULL;
+                break;
+
+            case ArmSettingState::PULL:
+                motors->setPWM(device::MOTOR_ARM, -40);
+                if (timeMeasurement.getResult()){
+                    armSettingState_ = ArmSettingState::PUSH;
+                    motors->setPWM(device::MOTOR_ARM, 0);
+                    baseCount = motors->getCount(device::MOTOR_ARM);
+                }
+                break;
+
+            case ArmSettingState::PUSH:
+                {
+                    int currentCount = motors->getCount(device::MOTOR_ARM);
+                    int pwm = ARM_ANGLE - (currentCount - baseCount);
+                    motors->setPWM(device::MOTOR_ARM, pwm);
+
+                    if (ARM_ANGLE == (currentCount - baseCount)){
+                        armSettingState_ = ArmSettingState::FINISHED;
+                        motors->reset(); // モータのエンコーダ値をリセット
+                        ev3_speaker_play_tone(500,100); // 終わった時に音を出す
+                        display_-> updateDisplay("                           ", 2);
+                    }
+                }
+                break;
+
+            case ArmSettingState::FINISHED:
+                return true;
+                break;
+        }
+        return false;
     }
 }
