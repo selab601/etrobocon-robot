@@ -29,7 +29,6 @@ namespace contest_pkg{
     }
 
     bool StartUp::isFinished(){
-        //return selectCourse() && calibrate();
         return selectCourse() && calibrateAutomatically();
     }
 
