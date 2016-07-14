@@ -20,7 +20,8 @@ namespace contest_pkg{
             static StartUp* getInstance();
 
             /**
-             * @brief コース選択とキャリブレーションの終了を確認
+             * @brief コース選択とオートキャリブレーションの終了を確認
+             * @details オートキャリブレーションのやり方: 黒い線を超えるまで15cm以内の、白いところに置いてタッチセンサを押す
              * @return 終了したらtrue
              *
              */
