@@ -25,7 +25,7 @@ namespace drive{
             device::Motors* motor_;
 
             //走行状態
-            enum RunningState
+            enum class RunningState
             {
                 INIT,       //初期化
                 ARM_UP,     //アームをあげる
