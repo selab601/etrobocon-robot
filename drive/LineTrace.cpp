@@ -1,59 +1,49 @@
 /**
  * @file LineTrace.cpp
- * @brief ライントレースクラス
- * @date 2016/6/22
- * @author Nagaoka
+ * @brief 右・左エッジでのライントレースとエッジの切り替えを行う(予定)
+ * @author kuno
  */
 
 #include "./LineTrace.h"
-
 #include "../device/Display.h"
 
 namespace drive{
 
-    LineTrace* LineTrace::mInstance = 0;
+    LineTrace* LineTrace::instance_ = 0;
     LineTrace::LineTrace()
     {
-        mMotors = device::Motors::getInstance();
-        mColor = device::ColorSensor::getInstance();
-        mClock = Clock();
+        motors_ = device::Motors::getInstance();
+        colorSensor_ = device::ColorSensor::getInstance();
+        clock_ = Clock();
         reset();
-        setPID();
+        setPid();
     }
 
     LineTrace* LineTrace::getInstance(){
-        if (NULL == mInstance)
-            mInstance = new LineTrace();
-        return mInstance;
+        if(instance_ == NULL)
+        instance_ = new LineTrace();
+        return instance_;
     }
 
-
-    void LineTrace::run(int maxPwm, double target){
-        if ( target > 0)
-            setTarget(target);
-        else
-        if (mTarget == 0)
-            setTarget(DEFAULT_TARGET);
-
-        setPwm(maxPwm, (int)
-                (calculatePid(mColor->getBrightness(), mClock.now()) * (double)1000) );
+    void LineTrace::run(int maxPwm, double relativeTarget){
+        setTarget(relativeTarget);
+        calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) );
     }
 
-    void LineTrace::setPID(double kp, double ki, double kd){
-        mKp = kp;
-        mKi = ki;
-        mKd = kd;
+    void LineTrace::setPid(double kp, double ki, double kd){
+        kp_ = kp;
+        ki_ = ki;
+        kd_ = kd;
     }
 
     double LineTrace::getRateByDeltaRad(int deltaRad){
-        return 1000.0F / (double)(TREAD * deltaRad + 1000);
+        return 1000.0F / (double)(LINETRACE_TREAD * deltaRad + 1000);
     }
 
+    void LineTrace::calculatePwm(int maxPwm, int deltaRad){
 
-    void LineTrace::setPwm(int maxPwm, int deltaRad){
         int lPwm;
         int rPwm;
-        int shippoPwm = deltaRad;
 
         if (deltaRad < 0 ){
             deltaRad *= -1;
@@ -65,78 +55,55 @@ namespace drive{
             lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
         }
 
-        mMotors->setPWM(device::MOTOR_LEFT, lPwm);
-        mMotors->setPWM(device::MOTOR_RIGHT, rPwm);
+        motors_->setPWM(device::MOTOR_LEFT, lPwm);
+        motors_->setPWM(device::MOTOR_RIGHT, rPwm);
 
-        shippoPwm /= 3;
-        if (shippoPwm > 100)
-            shippoPwm = 100;
-        if (shippoPwm < -100)
-            shippoPwm = -100;
-
-        mMotors->setPWM(device::MOTOR_TAIL, shippoPwm);
     }
 
-    /**
-     * @brief PID制御の計算を行う
-     * @details ターゲット値よりも黒寄りにいる時、
-     * @author Nagaoka
-     **/
     double LineTrace::calculatePid(int brightness, int timeMs){
-        mCounter++;
-        mDiff[1] = mDiff[0];
-        mTimeMs[1] = mTimeMs[0];
-        mDiff[0] = brightness*10 - mTarget;
-        mTimeMs[0] = timeMs;
+        counter_++;
+        diff_[1] = diff_[0];
+        timeMs_[1] = timeMs_[0];
 
-        int timeDiff = mTimeMs[1] - mTimeMs[0];
+        diff_[0] = brightness*10 - target_;
+        timeMs_[0] = timeMs;
+
+        int timeDiff = timeMs_[1] - timeMs_[0];
 
         // 積分の計算
-        mIntegrated += timeDiff * (mDiff[1] + mDiff[0]) / 2;
+        integrated_ += timeDiff * (diff_[1] + diff_[0]) / 2;
 
-        // Debug
-        device::Display::getInstance()->updateDisplay("brightness:", brightness, 8);
-        device::Display::getInstance()->updateDisplay("mTarget:", mTarget, 9);
-
-
-        double turn;
         // I、D制御の情報が揃っていない時、P制御の値を返す
-        if (mCounter < 2)
-            turn =  mKp * (double)mDiff[0];
-        else
-            turn =  mKp * (double)mDiff[0] +
-                mKi * (double)mIntegrated +
-                mKd * (double)(mDiff[1] - mDiff[0]) / (double)timeDiff;
-
-        // Debug
-        device::Display::getInstance()->updateDisplay("pid turn:", turn * 1000.0F, 10);
+        double turn;
+        if (counter_ < 2){
+            turn = kp_ * (double)diff_[0];
+        }
+        else{
+            turn = kp_ * (double)diff_[0] +
+                   ki_ * (double)integrated_ +
+                   kd_ * (double)(diff_[1] - diff_[0]) / (double)timeDiff;
+        }
         return turn;
     }
 
-    /**
-     * @brief ターゲット値をセットする
-     * @details 0.0 ~ 1.0 の値から、ターゲット値をセットする
-     * @author Nagaoka
-     **/
-    void LineTrace::setTarget(double target){
-        mBlackValue = 10 * mColor->getBlackCalibratedValue();
-        mWhiteValue = 10 * mColor->getWhiteCalibratedValue();
-        mTarget = mBlackValue + (mWhiteValue - mBlackValue) * target;
+    void LineTrace::setTarget(double relativeTarget){
+
+        blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
+        whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
+
+        if(relativeTarget <= 0.0 || 1.0 <= relativeTarget){
+            target_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
+        }
+        else{
+            target_ = blackValue_ + (whiteValue_ - blackValue_) * relativeTarget;
+        }
     }
 
-
-
-    /**
-     * @brief PID制御の内部の情報をリセットする
-     * @details 積分の値、ひとつ前のセンサの値、時間の情報を初期化する
-     * @author Nagaoka
-     **/
     void LineTrace::reset(){
-        mCounter = 0;
-        mIntegrated = 0;
-        mDiff[1] = mDiff[0] = 0;
-        mTimeMs[1] = mTimeMs[0] = 0;
+        counter_ = 0;
+        integrated_ = 0;
+        diff_[1] = diff_[0] = 0;
+        timeMs_[1] = timeMs_[0] = 0;
     }
 
 };
-
