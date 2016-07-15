@@ -8,6 +8,7 @@
 #define COURSE_H_
 
 #include "Section.h"
+#include "../measurement/SelfPositionEstimation.h"
 #include <vector>
 
 
@@ -32,6 +33,8 @@ namespace contest_pkg{
             //区間(Section)型の動的配列
             std::vector<Section> sections_;
 
+            //自己位置
+            measurement::SelfPositionEstimation* selfPositionEstimation_;
 
         public:
             /**
