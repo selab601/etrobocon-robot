@@ -25,8 +25,8 @@ namespace drive{
         return instance_;
     }
 
-    void LineTrace::run(int maxPwm, double relativelyTarget){
-        setTarget(relativelyTarget);
+    void LineTrace::run(int maxPwm, double relativeTarget){
+        setTarget(relativeTarget);
         calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) );
     }
 
@@ -86,16 +86,16 @@ namespace drive{
         return turn;
     }
 
-    void LineTrace::setTarget(double relativelyTarget){
+    void LineTrace::setTarget(double relativeTarget){
 
         blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
         whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
 
-        if(relativelyTarget <= 0.0 || 1.0 <= relativelyTarget){
+        if(relativeTarget <= 0.0 || 1.0 <= relativeTarget){
             target_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
         }
         else{
-            target_ = blackValue_ + (whiteValue_ - blackValue_) * relativelyTarget;
+            target_ = blackValue_ + (whiteValue_ - blackValue_) * relativeTarget;
         }
     }
 

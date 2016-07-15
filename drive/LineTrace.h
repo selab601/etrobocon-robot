@@ -68,7 +68,7 @@ namespace drive{
          * @param target ターゲット目標値 ( Black 0.0 < target < 1.0 White) default:0.6
          * @author Nagaoka
          */
-        void run(int maxPwm,double relativelyTarget = DEFAULT_TARGET);
+        void run(int maxPwm,double relativeTarget = DEFAULT_TARGET);
 
         /**
          * @brief PIDパラーメータをセットする
@@ -86,7 +86,7 @@ namespace drive{
                     x ≦ 0.0 || 1.0 ≦ x の場合 default値(0.6)を設定
          * @author Nagaoka
          **/
-        void setTarget(double relativelyTarget = DEFAULT_TARGET);
+        void setTarget(double relativeTarget = DEFAULT_TARGET);
 
         /**
          * @brief PID制御の内部の情報をリセットする
