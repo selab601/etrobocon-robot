@@ -17,33 +17,36 @@
 
 namespace contest_pkg{
 
-	class Course{
-		private:
+    //選択されたコース
+    enum class SelectedCourse{
+        R_COURSE,
+        L_COURSE
+    };
 
-			//選択されたコース
-			char selectedCourse_;
+    class Course{
+        private:
 
-			//現在攻略している戦略
-			unsigned int sectionNumber_;
+            //現在攻略している戦略
+            unsigned int sectionNumber_;
 
-			//区間(Section)型の動的配列
-			std::vector<Section> sections_;
-
-
-		public:
-			/**
-			 * @brief コンストラクタ
-			 * @param selectedCourse 選択されたコース
-			 */
-			Course(char selectedCourse);
+            //区間(Section)型の動的配列
+            std::vector<Section> sections_;
 
 
-			/**
-			 * @brief コースを攻略する
-			 * @details 区間を切り替えながら攻略していく
-			 */
-			void capture();
+        public:
+            /**
+             * @brief コンストラクタ
+             * @param course 選択されたコース
+             */
+            Course(SelectedCourse course);
 
-	};
+
+            /**
+             * @brief コースを攻略する
+             * @details 区間を切り替えながら攻略していく
+             */
+            void capture();
+
+    };
 }
 #endif
