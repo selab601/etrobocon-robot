@@ -16,7 +16,7 @@
 #define DEFAULT_KP          0.0144F /* PID処理のデフォルトのP値 */
 #define DEFAULT_KI          0.0F    /* PID処理のデフォルトのI値 */
 #define DEFAULT_KD          0.72F   /* PID処理のデフォルトのD値 */
-#define DEFAULT_TARGET      0.6F    /* 光センサのデフォルトのターゲット値*/
+#define DEFAULT_TARGET      0.6F    /* 明るさセンサの目標値となる値の黒の割合のデフォルト値*/
 
 #define LINETRACE_TREAD      1      /*未使用 きちんとした角速度に計算する定数*/
 
@@ -32,7 +32,7 @@ namespace drive{
         int whiteValue_;            //白のキャリブレーション値を10倍したもの
         int blackValue_;            //黒のキャリブレーション値を10倍したもの
 
-        int target_ = 0;            // ターゲット値：明るさセンサの目標値となる値の黒の割合(明るさセンサの値を10倍したときの)
+        int target_ = 0;            // ターゲット値：ターゲット目標値を元に算出される(明るさセンサの値を10倍した時の)光センサの目標値
 
         int diff_[2];               // 明るさの値を10倍し、ターゲット値との差分をとったもの
         int timeMs_[2];
@@ -65,10 +65,10 @@ namespace drive{
          * @brief ライントレースを行う
          *
          * @param maxPwm モータのPWMの最大値
-         * @param target ターゲット値 ( Black 0 < target < 1 White) default:0.6
+         * @param target ターゲット目標値 ( Black 0.0 < target < 1.0 White) default:0.6
          * @author Nagaoka
          */
-        void run(int maxPwm,double target = DEFAULT_TARGET);
+        void run(int maxPwm,double relativelyTarget = DEFAULT_TARGET);
 
         /**
          * @brief PIDパラーメータをセットする
@@ -81,12 +81,12 @@ namespace drive{
         void setPid(double kp = DEFAULT_KP, double ki = DEFAULT_KI, double kd = DEFAULT_KD);
 
         /**
-         * @brief ターゲット値をセットする
-         * @details 0.0 < x < 1.0 の値から、ターゲット値をセットする
+         * @brief ターゲット目標値をセットする(≠ターゲット値)
+         * @details (白)0.0 < x < 1.0(黒) の値から、ターゲット目標値をセットする
                     x ≦ 0.0 || 1.0 ≦ x の場合 default値(0.6)を設定
          * @author Nagaoka
          **/
-        void setTarget(double target = DEFAULT_TARGET);
+        void setTarget(double relativelyTarget = DEFAULT_TARGET);
 
         /**
          * @brief PID制御の内部の情報をリセットする
