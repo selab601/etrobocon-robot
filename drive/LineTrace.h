@@ -28,7 +28,6 @@ namespace drive{
         static LineTrace* instance_;
         LineTrace();
 
-
         // キャリブレーション値
         int whiteValue_;            //白のキャリブレーション値を10倍したもの
         int blackValue_;            //黒のキャリブレーション値を10倍したもの
@@ -81,16 +80,6 @@ namespace drive{
          */
         void setPid(double kp = DEFAULT_KP, double ki = DEFAULT_KI, double kd = DEFAULT_KD);
 
-                /**
-         * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
-         *
-         * @param maxPwm モータのPWMの最大値
-         * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 左側に曲がるときが正の値
-         * @author Nagaoka
-         */
-        void calculatePwm(int maxPwm, int deltaRad);
-
-
         /**
          * @brief ターゲット値をセットする
          * @details 0.0 < x < 1.0 の値から、ターゲット値をセットする
@@ -99,6 +88,23 @@ namespace drive{
          **/
         void setTarget(double target = DEFAULT_TARGET);
 
+        /**
+         * @brief PID制御の内部の情報をリセットする
+         * @details 積分の値、ひとつ前のセンサの値、時間の情報を初期化する
+         * @author Nagaoka
+         **/
+        void reset();
+
+    private:
+
+        /**
+         * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
+         *
+         * @param maxPwm モータのPWMの最大値
+         * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 左側に曲がるときが正の値
+         * @author Nagaoka
+         */
+        void calculatePwm(int maxPwm, int deltaRad);
 
         /**
          * @brief PID制御の計算を行う
@@ -115,13 +121,6 @@ namespace drive{
          * @author Nagaoka
          **/
         double getRateByDeltaRad(int deltaRad);
-
-        /**
-         * @brief PID制御の内部の情報をリセットする
-         * @details 積分の値、ひとつ前のセンサの値、時間の情報を初期化する
-         * @author Nagaoka
-         **/
-        void reset();
 
     }; //end of class
 };
