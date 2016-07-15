@@ -25,9 +25,9 @@ namespace drive{
         return instance_;
     }
 
-    void LineTrace::run(int maxPwm, double relativeTarget){
+    void LineTrace::run(int maxPwm,LineTraceEdge Edge_ ,double relativeTarget){
         setTarget(relativeTarget);
-        calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) );
+        calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,Edge_);
     }
 
     void LineTrace::setPid(double kp, double ki, double kd){
@@ -40,24 +40,35 @@ namespace drive{
         return 1000.0F / (double)(LINETRACE_TREAD * deltaRad + 1000);
     }
 
-    void LineTrace::calculatePwm(int maxPwm, int deltaRad){
+    void LineTrace::calculatePwm(int maxPwm, int deltaRad ,LineTraceEdge Edge_){
 
         int lPwm;
         int rPwm;
 
-        if (deltaRad < 0 ){
-            deltaRad *= -1;
-            lPwm = maxPwm;
-            rPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+        if(Edge_ == LineTraceEdge::RIGHT){
+            if (deltaRad < 0 ){
+                deltaRad *= -1;
+                lPwm = maxPwm;
+                rPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+            }
+            else{
+                rPwm = maxPwm;
+                lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+            }
         }
-        else{
-            rPwm = maxPwm;
-            lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+        else{/*Edge == LEFT*/
+            if (deltaRad < 0 ){
+                deltaRad *= -1;
+                rPwm = maxPwm;
+                lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+            }
+            else{
+                lPwm = maxPwm;
+                rPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+            }
         }
-
         motors_->setPWM(device::MOTOR_LEFT, lPwm);
         motors_->setPWM(device::MOTOR_RIGHT, rPwm);
-
     }
 
     double LineTrace::calculatePid(int brightness, int timeMs){
