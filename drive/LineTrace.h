@@ -103,8 +103,6 @@ namespace drive{
 
     private:
 
-        LineTraceEdge edge;
-
         /**
          * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
          * @param edge  ライントレースするエッジ(RIGHT,LEFT)
