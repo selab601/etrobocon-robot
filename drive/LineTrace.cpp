@@ -25,9 +25,9 @@ namespace drive{
         return instance_;
     }
 
-    void LineTrace::run(int maxPwm,LineTraceEdge Edge_ ,double relativeTarget){
+    void LineTrace::run(int maxPwm,LineTraceEdge edge ,double relativeTarget){
         setTarget(relativeTarget);
-        calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,Edge_);
+        calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,edge);
     }
 
     void LineTrace::setPid(double kp, double ki, double kd){
@@ -40,12 +40,12 @@ namespace drive{
         return 1000.0F / (double)(LINETRACE_TREAD * deltaRad + 1000);
     }
 
-    void LineTrace::calculatePwm(int maxPwm, int deltaRad ,LineTraceEdge Edge_){
+    void LineTrace::calculatePwm(int maxPwm, int deltaRad ,LineTraceEdge edge){
 
         int lPwm;
         int rPwm;
 
-        if(Edge_ == LineTraceEdge::RIGHT){
+        if(edge == LineTraceEdge::RIGHT){
             if (deltaRad < 0 ){
                 deltaRad *= -1;
                 lPwm = maxPwm;

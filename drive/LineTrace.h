@@ -70,11 +70,11 @@ namespace drive{
          * @brief ライントレースを行う
          *
          * @param maxPwm モータのPWMの最大値
-         * @param Edge_  ライントレースするエッジ(RIGHT,LEFT)
+         * @param edge  ライントレースするエッジ(RIGHT,LEFT)
          * @param target ターゲット目標値 ( Black 0.0 < target < 1.0 White) default:0.6
          * @author Nagaoka
          */
-        void run(int maxPwm,LineTraceEdge Edge_,double relativeTarget = DEFAULT_TARGET);
+        void run(int maxPwm,LineTraceEdge edge,double relativeTarget = DEFAULT_TARGET);
 
         /**
          * @brief PIDパラーメータをセットする
@@ -103,17 +103,17 @@ namespace drive{
 
     private:
 
-        LineTraceEdge Edge_;
+        LineTraceEdge edge;
 
         /**
          * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
-         * @param Edge_  ライントレースするエッジ(RIGHT,LEFT)
+         * @param edge  ライントレースするエッジ(RIGHT,LEFT)
          * @param maxPwm モータのPWMの最大値
          * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 左側に曲がるときが正の値
 
          * @author Nagaoka
          */
-        void calculatePwm(int maxPwm, int deltaRad, LineTraceEdge Edge_);
+        void calculatePwm(int maxPwm, int deltaRad, LineTraceEdge edge);
 
         /**
          * @brief PID制御の計算を行う
