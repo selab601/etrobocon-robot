@@ -16,6 +16,16 @@ namespace drive{
 		STRAIGHT_RIGHT,
 		STRAIGHT_LEFT
 	};
+
+	enum class Turn{
+		START,
+		TURN_RIGHT_1,
+		TURN_RIGHT_2,
+		TURN_LEFT_1,
+		TURN_LEFT_2,
+		STRAIGHT,
+		STOP
+	};
 	/**
 	 * @台座回避走行クラス 
 	 **/
@@ -25,6 +35,7 @@ namespace drive{
 		StraightRunning* straightRunning_;
 		detection::LineDetection* lineDetection_;
 		measurement::BodyAngleMeasurement* bodyAngle_;
+		Turn TURN_;
 
 	public:
 		//コンストラクタ
