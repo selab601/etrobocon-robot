@@ -11,7 +11,7 @@ namespace drive{
     phase_ = Phase::STANDBY;
   }
 
-  bool PivotTurn::turn(int degree_, int speed_){
+  bool PivotTurn::turn(int degree, int speed){
     switch(phase_){
       //準備
       case Phase::STANDBY:
@@ -21,13 +21,13 @@ namespace drive{
 
       //旋回
       case Phase::IN_PROGRESS:
-        //絶対値を取り，旋回角度が目標角度を越えたら
-        if(abs(bodyAngleMeasurement_.getResult()) >= abs(degree_)){
+        //絶対値を取り，旋回角度が目標角度を超えたら
+        if(abs(bodyAngleMeasurement_.getResult()) >= abs(degree)){
           phase_ = Phase::DONE;
           motor_->setWheelPWM(0, 0);
         }else{
-          if(degree_ < 0){speed_ *= -1;}
-          motor_->setWheelPWM(-speed_,speed_);
+          if(degree < 0){speed *= -1;}
+          motor_->setWheelPWM(-speed,speed);
         }
         break;
         

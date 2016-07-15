@@ -28,13 +28,13 @@ namespace drive
        * @param speed  回転させる速さ(0~100, デフォルト:20)
        * @return 終了した場合true
        */
-      bool turn(int degree_, int speed_ = DEFAULT_TURN_SPEED);
+      bool turn(int degree, int speed = DEFAULT_TURN_SPEED);
 
     private:
       device::Motors* motor_;
       measurement::BodyAngleMeasurement bodyAngleMeasurement_;
         
-      enum Phase
+      enum class Phase
       {
         STANDBY,
         IN_PROGRESS,
