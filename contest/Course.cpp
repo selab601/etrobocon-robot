@@ -16,13 +16,13 @@ namespace contest_pkg{
 
         //それぞれのコースの戦略やライントレースを追加していく
         if(course == SelectedCourse::R_COURSE){
-        // sections.emplace_back(100,new TestStrategy());
-        // sections.emplace_back(200,new TestStrategy2());
+        // sections_.emplace_back(100,new TestStrategy());
+        // sections_.emplace_back(200,new TestStrategy2());
         }
 
         if(course == SelectedCourse::L_COURSE){
-        // sections.emplace_back(100,new TestStrategy());
-        // sections.emplace_back(200,new TestStrategy2());
+        // sections_.emplace_back(100,new TestStrategy());
+        // sections_.emplace_back(200,new TestStrategy2());
         }
     }
 
