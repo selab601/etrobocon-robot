@@ -8,7 +8,7 @@
 #include "../device/ColorSensor.h"
 
 #define LINE_DATA_SIZE 30
-#define CHANGE_RATE 20     //緑とか検知しそうなので枝切り用
+#define LINE_CHANGE_RATE 20     //緑とか検知しそうなので枝切り用
 
 namespace detection {
     /**
@@ -42,7 +42,7 @@ namespace detection {
              *        min:0
              * @return ラインを検知したとき: true, 検知していないとき: false
              */
-            bool getResult(float changeRate = CHANGE_RATE);
+            bool getResult(float changeRate = LINE_CHANGE_RATE);
     };
 }
  #endif
