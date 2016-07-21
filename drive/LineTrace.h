@@ -45,7 +45,7 @@ namespace drive{
         int integrated_ = 0;
         int counter_ = 0;
 
-        int maxPwm_;
+        int maxPwm_ = 0;
 
         double  kp_;
         double  ki_;
@@ -85,6 +85,14 @@ namespace drive{
          * @author kuno
          */
          void setEdge(LineTraceEdge edge);
+
+        /**
+         * @brief ライントレースする際のPWM値(モーターを回転させる強さ≒ライントレースする速さ)をセットする
+         *         片方のタイヤは常にこの強さで走行する
+         * @param maxPwm
+         * @author kuno
+         */
+         void setMaxPwm(int maxPwm = 30);
 
         /**
          * @brief PIDパラーメータをセットする
