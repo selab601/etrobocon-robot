@@ -17,14 +17,14 @@ namespace drive{
 		STRAIGHT_LEFT
 	};
 
-	enum class Turn{
+	enum class Move{
 		START,
 		TURN_RIGHT_1,
 		TURN_RIGHT_2,
 		TURN_LEFT_1,
 		TURN_LEFT_2,
-		STRAIGHT,
-		STOP
+		STRAIGHT_1,
+		STRAIGHT_2,
 	};
 	/**
 	 * @台座回避走行クラス 
@@ -34,37 +34,38 @@ namespace drive{
 		CurveRunning* curveRunning_;
 		StraightRunning* straightRunning_;
 		detection::LineDetection* lineDetection_;
+		detection::LineDetection* lineDetection2_;
 		measurement::BodyAngleMeasurement* bodyAngle_;
-		Turn TURN_;
+		Move MOVE_;
 
 	public:
 		//コンストラクタ
 		StageAvoid();
 
 		/**
-		 * @台座回避を実行する
+		 * @brief 台座回避を実行する
 		 **/
-		void startAvoidance(DirectionKind KIND);
+		bool startAvoidance(DirectionKind KIND);
 
 		/**
-		 * @右折しながら台座回避
+		 * @brief 右折しながら台座回避
 		 **/
-		void right();
+		bool right();
 
 		 /**
-		 * @左折しながら台座回避
+		 * @brief 左折しながら台座回避
 		 **/
-		void left();
+		bool left();
 
 		 /**
-		 * @直進、右から回り込んで台座回避
+		 * @brief 直進、右から回り込んで台座回避
 		 **/
-		void straightRight();
+		bool straightRight();
 
 		 /**
-		 * @直進、左から回り込んで台座回避
+		 * @brief 直進、左から回り込んで台座回避
 		 **/
-		void straightLeft();
+		bool straightLeft();
 
 	};
 
