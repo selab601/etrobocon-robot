@@ -51,6 +51,8 @@ namespace drive{
         double  ki_;
         double  kd_;
 
+        LineTraceEdge edge_; //ライントレースを行うエッジ
+
         // Device
         device::ColorSensor* colorSensor_;
         device::Motors* motors_;
@@ -75,6 +77,14 @@ namespace drive{
          * @author Nagaoka
          */
         void run(int maxPwm,LineTraceEdge edge,double relativeTarget = DEFAULT_TARGET);
+
+
+        /**
+         * @brief ライントレースするエッジをセットする
+         * @param edge ライントレースするエッジ(RIGHT/LEFT)
+         * @author kuno
+         */
+         void setEdge(LineTraceEdge edge);
 
         /**
          * @brief PIDパラーメータをセットする

@@ -30,6 +30,10 @@ namespace drive{
         calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,edge);
     }
 
+    void LineTrace::setEdge(LineTraceEdge edge){
+        edge_ = edge;
+    }
+
     void LineTrace::setPid(double kp, double ki, double kd){
         kp_ = kp;
         ki_ = ki;
