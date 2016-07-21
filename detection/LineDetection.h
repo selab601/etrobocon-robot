@@ -10,12 +10,12 @@
 #define LINE_DATA_SIZE 30
 #define LINE_CHANGE_RATE 20     //緑とか検知しそうなので枝切り用
 
-namespace detection {
+namespace detection{
     /**
      * @brief ライン検知クラス
      * @details 進んだ距離あたりのカラーセンサの値の輝度変化量からライン検知を行う
      */
-    class LineDetection {
+    class LineDetection{
         private:
             device::ColorSensor* color_;
             int8_t black_;
