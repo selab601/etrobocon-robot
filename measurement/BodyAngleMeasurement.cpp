@@ -4,17 +4,17 @@ namespace measurement {
 
 
   BodyAngleMeasurement::BodyAngleMeasurement() {
-    baceAngle_ = 0;
-    selfpositionestimation = SelfPositionEstimation::getInstance();
+    baseAngle_ = 0;
+    selfpositionestimation_ = SelfPositionEstimation::getInstance();
   }
 
-  void BodyAngleMeasurement::setBaceAngle() {
-    baceAngle_ = selfpositionestimation->getAngle();
+  void BodyAngleMeasurement::setBaseAngle() {
+    baseAngle_ = selfpositionestimation_->getAngle();
   }
 
   int BodyAngleMeasurement::getResult() {
-    int currentAngle = selfpositionestimation->getAngle();
-    return (currentAngle - baceAngle_);
+    int currentAngle = selfpositionestimation_->getAngle();
+    return (currentAngle - baseAngle_);
   }
 
 }
