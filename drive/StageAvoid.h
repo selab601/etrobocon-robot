@@ -17,6 +17,9 @@ namespace drive{
 		STRAIGHT_LEFT
 	};
 
+	/**
+	 * @現在の走行状態
+	 **/
 	enum class Move{
 		START,
 		TURN_RIGHT_1,
