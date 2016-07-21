@@ -39,7 +39,7 @@ namespace drive{
 		detection::LineDetection* lineDetection_;
 		detection::LineDetection* lineDetection2_;
 		measurement::BodyAngleMeasurement* bodyAngle_;
-		Move MOVE_;
+		Move move_;
 
 	public:
 		//コンストラクタ
