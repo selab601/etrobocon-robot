@@ -4,7 +4,7 @@
  * @author kuno
  */
 
-#include "./LineTrace.h"
+#include "LineTrace.h"
 #include "../device/Display.h"
 
 namespace drive{
