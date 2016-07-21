@@ -14,13 +14,10 @@ namespace drive{
 		switch (KIND) {
 		case DirectionKind::RIGHT:
 			return(this->right());
-			break;
 		case DirectionKind::LEFT:
 			return(this->left());
-			break;
 		case DirectionKind::STRAIGHT_RIGHT:
 			return(this->straightRight());
-			break;
 		case DirectionKind::STRAIGHT_LEFT:
 			return(this->straightLeft());
 		}
