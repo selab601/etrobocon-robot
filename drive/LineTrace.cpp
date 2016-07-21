@@ -30,6 +30,9 @@ namespace drive{
         calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,edge);
     }
 
+    void LineTrace::run(){
+        calculatePwm(maxPwm_, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,edge_);
+    }
 
     void LineTrace::setMaxPwm(int maxPwm){
         maxPwm_ = maxPwm;

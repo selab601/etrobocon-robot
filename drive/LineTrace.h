@@ -78,6 +78,13 @@ namespace drive{
          */
         void run(int maxPwm,LineTraceEdge edge,double relativeTarget = DEFAULT_TARGET);
 
+         /**
+         * @brief ライントレースを行う
+         *         こっちのrun()は事前に全てのset~が呼ばれていることが前提
+         *          set~を呼ばずにこのメソッドを読んだ時の動作は不明
+         * @author kuno
+         */
+         void run();
 
         /**
          * @brief ライントレースするエッジをセットする
