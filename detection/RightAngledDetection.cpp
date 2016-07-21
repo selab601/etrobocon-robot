@@ -27,13 +27,17 @@ namespace detection{
 
        for (int start = 1;  start < counter_;  start++){
            int8_t  brightnessChanges = brightnessHistory_[0] - brightnessHistory_[start];
-           brightnessChanges = brightnessChanges < 0? -brightnessChanges: brightnessChanges;
+           brightnessChanges = brightnessChanges < 0
+                                ? -brightnessChanges
+                                : brightnessChanges;
            long distanceChanges = distanceHistory_[0] - distanceHistory_[start];
 
            //距離の変化が小さすぎると誤検知が多いかもしれないので枝切り
-           if (distanceChanges <= 3) continue;
+           if (distanceChanges <= 3) {
+               continue;
+           }
 
-            //条件判定
+           //条件判定
            float changeRate = (float)brightnessChanges / (float)distanceChanges;
            if  ( changeRate >= minChangeRate ){
                 return true;
