@@ -5,15 +5,15 @@ namespace measurement {
 
   BodyAngleMeasurement::BodyAngleMeasurement() {
     baseAngle_ = 0;
-    selfpositionestimation_ = SelfPositionEstimation::getInstance();
+    selfPositionEstimation_ = SelfPositionEstimation::getInstance();
   }
 
   void BodyAngleMeasurement::setBaseAngle() {
-    baseAngle_ = selfpositionestimation_->getAngle();
+    baseAngle_ = selfPositionEstimation_->getAngle();
   }
 
   int BodyAngleMeasurement::getResult() {
-    int currentAngle = selfpositionestimation_->getAngle();
+    int currentAngle = selfPositionEstimation_->getAngle();
     return (currentAngle - baseAngle_);
   }
 

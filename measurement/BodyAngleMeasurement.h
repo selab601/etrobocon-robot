@@ -14,7 +14,7 @@ namespace measurement{
     int baseAngle_;
 
     //! 自己位置推定
-    SelfPositionEstimation* selfpositionestimation_;
+    SelfPositionEstimation* selfPositionEstimation_;
 
   public:
     /**
