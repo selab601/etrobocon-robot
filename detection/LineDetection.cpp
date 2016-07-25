@@ -12,6 +12,7 @@ namespace detection{
     }
 
     bool LineDetection::getResult(float changeRate){
+        bool result_ = false;
         black_ = color_->getBlackCalibratedValue();
         white_ = color_->getWhiteCalibratedValue();
         int8_t diff_ = white_ - black_;
@@ -37,9 +38,10 @@ namespace detection{
                 continue;
             }
             if(brightnessChanges <= diff_){
-                return true;
+                result_ = true;
+                return result_;
             }
         }
-        return false;
+        return result_;
     }
 }
