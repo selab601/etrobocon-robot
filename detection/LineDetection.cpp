@@ -3,16 +3,11 @@
 
 namespace detection{
     LineDetection::LineDetection(){
-        color_ = device::ColorSensor::getInstance();
-        counter_ = 0;
-
-        for (int i = 0; i  < LINE_DATA_SIZE; i++){
-            brightnessHistory_[i] = 0;
-        }
+        Initialize();
     }
 
     bool LineDetection::getResult(float changeRate){
-        bool result_ = false;
+        Initialize();
         black_ = color_->getBlackCalibratedValue();
         white_ = color_->getWhiteCalibratedValue();
         int8_t diff_ = white_ - black_;
@@ -38,10 +33,18 @@ namespace detection{
                 continue;
             }
             if(brightnessChanges <= diff_){
-                result_ = true;
-                return result_;
+                return true;
             }
         }
-        return result_;
+        return false;
+    }
+
+    void LineDetection::Initialize(){
+        color_ = device::ColorSensor::getInstance();
+        counter_ = 0;
+
+        for (int i = 0; i  < LINE_DATA_SIZE; i++){
+            brightnessHistory_[i] = 0;
+        }
     }
 }
