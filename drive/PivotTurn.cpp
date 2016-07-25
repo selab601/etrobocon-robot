@@ -15,7 +15,7 @@ namespace drive{
     switch(phase_){
       //準備
       case Phase::STANDBY:
-        bodyAngleMeasurement_.setBaceAngle();
+        bodyAngleMeasurement_.setBaseAngle();
         phase_ = Phase::IN_PROGRESS;
         break;
 
@@ -30,7 +30,7 @@ namespace drive{
           motor_->setWheelPWM(-speed,speed);
         }
         break;
-        
+
       //停止
       case Phase::DONE:
         motor_->setWheelPWM(0, 0);
