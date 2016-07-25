@@ -5,6 +5,7 @@
 #include "measurement/BodyAngleMeasurement.h"
 #include "CurveRunning.h"
 #include "StraightRunning.h"
+#include "ev3api.h"
 
 namespace drive{
 	/**
@@ -30,14 +31,14 @@ namespace drive{
 		STRAIGHT_2,
 	};
 	/**
-	 * @台座回避走行クラス 
+	 * @台座回避走行クラス
 	 **/
 	class StageAvoid{
 	private:
 		CurveRunning* curveRunning_;
 		StraightRunning* straightRunning_;
 		detection::LineDetection* lineDetection_;
-		detection::LineDetection* lineDetection2_;
+		//detection::LineDetection* lineDetection2_;
 		measurement::BodyAngleMeasurement* bodyAngle_;
 		Move move_;
 

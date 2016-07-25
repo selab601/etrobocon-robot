@@ -2,11 +2,11 @@
 
 namespace drive{
 	//コンストラクタ
-	StageAvoid::StageAvoid(){	
+	StageAvoid::StageAvoid(){
 		curveRunning_ = new CurveRunning();
 		straightRunning_ = new StraightRunning();
 		lineDetection_ = new detection::LineDetection();
-		
+
 		bodyAngle_ = new measurement::BodyAngleMeasurement();
 		move_ = Move::START;
 	}
@@ -20,6 +20,8 @@ namespace drive{
 			return(this->straightRight());
 		case DirectionKind::STRAIGHT_LEFT:
 			return(this->straightLeft());
+        default:
+            return false;
 		}
 	}
 	bool StageAvoid::right(){
@@ -37,6 +39,8 @@ namespace drive{
 		case Move::STRAIGHT_1:
 			straightRunning_->run(20);
 			if(lineDetection_->getResult(20)){
+                straightRunning_->run(0);
+                ev3_speaker_play_tone ( 500, 100);
 				move_ = Move::TURN_RIGHT_2;
 			}
 			break;
@@ -47,8 +51,10 @@ namespace drive{
 				straightRunning_->run(0);
 				return true;
 			}
-			return false;
+        default :
+            return false;
 		}
+        return false;
 	}
 	bool StageAvoid::left(){
 		switch(move_){
@@ -75,8 +81,10 @@ namespace drive{
 				straightRunning_->run(0);
 				return true;
 			}
+        default :
 			return false;
 		}
+        return false;
 	}
 	bool StageAvoid::straightRight(){
 		switch(move_){
@@ -104,7 +112,7 @@ namespace drive{
 			break;
 		case Move::STRAIGHT_2:
 			straightRunning_->run(20);
-			if(lineDetection2_->getResult(20)){
+			if(lineDetection_->getResult(20)){
 				move_ = Move::TURN_RIGHT_2;
 			}
 			break;
@@ -115,8 +123,11 @@ namespace drive{
 				straightRunning_->run(0);
 				return true;
 			}
+            break;
+        default:
 			return false;
 		}
+        return false;
 	}
 
 	bool StageAvoid::straightLeft(){
@@ -145,7 +156,7 @@ namespace drive{
 			break;
 		case Move::STRAIGHT_2:
 			straightRunning_->run(20);
-			if(lineDetection2_->getResult(20)){
+			if(lineDetection_->getResult(20)){
 				move_ = Move::TURN_LEFT_2;
 			}
 			break;
@@ -156,7 +167,9 @@ namespace drive{
 				straightRunning_->run(0);
 				return true;
 			}
+        default:
 			return false;
 		}
+        return false;
 	}
 }
