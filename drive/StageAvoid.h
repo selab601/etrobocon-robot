@@ -9,7 +9,7 @@
 
 namespace drive{
 	/**
-	 * @台座の避け方の方向の種類
+	 * @brief 台座の避け方の方向の種類
 	 **/
 	enum class DirectionKind{
 		RIGHT,
@@ -19,28 +19,26 @@ namespace drive{
 	};
 
 	/**
-	 * @現在の走行状態
+	 * @brief 現在の走行状態
 	 **/
-	enum class Move{
+	enum class State{
 		START,
-		TURN_RIGHT_1,
-		TURN_RIGHT_2,
-		TURN_LEFT_1,
-		TURN_LEFT_2,
+		TURN_RIGHT,
+		TURN_LEFT,
 		STRAIGHT_1,
 		STRAIGHT_2,
+        LINE_RETURN
 	};
 	/**
-	 * @台座回避走行クラス
+	 * @brief 台座回避走行クラス
 	 **/
 	class StageAvoid{
 	private:
 		CurveRunning* curveRunning_;
 		StraightRunning* straightRunning_;
 		detection::LineDetection* lineDetection_;
-		//detection::LineDetection* lineDetection2_;
 		measurement::BodyAngleMeasurement* bodyAngle_;
-		Move move_;
+		State state_;
 
 	public:
 		//コンストラクタ
@@ -48,26 +46,32 @@ namespace drive{
 
 		/**
 		 * @brief 台座回避を実行する
+         * @param 台座の避け方の方向の種類
+         * @return 回避走行が終了したらtrueを返す
 		 **/
 		bool startAvoidance(DirectionKind KIND);
 
 		/**
 		 * @brief 右折しながら台座回避
+         * @return 回避走行が終了したらtrueを返す
 		 **/
 		bool right();
 
 		 /**
 		 * @brief 左折しながら台座回避
+         * @return 回避走行が終了したらtrueを返す
 		 **/
 		bool left();
 
 		 /**
 		 * @brief 直進、右から回り込んで台座回避
+         * @return 回避走行が終了したらtrueを返す
 		 **/
 		bool straightRight();
 
 		 /**
 		 * @brief 直進、左から回り込んで台座回避
+         * @return 回避走行が終了したらtrueを返す
 		 **/
 		bool straightLeft();
 
