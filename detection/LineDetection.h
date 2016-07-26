@@ -28,6 +28,12 @@ namespace detection{
             /* 現在のデータ数 */
             int counter_;
 
+        private:
+            /**
+             * @brief 初期化
+             */
+            void Initialize();
+
         public:
             /**
              * @brief  コンストラクタ
@@ -45,10 +51,6 @@ namespace detection{
              */
             bool getResult(float changeRate = LINE_CHANGE_RATE);
 
-            /**
-             * @brief 初期化
-             */
-            void Initialize();
     };
 }
  #endif
