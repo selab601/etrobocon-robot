@@ -40,14 +40,14 @@ namespace drive{
         int whiteValue_;            //白のキャリブレーション値を10倍したもの
         int blackValue_;            //黒のキャリブレーション値を10倍したもの
 
-        int target_ = 0;            // ターゲット値：ターゲット目標値を元に算出される(明るさセンサの値を10倍した時の)光センサの目標値
+        int targetValue_ = 0;            // ターゲット値：ターゲット目標値を元に算出される(明るさセンサの値を10倍した時の)光センサの目標値
 
         int diff_[2];               // 明るさの値を10倍し、ターゲット値との差分をとったもの
         int timeMs_[2];
         int integrated_ = 0;
         int counter_ = 0;
 
-        int maxPwm_ = 0;
+        int maxPwm_;
 
         double  kp_;
         double  ki_;
@@ -115,8 +115,8 @@ namespace drive{
 
         /**
          * @brief ターゲット目標値をセットする(≠ターゲット値)
-         * @details (白)0.0 < x < 1.0(黒) の値から、ターゲット目標値をセットする
-                    x ≦ 0.0 || 1.0 ≦ x の場合 default値(0.6)を設定
+         * @details ターゲット値(白)0.0 < x < 1.0(黒) の値から、ターゲット目標値を計算しセットする
+                    x ≦ 0.0 || 1.0 ≦ x の場合 default値(0.6)を計算に使用してターゲット目標値をセット
          * @author Nagaoka
          **/
         void setTarget(double relativeTarget = DEFAULT_TARGET);

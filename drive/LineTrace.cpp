@@ -90,7 +90,7 @@ namespace drive{
         diff_[1] = diff_[0];
         timeMs_[1] = timeMs_[0];
 
-        diff_[0] = brightness*10 - target_;
+        diff_[0] = brightness*10 - targetValue_;
         timeMs_[0] = timeMs;
 
         int timeDiff = timeMs_[1] - timeMs_[0];
@@ -117,10 +117,10 @@ namespace drive{
         whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
 
         if(relativeTarget <= 0.0 || 1.0 <= relativeTarget){
-            target_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
+            targetValue_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
         }
         else{
-            target_ = blackValue_ + (whiteValue_ - blackValue_) * relativeTarget;
+            targetValue_ = blackValue_ + (whiteValue_ - blackValue_) * relativeTarget;
         }
     }
 
