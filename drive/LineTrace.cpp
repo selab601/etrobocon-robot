@@ -16,6 +16,8 @@ namespace drive{
         colorSensor_ = device::ColorSensor::getInstance();
         clock_ = Clock();
         reset();
+        blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
+        whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
         setMaxPwm();
         setEdge(LineTraceEdge::RIGHT);
         setPid();
@@ -113,9 +115,6 @@ namespace drive{
     }
 
     void LineTrace::setTarget(double relativeTarget){
-
-        blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
-        whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
 
         if(relativeTarget <= 0.0 || 1.0 <= relativeTarget){
             targetValue_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
