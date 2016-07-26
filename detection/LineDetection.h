@@ -18,6 +18,7 @@ namespace detection{
     class LineDetection{
         private:
             device::ColorSensor* color_;
+            //カラーセンサクラスが保持しているキャリブレーション値と黒白の差
             int8_t black_;
             int8_t white_;
             int8_t diff_;
@@ -43,6 +44,11 @@ namespace detection{
              * @return ラインを検知したとき: true, 検知していないとき: false
              */
             bool getResult(float changeRate = LINE_CHANGE_RATE);
+
+            /**
+             * @brief 初期化
+             */
+            void Initialize();
     };
 }
  #endif
