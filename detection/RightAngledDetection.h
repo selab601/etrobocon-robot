@@ -9,7 +9,7 @@
 #include "../measurement/SelfPositionEstimation.h"
 
 #define RAD_DATA_SIZE 30    //RADはRightAngledDetectionの略
-#define CHANGE_RATE 3.5
+#define RAD_CHANGE_RATE 3.5
 
 namespace detection{
     /**
@@ -43,7 +43,7 @@ namespace detection{
          * @param changeRate 直角検知の精度を変える変数．与えられなければデフォルト値を与えて実行．
          * @return 直角を検知したとき: true, 検知していないとき: false
          */
-        bool getResult(float changeRate = CHANGE_RATE);
+        bool getResult(float changeRate = RAD_CHANGE_RATE);
     };
 }
  #endif
