@@ -16,6 +16,8 @@ namespace drive{
         colorSensor_ = device::ColorSensor::getInstance();
         clock_ = Clock();
         reset();
+        setMaxPwm();
+        setEdge(LineTraceEdge::RIGHT);
         setPid();
     }
 

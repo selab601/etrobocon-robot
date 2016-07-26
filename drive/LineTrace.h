@@ -1,7 +1,8 @@
 /**
  * @file LineTrace.h
  * @brief ライントレースクラス
- * @details setPid(),setTarget()で各種設定を行った後にrun()で走行
+ * @details  初期設定[maxPwm:デフォルト値][edge:RIGHT][pid:デフォルト値][target:デフォルト値]
+            setMaxPwm(),setPid(),setTarget(),setEdge()で各種設定を行った後にrun()で走行
  * @author kuno
  */
 
@@ -17,6 +18,7 @@
 #define DEFAULT_KI          0.0F    /* PID処理のデフォルトのI値 */
 #define DEFAULT_KD          0.72F   /* PID処理のデフォルトのD値 */
 #define DEFAULT_TARGET      0.6F    /* 明るさセンサの目標値となる値の黒の割合のデフォルト値*/
+#define DEFAULT_MAXPWM      30F     /* デフォルトのmaxPwm値*/
 
 #define LINETRACE_TREAD      1      /*未使用 きちんとした角速度に計算する定数*/
 
@@ -99,7 +101,7 @@ namespace drive{
          * @param maxPwm
          * @author kuno
          */
-         void setMaxPwm(int maxPwm = 30);
+         void setMaxPwm(int maxPwm = DEFAULT_MAXPWM);
 
         /**
          * @brief PIDパラーメータをセットする
