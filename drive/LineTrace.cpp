@@ -19,6 +19,7 @@ namespace drive{
         setMaxPwm();
         setEdge(LineTraceEdge::RIGHT);
         setPid();
+        setTarget();
     }
 
     LineTrace* LineTrace::getInstance(){
