@@ -11,10 +11,10 @@ namespace measurement{
   class BodyAngleMeasurement{
   private:
     //! 基底角度
-    int baceAngle_;
+    int baseAngle_;
 
     //! 自己位置推定
-    SelfPositionEstimation* selfpositionestimation;
+    SelfPositionEstimation* selfPositionEstimation_;
 
   public:
     /**
@@ -25,7 +25,7 @@ namespace measurement{
     /**
      * @brief 現在の角度を基底角度として設定する
      */
-    void setBaceAngle();
+    void setBaseAngle();
 
     /**
      * @brief 基底角度からの現在の角度を返す

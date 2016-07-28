@@ -6,30 +6,33 @@
 #include "Course.h"
 
 using namespace strategy;
+using namespace measurement;
 using namespace std;
 
 namespace contest_pkg{
 
     /* コンストラクタ */
     Course::Course(SelectedCourse course){
+        selfPositionEstimation_ = SelfPositionEstimation::getInstance();
+        selfPositionEstimation_->initMap();
         sectionNumber_ = 0;
 
         //それぞれのコースの戦略やライントレースを追加していく
         if(course == SelectedCourse::R_COURSE){
-        // sections.emplace_back(100,new TestStrategy());
-        // sections.emplace_back(200,new TestStrategy2());
+        // sections_.emplace_back(100,new TestStrategy());
+        // sections_.emplace_back(200,new TestStrategy2());
         }
 
         if(course == SelectedCourse::L_COURSE){
-        // sections.emplace_back(100,new TestStrategy());
-        // sections.emplace_back(200,new TestStrategy2());
+        // sections_.emplace_back(100,new TestStrategy());
+        // sections_.emplace_back(200,new TestStrategy2());
         }
     }
 
     /* コース攻略 */
     void Course::capture(){
-        while(sectionNumber_ != sections_.size()){
-            if(sections_[sectionNumber_].capture()){
+        if(sections_[sectionNumber_].capture()){
+            if(sectionNumber_ + 1 != sections_.size()){
                 sectionNumber_++;
             }
         }
