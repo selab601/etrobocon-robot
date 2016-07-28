@@ -15,6 +15,7 @@
 #include "../measurement/TimeMeasurement.h"
 #include "../measurement/DistanceMeasurement.h"
 #include <vector>
+#include <list>
 
 #define SUMO_EXTRUSION_DISTANCE  100 //押し出し走行距離
 #define SUMO_EXTRUSION_SPEED     20  //押し出しスピード
@@ -36,8 +37,6 @@ namespace strategy{
             TURN_3,     //
             TURN_4,
             SUMO,       //
-            STOP_2,     //
-            WAIT_3,     //
             GET_OF      //
         };
 
@@ -54,7 +53,6 @@ namespace strategy{
 
         //特定の力士を押し出す走行状態
         enum class ExtrusionPhase{
-            //TURN_0,
             LINE_TRACE_1,   //
             EXTRUSION,      //
             TURN_1,         //
@@ -71,13 +69,55 @@ namespace strategy{
             NONE        //未定義
         };
 
-        std::vector<SumoPhase> sumoProcedure_;
+        //難所攻略手順
+        std::vector<StrategyPhase> strategyProcedure_{
+            StrategyPhase::HOSHITORI,
+            StrategyPhase::TURN_1,
+            StrategyPhase::STRAIGHT,
+            StrategyPhase::LINE_TRACE,
+            StrategyPhase::STOP_1,
+            StrategyPhase::WAIT_1,
+            StrategyPhase::TURN_2,
+            StrategyPhase::CLIMB,
+            StrategyPhase::WAIT_1,
+            StrategyPhase::TURN_3,
+            StrategyPhase::TURN_4,
+            StrategyPhase::SUMO,
+            StrategyPhase::TURN_2,
+            StrategyPhase::STOP_1,
+            StrategyPhase::WAIT_2,
+            StrategyPhase::GET_OF
+        };
+
+        //相撲攻略手順(星取り赤・青)
+        std::vector<SumoPhase> sumoProcedureRorB_ = {
+            SumoPhase::EXTRUSION_FIRST,
+            SumoPhase::ACROSS_LINE,
+            SumoPhase::TURN_1,
+            SumoPhase::UPPER_STAGE,
+            SumoPhase::ACROSS_LINE,
+            SumoPhase::TURN_2,
+            SumoPhase::EXTRUSION_SECOND,
+            SumoPhase::ACROSS_LINE,
+            SumoPhase::EXTRUSION_THIRD,
+            SumoPhase::TURN_1
+        };
+
+        //相撲攻略手順(星取り黄・緑)
+        std::vector<SumoPhase> sumoProcedureYorG_{
+            SumoPhase::EXTRUSION_FIRST,
+            SumoPhase::ACROSS_LINE,
+            SumoPhase::EXTRUSION_SECOND,
+            SumoPhase::ACROSS_LINE,
+            SumoPhase::TURN_1,
+            SumoPhase::UPPER_STAGE,
+            SumoPhase::ACROSS_LINE,
+            SumoPhase::TURN_2,
+            SumoPhase::EXTRUSION_THIRD,
+            SumoPhase::TURN_2
+        };
 
 
-        StrategyPhase strategyPhase_;
-        ExtrusionPhase extrusionPhase_;
-        //SumoPhase sumoPhase_;
-        Hoshitori hoshitori_;
 
         //走行
         drive::ExtrusionRunning* extrusionRunning_;
@@ -86,6 +126,7 @@ namespace strategy{
         drive::PivotTurn* pivotTurn_;
         drive::CurveRunning* curveRunning_;
         drive::LineTrace* linetrace_;
+
 
         //検知
         detection::LineDetection* lineDetection_;
@@ -98,7 +139,15 @@ namespace strategy{
         measurement::TimeMeasurement* timeMeasurement_;
 
 
+
+
+        ExtrusionPhase extrusionPhase_;
+        Hoshitori hoshitori_;
+
+        bool hasExecutedPhase_;
         bool hasExecutedSumoPhase_;
+
+        bool strategySuccess_;
 
         //押し出す力士の色
         Hoshitori firstWrestlerColor_;
@@ -115,29 +164,45 @@ namespace strategy{
 
         /**
          * @brief ET相撲Neoを攻略する
-         * @return 攻略完了：true,攻略中：false
+         * @return 攻略完了:true,攻略中:false
          */
         bool capture();
 
     private:
         /**
-         * @brief 相撲を行う
+         * @brief 難所の手順を実行
+         * @param strategyPhase 難所の手順
+         * @return 難所終了:true,攻略中:false
+         */
+        bool executeStrategy(StrategyPhase strategyPhase);
+
+        void setProcedure();
+
+        /**
+         * @brief 相撲を攻略する
+         * @return 攻略完了:true,攻略中:false
+         */
+        bool captureSumo();
+
+        /**
+         * @brief 相撲の手順を実行
          * @details 星取の色によって振る舞いを変える
+         * @param sumoPhase 相撲の手順
          * @return 相撲終了:true,攻略中:false
          */
         bool executeSumo(SumoPhase sumoPhase);
 
-        void setProcedure();
+        //bool captureExtrusion();
 
         /**
          * @brief 指定した星取の力士を押し出す
          * @details 中央線からスタートし、中央線で終了する、
          * 左側(赤・黄)と右側(青・緑)はそれぞれ同じ動作をする
          *
-         * @param hoshitori 押し出す力士の星取
+         * @param wrestlerColor 押し出す力士の色
          * @return 押し出し終了:true,攻略中:false
          */
-        bool extrusion(Hoshitori hoshitori);
+        bool extrusion(Hoshitori wrestlerColor);
 
         /**
          * @brief 星取検知
@@ -148,6 +213,10 @@ namespace strategy{
          * @return 赤、青、黄、緑だった場合:true
          */
         bool hoshitoriDetection(bool saveHoshitori = false);
+
+        void startDistanceMeasurement(int distance);
+
+        void startTimeMeasurement(int time);
     };
 }
 
