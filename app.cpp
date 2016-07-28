@@ -67,3 +67,5 @@ void bt_task(intptr_t unused)
 
     ext_tsk();
 }
+
+void* __dso_handle=0;
