@@ -1,7 +1,8 @@
 /**
  * @file LineTrace.h
  * @brief ライントレースクラス
- * @details setPid(),setTarget()で各種設定を行った後にrun()で走行
+ * @details  初期設定[maxPwm:デフォルト値][edge:RIGHT][pid:デフォルト値][target:デフォルト値]
+            setMaxPwm(),setPid(),setTarget(),setEdge()で各種設定を行った後にrun()で走行
  * @author kuno
  */
 
@@ -17,12 +18,19 @@
 #define DEFAULT_KI          0.0F    /* PID処理のデフォルトのI値 */
 #define DEFAULT_KD          0.72F   /* PID処理のデフォルトのD値 */
 #define DEFAULT_TARGET      0.6F    /* 明るさセンサの目標値となる値の黒の割合のデフォルト値*/
+#define DEFAULT_MAXPWM      30F     /* デフォルトのmaxPwm値*/
 
 #define LINETRACE_TREAD      1      /*未使用 きちんとした角速度に計算する定数*/
 
 using namespace ev3api;
 
 namespace drive{
+
+    enum class LineTraceEdge{
+        RIGHT,
+        LEFT
+    };
+
     class LineTrace{
     private:
         static LineTrace* instance_;
@@ -32,7 +40,7 @@ namespace drive{
         int whiteValue_;            //白のキャリブレーション値を10倍したもの
         int blackValue_;            //黒のキャリブレーション値を10倍したもの
 
-        int target_ = 0;            // ターゲット値：ターゲット目標値を元に算出される(明るさセンサの値を10倍した時の)光センサの目標値
+        int targetValue_ = 0;            // ターゲット値：ターゲット目標値を元に算出される(明るさセンサの値を10倍した時の)光センサの目標値
 
         int diff_[2];               // 明るさの値を10倍し、ターゲット値との差分をとったもの
         int timeMs_[2];
@@ -45,11 +53,12 @@ namespace drive{
         double  ki_;
         double  kd_;
 
+        LineTraceEdge edge_; //ライントレースを行うエッジ
+
         // Device
         device::ColorSensor* colorSensor_;
         device::Motors* motors_;
         Clock clock_;
-
 
     public:
 
@@ -65,10 +74,34 @@ namespace drive{
          * @brief ライントレースを行う
          *
          * @param maxPwm モータのPWMの最大値
+         * @param edge  ライントレースするエッジ(RIGHT,LEFT)
          * @param target ターゲット目標値 ( Black 0.0 < target < 1.0 White) default:0.6
          * @author Nagaoka
          */
-        void run(int maxPwm,double relativeTarget = DEFAULT_TARGET);
+        void run(int maxPwm,LineTraceEdge edge,double relativeTarget = DEFAULT_TARGET);
+
+         /**
+         * @brief ライントレースを行う
+         *         こっちのrun()は事前に全てのset~が呼ばれていることが前提
+         *          set~を呼ばずにこのメソッドを読んだ時の動作は不明
+         * @author kuno
+         */
+         void run();
+
+        /**
+         * @brief ライントレースするエッジをセットする
+         * @param edge ライントレースするエッジ(RIGHT/LEFT)
+         * @author kuno
+         */
+         void setEdge(LineTraceEdge edge);
+
+        /**
+         * @brief ライントレースする際のPWM値(モーターを回転させる強さ≒ライントレースする速さ)をセットする
+         *         片方のタイヤは常にこの強さで走行する
+         * @param maxPwm
+         * @author kuno
+         */
+         void setMaxPwm(int maxPwm = DEFAULT_MAXPWM);
 
         /**
          * @brief PIDパラーメータをセットする
@@ -82,8 +115,8 @@ namespace drive{
 
         /**
          * @brief ターゲット目標値をセットする(≠ターゲット値)
-         * @details (白)0.0 < x < 1.0(黒) の値から、ターゲット目標値をセットする
-                    x ≦ 0.0 || 1.0 ≦ x の場合 default値(0.6)を設定
+         * @details ターゲット値(白)0.0 < x < 1.0(黒) の値から、ターゲット目標値を計算しセットする
+                    x ≦ 0.0 || 1.0 ≦ x の場合 default値(0.6)を計算に使用してターゲット目標値をセット
          * @author Nagaoka
          **/
         void setTarget(double relativeTarget = DEFAULT_TARGET);
@@ -99,12 +132,13 @@ namespace drive{
 
         /**
          * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
-         *
+         * @param edge  ライントレースするエッジ(RIGHT,LEFT)
          * @param maxPwm モータのPWMの最大値
          * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 左側に曲がるときが正の値
+
          * @author Nagaoka
          */
-        void calculatePwm(int maxPwm, int deltaRad);
+        void calculatePwm(int maxPwm, int deltaRad, LineTraceEdge edge);
 
         /**
          * @brief PID制御の計算を行う

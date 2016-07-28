@@ -4,7 +4,7 @@
  * @author kuno
  */
 
-#include "./LineTrace.h"
+#include "LineTrace.h"
 #include "../device/Display.h"
 
 namespace drive{
@@ -16,7 +16,12 @@ namespace drive{
         colorSensor_ = device::ColorSensor::getInstance();
         clock_ = Clock();
         reset();
+        blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
+        whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
+        setMaxPwm();
+        setEdge(LineTraceEdge::RIGHT);
         setPid();
+        setTarget();
     }
 
     LineTrace* LineTrace::getInstance(){
@@ -25,9 +30,21 @@ namespace drive{
         return instance_;
     }
 
-    void LineTrace::run(int maxPwm, double relativeTarget){
+    void LineTrace::run(int maxPwm,LineTraceEdge edge ,double relativeTarget){
         setTarget(relativeTarget);
-        calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) );
+        calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,edge);
+    }
+
+    void LineTrace::run(){
+        calculatePwm(maxPwm_, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,edge_);
+    }
+
+    void LineTrace::setMaxPwm(int maxPwm){
+        maxPwm_ = maxPwm;
+    }
+
+    void LineTrace::setEdge(LineTraceEdge edge){
+        edge_ = edge;
     }
 
     void LineTrace::setPid(double kp, double ki, double kd){
@@ -40,24 +57,35 @@ namespace drive{
         return 1000.0F / (double)(LINETRACE_TREAD * deltaRad + 1000);
     }
 
-    void LineTrace::calculatePwm(int maxPwm, int deltaRad){
+    void LineTrace::calculatePwm(int maxPwm, int deltaRad ,LineTraceEdge edge){
 
         int lPwm;
         int rPwm;
 
-        if (deltaRad < 0 ){
-            deltaRad *= -1;
-            lPwm = maxPwm;
-            rPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+        if(edge == LineTraceEdge::RIGHT){
+            if (deltaRad < 0 ){
+                deltaRad *= -1;
+                lPwm = maxPwm;
+                rPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+            }
+            else{
+                rPwm = maxPwm;
+                lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+            }
         }
-        else{
-            rPwm = maxPwm;
-            lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+        else{/*Edge == LEFT*/
+            if (deltaRad < 0 ){
+                deltaRad *= -1;
+                rPwm = maxPwm;
+                lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+            }
+            else{
+                lPwm = maxPwm;
+                rPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
+            }
         }
-
         motors_->setPWM(device::MOTOR_LEFT, lPwm);
         motors_->setPWM(device::MOTOR_RIGHT, rPwm);
-
     }
 
     double LineTrace::calculatePid(int brightness, int timeMs){
@@ -65,7 +93,7 @@ namespace drive{
         diff_[1] = diff_[0];
         timeMs_[1] = timeMs_[0];
 
-        diff_[0] = brightness*10 - target_;
+        diff_[0] = brightness*10 - targetValue_;
         timeMs_[0] = timeMs;
 
         int timeDiff = timeMs_[1] - timeMs_[0];
@@ -88,14 +116,11 @@ namespace drive{
 
     void LineTrace::setTarget(double relativeTarget){
 
-        blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
-        whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
-
         if(relativeTarget <= 0.0 || 1.0 <= relativeTarget){
-            target_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
+            targetValue_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
         }
         else{
-            target_ = blackValue_ + (whiteValue_ - blackValue_) * relativeTarget;
+            targetValue_ = blackValue_ + (whiteValue_ - blackValue_) * relativeTarget;
         }
     }
 
