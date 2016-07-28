@@ -29,13 +29,11 @@ namespace strategy{
             TURN_1,     //
             STRAIGHT,   //
             LINE_TRACE, //
-            STOP_1,     //
+            STOP,     //
             WAIT_1,     //
             CLIMB,      //
             WAIT_2,     //
             TURN_2,     //
-            TURN_3,     //
-            TURN_4,
             SUMO,       //
             GET_OF      //
         };
@@ -45,8 +43,10 @@ namespace strategy{
             EXTRUSION_FIRST,    //
             EXTRUSION_SECOND,    //
             EXTRUSION_THIRD,    //
-            TURN_1,         //
-            TURN_2,         //
+            TURN_UPP,         //
+            TURN_WRESTLER,         //
+            TURN_3,
+            TURN_4,
             UPPER_STAGE,    //
             ACROSS_LINE     //
         };
@@ -75,46 +75,48 @@ namespace strategy{
             StrategyPhase::TURN_1,
             StrategyPhase::STRAIGHT,
             StrategyPhase::LINE_TRACE,
-            StrategyPhase::STOP_1,
+            StrategyPhase::STOP,
             StrategyPhase::WAIT_1,
             StrategyPhase::TURN_2,
             StrategyPhase::CLIMB,
             StrategyPhase::WAIT_1,
-            StrategyPhase::TURN_3,
-            StrategyPhase::TURN_4,
             StrategyPhase::SUMO,
             StrategyPhase::TURN_2,
-            StrategyPhase::STOP_1,
+            StrategyPhase::STOP,
             StrategyPhase::WAIT_2,
             StrategyPhase::GET_OF
         };
 
         //相撲攻略手順(星取り赤・青)
-        std::vector<SumoPhase> sumoProcedureRorB_ = {
+        std::vector<SumoPhase> sumoProcedureRorB_{
+            SumoPhase::TURN_3,
+            SumoPhase::TURN_4,
             SumoPhase::EXTRUSION_FIRST,
             SumoPhase::ACROSS_LINE,
-            SumoPhase::TURN_1,
+            SumoPhase::TURN_UPP,
             SumoPhase::UPPER_STAGE,
             SumoPhase::ACROSS_LINE,
-            SumoPhase::TURN_2,
+            SumoPhase::TURN_WRESTLER,
             SumoPhase::EXTRUSION_SECOND,
             SumoPhase::ACROSS_LINE,
             SumoPhase::EXTRUSION_THIRD,
-            SumoPhase::TURN_1
+            SumoPhase::TURN_UPP
         };
 
         //相撲攻略手順(星取り黄・緑)
         std::vector<SumoPhase> sumoProcedureYorG_{
+            SumoPhase::TURN_3,
+            SumoPhase::TURN_4,
             SumoPhase::EXTRUSION_FIRST,
             SumoPhase::ACROSS_LINE,
             SumoPhase::EXTRUSION_SECOND,
             SumoPhase::ACROSS_LINE,
-            SumoPhase::TURN_1,
+            SumoPhase::TURN_UPP,
             SumoPhase::UPPER_STAGE,
             SumoPhase::ACROSS_LINE,
-            SumoPhase::TURN_2,
+            SumoPhase::TURN_WRESTLER,
             SumoPhase::EXTRUSION_THIRD,
-            SumoPhase::TURN_2
+            SumoPhase::TURN_WRESTLER
         };
 
 
@@ -140,13 +142,16 @@ namespace strategy{
 
 
 
-
+        //押し出し手順
         ExtrusionPhase extrusionPhase_;
+
+        //取得した星取
         Hoshitori hoshitori_;
 
+        //距離検知の設定などを一度だけ行うためのフラグ
         bool hasExecutedPhase_;
-        bool hasExecutedSumoPhase_;
 
+        //難所クリアしたかどうか
         bool strategySuccess_;
 
         //押し出す力士の色
@@ -157,6 +162,10 @@ namespace strategy{
         int angleTowardTop_;             //上に向かう角度
         int angleTowardWrestler_;        //力士に向かう角度
         drive::LineTraceEdge upperStageEdge_;   //上段に向かうライントレースのエッジ
+
+        int turnAngle2_;
+        int rSpeed_;
+        int lSpeed_;
 
     public:
         //コンストラクタ
@@ -192,8 +201,6 @@ namespace strategy{
          */
         bool executeSumo(SumoPhase sumoPhase);
 
-        //bool captureExtrusion();
-
         /**
          * @brief 指定した星取の力士を押し出す
          * @details 中央線からスタートし、中央線で終了する、
@@ -214,8 +221,20 @@ namespace strategy{
          */
         bool hoshitoriDetection(bool saveHoshitori = false);
 
+        /**
+         * @brief 距離検知を開始する
+         * @details setTarget,startを同時に行い、フラグ管理も行う
+         *
+         * @param distance 検知する距離
+         */
         void startDistanceMeasurement(int distance);
 
+        /**
+         * @brief 時間検知を開始する
+         * @details setBase,setTargetを同時に行い、フラグ管理も行う
+         *
+         * @param time 検知する時間
+         */
         void startTimeMeasurement(int time);
     };
 }
