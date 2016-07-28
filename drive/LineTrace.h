@@ -18,7 +18,7 @@
 #define DEFAULT_KI          0.0F    /* PID処理のデフォルトのI値 */
 #define DEFAULT_KD          0.72F   /* PID処理のデフォルトのD値 */
 #define DEFAULT_TARGET      0.6F    /* 明るさセンサの目標値となる値の黒の割合のデフォルト値*/
-#define DEFAULT_MAXPWM      30F     /* デフォルトのmaxPwm値*/
+#define DEFAULT_MAXPWM      30      /* デフォルトのmaxPwm値*/
 
 #define LINETRACE_TREAD      1      /*未使用 きちんとした角速度に計算する定数*/
 
