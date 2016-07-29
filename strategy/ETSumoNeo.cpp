@@ -117,6 +117,8 @@ namespace strategy{
             startDistanceMeasurement(300);//もっと必要
             straightRunning_->run(30);
             return distanceMeasurement_->getResult();
+
+        default: return false;
         }
         return false;
     }
@@ -242,6 +244,7 @@ namespace strategy{
             if(!timeMeasurement_->getResult()){break;}//開始直後は直角無視
             return rightAngledDetection_->getResult(4.0);
 
+        default: return false;
         }
         return false;
     }
@@ -319,6 +322,8 @@ namespace strategy{
                 return true;
             }
             break;
+
+        default: return false;
         }
         return false;
     }
