@@ -32,4 +32,23 @@ namespace device
     int8_t ColorSensor::getBlackCalibratedValue(){
         return blackCalibratedValue_;
     }
+
+    const char* ColorSensor::getColorName(colorid_t id) {
+        switch (id) {
+        case COLOR_NONE:
+            return "NONE";
+        case COLOR_RED:
+            return "RED";
+        case COLOR_BLUE:
+            return "BLUE";
+        case COLOR_GREEN:
+            return "GREEN";
+        case COLOR_BLACK:
+            return "BLACK";
+        case COLOR_YELLOW:
+            return "YELLOW";
+        default:
+            return "UNDEFINED";
+        }
+    }
 }

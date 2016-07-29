@@ -8,7 +8,7 @@ conf_dir_path=$base_dir_path/conf
 parts_dir_path=$conf_dir_path/parts
 tmp_file_path=$conf_dir_path/tmp.txt
 
-ignore_dir_names=( "conf" )
+ignore_dir_names=( ".git" "conf" )
 
 if [ -e $tmp_file_path ]; then
   rm $tmp_file_path
@@ -31,8 +31,9 @@ for file_name in ${file_names[@]}; do
   fi
 done
 
+# ディレクトリ名取得
 dir_names=()
-for dir_path in `\find $base_dir_path -maxdepth 1 -type d`; do
+for dir_path in `\find $base_dir_path -type d`; do
   dir_names+=($dir_path)
 done
 
@@ -66,14 +67,14 @@ rm $tmp_file_path
 echo "SRCDIRS  += \\" > $tmp_file_path
 for dir_name in ${dir_names[@]}; do
   continue_flg=0
-  for ignore_dir_name in $ignore_dir_names; do
-    if [ $ignore_dir_name = $(basename $dir_name) ]; then
+  for ignore_dir_name in ${ignore_dir_names[@]}; do
+    # ルートディレクトリのみ比較
+    if [[ $ignore_dir_name = $(echo ${dir_name#$base_dir_path} | cut -d "/" -f2) ]]; then
       continue_flg=1
       break
     fi
   done
   if [ $continue_flg = 1 ]; then continue; fi
-
   echo "            @(APPLDIR)${dir_name#$base_dir_path} \\" >> $tmp_file_path
 done
 

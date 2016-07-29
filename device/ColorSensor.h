@@ -27,6 +27,8 @@ namespace device
         int8_t getWhiteCalibratedValue();
 
         int8_t getBlackCalibratedValue();
+
+        static const char* getColorName(colorid_t id);
     };
 }
 
