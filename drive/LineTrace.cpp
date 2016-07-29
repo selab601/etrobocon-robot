@@ -116,7 +116,6 @@ namespace drive{
     }
 
     void LineTrace::setTarget(double relativeTarget){
-
         if(relativeTarget <= 0.0 || 1.0 <= relativeTarget){
             targetValue_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
         }
@@ -145,7 +144,6 @@ namespace drive{
                 return false;
 
             case LineTraceEdgeChangePhase::ACROSS:
-
                 if(edge_==LineTraceEdge::RIGHT){
                     //現在右エッジなので左エッジに移動
                     motors_->setPWM(device::MOTOR_LEFT, DEFAULT_MAXPWM*0.7);
@@ -156,7 +154,6 @@ namespace drive{
                     motors_->setPWM(device::MOTOR_LEFT, DEFAULT_MAXPWM);
                     motors_->setPWM(device::MOTOR_RIGHT, DEFAULT_MAXPWM*0.7);
                 }
-
                 //一定距離走ったらエッジを切り替え
                 if(distanceMeasurement_->getResult()){
                     if(edge_==LineTraceEdge::RIGHT){
@@ -192,7 +189,5 @@ namespace drive{
             default:
                 return false;
         }
-
     }
-
 };
