@@ -47,7 +47,6 @@ namespace strategy{
     //戦略手順を実行する
     bool ETSumoNeo::executeStrategy(StrategyPhase strategyPhase){
         switch(strategyPhase){
-
         //星取取得
         case StrategyPhase::HOSHITORI:
             linetrace_->run(20,LineTraceEdge::RIGHT);
@@ -78,7 +77,6 @@ namespace strategy{
                 return true;
             }
             return false;
-
 
         //通り過ぎてから1秒間待つ
         case StrategyPhase::WAIT_1_SEC:
@@ -120,7 +118,6 @@ namespace strategy{
 
         default: return false;
         }
-        return false;
     }
 
     bool ETSumoNeo::captureSumo(){
@@ -197,7 +194,6 @@ namespace strategy{
     //相撲...登壇後から降壇前まで
     bool ETSumoNeo::executeSumo(SumoPhase sumoPhase){
         switch(sumoPhase){
-
         //ある程度回転...ライン上にいることもあるので
         case SumoPhase::FIRST_TURN:
             return pivotTurn_->turn(angleTowardLine_);
@@ -246,7 +242,6 @@ namespace strategy{
 
         default: return false;
         }
-        return false;
     }
 
     //中央線から力士を押し出して戻って来る
@@ -255,29 +250,34 @@ namespace strategy{
         static int lSpeed;     //左タイヤスピード
         static int turnAngle;  //戻るための旋回角度
         static LineTraceEdge startEdge,endEdge;//往復のライントレースのエッジ
-        //左側(赤,黄)と右側(青,緑)それぞれ同じ動作をする
-        switch(wrestlerColor){
-        //左側
-        case Hoshitori::RED:
-        case Hoshitori::YELLOW:
-            rSpeed = 15;
-            lSpeed = -rSpeed;
-            turnAngle = -160;
-            startEdge = LineTraceEdge::RIGHT;
-            endEdge = LineTraceEdge::LEFT;
-            break;
+        static bool initialized = false;
 
-        //右側
-        case Hoshitori::BLUE:
-        case Hoshitori::GREEN:
-            rSpeed = -15;
-            lSpeed = -rSpeed;
-            turnAngle = 160;
-            startEdge = LineTraceEdge::LEFT;
-            endEdge = LineTraceEdge::RIGHT;
-            break;
+        if(!initialized){
+            //左側(赤,黄)と右側(青,緑)それぞれ同じ動作をする
+            switch(wrestlerColor){
+            //左側
+            case Hoshitori::RED:
+            case Hoshitori::YELLOW:
+                rSpeed = 15;
+                lSpeed = -rSpeed;
+                turnAngle = -160;
+                startEdge = LineTraceEdge::RIGHT;
+                endEdge = LineTraceEdge::LEFT;
+                break;
 
-        default: return false;
+            //右側
+            case Hoshitori::BLUE:
+            case Hoshitori::GREEN:
+                rSpeed = -15;
+                lSpeed = -rSpeed;
+                turnAngle = 160;
+                startEdge = LineTraceEdge::LEFT;
+                endEdge = LineTraceEdge::RIGHT;
+                break;
+
+            default: return false;
+            }
+            initialized = true;
         }
 
         switch(extrusionPhase_){
@@ -325,7 +325,6 @@ namespace strategy{
 
         default: return false;
         }
-        return false;
     }
 
     bool ETSumoNeo::hoshitoriDetection(bool saveHoshitori){
