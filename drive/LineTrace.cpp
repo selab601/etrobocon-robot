@@ -141,10 +141,10 @@ namespace drive{
                 distanceMeasurement_->setTargetDistance(50);
                 distanceMeasurement_->startMeasurement();
                 //次のフェイズに
-                edgeChangeStatus_ = LineTraceEdgeChangePhase::OLDEDGE;
+                edgeChangeStatus_ = LineTraceEdgeChangePhase::ACROSS;
                 return false;
 
-            case LineTraceEdgeChangePhase::OLDEDGE:
+            case LineTraceEdgeChangePhase::ACROSS:
 
                 if(edge_==LineTraceEdge::RIGHT){
                     //現在右エッジなので左エッジに移動
@@ -168,11 +168,11 @@ namespace drive{
                         setEdge(LineTraceEdge::RIGHT);
                     }
                     //次のフェイズに
-                    edgeChangeStatus_ = LineTraceEdgeChangePhase::NEWEDGE;
+                    edgeChangeStatus_ = LineTraceEdgeChangePhase::ADJUST;
                 }
                 return false;
 
-            case LineTraceEdgeChangePhase::NEWEDGE:
+            case LineTraceEdgeChangePhase::ADJUST:
                 //修正用にちょっとライントレース
                 distanceMeasurement_->setTargetDistance(100);
                 distanceMeasurement_->startMeasurement();
@@ -193,7 +193,6 @@ namespace drive{
                 return false;
         }
 
-        return false;
     }
 
 };

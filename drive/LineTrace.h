@@ -42,8 +42,8 @@ namespace drive{
 
         enum class LineTraceEdgeChangePhase{
             INIT,
-            OLDEDGE,
-            NEWEDGE,
+            ACROSS,
+            ADJUST,
             END
         };
 
