@@ -56,7 +56,7 @@ namespace drive{
         int diff_[2];               // 明るさの値を10倍し、ターゲット値との差分をとったもの
         int timeMs_[2];
         int integrated_ = 0;
-        int counter_ = 0;
+        bool usePid_ = false;
 
         int maxPwm_;
 

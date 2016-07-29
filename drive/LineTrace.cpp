@@ -90,7 +90,6 @@ namespace drive{
     }
 
     double LineTrace::calculatePid(int brightness, int timeMs){
-        counter_++;
         diff_[1] = diff_[0];
         timeMs_[1] = timeMs_[0];
 
@@ -104,8 +103,9 @@ namespace drive{
 
         // I、D制御の情報が揃っていない時、P制御の値を返す
         double turn;
-        if (counter_ < 2){
+        if (usePid_ == false){
             turn = kp_ * (double)diff_[0];
+            usePid_ = true;
         }
         else{
             turn = kp_ * (double)diff_[0] +
@@ -126,7 +126,7 @@ namespace drive{
     }
 
     void LineTrace::reset(){
-        counter_ = 0;
+        usePid_  = false;
         integrated_ = 0;
         diff_[1] = diff_[0] = 0;
         timeMs_[1] = timeMs_[0] = 0;
