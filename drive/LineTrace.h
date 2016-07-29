@@ -12,6 +12,7 @@
 #include <math.h>
 #include "../device/ColorSensor.h"
 #include "../device/Motors.h"
+#include "../measurement/DistanceMeasurement.h"
 #include <Clock.h>
 
 #define DEFAULT_KP          0.0144F /* PID処理のデフォルトのP値 */
@@ -23,6 +24,7 @@
 #define LINETRACE_TREAD      1      /*未使用 きちんとした角速度に計算する定数*/
 
 using namespace ev3api;
+using namespace measurement;
 
 namespace drive{
 
@@ -35,6 +37,13 @@ namespace drive{
     private:
         static LineTrace* instance_;
         LineTrace();
+
+        enum class LineTraceEdgeChangePhase{
+            INIT,
+            OLDEDGE,
+            NEWEDGE,
+            END
+        };
 
         // キャリブレーション値
         int whiteValue_;            //白のキャリブレーション値を10倍したもの
@@ -53,7 +62,14 @@ namespace drive{
         double  ki_;
         double  kd_;
 
-        LineTraceEdge edge_; //ライントレースを行うエッジ
+        //ライントレースを行うエッジ
+        LineTraceEdge edge_;
+
+        //エッジ切り替えメソッドでの状態
+        LineTraceEdgeChangePhase edgeChangeStatus_ = LineTraceEdgeChangePhase::INIT;
+
+        //距離検知
+        measurement::DistanceMeasurement* distanceMeasurement_;
 
         // Device
         device::ColorSensor* colorSensor_;
@@ -127,6 +143,13 @@ namespace drive{
          * @author Nagaoka
          **/
         void reset();
+
+        /**
+         * @brief ライントレースしながらエッジ切り替えを行う
+         * @details エッジ切り替えが終了するとTrueを返す。
+         * @author kuno
+         **/
+        bool changeEdge();
 
     private:
 
