@@ -147,7 +147,7 @@ namespace drive{
 
         /**
          * @brief ライントレースしながらエッジ切り替えを行う
-         * @details エッジ切り替えが終了するとTrueを返す。
+         * @return エッジ切り替えが終了するとTrueを返す。
          * @author kuno
          **/
         bool changeEdge();
