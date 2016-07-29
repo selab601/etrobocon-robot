@@ -3,6 +3,8 @@
  * @brief ライントレースクラス
  * @details  初期設定[maxPwm:デフォルト値][edge:RIGHT][pid:デフォルト値][target:デフォルト値]
             setMaxPwm(),setPid(),setTarget(),setEdge()で各種設定を行った後にrun()で走行
+            ライントレースのインスタンスを呼ぶ際は、キャリブレーションを行っているcontest.cppのstartUp_->getSelectedCourse()
+            以降で行ってください。
  * @author kuno
  */
 
@@ -99,7 +101,6 @@ namespace drive{
          /**
          * @brief ライントレースを行う
          *         こっちのrun()は事前に全てのset~が呼ばれていることが前提
-         *          set~を呼ばずにこのメソッドを読んだ時の動作は不明
          * @author kuno
          */
          void run();
