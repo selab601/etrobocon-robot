@@ -2,7 +2,6 @@
 
 namespace drive {
     BlockColorCheck::BlockColorCheck() {
-        finished_ = false;
         executingState_ = new DetectTableState();
         states_.push(new DetectBlockState());
     }

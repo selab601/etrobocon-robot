@@ -10,7 +10,6 @@
 namespace drive {
     class BlockColorCheck {
     private:
-        bool finished_;
         IBlockColorCheckState* executingState_;
         std::queue<IBlockColorCheckState*> states_;
 
