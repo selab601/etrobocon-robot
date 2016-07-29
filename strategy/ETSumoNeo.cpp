@@ -5,8 +5,6 @@ using namespace detection;
 using namespace measurement;
 
 namespace strategy{
-
-
     ETSumoNeo::ETSumoNeo(){
         linetrace_              = LineTrace::getInstance();
         straightRunning_        = new StraightRunning();
@@ -141,16 +139,16 @@ namespace strategy{
 
     //相撲...登壇後から降壇前まで
     bool ETSumoNeo::executeSumo(SumoPhase sumoPhase){
-        static bool initialized = false;
-        static Hoshitori firstWrestlerColor;
-        static Hoshitori secondWrestlerColor;
-        static Hoshitori thirdWrestlerColor;
-        static LineTraceEdge upperStageEdge;
-        static int angleTowardTop;
-        static int angleTowardSide;
-        static int angleTowardLine;
-        static int rSpeed;
-        static int lSpeed;
+        static bool initialized = false;        //初期化を行ったかどうか
+        static Hoshitori firstWrestlerColor;    //一人目の力士の色
+        static Hoshitori secondWrestlerColor;   //二人目の力士の色
+        static Hoshitori thirdWrestlerColor;    //三人目の力士の色
+        static LineTraceEdge upperStageEdge;    //上段に移動するライントレースのエッジ
+        static int angleTowardTop;              //上段を向く角度
+        static int angleTowardSide;             //力士の方向を向く角度
+        static int angleTowardLine;             //ラインに向かう角度
+        static int rSpeed;                      //右タイヤスピード
+        static int lSpeed;                      //左タイヤスピード
 
         if(!initialized){
             switch(hoshitori_){
@@ -341,7 +339,11 @@ namespace strategy{
         }
         return false;
     }
-
+    /*
+    変更予定
+    ・白、黒以外だったら検知するようにする
+    ・赤、黄、緑以外だったら青と判定するようにする
+    */
     bool ETSumoNeo::hoshitoriDetection(bool saveHoshitori){
         static colorid_t nowColor = COLOR_NONE;
         nowColor = colorDetection_->getResult();
