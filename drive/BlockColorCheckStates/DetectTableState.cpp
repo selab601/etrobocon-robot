@@ -30,8 +30,8 @@ namespace drive {
             motors_->setWheelPWM(0,0);
             return true;
         } else {
-            // TODO: エッジやPIDの指定
-            lineTrace_->run(20, LineTraceEdge::RIGHT);
+            lineTrace_->setPid(0.006F, 0.0F, 0.52F);
+            lineTrace_->run(20, LineTraceEdge::RIGHT, 0.1);
         }
         return false;
     }

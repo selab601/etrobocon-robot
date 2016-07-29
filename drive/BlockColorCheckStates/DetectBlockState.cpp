@@ -25,7 +25,7 @@ namespace drive {
 
         // 後ろに少し下がる
         // TODO: どのくらい下がればよいか実験
-        distanceMeasure_->setTargetDistance(45);
+        distanceMeasure_->setTargetDistance(47);
         if (distanceMeasure_->getResult() == false) {
             straight_->run(-10);
             return false;
