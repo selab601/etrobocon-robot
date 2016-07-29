@@ -15,7 +15,6 @@
 #include "../measurement/TimeMeasurement.h"
 #include "../measurement/DistanceMeasurement.h"
 #include <vector>
-#include <list>
 
 #define SUMO_EXTRUSION_DISTANCE  100 //押し出し走行距離
 #define SUMO_EXTRUSION_SPEED     20  //押し出しスピード
@@ -25,39 +24,39 @@ namespace strategy{
     private:
         //ET相撲Neoの走行状態
         enum class StrategyPhase{
-            HOSHITORI,  //星取り取得
-            TURN_1,     //
-            STRAIGHT,   //
-            LINE_TRACE, //
-            STOP,     //
-            WAIT_1,     //
-            CLIMB,      //
-            WAIT_2,     //
-            TURN_2,     //
-            SUMO,       //
-            GET_OF      //
+            HOSHITORI,
+            TURN_LEFT,
+            STRAIGHT,
+            LINE_TRACE,
+            STOP,
+            WAIT_1_SEC,
+            TURN_LITTLE,
+            CLIMB,
+            WAIT_2_SEC,
+            SUMO,
+            GET_OF
         };
 
         //相撲全体の状態
         enum class SumoPhase{
-            EXTRUSION_FIRST,    //
-            EXTRUSION_SECOND,    //
-            EXTRUSION_THIRD,    //
-            TURN_UPP,         //
-            TURN_WRESTLER,         //
-            TURN_3,
-            TURN_4,
-            UPPER_STAGE,    //
-            ACROSS_LINE     //
+            FIRST_EXTRUSION,
+            SECOND_EXTRUSION,
+            THIRD_EXTRUSION,
+            TURN_TOP,
+            TURN_SIDE,
+            FIRST_TURN,
+            SECOND_TURN,
+            UPPER_STAGE,
+            ACROSS_LINE
         };
 
         //特定の力士を押し出す走行状態
         enum class ExtrusionPhase{
-            LINE_TRACE_1,   //
-            EXTRUSION,      //
-            TURN_1,         //
-            TURN_2,         //
-            LINE_TRACE_2    //
+            START_LINE_TRACE,
+            EXTRUSION,
+            FIRST_TURN,
+            SECOND_TURN,
+            END_LINE_TRACE
         };
 
         //星取
@@ -66,57 +65,56 @@ namespace strategy{
             BLUE,       //青
             YELLOW,     //黄
             GREEN,      //緑
-            NONE        //未定義
+            NONE        //なし
         };
 
         //難所攻略手順
         std::vector<StrategyPhase> strategyProcedure_{
-            StrategyPhase::HOSHITORI,
-            StrategyPhase::TURN_1,
-            StrategyPhase::STRAIGHT,
-            StrategyPhase::LINE_TRACE,
-            StrategyPhase::STOP,
-            StrategyPhase::WAIT_1,
-            StrategyPhase::TURN_2,
-            StrategyPhase::CLIMB,
-            StrategyPhase::WAIT_1,
-            StrategyPhase::SUMO,
-            StrategyPhase::TURN_2,
-            StrategyPhase::STOP,
-            StrategyPhase::WAIT_2,
-            StrategyPhase::GET_OF
+            StrategyPhase::HOSHITORI,   //星取取得
+            StrategyPhase::TURN_LEFT,   //左に旋回
+            StrategyPhase::STRAIGHT,    //ライン付近まで直進
+            StrategyPhase::LINE_TRACE,  //土俵までライントレース
+            StrategyPhase::STOP,        //新幹線検知するまで停止
+            StrategyPhase::WAIT_1_SEC,  //検知後に待つ
+            StrategyPhase::TURN_LITTLE, //すこし旋回
+            StrategyPhase::CLIMB,       //登壇
+            StrategyPhase::WAIT_1_SEC,  //登壇後に機体が落ち着くまで待つ
+            StrategyPhase::SUMO,        //相撲ーSumoPhase
+            StrategyPhase::STOP,        //新幹線検知するまで停止
+            StrategyPhase::WAIT_2_SEC,  //検知後に待つ
+            StrategyPhase::GET_OF       //降段
         };
 
         //相撲攻略手順(星取り赤・青)
         std::vector<SumoPhase> sumoProcedureRorB_{
-            SumoPhase::TURN_3,
-            SumoPhase::TURN_4,
-            SumoPhase::EXTRUSION_FIRST,
-            SumoPhase::ACROSS_LINE,
-            SumoPhase::TURN_UPP,
-            SumoPhase::UPPER_STAGE,
-            SumoPhase::ACROSS_LINE,
-            SumoPhase::TURN_WRESTLER,
-            SumoPhase::EXTRUSION_SECOND,
-            SumoPhase::ACROSS_LINE,
-            SumoPhase::EXTRUSION_THIRD,
-            SumoPhase::TURN_UPP
+            SumoPhase::FIRST_TURN,      //ライン誤検知しないように旋回
+            SumoPhase::SECOND_TURN,     //ラインまで旋回
+            SumoPhase::FIRST_EXTRUSION, //一人目押し出し
+            SumoPhase::ACROSS_LINE,     //ラインを横切る
+            SumoPhase::TURN_TOP,        //上段を向く
+            SumoPhase::UPPER_STAGE,     //上段に移動
+            SumoPhase::ACROSS_LINE,     //ラインを横切る
+            SumoPhase::TURN_SIDE,       //横を向く
+            SumoPhase::SECOND_EXTRUSION,//二人目押し出し
+            SumoPhase::ACROSS_LINE,     //ラインを横切る
+            SumoPhase::THIRD_EXTRUSION, //三人目押し出し
+            SumoPhase::TURN_TOP         //上を向く
         };
 
         //相撲攻略手順(星取り黄・緑)
         std::vector<SumoPhase> sumoProcedureYorG_{
-            SumoPhase::TURN_3,
-            SumoPhase::TURN_4,
-            SumoPhase::EXTRUSION_FIRST,
-            SumoPhase::ACROSS_LINE,
-            SumoPhase::EXTRUSION_SECOND,
-            SumoPhase::ACROSS_LINE,
-            SumoPhase::TURN_UPP,
-            SumoPhase::UPPER_STAGE,
-            SumoPhase::ACROSS_LINE,
-            SumoPhase::TURN_WRESTLER,
-            SumoPhase::EXTRUSION_THIRD,
-            SumoPhase::TURN_WRESTLER
+            SumoPhase::FIRST_TURN,      //ライン誤検知しないように旋回
+            SumoPhase::SECOND_TURN,     //ラインまで旋回
+            SumoPhase::FIRST_EXTRUSION, //一人目押し出し
+            SumoPhase::ACROSS_LINE,     //ラインを横切る
+            SumoPhase::SECOND_EXTRUSION,//二人目押し出し
+            SumoPhase::ACROSS_LINE,     //ラインを横切る
+            SumoPhase::TURN_TOP,        //上段を向く
+            SumoPhase::UPPER_STAGE,     //上段に移動
+            SumoPhase::ACROSS_LINE,     //ラインを横切る
+            SumoPhase::TURN_SIDE,       //横を向く
+            SumoPhase::THIRD_EXTRUSION, //三人目押し出し
+            SumoPhase::TURN_SIDE        //上(横を向いた時の角度で)を向く
         };
 
 
@@ -159,13 +157,13 @@ namespace strategy{
         Hoshitori secondWrestlerColor_;
         Hoshitori thirdWrestlerColor_;
 
-        int angleTowardTop_;             //上に向かう角度
-        int angleTowardWrestler_;        //力士に向かう角度
+        int angleTowardTop_;                    //上に向かう角度
+        int angleTowardWrestler_;               //横に向かう角度
         drive::LineTraceEdge upperStageEdge_;   //上段に向かうライントレースのエッジ
 
-        int turnAngle2_;
-        int rSpeed_;
-        int lSpeed_;
+        int angleTowardLine_;   //ラインに向かう角度
+        int rSpeed_;            //右タイヤスピード
+        int lSpeed_;            //左タイヤスピード
 
     public:
         //コンストラクタ
@@ -184,8 +182,6 @@ namespace strategy{
          * @return 難所終了:true,攻略中:false
          */
         bool executeStrategy(StrategyPhase strategyPhase);
-
-        void setProcedure();
 
         /**
          * @brief 相撲を攻略する

@@ -25,7 +25,7 @@ namespace strategy{
         strategySuccess_        = false;
 
         hoshitori_              = Hoshitori::NONE;
-        extrusionPhase_         = ExtrusionPhase::LINE_TRACE_1;
+        extrusionPhase_         = ExtrusionPhase::START_LINE_TRACE;
     }
 
     bool ETSumoNeo::capture(){
@@ -44,6 +44,7 @@ namespace strategy{
         return strategySuccess_;
     }
 
+    //戦略手順を実行する
     bool ETSumoNeo::executeStrategy(StrategyPhase strategyPhase){
         switch(strategyPhase){
 
@@ -53,7 +54,7 @@ namespace strategy{
             return hoshitoriDetection(true);
 
         //左に100度旋回(90度だとラインから少し遠い)
-        case StrategyPhase::TURN_1:
+        case StrategyPhase::TURN_LEFT:
             return pivotTurn_->turn(100);
 
 
@@ -80,23 +81,22 @@ namespace strategy{
 
 
         //通り過ぎてから1秒間待つ
-        case StrategyPhase::WAIT_1:
+        case StrategyPhase::WAIT_1_SEC:
             startTimeMeasurement(1000);
             straightRunning_->run(0);
             return timeMeasurement_->getResult();
 
         //登壇後の動作を安定させるため少し旋回
         /////////////完全に安定させるために修正が必要/////////////
-        case StrategyPhase::TURN_2:
-            int turnAngle;
+        case StrategyPhase::TURN_LITTLE:
             //星取が青と黄のときは赤から押し出すので左寄りへ
             if(hoshitori_ == Hoshitori::BLUE ||
                 hoshitori_ == Hoshitori::GREEN){
-                turnAngle = 5;
+                return pivotTurn_->turn(5);
             }else{
-                turnAngle = -5;
+                return pivotTurn_->turn(-5);
             }
-            return pivotTurn_->turn(turnAngle);
+            return false;
 
         //登壇走行
         case StrategyPhase::CLIMB:
@@ -107,7 +107,7 @@ namespace strategy{
             return captureSumo();
 
         //検知した後すこし待つ
-        case StrategyPhase::WAIT_2:
+        case StrategyPhase::WAIT_2_SEC:
             startTimeMeasurement(2000);
             straightRunning_->run(0);
             return timeMeasurement_->getResult();
@@ -126,6 +126,7 @@ namespace strategy{
         //星取が下段の場合
         if(hoshitori_ == Hoshitori::RED || hoshitori_ == Hoshitori::BLUE){
 
+            //赤の場合
             if(hoshitori_ == Hoshitori::RED){
                 firstWrestlerColor_ = Hoshitori::BLUE;
                 secondWrestlerColor_ = Hoshitori::YELLOW;
@@ -133,7 +134,7 @@ namespace strategy{
                 upperStageEdge_ = LineTraceEdge::LEFT;
                 angleTowardTop_ = -85;
                 angleTowardWrestler_ = 85;
-                turnAngle2_ = -50;
+                angleTowardLine_ = -50;
                 rSpeed_ = -15;
                 lSpeed_ = -rSpeed_;
 
@@ -145,7 +146,7 @@ namespace strategy{
                 upperStageEdge_ = LineTraceEdge::RIGHT;
                 angleTowardTop_ = 85;
                 angleTowardWrestler_ = -85;
-                turnAngle2_ = 50;
+                angleTowardLine_ = 50;
                 rSpeed_ = 15;
                 lSpeed_ = -rSpeed_;
             }
@@ -157,7 +158,7 @@ namespace strategy{
             return procedureNumber == sumoProcedureRorB_.size();
 
         }else{//星取が上段の場合
-
+            //黄の場合
             if(hoshitori_ == Hoshitori::YELLOW){
                 firstWrestlerColor_ = Hoshitori::BLUE;
                 secondWrestlerColor_ = Hoshitori::RED;
@@ -165,7 +166,7 @@ namespace strategy{
                 upperStageEdge_ = LineTraceEdge::RIGHT;
                 angleTowardTop_ = 85;
                 angleTowardWrestler_ = -85;
-                turnAngle2_ = -50;
+                angleTowardLine_ = -50;
                 rSpeed_ = -15;
                 lSpeed_ = -rSpeed_;
 
@@ -177,7 +178,7 @@ namespace strategy{
                 upperStageEdge_ = LineTraceEdge::LEFT;
                 angleTowardTop_ = -85;
                 angleTowardWrestler_ = 85;
-                turnAngle2_ = 50;
+                angleTowardLine_ = 50;
                 rSpeed_ = 15;
                 lSpeed_ = -rSpeed_;
             }
@@ -196,51 +197,49 @@ namespace strategy{
         switch(sumoPhase){
 
         //ある程度回転...ライン上にいることもあるので
-        case SumoPhase::TURN_3:
-            return pivotTurn_->turn(turnAngle2_);
+        case SumoPhase::FIRST_TURN:
+            return pivotTurn_->turn(angleTowardLine_);
 
         //ライン検知するまで旋回
-        case SumoPhase::TURN_4:
+        case SumoPhase::SECOND_TURN:
             curveRunning_->run(rSpeed_,lSpeed_);
             return lineDetection_->getResult();
 
         //一人目の力士を押し出す
-        case SumoPhase::EXTRUSION_FIRST:
+        case SumoPhase::FIRST_EXTRUSION:
             return extrusion(firstWrestlerColor_);
 
         //二人目の力士を押し出す
-        case SumoPhase::EXTRUSION_SECOND:
+        case SumoPhase::SECOND_EXTRUSION:
             return extrusion(secondWrestlerColor_);
 
         //三人目の力士を押し出す
-        case SumoPhase::EXTRUSION_THIRD:
+        case SumoPhase::THIRD_EXTRUSION:
             return extrusion(thirdWrestlerColor_);
 
         //直角をまたぐ走行
         case SumoPhase::ACROSS_LINE:
             startDistanceMeasurement(40);
             straightRunning_->run(15);
-            //return distanceMeasurement_->getResult();
             if(distanceMeasurement_->getResult()){
-                ev3_speaker_play_tone(500,100);
+                ev3_speaker_play_tone(500,100);//音を出す
                 return true;
             }
             return false;
 
-
         //上(後段する方向)を向くように回転
-        case SumoPhase::TURN_UPP:
+        case SumoPhase::TURN_TOP:
             return pivotTurn_->turn(angleTowardTop_);
 
-        //力士を向くように回転
-        case SumoPhase::TURN_WRESTLER:
+        //横(力士)を向くように回転
+        case SumoPhase::TURN_SIDE:
             return pivotTurn_->turn(angleTowardWrestler_);
 
         //上段までライントレース
         case SumoPhase::UPPER_STAGE:
             startTimeMeasurement(1000);
             linetrace_->run(20,upperStageEdge_);
-            if(!timeMeasurement_->getResult()){break;}
+            if(!timeMeasurement_->getResult()){break;}//開始直後は直角無視
             return rightAngledDetection_->getResult(4.0);
 
         }
@@ -252,7 +251,7 @@ namespace strategy{
         static int rSpeed;     //右タイヤスピード
         static int lSpeed;     //左タイヤスピード
         static int turnAngle;  //戻るための旋回角度
-        static LineTraceEdge startEdge,endEdge2;//往復のライントレースのエッジ
+        static LineTraceEdge startEdge,endEdge;//往復のライントレースのエッジ
         //左側(赤,黄)と右側(青,緑)それぞれ同じ動作をする
         switch(wrestlerColor){
         //左側
@@ -262,7 +261,7 @@ namespace strategy{
             lSpeed = -rSpeed;
             turnAngle = -160;
             startEdge = LineTraceEdge::RIGHT;
-            endEdge2 = LineTraceEdge::LEFT;
+            endEdge = LineTraceEdge::LEFT;
             break;
 
         //右側
@@ -271,9 +270,8 @@ namespace strategy{
             rSpeed = -15;
             lSpeed = -rSpeed;
             turnAngle = 160;
-
             startEdge = LineTraceEdge::LEFT;
-            endEdge2 = LineTraceEdge::RIGHT;
+            endEdge = LineTraceEdge::RIGHT;
             break;
 
         default: return false;
@@ -281,7 +279,7 @@ namespace strategy{
 
         switch(extrusionPhase_){
         //力士までライントレース
-        case ExtrusionPhase::LINE_TRACE_1:
+        case ExtrusionPhase::START_LINE_TRACE:
             linetrace_->run(15,startEdge);
             if(hoshitoriDetection()){
                 extrusionPhase_ = ExtrusionPhase::EXTRUSION;
@@ -291,36 +289,33 @@ namespace strategy{
         //押し出し走行
         case ExtrusionPhase::EXTRUSION:
             if(extrusionRunning_->run(SUMO_EXTRUSION_SPEED,SUMO_EXTRUSION_DISTANCE)){
-                extrusionPhase_ = ExtrusionPhase::TURN_1;
+                extrusionPhase_ = ExtrusionPhase::FIRST_TURN;
             }
             break;
 
         //星取を誤検知しないように170度旋回しておきたい
-        case ExtrusionPhase::TURN_1:
+        case ExtrusionPhase::FIRST_TURN:
             if(pivotTurn_->turn(turnAngle)){
-                extrusionPhase_ = ExtrusionPhase::TURN_2;
+                extrusionPhase_ = ExtrusionPhase::SECOND_TURN;
             }
             break;
 
         //ラインまで旋回
-        case ExtrusionPhase::TURN_2:
+        case ExtrusionPhase::SECOND_TURN:
             curveRunning_->run(-rSpeed,-lSpeed);
             if(lineDetection_->getResult()){
                 timeMeasurement_->setBaseTime();
                 timeMeasurement_->setTargetTime(1000);
-                extrusionPhase_ = ExtrusionPhase::LINE_TRACE_2;
+                extrusionPhase_ = ExtrusionPhase::END_LINE_TRACE;
             }
             break;
 
         //直角までライントレース
-        case ExtrusionPhase::LINE_TRACE_2:
-            linetrace_->run(20,endEdge2);
-            //直角誤検知しないように
-            if(!timeMeasurement_->getResult()){
-                break;
-            }
+        case ExtrusionPhase::END_LINE_TRACE:
+            linetrace_->run(20,endEdge);
+            if(!timeMeasurement_->getResult()){break;}//直角誤検知しないように
             if(rightAngledDetection_->getResult()){
-                extrusionPhase_ = ExtrusionPhase::LINE_TRACE_1;//状態を戻しておく
+                extrusionPhase_ = ExtrusionPhase::START_LINE_TRACE;//状態を戻しておく
                 return true;
             }
             break;
