@@ -206,7 +206,6 @@ namespace strategy{
         /**
          * @brief 距離検知を開始する
          * @details setTarget,startを同時に行い、フラグ管理も行う
-         *
          * @param distance 検知する距離
          */
         void startDistanceMeasurement(int distance);
@@ -214,7 +213,6 @@ namespace strategy{
         /**
          * @brief 時間検知を開始する
          * @details setBase,setTargetを同時に行い、フラグ管理も行う
-         *
          * @param time 検知する時間
          */
         void startTimeMeasurement(int time);

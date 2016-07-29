@@ -59,13 +59,13 @@ namespace strategy{
 
         //ラインに近づくように直進走行
         case StrategyPhase::STRAIGHT:
-            startDistanceMeasurement(200);
+            startDistanceMeasurement(190);
             straightRunning_->run(30);
             return distanceMeasurement_->getResult();
 
         //土俵手前までライントレース
         case StrategyPhase::LINE_TRACE:
-            startDistanceMeasurement(1000);
+            startDistanceMeasurement(1050);
             linetrace_->run(30,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
@@ -98,7 +98,7 @@ namespace strategy{
 
         //登壇走行
         case StrategyPhase::CLIMB:
-            return climbingRunning_->run(40,430);
+            return climbingRunning_->run(40,420);
 
          //相撲
          case StrategyPhase::SUMO:
@@ -141,7 +141,7 @@ namespace strategy{
 
     //相撲...登壇後から降壇前まで
     bool ETSumoNeo::executeSumo(SumoPhase sumoPhase){
-        static bool initialized = false;//初期化を行ったかどうか
+        static bool initialized = false;
         static Hoshitori firstWrestlerColor;
         static Hoshitori secondWrestlerColor;
         static Hoshitori thirdWrestlerColor;
