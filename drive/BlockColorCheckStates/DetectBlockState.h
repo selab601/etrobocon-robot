@@ -21,7 +21,7 @@ namespace drive {
     public:
         DetectBlockState();
         ~DetectBlockState();
-        bool executed(colorset_t* result);
+        bool isExecuted(colorset_t* result);
     };
 }
 

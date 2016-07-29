@@ -19,7 +19,7 @@ namespace drive {
     public:
         DetectTableState();
         ~DetectTableState();
-        bool executed(colorset_t* result);
+        bool isExecuted(colorset_t* result);
     };
 }
 

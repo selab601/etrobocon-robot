@@ -8,7 +8,7 @@ namespace drive {
 
     bool BlockColorCheck::isExecuted(colorset_t* result) {
         // 実行中
-        if (executingState_->executed(result) == false) {
+        if (executingState_->isExecuted(result) == false) {
             return false;
         }
 

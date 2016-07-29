@@ -11,7 +11,7 @@ namespace drive {
 
     class IBlockColorCheckState {
     public:
-        virtual bool executed(colorset_t* result) = 0;
+        virtual bool isExecuted(colorset_t* result) = 0;
     };
 }
 

@@ -17,7 +17,7 @@ namespace drive {
 
     DetectBlockState::~DetectBlockState() {}
 
-    bool DetectBlockState::executed(colorset_t* result) {
+    bool DetectBlockState::isExecuted(colorset_t* result) {
         if (initialized_ == false) {
             distanceMeasure_->startMeasurement();
             initialized_ = true;

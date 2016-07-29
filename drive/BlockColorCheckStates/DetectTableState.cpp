@@ -13,7 +13,7 @@ namespace drive {
 
     DetectTableState::~DetectTableState() {}
 
-    bool DetectTableState::executed(colorset_t* result) {
+    bool DetectTableState::isExecuted(colorset_t* result) {
         // TODO: 距離でセーフティをかける
         colorid_t color = colorDetection_->getResult();
         if (color == COLOR_RED
