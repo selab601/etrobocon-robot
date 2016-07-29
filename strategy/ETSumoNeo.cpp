@@ -124,64 +124,12 @@ namespace strategy{
         static unsigned int procedureNumber = 0;
         //星取が下段の場合
         if(hoshitori_ == Hoshitori::RED || hoshitori_ == Hoshitori::BLUE){
-
-            //赤の場合
-            if(hoshitori_ == Hoshitori::RED){
-                firstWrestlerColor_ = Hoshitori::BLUE;
-                secondWrestlerColor_ = Hoshitori::YELLOW;
-                thirdWrestlerColor_ = Hoshitori::GREEN;
-                upperStageEdge_ = LineTraceEdge::LEFT;
-                angleTowardTop_ = -85;
-                angleTowardWrestler_ = 85;
-                angleTowardLine_ = -50;
-                rSpeed_ = -15;
-                lSpeed_ = -rSpeed_;
-
-            //青の場合
-            }else{
-                firstWrestlerColor_ = Hoshitori::RED;
-                secondWrestlerColor_ = Hoshitori::GREEN;
-                thirdWrestlerColor_ = Hoshitori::YELLOW;
-                upperStageEdge_ = LineTraceEdge::RIGHT;
-                angleTowardTop_ = 85;
-                angleTowardWrestler_ = -85;
-                angleTowardLine_ = 50;
-                rSpeed_ = 15;
-                lSpeed_ = -rSpeed_;
-            }
-
             if(executeSumo(sumoProcedureRorB_[procedureNumber])){
                 procedureNumber++;
                 hasExecutedPhase_ = false;
             }
             return procedureNumber == sumoProcedureRorB_.size();
-
         }else{//星取が上段の場合
-            //黄の場合
-            if(hoshitori_ == Hoshitori::YELLOW){
-                firstWrestlerColor_ = Hoshitori::BLUE;
-                secondWrestlerColor_ = Hoshitori::RED;
-                thirdWrestlerColor_ = Hoshitori::GREEN;
-                upperStageEdge_ = LineTraceEdge::RIGHT;
-                angleTowardTop_ = 85;
-                angleTowardWrestler_ = -85;
-                angleTowardLine_ = -50;
-                rSpeed_ = -15;
-                lSpeed_ = -rSpeed_;
-
-            //緑の場合
-            }else{
-                firstWrestlerColor_ = Hoshitori::RED;
-                secondWrestlerColor_ = Hoshitori::BLUE;
-                thirdWrestlerColor_ = Hoshitori::YELLOW;
-                upperStageEdge_ = LineTraceEdge::LEFT;
-                angleTowardTop_ = -85;
-                angleTowardWrestler_ = 85;
-                angleTowardLine_ = 50;
-                rSpeed_ = 15;
-                lSpeed_ = -rSpeed_;
-            }
-
             if(executeSumo(sumoProcedureYorG_[procedureNumber])){
                 procedureNumber++;
                 hasExecutedPhase_ = false;
@@ -193,27 +141,93 @@ namespace strategy{
 
     //相撲...登壇後から降壇前まで
     bool ETSumoNeo::executeSumo(SumoPhase sumoPhase){
+        static bool initialized = false;//初期化を行ったかどうか
+        static Hoshitori firstWrestlerColor;
+        static Hoshitori secondWrestlerColor;
+        static Hoshitori thirdWrestlerColor;
+        static LineTraceEdge upperStageEdge;
+        static int angleTowardTop;
+        static int angleTowardSide;
+        static int angleTowardLine;
+        static int rSpeed;
+        static int lSpeed;
+
+        if(!initialized){
+            switch(hoshitori_){
+            //赤の場合
+            case Hoshitori::RED:
+                firstWrestlerColor = Hoshitori::BLUE;
+                secondWrestlerColor = Hoshitori::YELLOW;
+                thirdWrestlerColor = Hoshitori::GREEN;
+                upperStageEdge = LineTraceEdge::LEFT;
+                angleTowardTop = -85;
+                angleTowardSide = 85;
+                angleTowardLine = -50;
+                rSpeed = -15;
+                lSpeed = -rSpeed;
+                break;
+            //青の場合
+            case Hoshitori::BLUE:
+                firstWrestlerColor = Hoshitori::RED;
+                secondWrestlerColor = Hoshitori::GREEN;
+                thirdWrestlerColor = Hoshitori::YELLOW;
+                upperStageEdge = LineTraceEdge::RIGHT;
+                angleTowardTop = 85;
+                angleTowardSide = -85;
+                angleTowardLine = 50;
+                rSpeed = 15;
+                lSpeed = -rSpeed;
+                break;
+            //黄の場合
+            case Hoshitori::YELLOW:
+                firstWrestlerColor = Hoshitori::BLUE;
+                secondWrestlerColor = Hoshitori::RED;
+                thirdWrestlerColor = Hoshitori::GREEN;
+                upperStageEdge = LineTraceEdge::RIGHT;
+                angleTowardTop = 85;
+                angleTowardSide = -85;
+                angleTowardLine = -50;
+                rSpeed = -15;
+                lSpeed = -rSpeed;
+                break;
+            //緑の場合
+            case Hoshitori::GREEN:
+                firstWrestlerColor = Hoshitori::RED;
+                secondWrestlerColor = Hoshitori::BLUE;
+                thirdWrestlerColor = Hoshitori::YELLOW;
+                upperStageEdge = LineTraceEdge::LEFT;
+                angleTowardTop = -85;
+                angleTowardSide = 85;
+                angleTowardLine = 50;
+                rSpeed = 15;
+                lSpeed = -rSpeed;
+                break;
+            default: return false;
+            }
+            initialized = true;
+        }
+
         switch(sumoPhase){
         //ある程度回転...ライン上にいることもあるので
         case SumoPhase::FIRST_TURN:
-            return pivotTurn_->turn(angleTowardLine_);
+            return pivotTurn_->turn(angleTowardLine);
 
         //ライン検知するまで旋回
         case SumoPhase::SECOND_TURN:
-            curveRunning_->run(rSpeed_,lSpeed_);
+            curveRunning_->run(rSpeed,lSpeed);
             return lineDetection_->getResult();
 
         //一人目の力士を押し出す
         case SumoPhase::FIRST_EXTRUSION:
-            return extrusion(firstWrestlerColor_);
+            return extrusion(firstWrestlerColor);
 
         //二人目の力士を押し出す
         case SumoPhase::SECOND_EXTRUSION:
-            return extrusion(secondWrestlerColor_);
+            return extrusion(secondWrestlerColor);
 
         //三人目の力士を押し出す
         case SumoPhase::THIRD_EXTRUSION:
-            return extrusion(thirdWrestlerColor_);
+            return extrusion(thirdWrestlerColor);
 
         //直角をまたぐ走行
         case SumoPhase::ACROSS_LINE:
@@ -227,30 +241,31 @@ namespace strategy{
 
         //上(後段する方向)を向くように回転
         case SumoPhase::TURN_TOP:
-            return pivotTurn_->turn(angleTowardTop_);
+            return pivotTurn_->turn(angleTowardTop);
 
         //横(力士)を向くように回転
         case SumoPhase::TURN_SIDE:
-            return pivotTurn_->turn(angleTowardWrestler_);
+            return pivotTurn_->turn(angleTowardSide);
 
         //上段までライントレース
         case SumoPhase::UPPER_STAGE:
             startTimeMeasurement(1000);
-            linetrace_->run(20,upperStageEdge_);
+            linetrace_->run(20,upperStageEdge);
             if(!timeMeasurement_->getResult()){break;}//開始直後は直角無視
             return rightAngledDetection_->getResult(4.0);
 
         default: return false;
         }
+        return false;
     }
 
     //中央線から力士を押し出して戻って来る
     bool ETSumoNeo::extrusion(Hoshitori wrestlerColor){
+        static bool initialized = false;
         static int rSpeed;     //右タイヤスピード
         static int lSpeed;     //左タイヤスピード
         static int turnAngle;  //戻るための旋回角度
         static LineTraceEdge startEdge,endEdge;//往復のライントレースのエッジ
-        static bool initialized = false;
 
         if(!initialized){
             //左側(赤,黄)と右側(青,緑)それぞれ同じ動作をする
@@ -319,12 +334,12 @@ namespace strategy{
             if(!timeMeasurement_->getResult()){break;}//直角誤検知しないように
             if(rightAngledDetection_->getResult()){
                 extrusionPhase_ = ExtrusionPhase::START_LINE_TRACE;//状態を戻しておく
+                initialized = false;
                 return true;
             }
             break;
-
-        default: return false;
         }
+        return false;
     }
 
     bool ETSumoNeo::hoshitoriDetection(bool saveHoshitori){

@@ -151,20 +151,6 @@ namespace strategy{
 
         //難所クリアしたかどうか
         bool strategySuccess_;
-
-        //押し出す力士の色
-        Hoshitori firstWrestlerColor_;
-        Hoshitori secondWrestlerColor_;
-        Hoshitori thirdWrestlerColor_;
-
-        int angleTowardTop_;                    //上に向かう角度
-        int angleTowardWrestler_;               //横に向かう角度
-        drive::LineTraceEdge upperStageEdge_;   //上段に向かうライントレースのエッジ
-
-        int angleTowardLine_;   //ラインに向かう角度
-        int rSpeed_;            //右タイヤスピード
-        int lSpeed_;            //左タイヤスピード
-
     public:
         //コンストラクタ
         ETSumoNeo();
