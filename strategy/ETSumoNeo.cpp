@@ -96,7 +96,7 @@ namespace strategy{
 
         //登壇走行
         case StrategyPhase::CLIMB:
-            return climbingRunning_->run(40,420);
+            return climbingRunning_->run(40,410);
 
          //相撲
          case StrategyPhase::SUMO:
