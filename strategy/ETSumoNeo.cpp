@@ -22,7 +22,7 @@ namespace strategy{
         hasExecutedPhase_       = false;
         strategySuccess_        = false;
 
-        hoshitori_              = Hoshitori::NONE;
+        hoshitori_              = Hoshitori::YELLOW;
         extrusionPhase_         = ExtrusionPhase::START_LINE_TRACE;
     }
 
@@ -273,8 +273,14 @@ namespace strategy{
         if(!initialized){
             //左側(赤,黄)と右側(青,緑)それぞれ同じ動作をする
             switch(wrestlerColor){
-            //左側
             case Hoshitori::RED:
+                rSpeed = 15;
+                lSpeed = -rSpeed;
+                turnAngle = 200;
+                startEdge = LineTraceEdge::RIGHT;
+                endEdge = LineTraceEdge::LEFT;
+            break;
+
             case Hoshitori::YELLOW:
                 rSpeed = 15;
                 lSpeed = -rSpeed;
@@ -283,8 +289,14 @@ namespace strategy{
                 endEdge = LineTraceEdge::LEFT;
                 break;
 
-            //右側
             case Hoshitori::BLUE:
+                rSpeed = -15;
+                lSpeed = -rSpeed;
+                turnAngle = -200;
+                startEdge = LineTraceEdge::LEFT;
+                endEdge = LineTraceEdge::RIGHT;
+                break;
+
             case Hoshitori::GREEN:
                 rSpeed = -15;
                 lSpeed = -rSpeed;
@@ -314,7 +326,7 @@ namespace strategy{
             }
             break;
 
-        //星取を誤検知しないように170度旋回しておきたい
+        //台座を誤検知しないように旋回しておきたい
         case ExtrusionPhase::FIRST_TURN:
             if(pivotTurn_->turn(turnAngle)){
                 extrusionPhase_ = ExtrusionPhase::SECOND_TURN;
