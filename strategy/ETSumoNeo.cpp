@@ -50,20 +50,25 @@ namespace strategy{
             linetrace_->run(20,LineTraceEdge::RIGHT);
             return hoshitoriDetection(true);
 
-        //左に100度旋回(90度だとラインから少し遠い)
-        case StrategyPhase::TURN_LEFT:
-            return pivotTurn_->turn(100);
+        case StrategyPhase::BACK:
+            startDistanceMeasurement(100);
+            straightRunning_->run(-20);
+            return distanceMeasurement_->getResult();
 
+        //左に60度旋回
+        case StrategyPhase::TURN_LEFT:
+            return pivotTurn_->turn(80);
 
         //ラインに近づくように直進走行
         case StrategyPhase::STRAIGHT:
-            startDistanceMeasurement(190);
-            straightRunning_->run(30);
-            return distanceMeasurement_->getResult();
+            //startDistanceMeasurement(100);
+            straightRunning_->run(20);
+            //return distanceMeasurement_->getResult();
+            return lineDetection_->getResult();
 
         //土俵手前までライントレース
         case StrategyPhase::LINE_TRACE:
-            startDistanceMeasurement(1050);
+            startDistanceMeasurement(1180);
             linetrace_->run(30,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 

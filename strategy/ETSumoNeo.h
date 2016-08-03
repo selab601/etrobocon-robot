@@ -25,6 +25,7 @@ namespace strategy{
         //ET相撲Neoの走行状態
         enum class StrategyPhase{
             HOSHITORI,
+            BACK,
             TURN_LEFT,
             STRAIGHT,
             LINE_TRACE,
@@ -71,6 +72,7 @@ namespace strategy{
         //難所攻略手順
         std::vector<StrategyPhase> strategyProcedure_{
             StrategyPhase::HOSHITORI,   //星取取得
+            StrategyPhase::BACK,
             StrategyPhase::TURN_LEFT,   //左に旋回
             StrategyPhase::STRAIGHT,    //ライン付近まで直進
             StrategyPhase::LINE_TRACE,  //土俵までライントレース
