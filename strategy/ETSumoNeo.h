@@ -34,6 +34,9 @@ namespace strategy{
             TURN_LITTLE,
             CLIMB,
             WAIT_2_SEC,
+            BACK_TO_LINE,
+            STRAIGHT_LITTLE,
+            TURN_TO_LINE,
             SUMO,
             GET_OF
         };
@@ -45,8 +48,8 @@ namespace strategy{
             THIRD_EXTRUSION,
             TURN_TOP,
             TURN_SIDE,
-            FIRST_TURN,
-            SECOND_TURN,
+            // FIRST_TURN,
+            // SECOND_TURN,
             UPPER_STAGE,
             ACROSS_LINE
         };
@@ -71,26 +74,26 @@ namespace strategy{
 
         //難所攻略手順
         std::vector<StrategyPhase> strategyProcedure_{
-            StrategyPhase::HOSHITORI,   //星取取得
-            StrategyPhase::BACK,
-            StrategyPhase::TURN_LEFT,   //左に旋回
-            StrategyPhase::STRAIGHT,    //ライン付近まで直進
-            StrategyPhase::LINE_TRACE,  //土俵までライントレース
-            StrategyPhase::STOP,        //新幹線検知するまで停止
-            StrategyPhase::WAIT_1_SEC,  //検知後に待つ
-            StrategyPhase::TURN_LITTLE, //すこし旋回
-            StrategyPhase::CLIMB,       //登壇
-            StrategyPhase::WAIT_1_SEC,  //登壇後に機体が落ち着くまで待つ
-            StrategyPhase::SUMO,        //相撲ーSumoPhase
-            StrategyPhase::STOP,        //新幹線検知するまで停止
-            StrategyPhase::WAIT_2_SEC,  //検知後に待つ
-            StrategyPhase::GET_OF       //降段
+            StrategyPhase::HOSHITORI,       //星取取得
+            StrategyPhase::BACK,            //星取を踏まないようにバック
+            StrategyPhase::TURN_LEFT,       //左に旋回
+            StrategyPhase::STRAIGHT,        //ラインまで直進
+            StrategyPhase::LINE_TRACE,      //土俵までライントレース
+            StrategyPhase::STOP,            //新幹線検知するまで停止
+            StrategyPhase::WAIT_1_SEC,      //検知後に待つ
+            StrategyPhase::TURN_LITTLE,     //すこし旋回
+            StrategyPhase::CLIMB,           //登壇
+            StrategyPhase::WAIT_1_SEC,      //登壇後に機体が落ち着くまで待つ
+            StrategyPhase::TURN_TO_LINE,    //横を向く(ラインの近くが理想)
+            StrategyPhase::BACK_TO_LINE,    //中央線までバック
+            StrategyPhase::SUMO,            //相撲ーSumoPhase
+            StrategyPhase::STOP,            //新幹線検知するまで停止
+            StrategyPhase::WAIT_2_SEC,      //検知後に待つ
+            StrategyPhase::GET_OF           //降段
         };
 
         //相撲攻略手順(星取り赤・青)
         std::vector<SumoPhase> sumoProcedureRorB_{
-            SumoPhase::FIRST_TURN,      //ライン誤検知しないように旋回
-            SumoPhase::SECOND_TURN,     //ラインまで旋回
             SumoPhase::FIRST_EXTRUSION, //一人目押し出し
             SumoPhase::ACROSS_LINE,     //ラインを横切る
             SumoPhase::TURN_TOP,        //上段を向く
@@ -105,8 +108,6 @@ namespace strategy{
 
         //相撲攻略手順(星取り黄・緑)
         std::vector<SumoPhase> sumoProcedureYorG_{
-            SumoPhase::FIRST_TURN,      //ライン誤検知しないように旋回
-            SumoPhase::SECOND_TURN,     //ラインまで旋回
             SumoPhase::FIRST_EXTRUSION, //一人目押し出し
             SumoPhase::ACROSS_LINE,     //ラインを横切る
             SumoPhase::SECOND_EXTRUSION,//二人目押し出し

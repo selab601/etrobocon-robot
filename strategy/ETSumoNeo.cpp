@@ -55,20 +55,18 @@ namespace strategy{
             straightRunning_->run(-20);
             return distanceMeasurement_->getResult();
 
-        //左に60度旋回
+        //左に80度旋回
         case StrategyPhase::TURN_LEFT:
             return pivotTurn_->turn(80);
 
         //ラインに近づくように直進走行
         case StrategyPhase::STRAIGHT:
-            //startDistanceMeasurement(100);
             straightRunning_->run(20);
-            //return distanceMeasurement_->getResult();
             return lineDetection_->getResult();
 
         //土俵手前までライントレース
         case StrategyPhase::LINE_TRACE:
-            startDistanceMeasurement(1180);
+            startDistanceMeasurement(1100);
             linetrace_->run(30,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
@@ -88,20 +86,32 @@ namespace strategy{
             return timeMeasurement_->getResult();
 
         //登壇後の動作を安定させるため少し旋回
-        /////////////完全に安定させるために修正が必要/////////////
         case StrategyPhase::TURN_LITTLE:
             //星取が青と黄のときは赤から押し出すので左寄りへ
             if(hoshitori_ == Hoshitori::BLUE ||
                 hoshitori_ == Hoshitori::GREEN){
-                return pivotTurn_->turn(5);
+                return pivotTurn_->turn(7);
             }else{
-                return pivotTurn_->turn(-5);
+                return pivotTurn_->turn(-7);
             }
-            return false;
 
         //登壇走行
         case StrategyPhase::CLIMB:
-            return climbingRunning_->run(40,410);
+            return climbingRunning_->run(40,450);
+
+        //横を向くまで旋回
+        case StrategyPhase::TURN_TO_LINE:
+            if(hoshitori_ == Hoshitori::BLUE ||
+                hoshitori_ == Hoshitori::GREEN){
+                return pivotTurn_->turn(83);
+            }else{
+                return pivotTurn_->turn(-83);
+            }
+
+        //ラインまでバック
+        case StrategyPhase::BACK_TO_LINE:
+            straightRunning_->run(-20);
+            return lineDetection_->getResult();
 
          //相撲
          case StrategyPhase::SUMO:
@@ -151,9 +161,6 @@ namespace strategy{
         static LineTraceEdge upperStageEdge;    //上段に移動するライントレースのエッジ
         static int angleTowardTop;              //上段を向く角度
         static int angleTowardSide;             //力士の方向を向く角度
-        static int angleTowardLine;             //ラインに向かう角度
-        static int rSpeed;                      //右タイヤスピード
-        static int lSpeed;                      //左タイヤスピード
 
         if(!initialized){
             switch(hoshitori_){
@@ -165,9 +172,6 @@ namespace strategy{
                 upperStageEdge = LineTraceEdge::LEFT;
                 angleTowardTop = -85;
                 angleTowardSide = 85;
-                angleTowardLine = -50;
-                rSpeed = -15;
-                lSpeed = -rSpeed;
                 break;
             //青の場合
             case Hoshitori::BLUE:
@@ -177,9 +181,6 @@ namespace strategy{
                 upperStageEdge = LineTraceEdge::RIGHT;
                 angleTowardTop = 85;
                 angleTowardSide = -85;
-                angleTowardLine = 50;
-                rSpeed = 15;
-                lSpeed = -rSpeed;
                 break;
             //黄の場合
             case Hoshitori::YELLOW:
@@ -189,9 +190,6 @@ namespace strategy{
                 upperStageEdge = LineTraceEdge::RIGHT;
                 angleTowardTop = 85;
                 angleTowardSide = -85;
-                angleTowardLine = -50;
-                rSpeed = -15;
-                lSpeed = -rSpeed;
                 break;
             //緑の場合
             case Hoshitori::GREEN:
@@ -201,9 +199,6 @@ namespace strategy{
                 upperStageEdge = LineTraceEdge::LEFT;
                 angleTowardTop = -85;
                 angleTowardSide = 85;
-                angleTowardLine = 50;
-                rSpeed = 15;
-                lSpeed = -rSpeed;
                 break;
             default: return false;
             }
@@ -211,15 +206,6 @@ namespace strategy{
         }
 
         switch(sumoPhase){
-        //ある程度回転...ライン上にいることもあるので
-        case SumoPhase::FIRST_TURN:
-            return pivotTurn_->turn(angleTowardLine);
-
-        //ライン検知するまで旋回
-        case SumoPhase::SECOND_TURN:
-            curveRunning_->run(rSpeed,lSpeed);
-            return lineDetection_->getResult();
-
         //一人目の力士を押し出す
         case SumoPhase::FIRST_EXTRUSION:
             return extrusion(firstWrestlerColor);
