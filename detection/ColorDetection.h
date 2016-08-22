@@ -2,22 +2,37 @@
 #define _COLOR_DETECTION_H
 
 #include "../device/ColorSensor.h"
+#include <vector>
 #include <ev3api.h>
 
 namespace detection{
-  class ColorDetection{
-  private:
-    rgb_raw_t rgbColor_;             //! rgb値
-    double greenPerRed_,bluePerRed_; //! g値/r値, b値/r値 
-    device::ColorSensor* colorSensor_;
-  public:
-    ColorDetection();
+    // rgb_raw_t に合わせた記法を採用(スネークケース)
+    typedef struct hsv_raw {
+        int h;
+        int s;
+        int v;
+    } hsv_raw_t;
 
-  /**
-   * @brief 検知した色を返す
-   * @return 色
-   */
-     colorid_t getResult();
-  };
+    class ColorDetection{
+    private:
+        rgb_raw_t rgbColor_;             //! rgb値
+        double greenPerRed_,bluePerRed_; //! g値/r値, b値/r値 
+        device::ColorSensor* colorSensor_;
+    public:
+        ColorDetection();
+
+        /**
+         * @brief 検知した色を返す
+         * @return 色
+         */
+        colorid_t getResult();
+
+        /**
+         * @brief RGB値をHSV値に変換する
+         * @return HSV値
+         */
+        static hsv_raw_t Rgb2Hsv(rgb_raw_t rgbValue);
+    };
 }
+
 #endif
