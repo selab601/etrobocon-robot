@@ -13,6 +13,7 @@ namespace drive {
         motors_ = Motors::getInstance();
         colorDetection_ = new ColorDetection();
         initialized_ = false;
+        colorChecker_ = BlockColorChecker();
     }
 
     DetectBlockState::~DetectBlockState() {}
@@ -41,8 +42,11 @@ namespace drive {
         motors_->setPWM(motor_kind::MOTOR_ARM, 0);
 
         // 色を読む
-        // TODO: ダメだったときどうするか
-        result->blockColor = colorDetection_->getResult();
+        colorid_t* tmpColor = new colorid_t;
+        if (colorChecker_.isExecuted(tmpColor) == false) {
+            return false;
+        }
+        result->blockColor = *tmpColor;
 
         return true;
     }

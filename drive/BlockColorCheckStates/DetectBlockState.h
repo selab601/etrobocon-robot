@@ -8,6 +8,7 @@
 #include "drive/StraightRunning.h"
 #include "device/Motors.h"
 #include "detection/ColorDetection.h"
+#include "./BlockColorChecker.h"
 
 namespace drive {
     class DetectBlockState : public IBlockColorCheckState {
@@ -18,6 +19,7 @@ namespace drive {
         device::Motors* motors_;
         detection::ColorDetection* colorDetection_;
         bool initialized_;
+        BlockColorChecker colorChecker_;
     public:
         DetectBlockState();
         ~DetectBlockState();
