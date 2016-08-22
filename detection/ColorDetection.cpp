@@ -17,9 +17,9 @@ namespace detection{
         int hueValue = hsv.h;
 
         colorid_t result;
-        if (hsv.v <= 20) {
+        if (hsv.v <= 60) {
             result = COLOR_BLACK;
-        } else if (hsv.s <= 90) {
+        } else if (hsv.s <= 160) {
             result = COLOR_WHITE;
         } else if (hueValue >= 0 && hueValue <= 10) {
             result = COLOR_RED;
