@@ -13,7 +13,7 @@ namespace detection{
         greenPerRed_ = rgbColor_.g*(1.0)/(rgbColor_.r + 0.01);  //! r値とg値の比
         bluePerRed_ = rgbColor_.b*(1.0)/(rgbColor_.r + 0.01);   //! r値とb値の比
 
-        hsv_raw_t hsv = detection::ColorDetection::Rgb2Hsv(aveRGB);
+        hsv_raw_t hsv = detection::ColorDetection::Rgb2Hsv(rgbColor_);
         int hueValue = hsv.h;
 
         colorid_t result;
