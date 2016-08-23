@@ -4,6 +4,7 @@
 #include "BlockColorCheckStates/IBlockColorCheckState.h"
 #include "BlockColorCheckStates/DetectTableState.h"
 #include "BlockColorCheckStates/DetectBlockState.h"
+#include "BlockColorCheckStates/BackToLineState.h"
 #include "ev3api.h"
 #include <queue>
 

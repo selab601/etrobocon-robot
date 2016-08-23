@@ -34,7 +34,6 @@ namespace drive {
         straight_->run(0);
 
         // アームを上げて色を見る
-        // TODO: 色がうまく取れなかった時．前後に動いてみる？
         if (countMeasure_->comparedWithTargetCount() == PlusOrMinus::PLUS) {
             motors_->setPWM(motor_kind::MOTOR_ARM, 10);
             return false;

@@ -9,6 +9,7 @@ namespace drive {
         // ただし，最初の手順は直接 executingState_ (現在実行中の状態) に格納する
         executingState_ = new DetectTableState();
         states_.push(new DetectBlockState());
+        states_.push(new BackToLineState());
     }
 
     bool BlockColorCheck::isExecuted(colorset_t* result) {
