@@ -4,9 +4,9 @@ using namespace device;
 using namespace std;
 
 namespace detection{
-  ColorDetection::ColorDetection(){
-    colorSensor_ = ColorSensor::getInstance();
-  }
+    ColorDetection::ColorDetection(){
+        colorSensor_ = ColorSensor::getInstance();
+    }
 
     colorid_t ColorDetection::getResult(){
         colorSensor_->getRawColor(rgbColor_);
