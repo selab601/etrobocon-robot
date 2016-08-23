@@ -1,13 +1,13 @@
 #ifndef BLOCK_COLOR_CHECKER
 #define BLOCK_COLOR_CHECKER
 
-#include "../../device/ColorSensor.h"
-#include "../../detection/ColorDetection.h"
-#include "../../measurement/TimeMeasurement.h"
+#include "device/ColorSensor.h"
+#include "device/Display.h"
+#include "detection/ColorDetection.h"
+#include "measurement/TimeMeasurement.h"
 #include <ev3api.h>
 #include <vector>
 #include <queue>
-#include "../../device/Display.h"
 
 namespace drive {
     class BlockColorChecker {

@@ -1,7 +1,7 @@
 #ifndef BACK_TO_LINE_STATE_H_
 #define BACK_TO_LINE_STATE_H_
 
-#include "IBlockColorCheckState.h"
+#include "IBlockColorGetterState.h"
 #include "device/Motors.h"
 #include "drive/StraightRunning.h"
 #include "measurement/CountMeasurement.h"
@@ -10,7 +10,7 @@
 #include <queue>
 
 namespace drive {
-    class BackToLineState : public IBlockColorCheckState {
+    class BackToLineState : public IBlockColorGetterState {
     private:
         const static int ANGLE = 35;
         enum class BACK_STATE {

@@ -1,21 +1,21 @@
 #ifndef BLOCK_COLOR_CHECK_H_
 #define BLOCK_COLOR_CHECK_H_
 
-#include "BlockColorCheckStates/IBlockColorCheckState.h"
-#include "BlockColorCheckStates/DetectTableState.h"
-#include "BlockColorCheckStates/DetectBlockState.h"
-#include "BlockColorCheckStates/BackToLineState.h"
+#include "BlockColorGetterStates/IBlockColorGetterState.h"
+#include "BlockColorGetterStates/DetectTableState.h"
+#include "BlockColorGetterStates/DetectBlockState.h"
+#include "BlockColorGetterStates/BackToLineState.h"
 #include "ev3api.h"
 #include <queue>
 
 namespace drive {
-    class BlockColorCheck {
+    class BlockColorGetter {
     private:
-        IBlockColorCheckState* executingState_;
-        std::queue<IBlockColorCheckState*> states_;
+        IBlockColorGetterState* executingState_;
+        std::queue<IBlockColorGetterState*> states_;
 
     public:
-        BlockColorCheck();
+        BlockColorGetter();
 
         /**
          * @brief

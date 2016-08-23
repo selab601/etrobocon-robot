@@ -1,5 +1,5 @@
-#ifndef IBLOCK_COLOR_CHECK_H_
-#define IBLOCK_COLOR_CHECK_H_
+#ifndef IBLOCK_COLOR_GETTER_H_
+#define IBLOCK_COLOR_GETTER_H_
 
 #include "ev3api.h"
 
@@ -9,7 +9,7 @@ namespace drive {
         colorid_t tableColor;
     } colorset_t;
 
-    class IBlockColorCheckState {
+    class IBlockColorGetterState {
     public:
         virtual bool isExecuted(colorset_t* result) = 0;
     };

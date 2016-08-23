@@ -1,7 +1,7 @@
-#include "BlockColorCheck.h"
+#include "BlockColorGetter.h"
 
 namespace drive {
-    BlockColorCheck::BlockColorCheck() {
+    BlockColorGetter::BlockColorGetter() {
         // キューに状態を順番に詰める．
         // 今のところは以下の順序
         //   1. table(台座)検知&色取得 (DetectTableState)
@@ -12,7 +12,7 @@ namespace drive {
         states_.push(new BackToLineState());
     }
 
-    bool BlockColorCheck::isExecuted(colorset_t* result) {
+    bool BlockColorGetter::isExecuted(colorset_t* result) {
         // 現在の状態(executingState_)実行中
         if (executingState_->isExecuted(result) == false) {
             return false;

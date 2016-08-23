@@ -1,17 +1,17 @@
 #ifndef DETECT_BLOCK_STATE_H_
 #define DETECT_BLOCK_STATE_H_
 
-#include "IBlockColorCheckState.h"
+#include "IBlockColorGetterState.h"
 #include "DetectTableState.h"
+#include "BlockColorChecker.h"
 #include "measurement/DistanceMeasurement.h"
 #include "measurement/CountMeasurement.h"
 #include "drive/StraightRunning.h"
 #include "device/Motors.h"
 #include "detection/ColorDetection.h"
-#include "./BlockColorChecker.h"
 
 namespace drive {
-    class DetectBlockState : public IBlockColorCheckState {
+    class DetectBlockState : public IBlockColorGetterState {
     private:
         measurement::DistanceMeasurement* distanceMeasure_;
         measurement::CountMeasurement* countMeasure_;
