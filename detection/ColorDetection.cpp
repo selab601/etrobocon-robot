@@ -57,8 +57,8 @@ namespace detection{
 
         vector<float>::iterator minPtr = min_element(rgb.begin(), rgb.end());
         vector<float>::iterator maxPtr = max_element(rgb.begin(), rgb.end());
-        int iMaxValue = (int)std::distance(rgb.begin(), minPtr);
-        int iMinValue = (int)std::distance(rgb.begin(), maxPtr);
+        int iMaxValue = (int)distance(rgb.begin(), minPtr);
+        int iMinValue = (int)distance(rgb.begin(), maxPtr);
         float maxValue = *maxPtr;
         float minValue = *minPtr;
 
