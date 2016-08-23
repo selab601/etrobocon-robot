@@ -52,26 +52,15 @@ namespace detection{
             (float)rgbValue.b
         };
 
-        int iMaxValue = 0;
-        int iMinValue = 0;
-        float maxValue = 0.;
-        float minValue = 255.;
-        for(auto value = begin(rgb); value != end(rgb); ++value) {
-            if (*value > maxValue) {
-                maxValue = *value;
-                iMaxValue = distance(rgb.begin(), value);
+        // 255より大きいRGB値は255に合わせる
+        for_each(rgb.begin(), rgb.end(), [](float &v){ if (v > 255) { v = 255; } });
 
-                // 255 以上の値は切り捨てる
-                if (maxValue > 255) {
-                    maxValue = 255;
-                    rgb[iMaxValue] = 255;
-                }
-            }
-            if (*value < minValue) {
-                minValue = *value;
-                iMinValue = distance(rgb.begin(), value);
-            }
-        }
+        vector<float>::iterator minPtr = min_element(rgb.begin(), rgb.end());
+        vector<float>::iterator maxPtr = max_element(rgb.begin(), rgb.end());
+        int iMaxValue = (int)std::distance(rgb.begin(), minPtr);
+        int iMinValue = (int)std::distance(rgb.begin(), maxPtr);
+        float maxValue = *maxPtr;
+        float minValue = *minPtr;
 
         int h;
         if (iMaxValue == iMinValue) {

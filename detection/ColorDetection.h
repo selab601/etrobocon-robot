@@ -3,6 +3,7 @@
 
 #include "../device/ColorSensor.h"
 #include <vector>
+#include <algorithm>
 #include <ev3api.h>
 
 namespace detection{
