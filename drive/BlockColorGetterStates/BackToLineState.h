@@ -14,7 +14,8 @@ namespace drive {
     private:
         const static int ANGLE = 35;
         enum class BACK_STATE {
-            INIT,
+            INIT_TIME,
+            INIT_DISTANCE,
             DOWN_ARM,
             SET_ARM,
             BACK,

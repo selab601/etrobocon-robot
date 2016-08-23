@@ -6,9 +6,10 @@ using namespace drive;
 
 namespace drive {
     BackToLineState::BackToLineState() {
-        states_.push(BACK_STATE::INIT);
+        states_.push(BACK_STATE::INIT_TIME);
         states_.push(BACK_STATE::DOWN_ARM);
         states_.push(BACK_STATE::SET_ARM);
+        states_.push(BACK_STATE::INIT_DISTANCE);
         states_.push(BACK_STATE::BACK);
         states_.push(BACK_STATE::FINISH);
         motors_ = Motors::getInstance();
@@ -23,10 +24,15 @@ namespace drive {
     bool BackToLineState::isExecuted(colorset_t* result) {
 
         switch (states_.front()) {
-        case BACK_STATE::INIT:
+        case BACK_STATE::INIT_TIME:
         {
             timeMeasurement_->setTargetTime(800);
             timeMeasurement_->setBaseTime();
+            states_.pop();
+            break;
+        }
+        case BACK_STATE::INIT_DISTANCE:
+        {
             distanceMeasurement_->startMeasurement();
             distanceMeasurement_->setTargetDistance(100);
             states_.pop();
