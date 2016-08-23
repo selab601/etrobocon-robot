@@ -17,7 +17,6 @@ namespace detection{
     class ColorDetection{
     private:
         rgb_raw_t rgbColor_;             //! rgb値
-        double greenPerRed_,bluePerRed_; //! g値/r値, b値/r値 
         device::ColorSensor* colorSensor_;
     public:
         ColorDetection();
