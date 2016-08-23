@@ -17,21 +17,32 @@ namespace detection{
         int hueValue = hsv.h;
 
         colorid_t result;
-        if (hsv.v <= 60) {
-            result = COLOR_BLACK;
-        } else if (hsv.s <= 160) {
-            result = COLOR_WHITE;
-        } else if (hueValue >= 0 && hueValue <= 10) {
-            result = COLOR_RED;
-        } else if (hueValue >= 30 && hueValue <= 60) {
-            result = COLOR_YELLOW;
-        } else if (hueValue >= 110 && hueValue <= 140) {
-            result = COLOR_GREEN;
-        } else if (hueValue >= 170 && hueValue <= 220) {
-            result = COLOR_BLUE;
+        if (hsv.s <= 160) {
+            /* 彩度が低い場合はモノクロと判断する */
+            /* モノクロの場合，明度から白か黒かを判断する */
+            if (hsv.v < 30) {
+                result = COLOR_BLACK;
+            } else if (hsv.v > 150) {
+                result = COLOR_WHITE;
+            } else {
+                result = COLOR_NONE;
+            }
         } else {
-            result = COLOR_NONE;
+            /* 彩度が高い場合は色があると判断する */
+            /* 色がある場合，色相からその色を判断する */
+            if (hueValue >= 0 && hueValue <= 10) {
+                result = COLOR_RED;
+            } else if (hueValue >= 30 && hueValue <= 60) {
+                result = COLOR_YELLOW;
+            } else if (hueValue >= 110 && hueValue <= 140) {
+                result = COLOR_GREEN;
+            } else if (hueValue >= 170 && hueValue <= 220) {
+                result = COLOR_BLUE;
+            } else {
+                result = COLOR_NONE;
+            }
         }
+
         return result;
     }
 
