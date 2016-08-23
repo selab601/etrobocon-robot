@@ -22,7 +22,7 @@ namespace drive {
         }
 
         // 本当はSTATE パターン使いたかったけど面倒なのでやめた
-        // 輝度値なども取得する可能性がるのでフラグ管理ではなく switch で分岐
+        // 輝度値なども取得する可能性があるのでフラグ管理ではなく switch で分岐
         switch (states_.front()) {
         case CHECKER_STATE::RGB:
         {
