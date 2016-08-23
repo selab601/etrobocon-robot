@@ -14,7 +14,6 @@ namespace detection{
         bluePerRed_ = rgbColor_.b*(1.0)/(rgbColor_.r + 0.01);   //! r値とb値の比
 
         hsv_raw_t hsv = detection::ColorDetection::Rgb2Hsv(rgbColor_);
-        int hueValue = hsv.h;
 
         colorid_t result;
         if (hsv.s <= 160) {
@@ -30,13 +29,13 @@ namespace detection{
         } else {
             /* 彩度が高い場合は色があると判断する */
             /* 色がある場合，色相からその色を判断する */
-            if (hueValue >= 0 && hueValue <= 10) {
+            if (hsv.h >= 0 && hsv.h <= 10) {
                 result = COLOR_RED;
-            } else if (hueValue >= 30 && hueValue <= 60) {
+            } else if (hsv.h >= 30 && hsv.h <= 60) {
                 result = COLOR_YELLOW;
-            } else if (hueValue >= 110 && hueValue <= 140) {
+            } else if (hsv.h >= 110 && hsv.h <= 140) {
                 result = COLOR_GREEN;
-            } else if (hueValue >= 170 && hueValue <= 220) {
+            } else if (hsv.h >= 170 && hsv.h <= 220) {
                 result = COLOR_BLUE;
             } else {
                 result = COLOR_NONE;
