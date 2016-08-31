@@ -14,6 +14,7 @@ namespace drive{
     {
         motors_ = device::Motors::getInstance();
         colorSensor_ = device::ColorSensor::getInstance();
+        distanceMeasurement_ = new DistanceMeasurement();
         clock_ = Clock();
         reset();
         blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
@@ -89,7 +90,6 @@ namespace drive{
     }
 
     double LineTrace::calculatePid(int brightness, int timeMs){
-        counter_++;
         diff_[1] = diff_[0];
         timeMs_[1] = timeMs_[0];
 
@@ -103,8 +103,9 @@ namespace drive{
 
         // I、D制御の情報が揃っていない時、P制御の値を返す
         double turn;
-        if (counter_ < 2){
+        if (usePid_ == false){
             turn = kp_ * (double)diff_[0];
+            usePid_ = true;
         }
         else{
             turn = kp_ * (double)diff_[0] +
@@ -115,7 +116,6 @@ namespace drive{
     }
 
     void LineTrace::setTarget(double relativeTarget){
-
         if(relativeTarget <= 0.0 || 1.0 <= relativeTarget){
             targetValue_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
         }
@@ -125,10 +125,69 @@ namespace drive{
     }
 
     void LineTrace::reset(){
-        counter_ = 0;
+        usePid_  = false;
         integrated_ = 0;
         diff_[1] = diff_[0] = 0;
         timeMs_[1] = timeMs_[0] = 0;
     }
 
+    bool LineTrace::changeEdge(){
+
+        switch(edgeChangeStatus_){
+
+            case LineTraceEdgeChangePhase::INIT:
+                //反対のエッジに移動するための距離を設定
+                distanceMeasurement_->setTargetDistance(50);
+                distanceMeasurement_->startMeasurement();
+                //次のフェイズに
+                edgeChangeStatus_ = LineTraceEdgeChangePhase::ACROSS;
+                return false;
+
+            case LineTraceEdgeChangePhase::ACROSS:
+                if(edge_==LineTraceEdge::RIGHT){
+                    //現在右エッジなので左エッジに移動
+                    motors_->setPWM(device::MOTOR_LEFT, DEFAULT_MAXPWM*0.7);
+                    motors_->setPWM(device::MOTOR_RIGHT, DEFAULT_MAXPWM);
+                }
+                else {
+                    //現在左エッジなので右エッジに移動
+                    motors_->setPWM(device::MOTOR_LEFT, DEFAULT_MAXPWM);
+                    motors_->setPWM(device::MOTOR_RIGHT, DEFAULT_MAXPWM*0.7);
+                }
+                //一定距離走ったらエッジを切り替え
+                if(distanceMeasurement_->getResult()){
+                    if(edge_==LineTraceEdge::RIGHT){
+                        //右エッジ→左エッジ
+                        setEdge(LineTraceEdge::LEFT);
+                    }
+                    else{
+                        //左エッジ→右エッジ
+                        setEdge(LineTraceEdge::RIGHT);
+                    }
+                    //次のフェイズに
+                    edgeChangeStatus_ = LineTraceEdgeChangePhase::ADJUST;
+                }
+                return false;
+
+            case LineTraceEdgeChangePhase::ADJUST:
+                //修正用にちょっとライントレース
+                distanceMeasurement_->setTargetDistance(100);
+                distanceMeasurement_->startMeasurement();
+                run(30,edge_,0.6);
+                if(distanceMeasurement_->getResult()){
+                    //次のフェイズに
+                    edgeChangeStatus_ = LineTraceEdgeChangePhase::END;
+                }
+                return false;
+
+            case LineTraceEdgeChangePhase::END:
+                //エッジ切り替え完了
+                //フェイズのリセット
+                edgeChangeStatus_ = LineTraceEdgeChangePhase::INIT;
+                return true;
+
+            default:
+                return false;
+        }
+    }
 };
