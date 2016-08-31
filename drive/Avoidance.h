@@ -19,21 +19,21 @@ namespace drive{
     };
 
     /**
-     * @brief 現在の走行状態
-     **/
-    enum class State{
-        START,
-        TURN_RIGHT,
-        TURN_LEFT,
-        STRAIGHT_1,
-        STRAIGHT_2,
-        LINE_RETURN
-    };
-    /**
      * @brief 台座回避走行クラス
      **/
     class Avoidance{
     private:
+        /**
+         * @brief 現在の走行状態
+        **/
+        enum class State{
+            START,
+            TURN_RIGHT,
+            TURN_LEFT,
+            STRAIGHT_1,
+            STRAIGHT_2,
+            LINE_RETURN
+        };
         CurveRunning* curveRunning_;
         StraightRunning* straightRunning_;
         detection::LineDetection* lineDetection_;
