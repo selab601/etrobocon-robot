@@ -69,14 +69,14 @@ namespace drive{
 
          /**
          * @brief 直進、右から回り込んで台座回避
-         * @brief スタート位置はブロックか3cm以上離れていれば成功する
+         * @brief スタート位置はブロックから3cm以上離れていれば成功する
          * @return 回避走行が終了したらtrueを返す
          **/
         bool straightRight();
 
          /**
          * @brief 直進、左から回り込んで台座回避
-         * @brief スタート位置はブロックか3cm以上離れていれば成功する
+         * @brief スタート位置はブロックから3cm以上離れていれば成功する
          * @return 回避走行が終了したらtrueを返す
          **/
         bool straightLeft();
