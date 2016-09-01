@@ -58,8 +58,8 @@ namespace detection{
         vector<float>::iterator maxPtr = max_element(rgb.begin(), rgb.end());
         // 接頭辞 i は，index を意味する．
         // iMaxValue は maxValue の index．iMinValue も同様
-        int iMaxValue = (int)distance(rgb.begin(), minPtr);
-        int iMinValue = (int)distance(rgb.begin(), maxPtr);
+        int iMaxValue = (int)distance(rgb.begin(), maxPtr);
+        int iMinValue = (int)distance(rgb.begin(), minPtr);
         float maxValue = *maxPtr;
         float minValue = *minPtr;
 
