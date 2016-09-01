@@ -3,6 +3,8 @@
  * @brief ライントレースクラス
  * @details  初期設定[maxPwm:デフォルト値][edge:RIGHT][pid:デフォルト値][target:デフォルト値]
             setMaxPwm(),setPid(),setTarget(),setEdge()で各種設定を行った後にrun()で走行
+            ライントレースのインスタンスを呼ぶ際は、キャリブレーションを行っているcontest.cppのstartUp_->getSelectedCourse()
+            以降で行ってください。
  * @author kuno
  */
 
@@ -12,6 +14,7 @@
 #include <math.h>
 #include "../device/ColorSensor.h"
 #include "../device/Motors.h"
+#include "../measurement/DistanceMeasurement.h"
 #include <Clock.h>
 
 #define DEFAULT_KP          0.0144F /* PID処理のデフォルトのP値 */
@@ -23,6 +26,7 @@
 #define LINETRACE_TREAD      1      /*未使用 きちんとした角速度に計算する定数*/
 
 using namespace ev3api;
+using namespace measurement;
 
 namespace drive{
 
@@ -36,6 +40,13 @@ namespace drive{
         static LineTrace* instance_;
         LineTrace();
 
+        enum class LineTraceEdgeChangePhase{
+            INIT,
+            ACROSS,
+            ADJUST,
+            END
+        };
+
         // キャリブレーション値
         int whiteValue_;            //白のキャリブレーション値を10倍したもの
         int blackValue_;            //黒のキャリブレーション値を10倍したもの
@@ -45,7 +56,7 @@ namespace drive{
         int diff_[2];               // 明るさの値を10倍し、ターゲット値との差分をとったもの
         int timeMs_[2];
         int integrated_ = 0;
-        int counter_ = 0;
+        bool usePid_ = false;
 
         int maxPwm_;
 
@@ -53,7 +64,14 @@ namespace drive{
         double  ki_;
         double  kd_;
 
-        LineTraceEdge edge_; //ライントレースを行うエッジ
+        //ライントレースを行うエッジ
+        LineTraceEdge edge_;
+
+        //エッジ切り替えメソッドでの状態
+        LineTraceEdgeChangePhase edgeChangeStatus_ = LineTraceEdgeChangePhase::INIT;
+
+        //距離検知
+        measurement::DistanceMeasurement* distanceMeasurement_;
 
         // Device
         device::ColorSensor* colorSensor_;
@@ -83,7 +101,6 @@ namespace drive{
          /**
          * @brief ライントレースを行う
          *         こっちのrun()は事前に全てのset~が呼ばれていることが前提
-         *          set~を呼ばずにこのメソッドを読んだ時の動作は不明
          * @author kuno
          */
          void run();
@@ -127,6 +144,13 @@ namespace drive{
          * @author Nagaoka
          **/
         void reset();
+
+        /**
+         * @brief ライントレースしながらエッジ切り替えを行う
+         * @return エッジ切り替えが終了するとTrueを返す。
+         * @author kuno
+         **/
+        bool changeEdge();
 
     private:
 

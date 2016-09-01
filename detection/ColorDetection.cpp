@@ -1,45 +1,92 @@
 #include "ColorDetection.h"
 
 using namespace device;
+using namespace std;
+
 namespace detection{
-  ColorDetection::ColorDetection(){
-    colorSensor_ = ColorSensor::getInstance();
-  }
+    ColorDetection::ColorDetection(){
+        colorSensor_ = ColorSensor::getInstance();
+    }
 
-  colorid_t ColorDetection::getResult(){
-    colorSensor_->getRawColor(rgbColor_);
-    greenPerRed_ = rgbColor_.g*(1.0)/(rgbColor_.r + 0.01);  //! r値とg値の比
-    bluePerRed_ = rgbColor_.b*(1.0)/(rgbColor_.r + 0.01);   //! r値とb値の比
+    colorid_t ColorDetection::getResult(){
+        colorSensor_->getRawColor(rgbColor_);
 
-    switch(colorSensor_->getColorNumber()){                 //! 現在の色を取得
-      case COLOR_BLACK:
-      //実測値による比較
-        if(0.6<greenPerRed_ && greenPerRed_<1.6 && 0.15<bluePerRed_&&bluePerRed_<1.1){ 
-          return COLOR_BLACK;
+        hsv_raw_t hsv = detection::ColorDetection::Rgb2Hsv(rgbColor_);
+
+        colorid_t result;
+        // これ以下の各閾値は，実験から求めた．詳しくは2016年度のモデル参照
+        if (hsv.s <= 160) {
+            /* 彩度が低い場合はモノクロと判断する */
+            /* モノクロの場合，明度から白か黒かを判断する */
+            if (hsv.v < 30) {
+                result = COLOR_BLACK;
+            } else if (hsv.v > 150) {
+                result = COLOR_WHITE;
+            } else {
+                result = COLOR_NONE;
+            }
+        } else {
+            /* 彩度が高い場合は色があると判断する */
+            /* 色がある場合，色相からその色を判断する */
+            if (hsv.h >= 0 && hsv.h <= 10) {
+                result = COLOR_RED;
+            } else if (hsv.h >= 30 && hsv.h <= 60) {
+                result = COLOR_YELLOW;
+            } else if (hsv.h >= 110 && hsv.h <= 140) {
+                result = COLOR_GREEN;
+            } else if (hsv.h >= 170 && hsv.h <= 220) {
+                result = COLOR_BLUE;
+            } else {
+                result = COLOR_NONE;
+            }
         }
-        break;
-      case COLOR_BLUE:
-        if(1.3<greenPerRed_ && greenPerRed_<2.9 && 1.4<bluePerRed_ && bluePerRed_<3.1){
-          return COLOR_BLUE;
+
+        return result;
+    }
+
+    hsv_raw_t ColorDetection::Rgb2Hsv(rgb_raw_t rgbValue) {
+        vector<float> rgb {
+            (float)rgbValue.r,
+            (float)rgbValue.g,
+            (float)rgbValue.b
+        };
+
+        // 255より大きいRGB値は255に合わせる
+        for_each(rgb.begin(), rgb.end(), [](float &v){ if (v > 255) { v = 255; } });
+
+        vector<float>::iterator minPtr = min_element(rgb.begin(), rgb.end());
+        vector<float>::iterator maxPtr = max_element(rgb.begin(), rgb.end());
+        // 接頭辞 i は，index を意味する．
+        // iMaxValue は maxValue の index．iMinValue も同様
+        int iMaxValue = (int)distance(rgb.begin(), minPtr);
+        int iMinValue = (int)distance(rgb.begin(), maxPtr);
+        float maxValue = *maxPtr;
+        float minValue = *minPtr;
+
+        int h;
+        if (iMaxValue == iMinValue) {
+            h = 0;
+        } else if (iMaxValue == 0 /* R値が最も高い */) {
+            h = (int)(60*(rgb.at(1)-rgb.at(2))/(maxValue-minValue)+360)%360;
+        } else if (iMaxValue == 1 /* G値が最も高い */) {
+            h = (int)(60*(rgb.at(2)-rgb.at(0))/(maxValue-minValue))+120;
+        } else if (iMaxValue == 2 /* B値が最も高い */) {
+            h = (int)(60*(rgb.at(0)-rgb.at(1))/(maxValue-minValue))+240;
+        } else {
+            // WARNING: ここにはこないはず
+            h = 0;
         }
-        break;
-      case COLOR_RED:
-        if(0.13<greenPerRed_ && greenPerRed_<0.5 && 0.03<bluePerRed_ && bluePerRed_<2.3){
-          return COLOR_RED;
+
+        int s;
+        if (maxValue == 0) {
+            s = 0;
+        } else {
+            s = (255*((maxValue - minValue)/maxValue));
         }
-        break;
-      case COLOR_GREEN:
-        if(1.4<greenPerRed_ && greenPerRed_<3.6 && 0.3<bluePerRed_ && bluePerRed_<1.0){
-          return COLOR_GREEN;
-        }
-        break;
-      case COLOR_YELLOW:
-        if(0.4<greenPerRed_ && greenPerRed_<1.2 && 0.03<bluePerRed_ && bluePerRed_<0.5){
-          return COLOR_YELLOW;
-        }
-        default:
-          break;
-      }
-        return COLOR_NONE;
+
+        int v = maxValue;
+
+        hsv_raw_t hsv = {h,s,v};
+        return hsv;
     }
 }
