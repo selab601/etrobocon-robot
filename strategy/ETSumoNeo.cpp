@@ -110,7 +110,7 @@ namespace strategy{
 
         //ラインまでバック
         case StrategyPhase::BACK_TO_LINE:
-            straightRunning_->run(-20);
+            straightRunning_->run(-15);
             return lineDetection_->getResult();
 
          //相撲
@@ -299,7 +299,7 @@ namespace strategy{
         switch(extrusionPhase_){
         //力士までライントレース
         case ExtrusionPhase::START_LINE_TRACE:
-            linetrace_->run(15,startEdge);
+            linetrace_->run(15,startEdge,0.4);//黒よりに変更
             if(hoshitoriDetection()){
                 extrusionPhase_ = ExtrusionPhase::EXTRUSION;
             }
@@ -331,7 +331,7 @@ namespace strategy{
 
         //直角までライントレース
         case ExtrusionPhase::END_LINE_TRACE:
-            linetrace_->run(20,endEdge);
+            linetrace_->run(15,endEdge);
             if(!timeMeasurement_->getResult()){break;}//直角誤検知しないように
             if(rightAngledDetection_->getResult()){
                 extrusionPhase_ = ExtrusionPhase::START_LINE_TRACE;//状態を戻しておく
