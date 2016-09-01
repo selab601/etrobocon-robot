@@ -13,24 +13,50 @@ namespace drive{
         /**
          * @brief EV3が向いている台座から見たEV3の位置(モデル2.3.4参照)
          **/
-        enum class EV3Position{
+        enum class Direction{
             RIGHT,
             LEFT,
             UP,
-            DOWN
+            DOWN,
+            NONE
+        };
+        enum class Position {
+            EQUAL,
+            REVERSE,
+            RIGHT,
+            LEFT,
+            NONE
+        };
+        // from からみた to の向き(position) を返す
+        Position getPosition(Direction from, Direction to);
+
+        enum class AvoidanceMethod{
+            RIGHT,
+            LEFT,
+            STRAIGHT_RIGHT,
+            STRAIGHT_LEFT,
+            TRUN
         };
     private:
         /**
          * @brief EV3が向いている台座の座標(モデル2.3.4参照)
          **/
         BlockAreaCoordinate stageCoordinate_;
-        EV3Position EV3Position_;
+        Direction EV3Position_;
         Avoidance avoidance_;
         StraightRunning straightRunning_;
         PivotTurn pivotTurn_;
-
+        //命名後で考える
         BlockAreaCoordinate horizonal(int diffX);
         BlockAreaCoordinate vertical(int diffY);
+
+        /*
+         * @brief 2つの座標を比較して位置関係を返す
+         *        from から見て to がどちら側にあるか？
+         *        注意: from からみて、to がX軸、Y軸上になければ使えない
+         * @return to のある向き。重なっていた場合は NONE が返る
+         */
+        Direction getDirection(BlockAreaCoordinate from, BlockAreaCoordinate to);
     public:
         /**
          * @param 目的地台座の座標
@@ -44,7 +70,7 @@ namespace drive{
          * @param y 現在、EV3が向いている台座のy座標
          * @param Psition　EV3が向いている台座から見たEV3の位置
          **/
-        Destination(int x, int y, Destination::EV3Position position);
+        Destination(int x, int y, Destination::Direction EV3Position);
 
         /**
          * @param x 目的地台座のx座標
