@@ -164,6 +164,9 @@ namespace drive{
                         //左エッジ→右エッジ
                         setEdge(LineTraceEdge::RIGHT);
                     }
+                    //次のフェイズの準備
+                    distanceMeasurement_->setTargetDistance(50);
+                    distanceMeasurement_->startMeasurement();
                     //次のフェイズに
                     edgeChangeStatus_ = LineTraceEdgeChangePhase::ADJUST;
                 }
@@ -171,8 +174,6 @@ namespace drive{
 
             case LineTraceEdgeChangePhase::ADJUST:
                 //修正用にちょっとライントレース
-                distanceMeasurement_->setTargetDistance(100);
-                distanceMeasurement_->startMeasurement();
                 run(30,edge_,0.6);
                 if(distanceMeasurement_->getResult()){
                     //次のフェイズに
