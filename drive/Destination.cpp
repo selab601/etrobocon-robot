@@ -139,7 +139,7 @@ namespace drive{
             return true;
         }
         Coordinate nextStageCoordinate = getNextStageCoordinate(destination);
-        Direction nextStageDirection = getDirection(nextStageCoordinate , destination);
+        Direction nextStageDirection = getDirection(stageCoordinate_, nextStageCoordinate);
         // 次どちらの座標に向かって進むのかで場合分け
         Position position = getPosition(EV3Position_ , nextStageDirection);
         bool isFinished = false;
