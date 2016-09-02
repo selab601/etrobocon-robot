@@ -138,8 +138,11 @@ namespace drive{
         {
             return true;
         }
-        Coordinate nextStageCoordinate = getNextStageCoordinate(destination);
+
+        Coordinate nextCoordinate = getNextStageCoordinate(destination);
+
         Direction nextStageDirection = getDirection(currentCoordinate_, nextCoordinate);
+
         // 次どちらの座標に向かって進むのかで場合分け
         Position position = getPosition(EV3Position_ , nextStageDirection);
         bool isFinished = false;
@@ -170,7 +173,7 @@ namespace drive{
         }
 
         if (isFinished) {
-            currentCoordinate_ = nextStageCoordinate;
+            currentCoordinate_ = nextCoordinate;
             switch (position) {
                 case Position::EQUAL:
                     switch(EV3Position_){
