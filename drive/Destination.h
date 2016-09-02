@@ -82,6 +82,10 @@ namespace drive{
          * @return 目的地台座の直前まで移動したらtrue
          **/
         bool runTo(int x,int y);
+
+        const char* getCurrentCoordinateString();
+        const char* getNextCoordinateString();
+        const char* getTargetCoordinateString();
     };
 };
 

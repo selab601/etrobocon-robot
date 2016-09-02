@@ -269,4 +269,13 @@ namespace drive{
             return "UNDEFINED";
         }
     }
+    const char* Destination::getCurrentCoordinateString() {
+        return currentCoordinate_.toString();
+    }
+    const char* Destination::getNextCoordinateString() {
+        return nextCoordinate_.toString();
+    }
+    const char* Destination::getTargetCoordinateString() {
+        return targetCoordinate_.toString();
+    }
 }
