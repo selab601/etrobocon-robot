@@ -20,6 +20,7 @@ namespace drive{
             DOWN,
             NONE
         };
+        const char* getStr(Direction direction);
         enum class Position {
             EQUAL,
             REVERSE,
@@ -27,6 +28,7 @@ namespace drive{
             LEFT,
             NONE
         };
+        const char* getStr(Position position);
         // from からみた to の向き(position) を返す
         Position getPosition(Direction from, Direction to);
 

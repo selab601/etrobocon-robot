@@ -229,4 +229,37 @@ namespace drive{
         }
         return false;
     }
+
+    const char* Destination::getStr(Direction direction) {
+        switch (direction) {
+        case Direction::RIGHT:
+            return "RIGHT";
+        case Direction::LEFT:
+            return "LEFT";
+        case Direction::UP:
+            return "UP";
+        case Direction::DOWN:
+            return "DOWN";
+        case Direction::NONE:
+            return "NONE";
+        default:
+            return "UNDEFINED";
+        }
+    }
+    const char* Destination::getStr(Position position) {
+        switch (position) {
+        case Position::EQUAL:
+            return "EQUAL";
+        case Position::REVERSE:
+            return "REVERSE";
+        case Position::RIGHT:
+            return "RIGHT";
+        case Position::LEFT:
+            return "LEFT";
+        case Position::NONE:
+            return "NONE";
+        default:
+            return "UNDEFINED";
+        }
+    }
 }
