@@ -4,7 +4,7 @@ using Coordinate = drive::BlockAreaCoordinate;
 
 namespace drive{
     Destination::Destination(int x, int y, Destination::Direction EV3Position){
-        stageCoordinate_ = BlockAreaCoordinate(x, y);
+        currentCoordinate_ = BlockAreaCoordinate(x, y);
         EV3Position_ = EV3Position;
         avoidance_ = Avoidance();
         straightRunning_ = StraightRunning();
@@ -12,7 +12,7 @@ namespace drive{
     }
 
     BlockAreaCoordinate Destination::getNextStageCoordinate(Coordinate destination){
-        Coordinate result = stageCoordinate_ - destination;
+        Coordinate result = currentCoordinate_ - destination;
 
         //移動先の座標がx軸方向にある
         if(abs(result.getX())>abs(result.getY()))
@@ -44,22 +44,22 @@ namespace drive{
     Coordinate Destination::horizonal(int diffX) {
         if(diffX>0)
         {
-          return Coordinate(stageCoordinate_.getX() - 1,stageCoordinate_.getY());
+          return Coordinate(currentCoordinate_.getX() - 1,currentCoordinate_.getY());
         }
         else
         {
-          return Coordinate(stageCoordinate_.getX() + 1,stageCoordinate_.getY());
+          return Coordinate(currentCoordinate_.getX() + 1,currentCoordinate_.getY());
         }
     }
 
     Coordinate Destination::vertical(int diffY) {
         if(diffY>0)
             {
-                return Coordinate(stageCoordinate_.getX(),stageCoordinate_.getY() - 1);
+                return Coordinate(currentCoordinate_.getX(),currentCoordinate_.getY() - 1);
             }
             else
             {
-                return Coordinate(stageCoordinate_.getX(),stageCoordinate_.getY() + 1);
+                return Coordinate(currentCoordinate_.getX(),currentCoordinate_.getY() + 1);
             }
     }
 
@@ -133,13 +133,13 @@ namespace drive{
 
     bool Destination::runTo(int x,int y){
         Coordinate destination = Coordinate(x, y);
-        Coordinate diff = (destination - stageCoordinate_);
+        Coordinate diff = (destination - currentCoordinate_);
         if(diff.getX() == 0 && diff.getY() == 0)
         {
             return true;
         }
         Coordinate nextStageCoordinate = getNextStageCoordinate(destination);
-        Direction nextStageDirection = getDirection(stageCoordinate_, nextStageCoordinate);
+        Direction nextStageDirection = getDirection(currentCoordinate_, nextCoordinate);
         // 次どちらの座標に向かって進むのかで場合分け
         Position position = getPosition(EV3Position_ , nextStageDirection);
         bool isFinished = false;
@@ -148,10 +148,10 @@ namespace drive{
                 isFinished = pivotTurn_.turn(180);
                 break;
             case Position::REVERSE:
-                if((nextStageDirection == Direction::UP && stageCoordinate_.getX() == 1) ||
-                    (nextStageDirection == Direction::DOWN && stageCoordinate_.getX() == 4) ||
-                    (nextStageDirection == Direction::RIGHT && stageCoordinate_.getY() == 1) ||
-                    (nextStageDirection == Direction::LEFT && stageCoordinate_.getY() == 4))
+                if((nextStageDirection == Direction::UP && currentCoordinate_.getX() == 1) ||
+                    (nextStageDirection == Direction::DOWN && currentCoordinate_.getX() == 4) ||
+                    (nextStageDirection == Direction::RIGHT && currentCoordinate_.getY() == 1) ||
+                    (nextStageDirection == Direction::LEFT && currentCoordinate_.getY() == 4))
                 {
                     isFinished = avoidance_.startAvoidance(DirectionKind::STRAIGHT_RIGHT);
                 }
@@ -170,7 +170,7 @@ namespace drive{
         }
 
         if (isFinished) {
-            stageCoordinate_ = nextStageCoordinate;
+            currentCoordinate_ = nextStageCoordinate;
             switch (position) {
                 case Position::EQUAL:
                     switch(EV3Position_){
