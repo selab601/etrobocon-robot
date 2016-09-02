@@ -54,6 +54,12 @@ namespace drive{
         BlockAreaCoordinate horizonal(int diffX);
         BlockAreaCoordinate vertical(int diffY);
 
+    private:
+        // インスタンス変数
+        static Destination* instance_;
+
+        Destination();
+
         /*
          * @brief 2つの座標を比較して位置関係を返す
          *        from から見て to がどちら側にあるか？
@@ -62,19 +68,22 @@ namespace drive{
          */
         Direction getDirection(BlockAreaCoordinate from, BlockAreaCoordinate to);
     public:
+        // シングルトンパターン
+        static Destination* getInstance();
+
+        /**
+         * @param x 現在、EV3が向いている台座のX座標
+         * @param y 現在、EV3が向いている台座のy座標
+         * @param Psition EV3が向いている台座から見たEV3の位置
+         **/
+        void setCurrentLocation(int x, int y, Direction EV3Position);
+
         /**
          * @param 目的地台座の座標
          * @brief 目的地台座を与えると次に移動する台座の座標を返す
          * @return 次に移動する台座
          **/
         BlockAreaCoordinate getNextStageCoordinate(BlockAreaCoordinate destination);
-
-        /**
-         * @param x 現在、EV3が向いている台座のX座標
-         * @param y 現在、EV3が向いている台座のy座標
-         * @param Psition　EV3が向いている台座から見たEV3の位置
-         **/
-        Destination(int x, int y, Destination::Direction EV3Position);
 
         /**
          * @param x 目的地台座のx座標

@@ -3,14 +3,26 @@
 using Coordinate = drive::BlockAreaCoordinate;
 
 namespace drive{
-    Destination::Destination(int x, int y, Destination::Direction EV3Position){
-        currentCoordinate_ = BlockAreaCoordinate(x, y);
-        EV3Position_ = EV3Position;
-        targetCoordinate_ = BlockAreaCoordinate(-1,-1);
-        nextCoordinate_ = BlockAreaCoordinate(-1,-1);
+    Destination* Destination::instance_ = 0;
+
+    Destination* Destination::getInstance() {
+        if (!instance_) {
+            instance_ = new Destination();
+        }
+        return instance_;
+    }
+
+    Destination::Destination(){
         avoidance_ = Avoidance();
         straightRunning_ = StraightRunning();
         pivotTurn_ = PivotTurn();
+    }
+
+    void Destination::setCurrentLocation(int x, int y, drive::Destination::Direction EV3Position) {
+        currentCoordinate_ = BlockAreaCoordinate(x, y);
+        targetCoordinate_ = BlockAreaCoordinate(-1,-1);
+        nextCoordinate_ = BlockAreaCoordinate(-1,-1);
+        EV3Position_ = EV3Position;
     }
 
     BlockAreaCoordinate Destination::getNextStageCoordinate(Coordinate destination){
