@@ -6,6 +6,8 @@ namespace drive{
     Destination::Destination(int x, int y, Destination::Direction EV3Position){
         currentCoordinate_ = BlockAreaCoordinate(x, y);
         EV3Position_ = EV3Position;
+        targetCoordinate_ = BlockAreaCoordinate(-1,-1);
+        nextCoordinate_ = BlockAreaCoordinate(-1,-1);
         avoidance_ = Avoidance();
         straightRunning_ = StraightRunning();
         pivotTurn_ = PivotTurn();
@@ -132,7 +134,8 @@ namespace drive{
     }
 
     bool Destination::runTo(int x,int y){
-        Coordinate destination = Coordinate(x, y);
+        targetCoordinate_ = Coordinate(x,y);
+        Coordinate destination = targetCoordinate_;
         Coordinate diff = (destination - currentCoordinate_);
         if(diff.getX() == 0 && diff.getY() == 0)
         {
@@ -140,6 +143,7 @@ namespace drive{
         }
 
         Coordinate nextCoordinate = getNextStageCoordinate(destination);
+        nextCoordinate_ = nextCoordinate;
 
         Direction nextStageDirection = getDirection(currentCoordinate_, nextCoordinate);
 

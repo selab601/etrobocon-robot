@@ -44,6 +44,7 @@ namespace drive{
          * @brief EV3が向いている台座の座標(モデル2.3.4参照)
          **/
         BlockAreaCoordinate currentCoordinate_;
+        BlockAreaCoordinate targetCoordinate_;
         BlockAreaCoordinate nextCoordinate_;
         Direction EV3Position_;
         Avoidance avoidance_;
