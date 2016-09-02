@@ -1,6 +1,9 @@
 #ifndef _BLOCK_AREA_COORDINATE_
 #define _BLOCK_AREA_COORDINATE_
 
+#include <stdio.h>
+#include <stdlib.h>
+
 namespace drive{
     class BlockAreaCoordinate {
     private:
@@ -12,6 +15,8 @@ namespace drive{
 
         int getX();
         int getY();
+
+        const char* toString();
 
         BlockAreaCoordinate operator-(BlockAreaCoordinate &cor) {
             return BlockAreaCoordinate(x_-cor.getX(), y_-cor.getY());
