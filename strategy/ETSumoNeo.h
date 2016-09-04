@@ -14,6 +14,7 @@
 #include "../detection/RightAngledDetection.h"
 #include "../measurement/TimeMeasurement.h"
 #include "../measurement/DistanceMeasurement.h"
+#include "../measurement/BodyAngleMeasurement.h"
 #include <vector>
 
 #define SUMO_EXTRUSION_DISTANCE  100 //押し出し走行距離
@@ -24,11 +25,13 @@ namespace strategy{
     private:
         //ET相撲Neoの走行状態
         enum class StrategyPhase{
+            INIT,
             HOSHITORI,
             BACK,
             TURN_LEFT,
             STRAIGHT,
             LINE_TRACE,
+            LINE_TRACE_LITTLE,
             STOP,
             WAIT_1_SEC,
             TURN_LITTLE,
@@ -74,11 +77,13 @@ namespace strategy{
 
         //難所攻略手順
         std::vector<StrategyPhase> strategyProcedure_{
+            StrategyPhase::INIT,            //車体角度保存
             StrategyPhase::HOSHITORI,       //星取取得
             StrategyPhase::BACK,            //星取を踏まないようにバック
             StrategyPhase::TURN_LEFT,       //左に旋回
             StrategyPhase::STRAIGHT,        //ラインまで直進
-            StrategyPhase::LINE_TRACE,      //土俵までライントレース
+            StrategyPhase::LINE_TRACE,      //土俵を向くまでライントレース
+            StrategyPhase::LINE_TRACE_LITTLE,//すこしライントレース
             StrategyPhase::STOP,            //新幹線検知するまで停止
             StrategyPhase::WAIT_1_SEC,      //検知後に待つ
             StrategyPhase::TURN_LITTLE,     //すこし旋回
@@ -140,6 +145,7 @@ namespace strategy{
         //計測
         measurement::DistanceMeasurement* distanceMeasurement_;
         measurement::TimeMeasurement* timeMeasurement_;
+        measurement::BodyAngleMeasurement* bodyAngleMeasurement_;
 
 
 

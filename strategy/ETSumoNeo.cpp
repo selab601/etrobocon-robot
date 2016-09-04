@@ -18,6 +18,7 @@ namespace strategy{
         rightAngledDetection_   = new RightAngledDetection();
         timeMeasurement_        = new TimeMeasurement();
         distanceMeasurement_    = new DistanceMeasurement();
+        bodyAngleMeasurement_   = new BodyAngleMeasurement();
 
         hasExecutedPhase_       = false;
         strategySuccess_        = false;
@@ -45,6 +46,12 @@ namespace strategy{
     //戦略手順を実行する
     bool ETSumoNeo::executeStrategy(StrategyPhase strategyPhase){
         switch(strategyPhase){
+
+        //車体角度保存
+        case StrategyPhase::INIT:
+            bodyAngleMeasurement_->setBaseAngle();//始めの角度をセット
+            return true;
+
         //星取取得
         case StrategyPhase::HOSHITORI:
             linetrace_->run(20,LineTraceEdge::RIGHT);
@@ -64,9 +71,19 @@ namespace strategy{
             straightRunning_->run(20);
             return lineDetection_->getResult();
 
-        //土俵手前までライントレース
+        //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
-            startDistanceMeasurement(1100);
+            startDistanceMeasurement(850);
+            linetrace_->run(30,LineTraceEdge::RIGHT);
+            if(!distanceMeasurement_->getResult()){
+                return bodyAngleMeasurement_->getResult() >= 180;//土俵の方向を向いたら
+            }else{
+                return true;//角度検知しない場合、一定距離で終了にする
+            }
+
+        //すこしライントレース
+        case StrategyPhase::LINE_TRACE_LITTLE:
+            startDistanceMeasurement(250);
             linetrace_->run(30,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
