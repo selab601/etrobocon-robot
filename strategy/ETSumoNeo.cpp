@@ -34,6 +34,7 @@ namespace strategy{
             if(executeStrategy(strategyProcedure_[procedureNumber])){
                 procedureNumber++;
                 hasExecutedPhase_ = false;//フラグを戻しておく
+                ev3_speaker_play_tone ( 500, 100);//音を出す
             }
         }
         if(procedureNumber == strategyProcedure_.size()){//最後まで終わったら
@@ -87,11 +88,7 @@ namespace strategy{
         //新幹線を検知するまで停止
         case StrategyPhase::STOP:
             straightRunning_->run(0);
-            if(objectDetection_->getResult()){
-                ev3_speaker_play_tone ( 500, 100);//音を出す
-                return true;
-            }
-            return false;
+            return objectDetection_->getResult();
 
         //通り過ぎてから1秒間待つ
         case StrategyPhase::WAIT_1_SEC:
@@ -161,12 +158,14 @@ namespace strategy{
             if(executeSumo(sumoProcedureRorB_[procedureNumber])){
                 procedureNumber++;
                 hasExecutedPhase_ = false;
+                ev3_speaker_play_tone ( 500, 100);//音を出す
             }
             return procedureNumber == sumoProcedureRorB_.size();
         }else{//星取が上段の場合
             if(executeSumo(sumoProcedureYorG_[procedureNumber])){
                 procedureNumber++;
                 hasExecutedPhase_ = false;
+                ev3_speaker_play_tone ( 500, 100);//音を出す
             }
             return procedureNumber == sumoProcedureYorG_.size();
         }
@@ -243,11 +242,7 @@ namespace strategy{
         case SumoPhase::ACROSS_LINE:
             startDistanceMeasurement(40);
             straightRunning_->run(15);
-            if(distanceMeasurement_->getResult()){
-                ev3_speaker_play_tone(500,100);//音を出す
-                return true;
-            }
-            return false;
+            return distanceMeasurement_->getResult();
 
         //上(後段する方向)を向くように回転
         case SumoPhase::TURN_TOP:
