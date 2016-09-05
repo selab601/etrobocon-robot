@@ -41,7 +41,8 @@ namespace strategy{
             STRAIGHT_LITTLE,
             TURN_TO_LINE,
             SUMO,
-            GET_OF
+            GET_OF,
+            LINE_RETURN
         };
 
         //相撲全体の状態
@@ -94,7 +95,8 @@ namespace strategy{
             StrategyPhase::SUMO,            //相撲ーSumoPhase
             StrategyPhase::STOP,            //新幹線検知するまで停止
             StrategyPhase::WAIT_2_SEC,      //検知後に待つ
-            StrategyPhase::GET_OF           //降段
+            StrategyPhase::GET_OF,          //降段
+            StrategyPhase::LINE_RETURN      //ライン復帰
         };
 
         //相撲攻略手順(星取り赤・青)
@@ -201,6 +203,13 @@ namespace strategy{
          * @return 押し出し終了:true,攻略中:false
          */
         bool extrusion(Hoshitori wrestlerColor);
+
+        /**
+         * @brief ライン復帰
+         * @details 右と左の2パターン
+         * @return ライン復帰したらtrue
+         */
+        bool downRunning();
 
         /**
          * @brief 星取検知

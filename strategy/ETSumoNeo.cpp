@@ -39,6 +39,7 @@ namespace strategy{
         }
         if(procedureNumber == strategyProcedure_.size()){//最後まで終わったら
             strategySuccess_ = true;
+            straightRunning_->run(0);//あとで消す
             return true;
         }
         return strategySuccess_;
@@ -74,14 +75,14 @@ namespace strategy{
 
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
-            startDistanceMeasurement(850);
+            //startDistanceMeasurement(850);
             linetrace_->run(30,LineTraceEdge::RIGHT);
             //距離検知or車体角度が土俵を向いたらtrue
-            return distanceMeasurement_->getResult() || bodyAngleMeasurement_->getResult() >= 180;
+            return /*distanceMeasurement_->getResult() ||*/ bodyAngleMeasurement_->getResult() >= 180;
 
         //すこしライントレース
         case StrategyPhase::LINE_TRACE_LITTLE:
-            startDistanceMeasurement(250);
+            startDistanceMeasurement(150);
             linetrace_->run(30,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
@@ -108,7 +109,7 @@ namespace strategy{
 
         //登壇走行
         case StrategyPhase::CLIMB:
-            return climbingRunning_->run(40,450);
+            return climbingRunning_->run(40,460);
 
         //横を向くまで旋回
         case StrategyPhase::TURN_TO_LINE:
@@ -138,14 +139,10 @@ namespace strategy{
         case StrategyPhase::GET_OF:
             startDistanceMeasurement(450);
             straightRunning_->run(30);
-            //テスト用
-            if(distanceMeasurement_->getResult()){
-                straightRunning_->run(0);
-            }
-            return false;
-            //本番はこっち
-            //降段走行->run(右か左か);
-            //return distanceMeasurement_->getResult();
+            return distanceMeasurement_->getResult();
+
+        case StrategyPhase::LINE_RETURN:
+            return downRunning();
 
         default: return false;
         }
@@ -240,7 +237,7 @@ namespace strategy{
 
         //直角をまたぐ走行
         case SumoPhase::ACROSS_LINE:
-            startDistanceMeasurement(40);
+            startDistanceMeasurement(45);
             straightRunning_->run(15);
             return distanceMeasurement_->getResult();
 
@@ -357,6 +354,27 @@ namespace strategy{
                 return true;
             }
             break;
+        }
+        return false;
+    }
+
+    //ライン復帰
+    bool ETSumoNeo::downRunning(){
+        static bool detected = false;//検知したかどうか
+        if(!detected){
+            //相撲終了地点が右のとき
+            if(hoshitori_ == Hoshitori::RED || hoshitori_ == Hoshitori::YELLOW){
+                straightRunning_->run(20);
+            }else{//左のとき
+                curveRunning_->run(15,20);
+            }
+            if(lineDetection_->getResult()){
+                detected = true;
+            }
+        }else{
+            startDistanceMeasurement(1000);
+            linetrace_->run(20,LineTraceEdge::RIGHT);
+            return distanceMeasurement_->getResult();
         }
         return false;
     }
