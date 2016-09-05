@@ -59,6 +59,7 @@ namespace strategy{
             linetrace_->run(20,LineTraceEdge::RIGHT);
             return hoshitoriDetection(true);
 
+        //すこしバック
         case StrategyPhase::BACK:
             startDistanceMeasurement(100);
             straightRunning_->run(-20);
@@ -82,7 +83,7 @@ namespace strategy{
 
         //すこしライントレース
         case StrategyPhase::LINE_TRACE_LITTLE:
-            startDistanceMeasurement(150);
+            startDistanceMeasurement(200);
             linetrace_->run(30,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
@@ -109,21 +110,38 @@ namespace strategy{
 
         //登壇走行
         case StrategyPhase::CLIMB:
-            return climbingRunning_->run(40,460);
+            return climbingRunning_->run(40,550);
 
         //横を向くまで旋回
-        case StrategyPhase::TURN_TO_LINE:
+        case StrategyPhase::TURN_TO_SIDE:
             if(hoshitori_ == Hoshitori::BLUE ||
                 hoshitori_ == Hoshitori::GREEN){
-                return pivotTurn_->turn(83);
+                return pivotTurn_->turn(85);
             }else{
-                return pivotTurn_->turn(-83);
+                return pivotTurn_->turn(-85);
             }
 
         //ラインまでバック
         case StrategyPhase::BACK_TO_LINE:
             straightRunning_->run(-15);
             return lineDetection_->getResult();
+
+        //50cm進む
+        case StrategyPhase::STRAIGHT_50_CM:
+            startDistanceMeasurement(30);
+            straightRunning_->run(15);
+            return distanceMeasurement_->getResult();
+
+        //下を向くように旋回
+        case StrategyPhase::TURN_TO_DOWN:
+            if(hoshitori_ == Hoshitori::BLUE ||
+                hoshitori_ == Hoshitori::GREEN){
+                curveRunning_->run(10,-10);
+                return lineDetection_->getResult();
+            }else{
+                curveRunning_->run(-10,10);
+                return lineDetection_->getResult();
+            }
 
          //相撲
          case StrategyPhase::SUMO:
@@ -176,6 +194,7 @@ namespace strategy{
         static Hoshitori secondWrestlerColor;   //二人目の力士の色
         static Hoshitori thirdWrestlerColor;    //三人目の力士の色
         static LineTraceEdge upperStageEdge;    //上段に移動するライントレースのエッジ
+        static LineTraceEdge downStageEdge;    //上段に移動するライントレースのエッジ
         static int angleTowardTop;              //上段を向く角度
         static int angleTowardSide;             //力士の方向を向く角度
 
@@ -187,8 +206,9 @@ namespace strategy{
                 secondWrestlerColor = Hoshitori::YELLOW;
                 thirdWrestlerColor = Hoshitori::GREEN;
                 upperStageEdge = LineTraceEdge::LEFT;
-                angleTowardTop = -85;
-                angleTowardSide = 85;
+                downStageEdge = LineTraceEdge::LEFT;
+                angleTowardTop = -87;
+                angleTowardSide = 87;
                 break;
             //青の場合
             case Hoshitori::BLUE:
@@ -196,8 +216,9 @@ namespace strategy{
                 secondWrestlerColor = Hoshitori::GREEN;
                 thirdWrestlerColor = Hoshitori::YELLOW;
                 upperStageEdge = LineTraceEdge::RIGHT;
-                angleTowardTop = 85;
-                angleTowardSide = -85;
+                downStageEdge = LineTraceEdge::RIGHT;
+                angleTowardTop = 87;
+                angleTowardSide = -87;
                 break;
             //黄の場合
             case Hoshitori::YELLOW:
@@ -205,8 +226,9 @@ namespace strategy{
                 secondWrestlerColor = Hoshitori::RED;
                 thirdWrestlerColor = Hoshitori::GREEN;
                 upperStageEdge = LineTraceEdge::RIGHT;
-                angleTowardTop = 85;
-                angleTowardSide = -85;
+                downStageEdge = LineTraceEdge::LEFT;
+                angleTowardTop = 87;
+                angleTowardSide = -87;
                 break;
             //緑の場合
             case Hoshitori::GREEN:
@@ -214,8 +236,9 @@ namespace strategy{
                 secondWrestlerColor = Hoshitori::BLUE;
                 thirdWrestlerColor = Hoshitori::YELLOW;
                 upperStageEdge = LineTraceEdge::LEFT;
-                angleTowardTop = -85;
-                angleTowardSide = 85;
+                downStageEdge = LineTraceEdge::RIGHT;
+                angleTowardTop = -87;
+                angleTowardSide = 87;
                 break;
             default: return false;
             }
@@ -255,6 +278,19 @@ namespace strategy{
             linetrace_->run(20,upperStageEdge,0.4);//黒よりに変更
             if(!timeMeasurement_->getResult()){break;}//開始直後は直角無視
             return rightAngledDetection_->getResult(4.0);
+
+        //下段までライントレース
+        case SumoPhase::DOWN_STAGE:
+            startTimeMeasurement(500);
+            linetrace_->run(20,downStageEdge,0.4);
+            if(!timeMeasurement_->getResult()){break;}
+            return rightAngledDetection_->getResult(4.0);
+
+        //2cm直進
+        case SumoPhase::STRAIGHT_2_CM:
+            startDistanceMeasurement(20);
+            straightRunning_->run(20);
+            return distanceMeasurement_->getResult();
 
         default: return false;
         }
