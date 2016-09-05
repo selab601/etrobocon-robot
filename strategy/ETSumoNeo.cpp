@@ -23,7 +23,7 @@ namespace strategy{
         hasExecutedPhase_       = false;
         strategySuccess_        = false;
 
-        hoshitori_              = Hoshitori::YELLOW;
+        hoshitori_              = Hoshitori::NONE;
         extrusionPhase_         = ExtrusionPhase::START_LINE_TRACE;
     }
 
@@ -75,11 +75,8 @@ namespace strategy{
         case StrategyPhase::LINE_TRACE:
             startDistanceMeasurement(850);
             linetrace_->run(30,LineTraceEdge::RIGHT);
-            if(!distanceMeasurement_->getResult()){
-                return bodyAngleMeasurement_->getResult() >= 180;//土俵の方向を向いたら
-            }else{
-                return true;//角度検知しない場合、一定距離で終了にする
-            }
+            //距離検知or車体角度が土俵を向いたらtrue
+            return distanceMeasurement_->getResult() || bodyAngleMeasurement_->getResult() >= 180;
 
         //すこしライントレース
         case StrategyPhase::LINE_TRACE_LITTLE:
@@ -142,9 +139,16 @@ namespace strategy{
 
         //降壇
         case StrategyPhase::GET_OF:
-            startDistanceMeasurement(300);//もっと必要
+            startDistanceMeasurement(450);
             straightRunning_->run(30);
-            return distanceMeasurement_->getResult();
+            //テスト用
+            if(distanceMeasurement_->getResult()){
+                straightRunning_->run(0);
+            }
+            return false;
+            //本番はこっち
+            //降段走行->run(右か左か);
+            //return distanceMeasurement_->getResult();
 
         default: return false;
         }
@@ -256,7 +260,7 @@ namespace strategy{
         //上段までライントレース
         case SumoPhase::UPPER_STAGE:
             startTimeMeasurement(1000);
-            linetrace_->run(20,upperStageEdge);
+            linetrace_->run(20,upperStageEdge,0.4);//黒よりに変更
             if(!timeMeasurement_->getResult()){break;}//開始直後は直角無視
             return rightAngledDetection_->getResult(4.0);
 
@@ -267,10 +271,10 @@ namespace strategy{
 
     //中央線から力士を押し出して戻って来る
     bool ETSumoNeo::extrusion(Hoshitori wrestlerColor){
-        static bool initialized = false;
-        static int rSpeed;     //右タイヤスピード
-        static int lSpeed;     //左タイヤスピード
-        static int turnAngle;  //戻るための旋回角度
+        static bool initialized = false;//初期化したかどうか
+        static int rSpeed;              //右タイヤスピード
+        static int lSpeed;              //左タイヤスピード
+        static int turnAngle;           //戻るための旋回角度
         static LineTraceEdge startEdge,endEdge;//往復のライントレースのエッジ
 
         if(!initialized){
@@ -348,9 +352,11 @@ namespace strategy{
 
         //直角までライントレース
         case ExtrusionPhase::END_LINE_TRACE:
+            startDistanceMeasurement(60);//直角検知しないときは強制的に次へ
+            startTimeMeasurement(100);
             linetrace_->run(15,endEdge);
-            if(!timeMeasurement_->getResult()){break;}//直角誤検知しないように
-            if(rightAngledDetection_->getResult()){
+            if(!timeMeasurement_->getResult()){break;}
+            if(rightAngledDetection_->getResult() || distanceMeasurement_->getResult()){
                 extrusionPhase_ = ExtrusionPhase::START_LINE_TRACE;//状態を戻しておく
                 initialized = false;
                 return true;
@@ -359,11 +365,8 @@ namespace strategy{
         }
         return false;
     }
-    /*
-    変更予定
-    ・白、黒以外だったら検知するようにする
-    ・赤、黄、緑以外だったら青と判定するようにする
-    */
+
+    //赤、青、黄、緑を検知したらtrue
     bool ETSumoNeo::hoshitoriDetection(bool saveHoshitori){
         static colorid_t nowColor = COLOR_NONE;
         nowColor = colorDetection_->getResult();
@@ -389,6 +392,7 @@ namespace strategy{
         }
     }
 
+    //距離検知をまとめたもの
     void ETSumoNeo::startDistanceMeasurement(int distance){
         if(!hasExecutedPhase_){
             distanceMeasurement_->setTargetDistance(distance);
@@ -397,6 +401,7 @@ namespace strategy{
         }
     }
 
+    //時間検知をまとめたもの
     void ETSumoNeo::startTimeMeasurement(int time){
         if(!hasExecutedPhase_){
             timeMeasurement_->setBaseTime();
