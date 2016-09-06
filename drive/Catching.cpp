@@ -1,35 +1,68 @@
 #include "./Catching.h"
+#include "../device/Display.h"
 
+using namespace device;
 using namespace measurement;
+using namespace detection;
 namespace drive{
 
     Catching::Catching(){
 
     }
 
-    bool Catching::catchBlock(){
+    bool Catching::catchBlock(TurnDirection direction){
+        static ColorDetection colorDetection = ColorDetection();
+        SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
+        LineTrace* lineTrace = LineTrace::getInstance();
+        static long baseLength = 0;
 
         switch(state_){
             case State::INIT:
+                lineTrace->setPid();
+                lineTrace->setMaxPwm(20);
+                lineTrace->setEdge(LineTraceEdge::RIGHT);
+                lineTrace->setTarget(0.42); // 黒寄り
+
                 state_ = State::TO_BLOCK;
                 break;
 
             case State::TO_BLOCK:
-                state_ = State::TURN;
+                lineTrace->run();
+
+                if (daizaDetected()){
+                    state_ = State::TURN;
+                }
                 break;
 
             case State::TURN:
-                if ( turn(90) ){
-                    state_ = State::FINISHED;
+                if ( turn(direction) ){
+                    baseLength = estimation->getMigrationLength();
+
+
+                    lineTrace->setPid();
+                    lineTrace->setMaxPwm(20);
+                    lineTrace->setEdge(LineTraceEdge::RIGHT);
+                    lineTrace->setTarget(0.42); // 黒寄り
+
+                    state_ = State::TO_LINE;
                 }
                 break;
 
             case State::TO_LINE:
-                state_ = State::FINISHED;
+                {
+                    long length = estimation->getMigrationLength() - baseLength;
+
+                    lineTrace->run();
+                    if(TO_LINE_LENGTH <= length){
+                        ev3_speaker_play_tone(500,100);     // TODO: delete
+                        state_ = State::FINISHED;
+                    }
+                }
                 break;
 
             case State::FINISHED:
-
+                stop();
+                state_ = State::INIT;
                 return true;
                 break;
         }
@@ -41,6 +74,9 @@ namespace drive{
         static CurveRunning curveRunning = CurveRunning();
         static BodyAngleMeasurement bodyAngleMeasurement = BodyAngleMeasurement();
         int diffDegree = degree - bodyAngleMeasurement.getResult();
+        if (diffDegree >= 100){
+            diffDegree = 100;
+        }
 
         switch(turnState_){
                 case TurnState::INIT:
@@ -52,11 +88,11 @@ namespace drive{
                 // 右にまがるとき
                 if (0 > diffDegree ){
                     diffDegree *= -1;
-                    curveRunning.run(diffDegree, 0);
+                    curveRunning.run(0, diffDegree);
                 }
                 // 左に曲がるとき
                 else {
-                    curveRunning.run(0, diffDegree);
+                    curveRunning.run(diffDegree, diffDegree/10);
                 }
 
                 if (diffDegree <= 1){
@@ -65,11 +101,76 @@ namespace drive{
                 break;
 
             case TurnState::FINISHED:
-                curveRunning.run(0, 0);
+                stop();
                 turnState_ = TurnState::INIT;
 
                 return true;
         }
+        return false;
+    }
+
+    bool Catching::turn(TurnDirection direction){
+        switch(direction){
+            case TurnDirection::RIGHT:
+                return turn(-90);
+
+            case TurnDirection::LEFT:
+                return turn(90);
+
+            case TurnDirection::STRAIGHT:
+                return straight(145);
+        }
+    }
+
+    void Catching::stop(){
+        static CurveRunning curveRunning = CurveRunning();
+        curveRunning.run(0, 0);
+    }
+
+    bool Catching::straight(int length){
+        static CurveRunning curveRunning = CurveRunning();
+        SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
+        static long baseLength = 0;
+        static bool initialized = false;
+        long currentLength = estimation->getMigrationLength() - baseLength;
+
+        if (!initialized ){
+            baseLength = estimation->getMigrationLength();
+            initialized = true;
+        }
+        else{
+            int pwm = (length - currentLength)/3 + 5;
+            curveRunning.run(pwm, pwm);
+
+            if(currentLength >= length){
+                stop();
+                initialized = false;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool Catching::daizaDetected(){
+        static ColorDetection colorDetection = ColorDetection();
+        colorid_t colorId = colorDetection.getResult();
+
+        switch(colorId){
+            case COLOR_NONE:
+            case COLOR_BLACK:
+            case COLOR_WHITE:
+
+            case COLOR_BROWN:
+            case TNUM_COLOR:
+                return false;
+
+            case COLOR_RED:
+            case COLOR_YELLOW:
+            case COLOR_GREEN:
+            case COLOR_BLUE:
+                return true;
+        }
+
         return false;
     }
 }

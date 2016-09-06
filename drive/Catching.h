@@ -4,8 +4,11 @@
 #include "./PivotTurn.h"
 #include "../measurement/BodyAngleMeasurement.h"
 #include "./CurveRunning.h"
+#include "./LineTrace.h"
+#include "../detection/ColorDetection.h"
 #include <stdlib.h>
 
+#define TO_LINE_LENGTH 165  // 6センチになる！
 namespace drive
 {
     class Catching{
@@ -28,19 +31,30 @@ namespace drive
             State state_ = State::INIT;
             TurnState turnState_ = TurnState::INIT;
 
+
         public:
             Catching();
 
+            enum class TurnDirection{
+                RIGHT,
+                LEFT,
+                STRAIGHT,
+            };
 
             /**
              * @brief ブロックを取得する
              *
              * @return 終了したらtrue
              */
-            bool catchBlock();
+            bool catchBlock(TurnDirection direction );
 
         private:
             bool turn(int degree);
+            bool turn(TurnDirection direction);
+            bool straight(int length);
+
+            bool daizaDetected();
+            void stop();
     };
 }
 #endif
