@@ -39,7 +39,7 @@ namespace strategy{
             WAIT_2_SEC,
             TURN_TO_SIDE,
             BACK_TO_LINE,
-            STRAIGHT_50_CM,
+            STRAIGHT_40_CM,
             TURN_TO_DOWN,
             SUMO,
             GET_OF,
@@ -55,7 +55,7 @@ namespace strategy{
             TURN_SIDE,
             UPPER_STAGE,
             DOWN_STAGE,
-            STRAIGHT_2_CM,
+            STRAIGHT_3_CM,
             ACROSS_LINE
         };
 
@@ -93,7 +93,7 @@ namespace strategy{
             StrategyPhase::WAIT_1_SEC,      //登壇後に機体が落ち着くまで待つ
             StrategyPhase::TURN_TO_SIDE,    //横を向く
             StrategyPhase::BACK_TO_LINE,    //中央線までバック
-            StrategyPhase::STRAIGHT_50_CM,  //50cm直進
+            StrategyPhase::STRAIGHT_40_CM,  //40cm直進
             StrategyPhase::TURN_TO_DOWN,    //下を向くように旋回
             StrategyPhase::SUMO,            //相撲-SumoPhase-
             StrategyPhase::BACK_TO_LINE,    //-SumoPhase終了(降段方向を向いている)-ラインまでバック
@@ -106,7 +106,7 @@ namespace strategy{
         //相撲攻略手順(星取り赤・青)
         std::vector<SumoPhase> sumoProcedureRorB_{
             SumoPhase::DOWN_STAGE,     //直角検知までライントレース
-            SumoPhase::STRAIGHT_2_CM,  //2cm直進
+            SumoPhase::STRAIGHT_3_CM,  //3cm直進
             SumoPhase::TURN_SIDE,       //横を向く
             SumoPhase::FIRST_EXTRUSION, //一人目押し出し
             SumoPhase::ACROSS_LINE,     //ラインを横切る
@@ -122,9 +122,9 @@ namespace strategy{
 
         //相撲攻略手順(星取り黄・緑)
         std::vector<SumoPhase> sumoProcedureYorG_{
-            SumoPhase::DOWN_STAGE,     //直角検知までライントレース
-            SumoPhase::STRAIGHT_2_CM,  //2cm直進
-            SumoPhase::TURN_TOP,       //横を向く
+            SumoPhase::DOWN_STAGE,      //直角検知までライントレース
+            SumoPhase::STRAIGHT_3_CM,   //3cm直進
+            SumoPhase::TURN_TOP,        //横を向く
             SumoPhase::FIRST_EXTRUSION, //一人目押し出し
             SumoPhase::ACROSS_LINE,     //ラインを横切る
             SumoPhase::SECOND_EXTRUSION,//二人目押し出し
@@ -147,7 +147,6 @@ namespace strategy{
         drive::CurveRunning* curveRunning_;
         drive::LineTrace* linetrace_;
 
-
         //検知
         detection::LineDetection* lineDetection_;
         detection::ColorDetection* colorDetection_;
@@ -158,8 +157,6 @@ namespace strategy{
         measurement::DistanceMeasurement* distanceMeasurement_;
         measurement::TimeMeasurement* timeMeasurement_;
         measurement::BodyAngleMeasurement* bodyAngleMeasurement_;
-
-
 
         //押し出し手順
         ExtrusionPhase extrusionPhase_;
@@ -217,7 +214,7 @@ namespace strategy{
         /**
          * @brief ライン復帰
          * @details 右と左の2パターン
-         * @return ライン復帰したらtrue
+         * @return ライン復帰終了:true,攻略中:false
          */
         bool downRunning();
 

@@ -71,8 +71,9 @@ namespace strategy{
 
         //ラインに近づくように直進走行
         case StrategyPhase::STRAIGHT:
+            startDistanceMeasurement(150);
             straightRunning_->run(20);
-            return lineDetection_->getResult();
+            return lineDetection_->getResult() || distanceMeasurement_->getResult();
 
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
@@ -126,9 +127,9 @@ namespace strategy{
             straightRunning_->run(-15);
             return lineDetection_->getResult();
 
-        //50cm進む
-        case StrategyPhase::STRAIGHT_50_CM:
-            startDistanceMeasurement(30);
+        //40cm進む
+        case StrategyPhase::STRAIGHT_40_CM:
+            startDistanceMeasurement(40);
             straightRunning_->run(15);
             return distanceMeasurement_->getResult();
 
@@ -194,7 +195,7 @@ namespace strategy{
         static Hoshitori secondWrestlerColor;   //二人目の力士の色
         static Hoshitori thirdWrestlerColor;    //三人目の力士の色
         static LineTraceEdge upperStageEdge;    //上段に移動するライントレースのエッジ
-        static LineTraceEdge downStageEdge;    //上段に移動するライントレースのエッジ
+        static LineTraceEdge downStageEdge;     //上段に移動するライントレースのエッジ
         static int angleTowardTop;              //上段を向く角度
         static int angleTowardSide;             //力士の方向を向く角度
 
@@ -260,7 +261,7 @@ namespace strategy{
 
         //直角をまたぐ走行
         case SumoPhase::ACROSS_LINE:
-            startDistanceMeasurement(45);
+            startDistanceMeasurement(50);
             straightRunning_->run(15);
             return distanceMeasurement_->getResult();
 
@@ -286,8 +287,8 @@ namespace strategy{
             if(!timeMeasurement_->getResult()){break;}
             return rightAngledDetection_->getResult(4.0);
 
-        //2cm直進
-        case SumoPhase::STRAIGHT_2_CM:
+        //3cm直進
+        case SumoPhase::STRAIGHT_3_CM:
             startDistanceMeasurement(20);
             straightRunning_->run(20);
             return distanceMeasurement_->getResult();
@@ -396,21 +397,31 @@ namespace strategy{
 
     //ライン復帰
     bool ETSumoNeo::downRunning(){
-        static bool detected = false;//検知したかどうか
-        if(!detected){
-            //相撲終了地点が右のとき
-            if(hoshitori_ == Hoshitori::RED || hoshitori_ == Hoshitori::YELLOW){
-                straightRunning_->run(20);
-            }else{//左のとき
-                curveRunning_->run(15,20);
-            }
-            if(lineDetection_->getResult()){
-                detected = true;
+        static bool isChanged = false;//エッジ切り替えが完了したかどうか
+        static bool isDetected = false;//検知したかどうか
+
+        //相撲終了地点が右のとき
+        if(hoshitori_ == Hoshitori::RED || hoshitori_ == Hoshitori::YELLOW){
+            startDistanceMeasurement(250);
+            if(distanceMeasurement_->getResult()){//一定距離走行したらエッジ切り替え
+                if(linetrace_->changeEdge()){
+                    isChanged = true;
+                }
+            }else{
+                linetrace_->run(20,LineTraceEdge::RIGHT);
             }
         }else{
-            startDistanceMeasurement(1000);
-            linetrace_->run(20,LineTraceEdge::RIGHT);
-            return distanceMeasurement_->getResult();
+            isChanged = true;//すでに左側にいるのでtrue
+        }
+        if(isChanged){
+            startDistanceMeasurement(250);
+            linetrace_->run(20,LineTraceEdge::LEFT);
+            if(distanceMeasurement_->getResult()){
+                isDetected = true;
+            }
+            if(isDetected){
+                return rightAngledDetection_->getResult();
+            }
         }
         return false;
     }
@@ -425,11 +436,11 @@ namespace strategy{
             if(saveHoshitori){
                 switch(nowColor){
                 case COLOR_RED:
-                    hoshitori_ = Hoshitori::RED; break;
+                    hoshitori_ = Hoshitori::RED;break;
                 case COLOR_BLUE:
                     hoshitori_ = Hoshitori::BLUE; break;
                 case COLOR_YELLOW:
-                    hoshitori_ = Hoshitori::YELLOW; break;
+                    hoshitori_ = Hoshitori::YELLOW;break;
                 case COLOR_GREEN:
                     hoshitori_ = Hoshitori::GREEN; break;
                 default: return false;
