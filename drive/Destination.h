@@ -10,6 +10,8 @@
 namespace drive{
     class Destination{
     public:
+        BlockAreaCoordinate currentCoordinate_;
+        Direction EV3Position_;
         /**
          * @brief EV3が向いている台座から見たEV3の位置(モデル2.3.4参照)
          **/
@@ -39,15 +41,21 @@ namespace drive{
             STRAIGHT_LEFT,
             TRUN
         };
+
+                /*
+         * @brief 2つの座標を比較して位置関係を返す
+         *        from から見て to がどちら側にあるか？
+         *        注意: from からみて、to がX軸、Y軸上になければ使えない
+         * @return to のある向き。重なっていた場合は NONE が返る
+         */
+        Direction getDirection(BlockAreaCoordinate from, BlockAreaCoordinate to);
     private:
         /**
          * @brief EV3が向いている台座の座標(モデル2.3.4参照)
          **/
-        BlockAreaCoordinate currentCoordinate_;
         BlockAreaCoordinate targetCoordinate_;
         BlockAreaCoordinate nextCoordinate_;
         Position goingPosition_;
-        Direction EV3Position_;
         Avoidance avoidance_;
         StraightRunning straightRunning_;
         PivotTurn pivotTurn_;
@@ -61,13 +69,6 @@ namespace drive{
 
         Destination();
 
-        /*
-         * @brief 2つの座標を比較して位置関係を返す
-         *        from から見て to がどちら側にあるか？
-         *        注意: from からみて、to がX軸、Y軸上になければ使えない
-         * @return to のある向き。重なっていた場合は NONE が返る
-         */
-        Direction getDirection(BlockAreaCoordinate from, BlockAreaCoordinate to);
     public:
         // シングルトンパターン
         static Destination* getInstance();
