@@ -93,6 +93,8 @@ namespace drive{
          **/
         bool runTo(int x,int y);
 
+        const char* getEV3Position();
+        const char* getGoingPosition();
         const char* getCurrentCoordinateString();
         const char* getNextCoordinateString();
         const char* getTargetCoordinateString();

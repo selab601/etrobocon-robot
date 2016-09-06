@@ -288,6 +288,12 @@ namespace drive{
             return "UNDEFINED";
         }
     }
+    const char* Destination::getEV3Position() {
+        return getStr(EV3Position_);
+    }
+    const char* Destination::getGoingPosition() {
+        return getStr(goingPosition_);
+    }
     const char* Destination::getCurrentCoordinateString() {
         return currentCoordinate_.toString();
     }
