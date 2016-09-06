@@ -23,6 +23,7 @@ namespace drive{
         targetCoordinate_ = BlockAreaCoordinate(-1,-1);
         nextCoordinate_ = BlockAreaCoordinate(-1,-1);
         EV3Position_ = EV3Position;
+        goingPosition_ = Position::NONE;
     }
 
     BlockAreaCoordinate Destination::getNextStageCoordinate(Coordinate destination){
@@ -161,6 +162,8 @@ namespace drive{
 
         // 次どちらの座標に向かって進むのかで場合分け
         Position position = getPosition(EV3Position_ , nextStageDirection);
+        goingPosition_ = position;
+
         bool isFinished = false;
         switch (position) {
             case Position::EQUAL:
@@ -178,6 +181,7 @@ namespace drive{
                 {
                     isFinished = avoidance_.startAvoidance(DirectionKind::STRAIGHT_LEFT);
                 }
+                break;
             case Position::RIGHT:
                 isFinished = avoidance_.startAvoidance(DirectionKind::RIGHT);
                 break;
@@ -208,6 +212,7 @@ namespace drive{
                         default:
                             break;
                     }
+                    break;
                 case Position::RIGHT:
                     switch(EV3Position_){
                         case Direction::UP:
@@ -225,6 +230,7 @@ namespace drive{
                         default:
                             break;
                     }
+                    break;
                 case Position::LEFT:
                     switch(EV3Position_){
                         case Direction::UP:
@@ -242,6 +248,7 @@ namespace drive{
                         default:
                             break;
                     }
+                    break;
                 default:
                     break;
             }

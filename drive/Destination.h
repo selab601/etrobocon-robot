@@ -46,6 +46,7 @@ namespace drive{
         BlockAreaCoordinate currentCoordinate_;
         BlockAreaCoordinate targetCoordinate_;
         BlockAreaCoordinate nextCoordinate_;
+        Position goingPosition_;
         Direction EV3Position_;
         Avoidance avoidance_;
         StraightRunning straightRunning_;
