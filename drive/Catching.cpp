@@ -6,8 +6,8 @@ using namespace measurement;
 using namespace detection;
 namespace drive{
 
-    Catching::Catching(Destination* destination){
-        this->destination_ = destination;
+    Catching::Catching(){
+        this->destination_ = Destination::getInstance();
     }
 
     bool Catching::catchBlock(TurnDirection direction){
@@ -74,12 +74,42 @@ namespace drive{
         return false;
     }
 
+    bool Catching::catchBlock(int x, int y){
+        return catchBlock(BlockAreaCoordinate(x, y));
+    }
+
+    bool Catching::catchBlock(BlockAreaCoordinate destination){
+        BlockAreaCoordinate nextCoordinate = destination_->getNextStageCoordinate(destination);
+        Destination::Direction direction = destination_->getDirection(destination_->currentCoordinate_, nextCoordinate);
+        Destination::Position position = destination_->getPosition(destination_->EV3Position_, direction);
+        TurnDirection turnDirection;
+
+        switch (position){
+            case Destination::Position::EQUAL:
+                turnDirection = TurnDirection::BACK;
+                break;
+            case Destination::Position::REVERSE:
+                turnDirection = TurnDirection::STRAIGHT;
+                break;
+            case Destination::Position::RIGHT:
+                turnDirection = TurnDirection::RIGHT;
+                break;
+            case Destination::Position::LEFT:
+                turnDirection = TurnDirection::LEFT;
+                break;
+            case Destination::Position::NONE:
+                return false;       // エラー
+        }
+
+        return catchBlock(turnDirection);
+    }
 
     bool Catching::catchBackBlock(){
         static ChangeDirectionState state = ChangeDirectionState::INIT;
         static Avoidance avoidance = Avoidance();
         static PivotTurn pivotTurn = PivotTurn();
-
+        static DirectionKind directionKind = getAdvancableDirection();
+        static TurnDirection turnDirection = DirectionKind::LEFT == directionKind? TurnDirection::RIGHT : TurnDirection::LEFT;
         switch (state){
             case ChangeDirectionState::INIT:
                 state = ChangeDirectionState::AVOIDANCE;
@@ -87,19 +117,19 @@ namespace drive{
 
             case ChangeDirectionState::AVOIDANCE:
 
-                if (avoidance.right()){
+                if (avoidance.startAvoidance(directionKind)){
                     state = ChangeDirectionState::TURN;
                 }
                 break;
 
             case ChangeDirectionState::TURN:
-                if (pivotTurn.turn(180)){
+                if (pivotTurn.turn(150)){
                     state = ChangeDirectionState::CATCHING;
                 }
                 break;
 
             case ChangeDirectionState::CATCHING:
-                if (catchBlock(TurnDirection::LEFT)){
+                if (catchBlock(turnDirection)){
                     state = ChangeDirectionState::FINISHED;
                 }
                 break;
@@ -132,11 +162,13 @@ namespace drive{
                 // 右にまがるとき
                 if (0 > diffDegree ){
                     diffDegree *= -1;
-                    curveRunning.run(0, diffDegree);
+                    int pwm = diffDegree + 5;
+                    curveRunning.run(0,  pwm);
                 }
                 // 左に曲がるとき
                 else {
-                    curveRunning.run(diffDegree, diffDegree/10);
+                    int pwm = diffDegree + 5;
+                    curveRunning.run(pwm, pwm/10);
                 }
 
                 if (diffDegree <= 1){
@@ -216,5 +248,33 @@ namespace drive{
         }
 
         return false;
+    }
+
+    DirectionKind Catching::getAdvancableDirection(){
+        switch(destination_->EV3Position_){
+            case Destination::Direction::RIGHT:
+                if (destination_->currentCoordinate_.getY() == 4){
+                    return DirectionKind::RIGHT;
+                }
+                break;
+            case Destination::Direction::LEFT:
+                if (destination_->currentCoordinate_.getY() == 1){
+                    return DirectionKind::RIGHT;
+                }
+                break;
+            case Destination::Direction::UP:
+                if (destination_->currentCoordinate_.getX() == 4){
+                    return DirectionKind::RIGHT;
+                }
+                break;
+            case Destination::Direction::DOWN:
+                if (destination_->currentCoordinate_.getX() == 1){
+                    return DirectionKind::RIGHT;
+                }
+                break;
+            case Destination::Direction::NONE:
+                break;
+        }
+        return DirectionKind::LEFT;
     }
 }
