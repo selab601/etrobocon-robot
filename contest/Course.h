@@ -11,6 +11,9 @@
 #include "../measurement/SelfPositionEstimation.h"
 #include <vector>
 
+//#include "strategy/TestStrategy.h"
+#include "strategy/LCourseStandard.h"
+#include "strategy/RCourseStandard.h"
 
 
 //ライントレースや戦略をincludeする

@@ -16,15 +16,17 @@ namespace contest_pkg{
         selfPositionEstimation_ = SelfPositionEstimation::getInstance();
         selfPositionEstimation_->initMap();
         sectionNumber_ = 0;
-
+ 
         //それぞれのコースの戦略やライントレースを追加していく
         if(course == SelectedCourse::R_COURSE){
-        // sections_.emplace_back(100,new TestStrategy());
-        // sections_.emplace_back(200,new TestStrategy2());
+        //ブロック並べ
+        //sections_.emplace_back(1000,new TestStrategy());
+        sections_.emplace_back(9100,new RCourseStandard());
         }
 
         if(course == SelectedCourse::L_COURSE){
-        // sections_.emplace_back(100,new TestStrategy());
+        sections_.emplace_back(8000,new LCourseStandard());
+        //相撲
         // sections_.emplace_back(200,new TestStrategy2());
         }
     }
