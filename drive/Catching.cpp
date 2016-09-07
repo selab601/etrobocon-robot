@@ -144,6 +144,55 @@ namespace drive{
         return false;
     }
 
+    bool Catching::putBlock() {
+        static ColorDetection colorDetection = ColorDetection();
+        SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
+        LineTrace* lineTrace = LineTrace::getInstance();
+        static long baseLength = 0;
+        static State state = State::INIT;
+        static CurveRunning curveRunning = CurveRunning();
+
+        switch(state){
+            case State::INIT:
+                lineTrace->setPid();
+                lineTrace->setMaxPwm(20);
+                lineTrace->setEdge(LineTraceEdge::RIGHT);
+                lineTrace->setTarget(0.42); // 黒寄り
+
+                state = State::TO_BLOCK;
+                break;
+
+            case State::TO_BLOCK:
+                lineTrace->run();
+
+                if (daizaDetected()){
+                    state = State::TO_LINE;
+                    baseLength = estimation->getMigrationLength();
+                }
+                break;
+
+            case State::TO_LINE:
+                {
+                    long length = estimation->getMigrationLength() - baseLength;
+
+                    curveRunning.run(-20, -20);
+                    if(200 <= length){
+                        ev3_speaker_play_tone(500,100);     // TODO: delete
+                        state = State::FINISHED;
+                    }
+                }
+                break;
+
+            case State::FINISHED:
+                stop();
+                state = State::INIT;
+                return true;
+                break;
+        }
+
+        return false;
+    }
+
     bool Catching::turn(int degree){
         static CurveRunning curveRunning = CurveRunning();
         static BodyAngleMeasurement bodyAngleMeasurement = BodyAngleMeasurement();

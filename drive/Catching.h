@@ -83,6 +83,8 @@ namespace drive
              */
             bool catchBlock(TurnDirection direction );
 
+            bool putBlock();
+
         private:
             bool catchBackBlock();
             bool turn(int degree);
