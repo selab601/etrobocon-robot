@@ -11,6 +11,10 @@ namespace drive{
     }
 
     bool Catching::catchBlock(TurnDirection direction){
+        if (TurnDirection::BACK == direction){
+            return catchBackBlock();
+        }
+
         static ColorDetection colorDetection = ColorDetection();
         SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
         LineTrace* lineTrace = LineTrace::getInstance();
@@ -71,18 +75,14 @@ namespace drive{
     }
 
 
-    bool catch(TurnDirection direction){
-        if (TurnDirection::BACK != direction){
-            return catchBlock(direction);
-        }
-
-        Static ChangeDirectionState state = ChangeDirectionState::INIT;
+    bool Catching::catchBackBlock(){
+        static ChangeDirectionState state = ChangeDirectionState::INIT;
         static Avoidance avoidance = Avoidance();
         static PivotTurn pivotTurn = PivotTurn();
 
         switch (state){
             case ChangeDirectionState::INIT:
-                state = ChangeDirectionState::Avoidance;
+                state = ChangeDirectionState::AVOIDANCE;
                 break;
 
             case ChangeDirectionState::AVOIDANCE:
@@ -91,11 +91,19 @@ namespace drive{
                     state = ChangeDirectionState::TURN;
                 }
                 break;
+
             case ChangeDirectionState::TURN:
                 if (pivotTurn.turn(180)){
+                    state = ChangeDirectionState::CATCHING;
+                }
+                break;
+
+            case ChangeDirectionState::CATCHING:
+                if (catchBlock(TurnDirection::LEFT)){
                     state = ChangeDirectionState::FINISHED;
                 }
                 break;
+
             case ChangeDirectionState::FINISHED:
                 stop();
                 state = ChangeDirectionState::INIT;

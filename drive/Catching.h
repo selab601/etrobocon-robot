@@ -2,6 +2,8 @@
 #define CATCHING_H
 
 #include "./PivotTurn.h"
+#include "./Destination.h"
+#include "./Avoidance.h"
 #include "../measurement/BodyAngleMeasurement.h"
 #include "./CurveRunning.h"
 #include "./LineTrace.h"
@@ -27,8 +29,9 @@ namespace drive
                 INIT,
                 AVOIDANCE,
                 TURN,
+                CATCHING,
                 FINISHED,
-            }
+            };
 
             enum class TurnState{
                 INIT,
@@ -57,7 +60,7 @@ namespace drive
              */
             bool catchBlock(TurnDirection direction );
 
-            bool catch(TurnDirection direction);
+            bool catchBackBlock();
 
         private:
             bool turn(int degree);
