@@ -176,7 +176,7 @@ namespace drive{
                     long length = estimation->getMigrationLength() - baseLength;
 
                     curveRunning.run(-20, -20);
-                    if(200 <= length){
+                    if(140 <= length){
                         ev3_speaker_play_tone(500,100);     // TODO: delete
                         state = State::FINISHED;
                     }
