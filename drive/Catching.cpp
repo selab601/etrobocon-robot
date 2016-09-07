@@ -6,8 +6,8 @@ using namespace measurement;
 using namespace detection;
 namespace drive{
 
-    Catching::Catching(){
-
+    Catching::Catching(Destination* destination){
+        this->destination_ = destination;
     }
 
     bool Catching::catchBlock(TurnDirection direction){
@@ -65,6 +65,42 @@ namespace drive{
                 state_ = State::INIT;
                 return true;
                 break;
+        }
+
+        return false;
+    }
+
+
+    bool catch(TurnDirection direction){
+        if (TurnDirection::BACK != direction){
+            return catchBlock(direction);
+        }
+
+        Static ChangeDirectionState state = ChangeDirectionState::INIT;
+        static Avoidance avoidance = Avoidance();
+        static PivotTurn pivotTurn = PivotTurn();
+
+        switch (state){
+            case ChangeDirectionState::INIT:
+                state = ChangeDirectionState::Avoidance;
+                break;
+
+            case ChangeDirectionState::AVOIDANCE:
+
+                if (avoidance.right()){
+                    state = ChangeDirectionState::TURN;
+                }
+                break;
+            case ChangeDirectionState::TURN:
+                if (pivotTurn.turn(180)){
+                    state = ChangeDirectionState::FINISHED;
+                }
+                break;
+            case ChangeDirectionState::FINISHED:
+                stop();
+                state = ChangeDirectionState::INIT;
+
+                return true;
         }
 
         return false;

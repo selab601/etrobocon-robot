@@ -23,6 +23,13 @@ namespace drive
                 FINISHED,
             };
 
+            enum class ChangeDirectionState{
+                INIT,
+                AVOIDANCE,
+                TURN,
+                FINISHED,
+            }
+
             enum class TurnState{
                 INIT,
                 TURN,
@@ -31,14 +38,16 @@ namespace drive
             State state_ = State::INIT;
             TurnState turnState_ = TurnState::INIT;
 
+            Destination* destination_;
 
         public:
-            Catching();
+            Catching(Destination* destination);
 
             enum class TurnDirection{
                 RIGHT,
                 LEFT,
                 STRAIGHT,
+                BACK,
             };
 
             /**
@@ -47,6 +56,8 @@ namespace drive
              * @return 終了したらtrue
              */
             bool catchBlock(TurnDirection direction );
+
+            bool catch(TurnDirection direction);
 
         private:
             bool turn(int degree);
