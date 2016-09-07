@@ -77,10 +77,10 @@ namespace strategy{
 
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
-            //startDistanceMeasurement(850);
+            startDistanceMeasurement(900);
             linetrace_->run(30,LineTraceEdge::RIGHT);
             //距離検知or車体角度が土俵を向いたらtrue
-            return /*distanceMeasurement_->getResult() ||*/ bodyAngleMeasurement_->getResult() >= 180;
+            return distanceMeasurement_->getResult() || bodyAngleMeasurement_->getResult() >= 180;
 
         //すこしライントレース
         case StrategyPhase::LINE_TRACE_LITTLE:
