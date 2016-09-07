@@ -1,5 +1,4 @@
 #include "./Catching.h"
-#include "../device/Display.h"
 
 using namespace device;
 using namespace measurement;
@@ -15,7 +14,6 @@ namespace drive{
             return catchBackBlock();
         }
 
-        static ColorDetection colorDetection = ColorDetection();
         SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
         LineTrace* lineTrace = LineTrace::getInstance();
         static long baseLength = 0;
@@ -41,7 +39,6 @@ namespace drive{
             case State::TURN:
                 if ( turn(direction) ){
                     baseLength = estimation->getMigrationLength();
-
 
                     lineTrace->setPid();
                     lineTrace->setMaxPwm(20);
@@ -82,21 +79,25 @@ namespace drive{
         BlockAreaCoordinate nextCoordinate = destination_->getNextStageCoordinate(destination);
         Destination::Direction direction = destination_->getDirection(destination_->currentCoordinate_, nextCoordinate);
         Destination::Position position = destination_->getPosition(destination_->EV3Position_, direction);
-        TurnDirection turnDirection;
+        TurnDirection turnDirection = TurnDirection::LEFT;
 
         switch (position){
             case Destination::Position::EQUAL:
                 turnDirection = TurnDirection::BACK;
                 break;
+
             case Destination::Position::REVERSE:
                 turnDirection = TurnDirection::STRAIGHT;
                 break;
+
             case Destination::Position::RIGHT:
                 turnDirection = TurnDirection::RIGHT;
                 break;
+
             case Destination::Position::LEFT:
                 turnDirection = TurnDirection::LEFT;
                 break;
+
             case Destination::Position::NONE:
                 return false;       // エラー
         }
@@ -145,7 +146,6 @@ namespace drive{
     }
 
     bool Catching::putBlock() {
-        static ColorDetection colorDetection = ColorDetection();
         SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
         LineTrace* lineTrace = LineTrace::getInstance();
         static long baseLength = 0;
@@ -187,6 +187,9 @@ namespace drive{
                 stop();
                 state = State::INIT;
                 return true;
+                break;
+
+            case State::TURN:   //使わない
                 break;
         }
 
@@ -244,7 +247,11 @@ namespace drive{
 
             case TurnDirection::STRAIGHT:
                 return straight(145);
+
+            case TurnDirection::BACK:   // 使わない
+                break;
         }
+        return false;
     }
 
     void Catching::stop(){
@@ -306,21 +313,25 @@ namespace drive{
                     return DirectionKind::RIGHT;
                 }
                 break;
+
             case Destination::Direction::LEFT:
                 if (destination_->currentCoordinate_.getY() == 1){
                     return DirectionKind::RIGHT;
                 }
                 break;
+
             case Destination::Direction::UP:
                 if (destination_->currentCoordinate_.getX() == 4){
                     return DirectionKind::RIGHT;
                 }
                 break;
+
             case Destination::Direction::DOWN:
                 if (destination_->currentCoordinate_.getX() == 1){
                     return DirectionKind::RIGHT;
                 }
                 break;
+
             case Destination::Direction::NONE:
                 break;
         }
