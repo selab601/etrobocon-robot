@@ -11,7 +11,6 @@ namespace drive{
     class Destination{
     public:
         BlockAreaCoordinate currentCoordinate_;
-        Direction EV3Position_;
         /**
          * @brief EV3が向いている台座から見たEV3の位置(モデル2.3.4参照)
          **/
@@ -41,6 +40,8 @@ namespace drive{
             STRAIGHT_LEFT,
             TRUN
         };
+
+                Direction EV3Position_;
 
                 /*
          * @brief 2つの座標を比較して位置関係を返す
