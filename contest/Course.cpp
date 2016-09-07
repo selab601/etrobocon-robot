@@ -20,8 +20,8 @@ namespace contest_pkg{
         //それぞれのコースの戦略やライントレースを追加していく
         if(course == SelectedCourse::R_COURSE){
         //ブロック並べ
-        //sections_.emplace_back(1000,new TestStrategy());
-        sections_.emplace_back(9100,new RCourseStandard());
+        sections_.emplace_back(1000,new BlockAreaEntry());
+        //sections_.emplace_back(9100,new RCourseStandard());
         }
 
         if(course == SelectedCourse::L_COURSE){

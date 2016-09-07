@@ -14,7 +14,7 @@
 //#include "strategy/TestStrategy.h"
 #include "strategy/LCourseStandard.h"
 #include "strategy/RCourseStandard.h"
-
+#include "strategy/BlockAreaEntry.h"
 
 //ライントレースや戦略をincludeする
 //#include "../strategy/aaa.h"
