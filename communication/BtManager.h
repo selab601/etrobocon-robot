@@ -13,7 +13,7 @@
 #include "../measurement/SelfPositionEstimation.h"
 
 /* メッセージの長さ */
-#define MESSAGE_LEN  128
+#define MESSAGE_LEN  500
 
 namespace communication
 {
