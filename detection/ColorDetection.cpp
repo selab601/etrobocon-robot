@@ -28,7 +28,7 @@ namespace detection{
         } else {
             /* 彩度が高い場合は色があると判断する */
             /* 色がある場合，色相からその色を判断する */
-            if (hsv.h >= 0 && hsv.h <= 20) {
+            if (hsv.h >= 0 && hsv.h <= 29) {
                 result = COLOR_RED;
             } else if (hsv.h >= 30 && hsv.h <= 70) {
                 result = COLOR_YELLOW;
