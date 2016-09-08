@@ -127,8 +127,8 @@ namespace strategy{
             straightRunning_->run(-15);
             return lineDetection_->getResult();
 
-        //40cm進む
-        case StrategyPhase::STRAIGHT_40_CM:
+        //4cm進む
+        case StrategyPhase::STRAIGHT_4_CM:
             startDistanceMeasurement(40);
             straightRunning_->run(15);
             return distanceMeasurement_->getResult();

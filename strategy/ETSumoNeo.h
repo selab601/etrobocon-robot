@@ -39,7 +39,7 @@ namespace strategy{
             WAIT_2_SEC,
             TURN_TO_SIDE,
             BACK_TO_LINE,
-            STRAIGHT_40_CM,
+            STRAIGHT_4_CM,
             TURN_TO_DOWN,
             SUMO,
             GET_OF,
@@ -95,7 +95,7 @@ namespace strategy{
             StrategyPhase::WAIT_1_SEC,      //登壇後に機体が落ち着くまで待つ
             StrategyPhase::TURN_TO_SIDE,    //横を向く
             StrategyPhase::BACK_TO_LINE,    //中央線までバック
-            StrategyPhase::STRAIGHT_40_CM,  //40cm直進
+            StrategyPhase::STRAIGHT_4_CM,  //4cm直進
             StrategyPhase::TURN_TO_DOWN,    //下を向くように旋回
             StrategyPhase::SUMO,            //相撲-SumoPhase-
             StrategyPhase::BACK_TO_LINE,    //-SumoPhase終了(降段方向を向いている)-ラインまでバック
