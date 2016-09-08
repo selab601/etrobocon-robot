@@ -39,7 +39,7 @@ namespace drive{
             straightRunning_->run(speed);
             if(distanceMeasurement_->getResult()){
                 countMeasurement_->setBaseCount();
-                countMeasurement_->setTargetCount(-CLIMB_ARM_TARGET_COUNT);
+                countMeasurement_->setTargetCount(-CLIMB_ARM_TARGET_COUNT + 5);
                 runningState_ = RunningState::ARM_DOWN;
             }
             break;
