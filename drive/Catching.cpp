@@ -102,7 +102,13 @@ namespace drive{
                 return false;       // エラー
         }
 
-        return catchBlock(turnDirection);
+        if (catchBlock(turnDirection)){
+            destination_->update(nextCoordinate, position); // 情報の更新
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     bool Catching::catchBackBlock(){
