@@ -174,6 +174,7 @@ namespace strategy{
             if(executeSumo(sumoProcedureRorB_[procedureNumber])){
                 procedureNumber++;
                 hasExecutedPhase_ = false;
+                bodyAngleMeasurement_->setBaseAngle();
                 ev3_speaker_play_tone ( 500, 100);//音を出す
             }
             return procedureNumber == sumoProcedureRorB_.size();
@@ -181,6 +182,7 @@ namespace strategy{
             if(executeSumo(sumoProcedureYorG_[procedureNumber])){
                 procedureNumber++;
                 hasExecutedPhase_ = false;
+                bodyAngleMeasurement_->setBaseAngle();
                 ev3_speaker_play_tone ( 500, 100);//音を出す
             }
             return procedureNumber == sumoProcedureYorG_.size();
@@ -198,6 +200,8 @@ namespace strategy{
         static LineTraceEdge downStageEdge;     //上段に移動するライントレースのエッジ
         static int angleTowardTop;              //上段を向く角度
         static int angleTowardSide;             //力士の方向を向く角度
+        static int rSpeed;                      //右タイヤのPWM値
+        static int lSpeed;                      //左タイヤのPWM値
 
         if(!initialized){
             switch(hoshitori_){
@@ -208,8 +212,10 @@ namespace strategy{
                 thirdWrestlerColor = Hoshitori::GREEN;
                 upperStageEdge = LineTraceEdge::LEFT;
                 downStageEdge = LineTraceEdge::LEFT;
-                angleTowardTop = -87;
-                angleTowardSide = 87;
+                angleTowardTop = -90;
+                angleTowardSide = 90;
+                rSpeed = 0;
+                lSpeed = 20;
                 break;
             //青の場合
             case Hoshitori::BLUE:
@@ -218,8 +224,10 @@ namespace strategy{
                 thirdWrestlerColor = Hoshitori::YELLOW;
                 upperStageEdge = LineTraceEdge::RIGHT;
                 downStageEdge = LineTraceEdge::RIGHT;
-                angleTowardTop = 87;
-                angleTowardSide = -87;
+                angleTowardTop = 90;
+                angleTowardSide = -90;
+                rSpeed = 20;
+                lSpeed = 0;
                 break;
             //黄の場合
             case Hoshitori::YELLOW:
@@ -228,8 +236,10 @@ namespace strategy{
                 thirdWrestlerColor = Hoshitori::GREEN;
                 upperStageEdge = LineTraceEdge::RIGHT;
                 downStageEdge = LineTraceEdge::LEFT;
-                angleTowardTop = 87;
-                angleTowardSide = -87;
+                angleTowardTop = 90;
+                angleTowardSide = -90;
+                rSpeed = 20;
+                lSpeed = 0;
                 break;
             //緑の場合
             case Hoshitori::GREEN:
@@ -238,8 +248,10 @@ namespace strategy{
                 thirdWrestlerColor = Hoshitori::YELLOW;
                 upperStageEdge = LineTraceEdge::LEFT;
                 downStageEdge = LineTraceEdge::RIGHT;
-                angleTowardTop = -87;
-                angleTowardSide = 87;
+                angleTowardTop = -90;
+                angleTowardSide = 90;
+                rSpeed = 0;
+                lSpeed = 20;
                 break;
             default: return false;
             }
@@ -269,6 +281,15 @@ namespace strategy{
         case SumoPhase::TURN_TOP:
             return pivotTurn_->turn(angleTowardTop);
 
+        //旋回すると尻尾が新幹線にぶつかるのでカーブをして上を向く
+        case SumoPhase::CURVE_TOP:
+            curveRunning_->run(rSpeed,lSpeed);
+            if(angleTowardTop < 0){
+                return bodyAngleMeasurement_->getResult() <= angleTowardTop;
+            }else{
+                return bodyAngleMeasurement_->getResult() >= angleTowardTop;
+            }
+
         //横(力士)を向くように回転
         case SumoPhase::TURN_SIDE:
             return pivotTurn_->turn(angleTowardSide);
@@ -292,6 +313,16 @@ namespace strategy{
             startDistanceMeasurement(20);
             straightRunning_->run(20);
             return distanceMeasurement_->getResult();
+
+        //黄と赤の時のみ行う処理
+        case SumoPhase::CORRECTION:
+            if(hoshitori_ == Hoshitori::YELLOW || hoshitori_ == Hoshitori::RED){
+                startDistanceMeasurement(100);
+                straightRunning_->run(15);
+                return distanceMeasurement_->getResult();
+            }else{
+                return true;
+            }
 
         default: return false;
         }

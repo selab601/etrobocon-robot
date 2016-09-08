@@ -56,7 +56,9 @@ namespace strategy{
             UPPER_STAGE,
             DOWN_STAGE,
             STRAIGHT_3_CM,
-            ACROSS_LINE
+            ACROSS_LINE,
+            CURVE_TOP,
+            CORRECTION
         };
 
         //特定の力士を押し出す走行状態
@@ -109,14 +111,14 @@ namespace strategy{
             SumoPhase::STRAIGHT_3_CM,  //3cm直進
             SumoPhase::TURN_SIDE,       //横を向く
             SumoPhase::FIRST_EXTRUSION, //一人目押し出し
-            SumoPhase::ACROSS_LINE,     //ラインを横切る
-            SumoPhase::TURN_TOP,        //上段を向く
+            SumoPhase::CURVE_TOP,
             SumoPhase::UPPER_STAGE,     //上段に移動
             SumoPhase::ACROSS_LINE,     //ラインを横切る
             SumoPhase::TURN_SIDE,       //横を向く
             SumoPhase::SECOND_EXTRUSION,//二人目押し出し
             SumoPhase::ACROSS_LINE,     //ラインを横切る
             SumoPhase::THIRD_EXTRUSION, //三人目押し出し
+            SumoPhase::CORRECTION,
             SumoPhase::TURN_TOP         //上を向く
         };
 
@@ -128,12 +130,12 @@ namespace strategy{
             SumoPhase::FIRST_EXTRUSION, //一人目押し出し
             SumoPhase::ACROSS_LINE,     //ラインを横切る
             SumoPhase::SECOND_EXTRUSION,//二人目押し出し
-            SumoPhase::ACROSS_LINE,     //ラインを横切る
-            SumoPhase::TURN_TOP,        //上段を向く
+            SumoPhase::CURVE_TOP,
             SumoPhase::UPPER_STAGE,     //上段に移動
             SumoPhase::ACROSS_LINE,     //ラインを横切る
             SumoPhase::TURN_SIDE,       //横を向く
             SumoPhase::THIRD_EXTRUSION, //三人目押し出し
+            SumoPhase::CORRECTION,
             SumoPhase::TURN_SIDE        //上(横を向いた時の角度で)を向く
         };
 
