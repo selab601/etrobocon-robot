@@ -88,21 +88,32 @@ namespace communication {
     void BtManager::send() {
         /* メッセージがなかったら情報取得 */
         if (message_[0] == '\0') {
-            sprintf(message_, "%ld,%d,%d,%d,%d,%ld,%ld,%ld,%d,%d,%d,%ld,%ld,%d\n",
+            sprintf(message_,
+                    "{\"clock\":%ld,\"gyro\":%d,\"touch\":%d,\"sonar\":%d,"
+                    "\"brightness\":%d,"
+                    "\"rgb_r\":%d,\"rgb_g\":%d,\"rgb_b\":%d,"
+                    "\"hsv_h\":%d,\"hsv_s\":%d,\"hsv_v\":%d,"
+                    "\"arm_count\":%ld,\"left_count\":%ld,\"right_count\":%ld,"
+                    "\"length\":%ld,\"angle\":%d,"
+                    "\"coordinate_x\":%ld,\"coordinate_y\":%ld}\n",
                     clock_->now(),
-                    color_->getBrightness(),
                     gyro_->getAnglerVelocity(),
-                    0,
                     touch_->isPressed() ? 1 : 0,
+                    sonar_ != 0? sonar_->getDistance(): 0,
+                    color_->getBrightness(),
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
                     motors_->getCount(device::MOTOR_ARM),
                     motors_->getCount(device::MOTOR_LEFT),
                     motors_->getCount(device::MOTOR_RIGHT),
-                    sonar_ != 0? sonar_->getDistance(): 0,
-                    0,
-                    0,
-                    (long int)0,
                     selfPositionEstimation_->getMigrationLength(),
-                    selfPositionEstimation_->getAngle()
+                    selfPositionEstimation_->getAngle(),
+                    selfPositionEstimation_->getLocationX(),
+                    selfPositionEstimation_->getLocationY()
                 );
         }
 
