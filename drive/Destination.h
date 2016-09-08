@@ -82,6 +82,13 @@ namespace drive{
         void setCurrentLocation(int x, int y, Direction EV3Position);
 
         /**
+         * @param nextCoordinate 次に進む台座の座標
+         * @param goingPosition 次に進む台座の現在台座から見た位置
+         * @brief EV3の現在地の更新を行う
+         **/
+        void update(BlockAreaCoordinate nextCoordinate , Position position);
+
+        /**
          * @param 目的地台座の座標
          * @brief 目的地台座を与えると次に移動する台座の座標を返す
          * @return 次に移動する台座
