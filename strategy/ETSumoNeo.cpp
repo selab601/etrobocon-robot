@@ -156,12 +156,14 @@ namespace strategy{
 
         //降壇
         case StrategyPhase::GET_OF:
-            startDistanceMeasurement(450);
+            startDistanceMeasurement(400);
             straightRunning_->run(30);
             return distanceMeasurement_->getResult();
 
         case StrategyPhase::LINE_RETURN:
-            return downRunning();
+            startDistanceMeasurement(500);
+            linetrace_->run(15,LineTraceEdge::RIGHT);
+            return distanceMeasurement_->getResult();
 
         default: return false;
         }
@@ -314,10 +316,10 @@ namespace strategy{
             straightRunning_->run(20);
             return distanceMeasurement_->getResult();
 
-        //黄と赤の時のみ行う処理
+        //青と緑の時のみ行う処理
         case SumoPhase::CORRECTION:
-            if(hoshitori_ == Hoshitori::YELLOW || hoshitori_ == Hoshitori::RED){
-                startDistanceMeasurement(100);
+            if(hoshitori_ == Hoshitori::BLUE || hoshitori_ == Hoshitori::GREEN){
+                startDistanceMeasurement(80);
                 straightRunning_->run(15);
                 return distanceMeasurement_->getResult();
             }else{
@@ -422,37 +424,6 @@ namespace strategy{
                 return true;
             }
             break;
-        }
-        return false;
-    }
-
-    //ライン復帰
-    bool ETSumoNeo::downRunning(){
-        static bool isChanged = false;//エッジ切り替えが完了したかどうか
-        static bool isDetected = false;//検知したかどうか
-
-        //相撲終了地点が右のとき
-        if(hoshitori_ == Hoshitori::RED || hoshitori_ == Hoshitori::YELLOW){
-            startDistanceMeasurement(250);
-            if(distanceMeasurement_->getResult()){//一定距離走行したらエッジ切り替え
-                if(linetrace_->changeEdge()){
-                    isChanged = true;
-                }
-            }else{
-                linetrace_->run(20,LineTraceEdge::RIGHT);
-            }
-        }else{
-            isChanged = true;//すでに左側にいるのでtrue
-        }
-        if(isChanged){
-            startDistanceMeasurement(250);
-            linetrace_->run(20,LineTraceEdge::LEFT);
-            if(distanceMeasurement_->getResult()){
-                isDetected = true;
-            }
-            if(isDetected){
-                return rightAngledDetection_->getResult();
-            }
         }
         return false;
     }

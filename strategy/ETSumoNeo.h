@@ -214,13 +214,6 @@ namespace strategy{
         bool extrusion(Hoshitori wrestlerColor);
 
         /**
-         * @brief ライン復帰
-         * @details 右と左の2パターン
-         * @return ライン復帰終了:true,攻略中:false
-         */
-        bool downRunning();
-
-        /**
          * @brief 星取検知
          * @details 星取の赤、青、黄、緑のいずれかを検知する、
          * 引数をtureとすることで取得した星取を保存できる
