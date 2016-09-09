@@ -165,7 +165,7 @@ namespace contest_pkg{
                     autoCalibrationState_ = AutoCalibrationState::STOP;
                     timeMeasurement = TimeMeasurement();
                     timeMeasurement.setBaseTime();
-                    timeMeasurement.setTargetTime(500);
+                    timeMeasurement.setTargetTime(50);
 
                     // キャリブレーション値をセットする
                     brightnessInfo_->setCalibrateValue(whiteValue_, blackValue_);
@@ -175,8 +175,6 @@ namespace contest_pkg{
             case AutoCalibrationState::STOP:
                 display_-> updateDisplay("            STOP            ", 4);
                 if (timeMeasurement.getResult()){
-                    gyroSensor_->reset(); // ジャイロセンサをリセット
-
                     autoCalibrationState_ = AutoCalibrationState::BACK;
                     distanceMeasurement.setTargetDistance(100);
                     distanceMeasurement.startMeasurement();
