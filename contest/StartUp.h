@@ -73,6 +73,7 @@ namespace contest_pkg{
                 STOP,
                 BACK,
                 SHOW_RESULT,
+                STOP_FURIFURI,
                 FINISHED,
             } autoCalibrationState_ = AutoCalibrationState::INIT;
 

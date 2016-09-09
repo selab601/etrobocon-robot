@@ -182,6 +182,7 @@ namespace contest_pkg{
                 break;
 
             case AutoCalibrationState::BACK:
+                Shippo::getInstance()->furifuri();
                 display_-> updateDisplay("            BACK            ", 4);
                 if (runAndStop(-30, -40)){
                 autoCalibrationState_ = AutoCalibrationState::SHOW_RESULT;
@@ -192,6 +193,7 @@ namespace contest_pkg{
 
             case AutoCalibrationState::SHOW_RESULT:
                 {
+                    Shippo::getInstance()->furifuri();
                     display_-> updateDisplay("  CALIBRATION FINISHED  ", 2);
 
                     char message[30];
@@ -201,10 +203,16 @@ namespace contest_pkg{
                             brightnessInfo_->getBrightness() );
                     display_-> updateDisplay(message, 4);
                     if (isClicked()){
-                        autoCalibrationState_ = AutoCalibrationState::FINISHED;
+                        autoCalibrationState_ = AutoCalibrationState::STOP_FURIFURI;
                     display_-> updateDisplay("                           ", 2);
                     display_-> updateDisplay("                           ", 4);
                     }
+                }
+                break;
+
+            case AutoCalibrationState::STOP_FURIFURI:
+                if (Shippo::getInstance()->pleased()){
+                    autoCalibrationState_ = AutoCalibrationState::FINISHED;
                 }
                 break;
 
