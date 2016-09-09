@@ -27,6 +27,7 @@ namespace strategy{
         enum class StrategyPhase{
             INIT,
             HOSHITORI,
+            SET_VALUE,
             BACK,
             TURN_LEFT,
             STRAIGHT,
@@ -83,6 +84,7 @@ namespace strategy{
         std::vector<StrategyPhase> strategyProcedure_{
             StrategyPhase::INIT,            //車体角度保存
             StrategyPhase::HOSHITORI,       //星取取得
+            StrategyPhase::SET_VALUE,
             StrategyPhase::BACK,            //星取を踏まないようにバック
             StrategyPhase::TURN_LEFT,       //左に旋回
             StrategyPhase::STRAIGHT,        //ラインまで直進
@@ -110,14 +112,14 @@ namespace strategy{
             SumoPhase::DOWN_STAGE,     //直角検知までライントレース
             SumoPhase::STRAIGHT_3_CM,  //3cm直進
             SumoPhase::TURN_SIDE,       //横を向く
-            SumoPhase::FIRST_EXTRUSION, //一人目押し出し
+            SumoPhase::FIRST_EXTRUSION, //一つ目押し出し
             SumoPhase::CURVE_TOP,
             SumoPhase::UPPER_STAGE,     //上段に移動
             SumoPhase::ACROSS_LINE,     //ラインを横切る
             SumoPhase::TURN_SIDE,       //横を向く
-            SumoPhase::SECOND_EXTRUSION,//二人目押し出し
+            SumoPhase::SECOND_EXTRUSION,//二つ目押し出し
             SumoPhase::ACROSS_LINE,     //ラインを横切る
-            SumoPhase::THIRD_EXTRUSION, //三人目押し出し
+            SumoPhase::THIRD_EXTRUSION, //三つ目押し出し
             SumoPhase::CORRECTION,
             SumoPhase::TURN_TOP         //上を向く
         };
@@ -127,14 +129,14 @@ namespace strategy{
             SumoPhase::DOWN_STAGE,      //直角検知までライントレース
             SumoPhase::STRAIGHT_3_CM,   //3cm直進
             SumoPhase::TURN_TOP,        //横を向く
-            SumoPhase::FIRST_EXTRUSION, //一人目押し出し
+            SumoPhase::FIRST_EXTRUSION, //一つ目押し出し
             SumoPhase::ACROSS_LINE,     //ラインを横切る
-            SumoPhase::SECOND_EXTRUSION,//二人目押し出し
+            SumoPhase::SECOND_EXTRUSION,//二つ目押し出し
             SumoPhase::CURVE_TOP,
             SumoPhase::UPPER_STAGE,     //上段に移動
             SumoPhase::ACROSS_LINE,     //ラインを横切る
             SumoPhase::TURN_SIDE,       //横を向く
-            SumoPhase::THIRD_EXTRUSION, //三人目押し出し
+            SumoPhase::THIRD_EXTRUSION, //三つ目押し出し
             SumoPhase::CORRECTION,
             SumoPhase::TURN_SIDE        //上(横を向いた時の角度で)を向く
         };
@@ -171,6 +173,21 @@ namespace strategy{
 
         //難所クリアしたかどうか
         bool strategySuccess_;
+
+        //星取の色が判明してから決まる値
+        int climbBeforeLittleAngle_;        //登壇前に少し回転する角度
+        int climbAfterSideFaceAngle_;       //登壇後に横を向く角度
+        bool isRightRotation_;              //ライン検知まで旋回を右周りでやるかどうか
+        Hoshitori firstWrestlerColor_;      //一人目の力士の色
+        Hoshitori secondWrestlerColor_;     //二人目の力士の色
+        Hoshitori thirdWrestlerColor_;      //三人目の力士の色
+        drive::LineTraceEdge upperStageEdge_;//上段に移動するライントレースのエッジ
+        drive::LineTraceEdge downStageEdge_; //下段に移動するライントレースのエッジ
+        int sideFromTopFaceAngle_;          //上段を向く角度
+        int topFromBlockFaceAngle_;         //ブロックの方向を向く角度
+        int isRightCurve_;                  //右カーブで上を向くかどうか
+        bool isCorrect_;                    //補正によって右側に移動するかどうか
+
     public:
         //コンストラクタ
         ETSumoNeo();
@@ -204,14 +221,46 @@ namespace strategy{
         bool executeSumo(SumoPhase sumoPhase);
 
         /**
-         * @brief 指定した星取の力士を押し出す
+         * @brief 指定した星取のブロックを押し出す
          * @details 中央線からスタートし、中央線で終了する、
          * 左側(赤・黄)と右側(青・緑)はそれぞれ同じ動作をする
          *
-         * @param wrestlerColor 押し出す力士の色
+         * @param blockColor 押し出すブロックの色
          * @return 押し出し終了:true,攻略中:false
          */
-        bool extrusion(Hoshitori wrestlerColor);
+        bool extrusion(Hoshitori blockColor);
+
+        /**
+         * @brief 星取が判明してから決まる値を代入する
+         */
+        void setValue();
+
+        /**
+         * @brief ライン検知するまで旋回する
+         *
+         * @param isRight 右旋回かどうか
+         * @param speed 旋回スピード
+         *
+         * @return 終了:true,移動中:false
+         */
+        bool turn(bool isRight,int speed);
+
+        /**
+         * @brief 上段に向けてカーブ走行する
+         *
+         * @param isRight 右カーブかどうか
+         * @param speed カーブスピード
+         *
+         * @return 終了:true,移動中:false
+         */
+        bool curve(bool isRight,int speed);
+
+        /**
+         * @brief ライン復帰しやすいように補正する
+         * @details 最後に黄色を押し出した場合に緑の方まで進む
+         * @return 終了:true,移動中:false
+         */
+        bool correction();
 
         /**
          * @brief 星取検知
