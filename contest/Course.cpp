@@ -21,6 +21,7 @@ namespace contest_pkg{
         if(course == SelectedCourse::R_COURSE){
         //ブロック並べ
         sections_.emplace_back(1000,new BlockAreaEntry());
+        sections_.emplace_back(1000,new BlockAreaGame());
         //sections_.emplace_back(9100,new RCourseStandard());
         }
 

@@ -1,3 +1,7 @@
+/*
+ * @brief ブロック並べエリアへ侵入
+ */
+
 #ifndef _BLOCK_AREA_ENTRY_H
 #define _BLOCK_AREA_ENTRY_H
 
