@@ -44,7 +44,7 @@ namespace device
          *
          * @return 終了したらtrue
          */
-        bool preased(int maxPwm = SHIPPO_MAX_PWM);
+        bool pleased(int maxPwm = SHIPPO_MAX_PWM);
 
         /**
          * @brief 退屈してる(しっぽを下に向ける)
