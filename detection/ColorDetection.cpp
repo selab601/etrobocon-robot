@@ -28,13 +28,13 @@ namespace detection{
         } else {
             /* 彩度が高い場合は色があると判断する */
             /* 色がある場合，色相からその色を判断する */
-            if (hsv.h >= 0 && hsv.h <= 10) {
+            if (hsv.h >= 0 && hsv.h <= 20) {
                 result = COLOR_RED;
-            } else if (hsv.h >= 30 && hsv.h <= 60) {
+            } else if (hsv.h >= 30 && hsv.h <= 70) {
                 result = COLOR_YELLOW;
             } else if (hsv.h >= 110 && hsv.h <= 140) {
                 result = COLOR_GREEN;
-            } else if (hsv.h >= 170 && hsv.h <= 220) {
+            } else if (hsv.h >= 150 && hsv.h <= 220) {
                 result = COLOR_BLUE;
             } else {
                 result = COLOR_NONE;
@@ -58,8 +58,8 @@ namespace detection{
         vector<float>::iterator maxPtr = max_element(rgb.begin(), rgb.end());
         // 接頭辞 i は，index を意味する．
         // iMaxValue は maxValue の index．iMinValue も同様
-        int iMaxValue = (int)distance(rgb.begin(), minPtr);
-        int iMinValue = (int)distance(rgb.begin(), maxPtr);
+        int iMaxValue = (int)distance(rgb.begin(), maxPtr);
+        int iMinValue = (int)distance(rgb.begin(), minPtr);
         float maxValue = *maxPtr;
         float minValue = *minPtr;
 
