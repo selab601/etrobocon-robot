@@ -31,6 +31,7 @@ namespace device
          * @brief しっぽを指定した角度に向ける
          *
          * @param degree しっぽの角度[degree]
+         * @param maxPwm 与えるPWMの最大値
          *
          * @return 終了したらtrue
          */
@@ -39,12 +40,16 @@ namespace device
         /**
          * @brief 喜んでる(しっぽを上に向ける)
          *
+         * @param maxPwm 与えるPWMの最大値
+         *
          * @return 終了したらtrue
          */
         bool preased(int maxPwm = SHIPPO_MAX_PWM);
 
         /**
          * @brief 退屈してる(しっぽを下に向ける)
+         *
+         * @param maxPwm 与えるPWMの最大値
          *
          * @return 終了したらtrue
          */

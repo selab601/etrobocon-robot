@@ -37,7 +37,7 @@ namespace device
 
     bool Shippo::setDegree(int degree, int maxPwm){
         int diffDegree = degree - getCount();
-        int absDiffDigree = diffDegree > 0? diffDegree: -diffDegree;
+        int absDiffDigree = 0 < diffDegree? diffDegree: -diffDegree;
         int pwm = absDiffDigree + 5;
         pwm = pwm > maxPwm? maxPwm: pwm;    // maxPwmで足切り
 
