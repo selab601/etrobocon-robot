@@ -146,53 +146,7 @@ namespace drive{
         return Position::NONE;
     }
 
-    bool Destination::runTo(int x,int y){
-        targetCoordinate_ = Coordinate(x,y);
-        Coordinate destination = targetCoordinate_;
-        Coordinate diff = (destination - currentCoordinate_);
-        if(diff.getX() == 0 && diff.getY() == 0)
-        {
-            return true;
-        }
-
-        Coordinate nextCoordinate = getNextStageCoordinate(destination);
-        nextCoordinate_ = nextCoordinate;
-
-        Direction nextStageDirection = getDirection(currentCoordinate_, nextCoordinate);
-
-        // 次どちらの座標に向かって進むのかで場合分け
-        Position position = getPosition(EV3Position_ , nextStageDirection);
-        goingPosition_ = position;
-
-        bool isFinished = false;
-        switch (position) {
-            case Position::EQUAL:
-                isFinished = pivotTurn_.turn(180);
-                break;
-            case Position::REVERSE:
-                if((nextStageDirection == Direction::UP && currentCoordinate_.getX() == 1) ||
-                    (nextStageDirection == Direction::DOWN && currentCoordinate_.getX() == 4) ||
-                    (nextStageDirection == Direction::RIGHT && currentCoordinate_.getY() == 1) ||
-                    (nextStageDirection == Direction::LEFT && currentCoordinate_.getY() == 4))
-                {
-                    isFinished = avoidance_.startAvoidance(DirectionKind::STRAIGHT_RIGHT);
-                }
-                else
-                {
-                    isFinished = avoidance_.startAvoidance(DirectionKind::STRAIGHT_LEFT);
-                }
-                break;
-            case Position::RIGHT:
-                isFinished = avoidance_.startAvoidance(DirectionKind::RIGHT);
-                break;
-            case Position::LEFT:
-                isFinished = avoidance_.startAvoidance(DirectionKind::LEFT);
-                break;
-            default:
-                break;
-        }
-
-        if (isFinished) {
+    void Destination::update(BlockAreaCoordinate nextCoordinate , Position position){
             currentCoordinate_ = nextCoordinate;
             switch (position) {
                 case Position::EQUAL:
@@ -252,6 +206,56 @@ namespace drive{
                 default:
                     break;
             }
+    }
+
+    bool Destination::runTo(int x,int y){
+        targetCoordinate_ = Coordinate(x,y);
+        Coordinate destination = targetCoordinate_;
+        Coordinate diff = (destination - currentCoordinate_);
+        if(diff.getX() == 0 && diff.getY() == 0)
+        {
+            return true;
+        }
+
+        Coordinate nextCoordinate = getNextStageCoordinate(destination);
+        nextCoordinate_ = nextCoordinate;
+
+        Direction nextStageDirection = getDirection(currentCoordinate_, nextCoordinate);
+
+        // 次どちらの座標に向かって進むのかで場合分け
+        Position position = getPosition(EV3Position_ , nextStageDirection);
+        goingPosition_ = position;
+
+        bool isFinished = false;
+        switch (position) {
+            case Position::EQUAL:
+                isFinished = pivotTurn_.turn(180);
+                break;
+            case Position::REVERSE:
+                if((nextStageDirection == Direction::UP && currentCoordinate_.getX() == 1) ||
+                    (nextStageDirection == Direction::DOWN && currentCoordinate_.getX() == 4) ||
+                    (nextStageDirection == Direction::RIGHT && currentCoordinate_.getY() == 1) ||
+                    (nextStageDirection == Direction::LEFT && currentCoordinate_.getY() == 4))
+                {
+                    isFinished = avoidance_.startAvoidance(DirectionKind::STRAIGHT_RIGHT);
+                }
+                else
+                {
+                    isFinished = avoidance_.startAvoidance(DirectionKind::STRAIGHT_LEFT);
+                }
+                break;
+            case Position::RIGHT:
+                isFinished = avoidance_.startAvoidance(DirectionKind::RIGHT);
+                break;
+            case Position::LEFT:
+                isFinished = avoidance_.startAvoidance(DirectionKind::LEFT);
+                break;
+            default:
+                break;
+        }
+
+        if (isFinished) {
+            update(nextCoordinate , position);
         }
         return false;
     }
