@@ -52,8 +52,9 @@ namespace strategy{
             FIRST_EXTRUSION,
             SECOND_EXTRUSION,
             THIRD_EXTRUSION,
-            TURN_TOP,
-            TURN_SIDE,
+            FIRST_TURN,
+            SECOND_TURN,
+            THIRD_TURN,
             UPPER_STAGE,
             DOWN_STAGE,
             STRAIGHT_3_CM,
@@ -82,63 +83,63 @@ namespace strategy{
 
         //難所攻略手順
         std::vector<StrategyPhase> strategyProcedure_{
-            StrategyPhase::INIT,            //車体角度保存
-            StrategyPhase::HOSHITORI,       //星取取得
-            StrategyPhase::SET_VALUE,
-            StrategyPhase::BACK,            //星取を踏まないようにバック
-            StrategyPhase::TURN_LEFT,       //左に旋回
-            StrategyPhase::STRAIGHT,        //ラインまで直進
-            StrategyPhase::LINE_TRACE,      //土俵を向くまでライントレース
+            StrategyPhase::INIT,             //車体角度保存
+            StrategyPhase::HOSHITORI,        //星取取得
+            StrategyPhase::SET_VALUE,        //星取が判明したので値を代入
+            StrategyPhase::BACK,             //星取を踏まないようにバック
+            StrategyPhase::TURN_LEFT,        //左に旋回
+            StrategyPhase::STRAIGHT,         //ラインまで直進
+            StrategyPhase::LINE_TRACE,       //土俵を向くまでライントレース
             StrategyPhase::LINE_TRACE_LITTLE,//すこしライントレース
-            StrategyPhase::STOP,            //新幹線検知するまで停止
-            StrategyPhase::WAIT_1_SEC,      //検知後に待つ
-            StrategyPhase::TURN_LITTLE,     //すこし旋回
-            StrategyPhase::CLIMB,           //登壇
-            StrategyPhase::WAIT_1_SEC,      //登壇後に機体が落ち着くまで待つ
-            StrategyPhase::TURN_TO_SIDE,    //横を向く
-            StrategyPhase::BACK_TO_LINE,    //中央線までバック
-            StrategyPhase::STRAIGHT_4_CM,  //4cm直進
-            StrategyPhase::TURN_TO_DOWN,    //下を向くように旋回
-            StrategyPhase::SUMO,            //相撲-SumoPhase-
-            StrategyPhase::BACK_TO_LINE,    //-SumoPhase終了(降段方向を向いている)-ラインまでバック
-            StrategyPhase::STOP,            //新幹線検知するまで停止
-            StrategyPhase::WAIT_2_SEC,      //検知後に待つ
-            StrategyPhase::GET_OF,          //降段
-            StrategyPhase::LINE_RETURN      //ライン復帰
+            StrategyPhase::STOP,             //新幹線検知するまで停止
+            StrategyPhase::WAIT_1_SEC,       //検知後に待つ
+            StrategyPhase::TURN_LITTLE,      //すこし旋回
+            StrategyPhase::CLIMB,            //登壇
+            StrategyPhase::WAIT_1_SEC,       //登壇後に機体が落ち着くまで待つ
+            StrategyPhase::TURN_TO_SIDE,     //横を向く
+            StrategyPhase::BACK_TO_LINE,     //中央線までバック
+            StrategyPhase::STRAIGHT_4_CM,    //4cm直進
+            StrategyPhase::TURN_TO_DOWN,     //下を向くように旋回
+            StrategyPhase::SUMO,             //相撲-SumoPhase-
+            StrategyPhase::BACK_TO_LINE,     //-SumoPhase終了(降段方向を向いている)-ラインまでバック
+            StrategyPhase::STOP,             //新幹線検知するまで停止
+            StrategyPhase::WAIT_2_SEC,       //検知後に待つ
+            StrategyPhase::GET_OF,           //降段
+            StrategyPhase::LINE_RETURN       //ライン復帰
         };
 
         //相撲攻略手順(星取り赤・青)
         std::vector<SumoPhase> sumoProcedureRorB_{
-            SumoPhase::DOWN_STAGE,     //直角検知までライントレース
-            SumoPhase::STRAIGHT_3_CM,  //3cm直進
-            SumoPhase::TURN_SIDE,       //横を向く
+            SumoPhase::DOWN_STAGE,      //直角検知までライントレース
+            SumoPhase::STRAIGHT_3_CM,   //3cm直進
+            SumoPhase::FIRST_TURN,      //横を向く
             SumoPhase::FIRST_EXTRUSION, //一つ目押し出し
-            SumoPhase::CURVE_TOP,
+            SumoPhase::CURVE_TOP,       //上段を向く
             SumoPhase::UPPER_STAGE,     //上段に移動
             SumoPhase::ACROSS_LINE,     //ラインを横切る
-            SumoPhase::TURN_SIDE,       //横を向く
+            SumoPhase::SECOND_TURN,     //横を向く
             SumoPhase::SECOND_EXTRUSION,//二つ目押し出し
             SumoPhase::ACROSS_LINE,     //ラインを横切る
             SumoPhase::THIRD_EXTRUSION, //三つ目押し出し
-            SumoPhase::CORRECTION,
-            SumoPhase::TURN_TOP         //上を向く
+            SumoPhase::CORRECTION,      //同じ位置になるように移動
+            SumoPhase::THIRD_TURN       //降段方向を向く
         };
 
         //相撲攻略手順(星取り黄・緑)
         std::vector<SumoPhase> sumoProcedureYorG_{
             SumoPhase::DOWN_STAGE,      //直角検知までライントレース
             SumoPhase::STRAIGHT_3_CM,   //3cm直進
-            SumoPhase::TURN_TOP,        //横を向く
+            SumoPhase::FIRST_TURN,      //横を向く
             SumoPhase::FIRST_EXTRUSION, //一つ目押し出し
             SumoPhase::ACROSS_LINE,     //ラインを横切る
             SumoPhase::SECOND_EXTRUSION,//二つ目押し出し
-            SumoPhase::CURVE_TOP,
+            SumoPhase::CURVE_TOP,       //上段を向く
             SumoPhase::UPPER_STAGE,     //上段に移動
             SumoPhase::ACROSS_LINE,     //ラインを横切る
-            SumoPhase::TURN_SIDE,       //横を向く
+            SumoPhase::SECOND_TURN,     //横を向く
             SumoPhase::THIRD_EXTRUSION, //三つ目押し出し
-            SumoPhase::CORRECTION,
-            SumoPhase::TURN_SIDE        //上(横を向いた時の角度で)を向く
+            SumoPhase::CORRECTION,      //同じ位置になるように移動
+            SumoPhase::THIRD_TURN       //降段方向を向く
         };
 
 
@@ -183,8 +184,9 @@ namespace strategy{
         Hoshitori thirdWrestlerColor_;      //三人目の力士の色
         drive::LineTraceEdge upperStageEdge_;//上段に移動するライントレースのエッジ
         drive::LineTraceEdge downStageEdge_; //下段に移動するライントレースのエッジ
-        int sideFromTopFaceAngle_;          //上段を向く角度
-        int topFromBlockFaceAngle_;         //ブロックの方向を向く角度
+        int firstTurnAngle_;                //一回目の旋回角度
+        int secondTurnAngle_;               //二回目の旋回角度
+        int thirdTurnAngle_;                //三回目の旋回角度
         int isRightCurve_;                  //右カーブで上を向くかどうか
         bool isCorrect_;                    //補正によって右側に移動するかどうか
 

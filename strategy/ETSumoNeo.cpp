@@ -201,17 +201,21 @@ namespace strategy{
             straightRunning_->run(15);
             return distanceMeasurement_->getResult();
 
-        //上(後段する方向)を向くように回転
-        case SumoPhase::TURN_TOP:
-            return pivotTurn_->turn(sideFromTopFaceAngle_);
+        //一回目の旋回
+        case SumoPhase::FIRST_TURN:
+            return pivotTurn_->turn(firstTurnAngle_);
+
+        //二回目の旋回
+        case SumoPhase::SECOND_TURN:
+            return pivotTurn_->turn(secondTurnAngle_);
+
+        //三回目の旋回
+        case SumoPhase::THIRD_TURN:
+            return pivotTurn_->turn(thirdTurnAngle_);
 
         //旋回すると尻尾が新幹線にぶつかるのでカーブをして上を向く
         case SumoPhase::CURVE_TOP:
             return curve(isRightCurve_,20);
-
-        //横(ブロック)を向くように回転
-        case SumoPhase::TURN_SIDE:
-            return pivotTurn_->turn(topFromBlockFaceAngle_);
 
         //上段までライントレース
         case SumoPhase::UPPER_STAGE:
@@ -245,8 +249,7 @@ namespace strategy{
     //中央線からブロックを押し出して戻って来る
     bool ETSumoNeo::extrusion(Hoshitori blockColor){
         static bool initialized = false;//初期化したかどうか
-        static int rSpeed;              //右タイヤスピード
-        static int lSpeed;              //左タイヤスピード
+        static bool isRightCurve;       //右回転するかどうか
         static int turnAngle;           //戻るための旋回角度
         static LineTraceEdge startEdge,endEdge;//往復のライントレースのエッジ
 
@@ -254,28 +257,28 @@ namespace strategy{
             //左側(赤,黄)と右側(青,緑)それぞれ同じ動作をする
             switch(blockColor){
             case Hoshitori::RED:
-                rSpeed = -15;
+                isRightCurve = true;
                 turnAngle = 200;
                 startEdge = LineTraceEdge::RIGHT;
                 endEdge = LineTraceEdge::LEFT;
             break;
 
             case Hoshitori::YELLOW:
-                rSpeed = -15;
+                isRightCurve = true;
                 turnAngle = -160;
                 startEdge = LineTraceEdge::RIGHT;
                 endEdge = LineTraceEdge::LEFT;
                 break;
 
             case Hoshitori::BLUE:
-                rSpeed = 15;
+                isRightCurve = false;
                 turnAngle = -200;
                 startEdge = LineTraceEdge::LEFT;
                 endEdge = LineTraceEdge::RIGHT;
                 break;
 
             case Hoshitori::GREEN:
-                rSpeed = 15;
+                isRightCurve = false;
                 turnAngle = 160;
                 startEdge = LineTraceEdge::LEFT;
                 endEdge = LineTraceEdge::RIGHT;
@@ -283,7 +286,6 @@ namespace strategy{
 
             default: return false;
             }
-            lSpeed = -rSpeed;
             initialized = true;
         }
 
@@ -312,8 +314,7 @@ namespace strategy{
 
         //ラインまで旋回
         case ExtrusionPhase::SECOND_TURN:
-            curveRunning_->run(rSpeed,lSpeed);
-            if(lineDetection_->getResult()){
+            if(turn(isRightCurve,10)){
                 timeMeasurement_->setBaseTime();
                 timeMeasurement_->setTargetTime(1000);
                 extrusionPhase_ = ExtrusionPhase::END_LINE_TRACE;
@@ -322,11 +323,9 @@ namespace strategy{
 
         //直角までライントレース
         case ExtrusionPhase::END_LINE_TRACE:
-            startDistanceMeasurement(60);//直角検知しないときは強制的に次へ
-            startTimeMeasurement(100);
             linetrace_->run(15,endEdge);
             if(!timeMeasurement_->getResult()){break;}
-            if(rightAngledDetection_->getResult() || distanceMeasurement_->getResult()){
+            if(rightAngledDetection_->getResult()){
                 extrusionPhase_ = ExtrusionPhase::START_LINE_TRACE;//状態を戻しておく
                 initialized = false;
                 return true;
@@ -374,11 +373,13 @@ namespace strategy{
             thirdWrestlerColor_ = Hoshitori::GREEN;
             upperStageEdge_ = LineTraceEdge::LEFT;
             downStageEdge_ = LineTraceEdge::LEFT;
-            sideFromTopFaceAngle_ = -90;
-            topFromBlockFaceAngle_ = -90;
+            firstTurnAngle_ = 90;
+            secondTurnAngle_ = 90;
+            thirdTurnAngle_ = -90;
             isRightCurve_ = true;
             isCorrect_ = false;
             break;
+
         case Hoshitori::BLUE:
             climbBeforeLittleAngle_ = 7;
             climbAfterSideFaceAngle_ = 85;
@@ -388,11 +389,13 @@ namespace strategy{
             thirdWrestlerColor_ = Hoshitori::YELLOW;
             upperStageEdge_ = LineTraceEdge::RIGHT;
             downStageEdge_ = LineTraceEdge::RIGHT;
-            sideFromTopFaceAngle_ = 90;
-            topFromBlockFaceAngle_ = -90;
+            firstTurnAngle_ = -90;
+            secondTurnAngle_ = -90;
+            thirdTurnAngle_ = 90;
             isRightCurve_ = false;
             isCorrect_ = true;
             break;
+
         case Hoshitori::YELLOW:
             climbBeforeLittleAngle_ = -7;
             climbAfterSideFaceAngle_ = -85;
@@ -402,11 +405,13 @@ namespace strategy{
             thirdWrestlerColor_ = Hoshitori::GREEN;
             upperStageEdge_ = LineTraceEdge::RIGHT;
             downStageEdge_ = LineTraceEdge::LEFT;
-            sideFromTopFaceAngle_ = 90;
-            topFromBlockFaceAngle_ = 90;
+            firstTurnAngle_ = 90;
+            secondTurnAngle_ = -90;
+            thirdTurnAngle_ = -90;
             isRightCurve_ = false;
             isCorrect_ = false;
             break;
+
         case Hoshitori::GREEN:
             climbBeforeLittleAngle_ = 7;
             climbAfterSideFaceAngle_ = 85;
@@ -416,11 +421,13 @@ namespace strategy{
             thirdWrestlerColor_ = Hoshitori::YELLOW;
             upperStageEdge_ = LineTraceEdge::LEFT;
             downStageEdge_ = LineTraceEdge::RIGHT;
-            sideFromTopFaceAngle_ = -90;
-            topFromBlockFaceAngle_ = 90;
+            firstTurnAngle_ = -90;
+            secondTurnAngle_ = 90;
+            thirdTurnAngle_ = 90;
             isRightCurve_ = true;
             isCorrect_ = true;
             break;
+
         default : break;
         }
     }
@@ -439,20 +446,17 @@ namespace strategy{
     bool ETSumoNeo::curve(bool isRight, int speed){
         if(isRight){
             curveRunning_->run(0,speed);
+            return bodyAngleMeasurement_->getResult() <= -90;
         }else{
             curveRunning_->run(speed,0);
-        }
-        if(sideFromTopFaceAngle_ < 0){
-            return bodyAngleMeasurement_->getResult() <= sideFromTopFaceAngle_;
-        }else{
-            return bodyAngleMeasurement_->getResult() >= sideFromTopFaceAngle_;
+            return bodyAngleMeasurement_->getResult() >= 90;
         }
     }
 
     //ライン復帰しやすいように補正する
     bool ETSumoNeo::correction(){
         if(isCorrect_){
-            startDistanceMeasurement(80);
+            startDistanceMeasurement(70);
             straightRunning_->run(15);
             return distanceMeasurement_->getResult();
         }else{
