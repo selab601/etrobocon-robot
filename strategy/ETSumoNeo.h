@@ -44,6 +44,7 @@ namespace strategy{
             TURN_TO_DOWN,
             SUMO,
             GET_OF,
+            LINE_DETECTION,
             LINE_RETURN
         };
 
