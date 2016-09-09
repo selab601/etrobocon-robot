@@ -6,6 +6,7 @@
 
 #define COURSES_NUM 	2 // コースの数
 
+using namespace device;
 using namespace drive;
 using namespace measurement;
 
@@ -151,7 +152,7 @@ namespace contest_pkg{
                 break;
 
             case AutoCalibrationState::ADJUST_ARM:
-                if (setArmAngle()){
+                if (Arm::getInstance()->reset()){
                     autoCalibrationState_ = AutoCalibrationState::FORWARD;
                 }
                 break;
@@ -287,46 +288,4 @@ namespace contest_pkg{
         }
     }
 
-    bool StartUp::setArmAngle(){
-        static TimeMeasurement timeMeasurement = TimeMeasurement();
-        static int baseCount = 0;
-        device::Motors* motors = device::Motors::getInstance();
-        switch(armSettingState_){
-            case ArmSettingState::INIT:
-                display_-> updateDisplay("    - ARM ADJUSTING -      ", 2);
-                timeMeasurement.setTargetTime(800);
-                timeMeasurement.setBaseTime();
-                armSettingState_ = ArmSettingState::PULL;
-                break;
-
-            case ArmSettingState::PULL:
-                motors->setPWM(device::MOTOR_ARM, -40);
-                if (timeMeasurement.getResult()){
-                    armSettingState_ = ArmSettingState::PUSH;
-                    motors->setPWM(device::MOTOR_ARM, 0);
-                    baseCount = motors->getCount(device::MOTOR_ARM);
-                }
-                break;
-
-            case ArmSettingState::PUSH:
-                {
-                    int currentCount = motors->getCount(device::MOTOR_ARM);
-                    int pwm = ARM_ANGLE - (currentCount - baseCount);
-                    motors->setPWM(device::MOTOR_ARM, pwm);
-
-                    if (ARM_ANGLE == (currentCount - baseCount)){
-                        armSettingState_ = ArmSettingState::FINISHED;
-                        motors->reset(); // モータのエンコーダ値をリセット
-                        ev3_speaker_play_tone(500,100); // 終わった時に音を出す
-                        display_-> updateDisplay("                           ", 2);
-                    }
-                }
-                break;
-
-            case ArmSettingState::FINISHED:
-                return true;
-                break;
-        }
-        return false;
-    }
 }

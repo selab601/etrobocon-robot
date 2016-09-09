@@ -1,5 +1,7 @@
 #include "Arm.h"
 
+using namespace measurement;
+
 namespace device
 {
     // インスタンス変数初期化
@@ -46,6 +48,49 @@ namespace device
 
     bool Arm::normal(int maxPwm){
         return setDegree(0, maxPwm);
+    }
+
+
+    bool Arm::reset(){
+        static TimeMeasurement timeMeasurement = TimeMeasurement();
+        static ArmSettingState state = ArmSettingState::INIT;
+        static int baseCount = 0;
+        switch(state){
+            case ArmSettingState::INIT:
+                timeMeasurement.setTargetTime(800);
+                timeMeasurement.setBaseTime();
+                state = ArmSettingState::PULL;
+                break;
+
+            case ArmSettingState::PULL:
+                setPWM(-40);
+                if (timeMeasurement.getResult()){
+                    state = ArmSettingState::PUSH;
+                    setPWM(0);
+                    baseCount = getCount();
+                }
+                break;
+
+            case ArmSettingState::PUSH:
+                {
+                    int currentCount = getCount();
+                    int pwm = ARM_ANGLE - (currentCount - baseCount);
+                    setPWM(pwm);
+
+                    if (ARM_ANGLE == (currentCount - baseCount)){
+                        state = ArmSettingState::FINISHED;
+                        reset(); // モータのエンコーダ値をリセット
+                        ev3_speaker_play_tone(500,100); // 終わった時に音を出す
+                    }
+                }
+                break;
+
+            case ArmSettingState::FINISHED:
+                state = ArmSettingState::INIT;
+                return true;
+                break;
+        }
+        return false;
     }
 
 }

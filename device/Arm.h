@@ -3,7 +3,9 @@
 
 #include "ev3api.h"
 #include "/home/vagrant/hrp2/sdk/common/library/libcpp-ev3/include/Motor.h"
+#include "../measurement/TimeMeasurement.h"
 
+#define ARM_ANGLE 35        // アームの初期角度（アームが下側にぶつかっている状態からの角度(degree)
 #define ARM_MAX_PWM 30
 
 namespace device
@@ -13,6 +15,14 @@ namespace device
     private:
         //! 共有インスタンス
         static Arm* instance_;
+
+        // アームを真下に向ける時の状態
+        enum class ArmSettingState{
+            INIT,
+            PULL,
+            PUSH,
+            FINISHED,
+        };
 
     private:
         Arm();
@@ -57,6 +67,13 @@ namespace device
          * @return 終了したらtrue
          */
         bool normal(int maxPwm = ARM_MAX_PWM);
+
+        /**
+         * @brief アームを真下に向ける
+         *
+         * @return 終了した時true
+         */
+        bool reset();
 
     };
 }

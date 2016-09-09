@@ -1,6 +1,5 @@
 #ifndef START_UP_
 #define START_UP_
-#define ARM_ANGLE 35        // アームの初期角度（アームが下側にぶつかっている状態からの角度(degree)
 
 #include "../device/ColorSensor.h"
 #include "../device/TouchSensor.h"
@@ -8,6 +7,8 @@
 #include "../device/GyroSensor.h"
 #include "../drive/StraightRunning.h"
 #include "../measurement/TimeMeasurement.h"
+#include "../device/Arm.h"
+#include "../device/Shippo.h"
 
 namespace contest_pkg{
     class StartUp{
@@ -77,14 +78,6 @@ namespace contest_pkg{
 
             bool selectCourse();	// コースを選択する
 
-            // アームを真下に向ける時の状態
-            enum class ArmSettingState{
-                INIT,
-                PULL,
-                PUSH,
-                FINISHED,
-            } armSettingState_ = ArmSettingState::INIT;
-
             /**
              * @brief 自動でキャリブレーションする
              *
@@ -128,12 +121,6 @@ namespace contest_pkg{
              */
             void findCalibratedValue();
 
-            /**
-             * @brief アームを真下に向ける
-             *
-             * @return 終了した時true
-             */
-            bool setArmAngle();
     };
 }
 #endif
