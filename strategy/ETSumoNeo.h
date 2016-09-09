@@ -106,6 +106,7 @@ namespace strategy{
             StrategyPhase::STOP,             //新幹線検知するまで停止
             StrategyPhase::WAIT_2_SEC,       //検知後に待つ
             StrategyPhase::GET_OF,           //降段
+            StrategyPhase::LINE_DETECTION,
             StrategyPhase::LINE_RETURN       //ライン復帰
         };
 

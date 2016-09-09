@@ -149,9 +149,7 @@ namespace strategy{
         //ライン検知
         case StrategyPhase::LINE_DETECTION:
             curveRunning_->run(50,25);
-            if(lineDetection_->getResult()){
-                return true;
-            }
+            return lineDetection_->getResult();
 
         //ライン復帰
         case StrategyPhase::LINE_RETURN:
