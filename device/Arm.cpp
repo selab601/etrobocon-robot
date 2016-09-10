@@ -38,11 +38,11 @@ namespace device
     }
 
     bool Arm::up(int maxPwm){
-        return setDegree(70, maxPwm);
+        return setDegree(80, maxPwm);
     }
 
     bool Arm::down(int maxPwm){
-        return setDegree(-20, maxPwm);
+        return setDegree(-15, maxPwm);
     }
 
     bool Arm::normal(int maxPwm){
