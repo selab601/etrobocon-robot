@@ -22,13 +22,13 @@ namespace device
         static bool isLeftFurifuri = true;
         switch(isLeftFurifuri){
             case true:
-            if (setDegree(-180 + 45, maxPwm)){
+            if (setDegree(45, maxPwm)){
                 isLeftFurifuri = !isLeftFurifuri;
             }
             break;
 
             case false:
-            if (setDegree(-180 - 45, maxPwm)){
+            if (setDegree(-45, maxPwm)){
                 isLeftFurifuri = !isLeftFurifuri;
             }
             break;
@@ -54,11 +54,38 @@ namespace device
     }
 
     bool Shippo::pleased(int maxPwm){
-        return setDegree(-180, maxPwm);
+        return setDegree(0, maxPwm);
+    }
+
+    bool Shippo::getPrize(){
+        static GetPrizeState state = GetPrizeState::INIT;
+        switch (state){
+            case GetPrizeState::INIT:
+            state = GetPrizeState::SLOW;
+            break;
+
+            case GetPrizeState::SLOW:
+            if (setDegree(180 - 60, 10)){
+                state = GetPrizeState::FAST;
+            }
+            break;
+
+            case GetPrizeState::FAST:
+            if (setDegree(0, 80)){
+                state = GetPrizeState::FINISHED;
+            }
+            break;
+
+            case GetPrizeState::FINISHED:
+            state = GetPrizeState::INIT;
+            return true;
+            break;
+        }
+        return false;
     }
 
     bool Shippo::bored(int maxPwm){
-        return setDegree(0, maxPwm);
+        return setDegree(180, maxPwm);
     }
 
 

@@ -14,6 +14,13 @@ namespace device
         //! 共有インスタンス
         static Shippo* instance_;
 
+        enum class GetPrizeState{
+            INIT,
+            SLOW,
+            FAST,
+            FINISHED,
+        };
+
     private:
         Shippo();
 
@@ -45,6 +52,8 @@ namespace device
          * @return 終了したらtrue
          */
         bool pleased(int maxPwm = SHIPPO_MAX_PWM);
+
+        bool getPrize();
 
         /**
          * @brief 退屈してる(しっぽを下に向ける)
