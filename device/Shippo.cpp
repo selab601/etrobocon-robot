@@ -54,7 +54,7 @@ namespace device
     }
 
     bool Shippo::pleased(int maxPwm){
-        return setDegree(180, maxPwm);
+        return setDegree(-180, maxPwm);
     }
 
     bool Shippo::bored(int maxPwm){
