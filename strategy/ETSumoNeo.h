@@ -177,6 +177,9 @@ namespace strategy{
         //難所クリアしたかどうか
         bool strategySuccess_;
 
+        //相撲をクリアしたかどうか
+        bool sumoSuccess_;
+
         //星取の色が判明してから決まる値
         int climbBeforeLittleAngle_;        //登壇前に少し回転する角度
         int climbAfterSideFaceAngle_;       //登壇後に横を向く角度

@@ -22,6 +22,7 @@ namespace strategy{
 
         hasExecutedPhase_       = false;
         strategySuccess_        = false;
+        sumoSuccess_            = false;
 
         hoshitori_              = Hoshitori::NONE;
         extrusionPhase_         = ExtrusionPhase::START_LINE_TRACE;
@@ -171,7 +172,9 @@ namespace strategy{
                 bodyAngleMeasurement_->setBaseAngle();
                 ev3_speaker_play_tone ( 500, 100);//音を出す
             }
-            return procedureNumber == sumoProcedureRorB_.size();
+            if(procedureNumber == sumoProcedureRorB_.size()){
+                sumoSuccess_ = true;
+            }
         }else{//星取が上段の場合
             if(executeSumo(sumoProcedureYorG_[procedureNumber])){
                 procedureNumber++;
@@ -179,9 +182,11 @@ namespace strategy{
                 bodyAngleMeasurement_->setBaseAngle();
                 ev3_speaker_play_tone ( 500, 100);//音を出す
             }
-            return procedureNumber == sumoProcedureYorG_.size();
+            if(procedureNumber == sumoProcedureYorG_.size()){
+                sumoSuccess_ = true;
+            }
         }
-        return false;
+        return sumoSuccess_;
     }
 
     //相撲...登壇後から降壇前まで
