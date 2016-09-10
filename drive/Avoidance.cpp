@@ -44,7 +44,7 @@ namespace drive{
             }
             break;
         case State::LINE_RETURN:
-            curveRunning_->run(5,30);
+            curveRunning_->run(-5,30);
             if(bodyAngle_->getResult() <= -90){
                 state_ = State::START;
                 straightRunning_->run(0);
@@ -75,7 +75,7 @@ namespace drive{
             }
             break;
         case State::LINE_RETURN:
-            curveRunning_->run(30,5);
+            curveRunning_->run(30,8);
             if(bodyAngle_->getResult() >= 90){
                 state_ = State::START;
                 straightRunning_->run(0);
@@ -118,7 +118,7 @@ namespace drive{
             }
             break;
         case State::LINE_RETURN:
-            curveRunning_->run(5,30);
+            curveRunning_->run(-5,30);
             if(bodyAngle_->getResult() <= 0){
                 state_ = State::START;
                 straightRunning_->run(0);
@@ -150,8 +150,8 @@ namespace drive{
             }
             break;
         case State::TURN_RIGHT:
-            curveRunning_->run(5,30);
-            if(bodyAngle_->getResult() <= -50){
+            curveRunning_->run(-5,30);
+            if(bodyAngle_->getResult() <= -45){
                 state_ = State::STRAIGHT_2;
             }
             break;
@@ -162,7 +162,7 @@ namespace drive{
             }
             break;
         case State::LINE_RETURN:
-            curveRunning_->run(30,5);
+            curveRunning_->run(30,8);
             if(bodyAngle_->getResult() >= 0){
                 state_ = State::START;
                 straightRunning_->run(0);
