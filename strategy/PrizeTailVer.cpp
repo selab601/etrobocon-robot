@@ -45,38 +45,43 @@ namespace strategy{
         static int baceCount = 0;
         switch(phase){
 
-        //ライントレースしながら障害物検知
-        case Phase::LINE_TRACE_UP_TO_PRIZE:
-            lineTrace_->run(15,LineTraceEdge::RIGHT);
-            baceCount = motors_->getCount(MOTOR_ARM);
-            return objectDetection_->getResult();
-
         //アームを下げる
         case Phase::DOWN_ARM:
-            startTimeMeasurement(500);
-            motors_->setPWM(MOTOR_ARM, -20);
-            straightRunning_->run(0);
-            return timeMeasurement_->getResult();
+            lineTrace_->setPid();
+            lineTrace_->setTarget(0.4);
+            return Arm::getInstance()->down();
+
+        case Phase::LINE_TRACE_UP_TO_PRIZE:
+            lineTrace_->run(15,LineTraceEdge::RIGHT);
+            if (device::SonarSensor::getInstance()->getDistance() <= 4){
+                straightRunning_->run(0);
+                return true;
+            }
+            return false;
 
         //懸賞の下にアームを入れる
         case Phase::PUT_IN_LOWER_OF_PRIZE:
-            startDistanceMeasurement(80);
-            motors_->setPWM(MOTOR_ARM, 0);
+            startDistanceMeasurement(30);
             straightRunning_->run(10);
             return distanceMeasurement_->getResult();
 
         //持ち上げる
         case Phase::LIFT_PRIZE:
-            startTimeMeasurement(1000);
-            motors_->setPWM(MOTOR_ARM, 30);
             straightRunning_->run(0);
-            return timeMeasurement_->getResult();
+            return Arm::getInstance()->up(15);
+
+        case Phase::BACK_11CM:
+            startDistanceMeasurement(110);
+            straightRunning_->run(-10);
+            return distanceMeasurement_->getResult();
 
         //下ろす
         case Phase::DOWN_PRIZE:
-            motors_->setPWM(MOTOR_ARM,-20);
             straightRunning_->run(0);
-            return motors_->getCount(MOTOR_ARM) <= baceCount;
+            return Arm::getInstance()->normal(15);
+
+        case Phase::DOWN_SHIPPO:
+            return Shippo::getInstance()->bored();
 
         //すこし下がる
         case Phase::PUT_AFTER_BACK:
@@ -92,30 +97,26 @@ namespace strategy{
 
         //左に90度旋回
         case Phase::LEFT_90_ROTATION:
-            return pivotTurn_->turn(90);
+            return pivotTurn_->turn(90, 10);
 
         //懸賞の左側にカーブで移動
         case Phase::CURVE_UP_TO_PRIZE_SIDE:
-            curveRunning_->run(10,30);
+            curveRunning_->run(12,30);
             return bodyAngleMeasurement_->getResult() <= -90;
 
         //尻尾を動かす
-        case Phase::SPIN_TAIL:
-            startTimeMeasurement(500);
-            motors_->setPWM(MOTOR_TAIL,-50);
-            straightRunning_->run(0);
-            return timeMeasurement_->getResult();
+        case Phase::GET_PRIZE:
+            return Shippo::getInstance()->getPrize();
 
         //1cm進む
         case Phase::STRAIGHT_1_CM:
             startDistanceMeasurement(20);
             straightRunning_->run(10);
-            return distanceMeasurement_->getResult();
-
-        //尻尾を止める
-        case Phase::STOP_TAIL:
-            motors_->setPWM(MOTOR_TAIL,0);
-            return true;
+            if ( distanceMeasurement_->getResult()){
+                straightRunning_->run(0);
+                return true;
+            }
+            return false;
 
         default: return false;
         }

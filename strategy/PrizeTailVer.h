@@ -12,41 +12,45 @@
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/BodyAngleMeasurement.h"
 #include "../device/Motors.h"
+#include "../device/Shippo.h"
+#include "../device/Arm.h"
+#include "../device/SonarSensor.h"
 #include <vector>
 
 namespace strategy{
     class PrizeTailVer : public IStrategy{
     private:
         enum class Phase{
-            LINE_TRACE_UP_TO_PRIZE,
             DOWN_ARM,
+            LINE_TRACE_UP_TO_PRIZE,
             PUT_IN_LOWER_OF_PRIZE,
             LIFT_PRIZE,
+            BACK_11CM,
             DOWN_PRIZE,
+            DOWN_SHIPPO,
             PUT_AFTER_BACK,
             CURVE_AFTER_BACK,
             LEFT_90_ROTATION,
             CURVE_UP_TO_PRIZE_SIDE,
             STRAIGHT_1_CM,
-            SPIN_TAIL,
-            STOP_TAIL
+            GET_PRIZE,
         };
 
         //懸賞運びの攻略手順
         std::vector<Phase> phaseProcedure_{
-            Phase::LINE_TRACE_UP_TO_PRIZE,//懸賞前までライントレース
-            Phase::DOWN_ARM,              //アームを下げる
-            Phase::PUT_IN_LOWER_OF_PRIZE, //懸賞の下にアームを入れる
-            Phase::LIFT_PRIZE,            //懸賞を持ち上げる
-            Phase::DOWN_PRIZE,            //懸賞を下ろす
-            Phase::PUT_AFTER_BACK,        //置いた後にバック
-            Phase::LEFT_90_ROTATION,      //左90度旋回
-            Phase::CURVE_UP_TO_PRIZE_SIDE,//懸賞の横までカーブ
-            Phase::CURVE_AFTER_BACK,      //カーブ後にバック
-            Phase::LEFT_90_ROTATION,      //左90度カーブ
-            Phase::STRAIGHT_1_CM,         //1cm進む
-            Phase::SPIN_TAIL,             //尻尾回す
-            Phase::STOP_TAIL              //尻尾止める
+            Phase::DOWN_ARM,                    //アームを下げる
+            Phase::LINE_TRACE_UP_TO_PRIZE,      //懸賞前までライントレース
+            Phase::PUT_IN_LOWER_OF_PRIZE,       //懸賞の下にアームを入れる
+            Phase::LIFT_PRIZE,                  //懸賞を持ち上げる
+            Phase::BACK_11CM,
+            Phase::DOWN_PRIZE,                  //懸賞を下ろす
+            Phase::DOWN_SHIPPO,                 // しっぽをさげる
+            Phase::PUT_AFTER_BACK,              //置いた後にバック
+            Phase::LEFT_90_ROTATION,            //左90度旋回
+            Phase::CURVE_UP_TO_PRIZE_SIDE,      //懸賞の横までカーブ
+            Phase::CURVE_AFTER_BACK,            //カーブ後にバック
+            Phase::LEFT_90_ROTATION,            //左90度カーブ
+            Phase::GET_PRIZE,                   // しっぽで懸賞を取る
         };
 
         //走行
