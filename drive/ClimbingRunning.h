@@ -4,9 +4,7 @@
 #include "straightRunning.h"
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/CountMeasurement.h"
-#include "../device/Motors.h"
-
-#define CLIMB_ARM_TARGET_COUNT 50 //レールと土俵に当たらず走行できるアームの回転量
+#include "../device/Arm.h"
 
 namespace drive{
     class ClimbingRunning{
@@ -18,16 +16,12 @@ namespace drive{
             //距離検知
             measurement::DistanceMeasurement* distanceMeasurement_;
 
-            //回転量検知
-            measurement::CountMeasurement* countMeasurement_;
-
             //モーター
-            device::Motors* motor_;
+            device::Arm* arm_;
 
             //走行状態
             enum class RunningState
             {
-                INIT,       //初期化
                 ARM_UP,     //アームをあげる
                 CLIMB,      //登壇
                 ARM_DOWN,   //アームを戻す
