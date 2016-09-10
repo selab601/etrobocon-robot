@@ -143,19 +143,19 @@ namespace strategy{
 
         //降壇
         case StrategyPhase::GET_OF:
-            startDistanceMeasurement(400);
+            startDistanceMeasurement(350);
             straightRunning_->run(30);
             return distanceMeasurement_->getResult();
 
         //ライン検知
         case StrategyPhase::LINE_DETECTION:
-            curveRunning_->run(50,25);
+            curveRunning_->run(20,10);
             return lineDetection_->getResult();
 
         //ライン復帰
         case StrategyPhase::LINE_RETURN:
             startDistanceMeasurement(500);
-            linetrace_->run(15,LineTraceEdge::RIGHT);
+            linetrace_->run(40,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         default: return false;
