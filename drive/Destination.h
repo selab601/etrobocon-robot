@@ -5,12 +5,13 @@
 #include "StraightRunning.h"
 #include "PivotTurn.h"
 #include "BlockAreaCoordinate.h"
+#include "RegulateDistanceStage.h"
+#include "../measurement/SelfPositionEstimation.h"
 #include <cstdlib>
 
 namespace drive{
     class Destination{
     public:
-        BlockAreaCoordinate currentCoordinate_;
         /**
          * @brief EV3が向いている台座から見たEV3の位置(モデル2.3.4参照)
          **/
@@ -41,7 +42,8 @@ namespace drive{
             TRUN
         };
 
-                Direction EV3Position_;
+        Direction EV3Position_;
+        BlockAreaCoordinate currentCoordinate_;
 
                 /*
          * @brief 2つの座標を比較して位置関係を返す
@@ -60,6 +62,9 @@ namespace drive{
         Avoidance avoidance_;
         StraightRunning straightRunning_;
         PivotTurn pivotTurn_;
+        RegulateDistanceStage regulateDistanceStage_;
+        measurement::SelfPositionEstimation* selfPositionEstimation_;
+        bool isFinished_;
         //命名後で考える
         BlockAreaCoordinate horizonal(int diffX);
         BlockAreaCoordinate vertical(int diffY);
