@@ -17,7 +17,6 @@ namespace device
 
     Arm::Arm() :Motor(PORT_B) // ポートの指定
     {
-        reset();
     }
 
     bool Arm::setDegree(int degree, int maxPwm){
@@ -79,7 +78,7 @@ namespace device
 
                     if (ARM_ANGLE == (currentCount - baseCount)){
                         state = ArmSettingState::FINISHED;
-                        reset(); // モータのエンコーダ値をリセット
+                        Motor::reset(); // モータのエンコーダ値をリセット
                         ev3_speaker_play_tone(500,100); // 終わった時に音を出す
                     }
                 }
