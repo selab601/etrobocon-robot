@@ -69,13 +69,14 @@ namespace strategy{
           distanceMeasurement_.startMeasurement();
           Status_ = Status::BACK;
         }else{
-          linetrace_->run(30,drive::LineTraceEdge::RIGHT,0.6);
+          linetrace_->setPid(0.006F, 0.0F, 0.52F);
+          linetrace_->run(20,drive::LineTraceEdge::RIGHT,0.3);
         }
         break;
 
       case Status::BACK:
         if(!distanceMeasurement_.getResult()){
-          straightRunning_.run(-20);
+          straightRunning_.run(-10);
         }else{
           Status_ = Status::DONE;
         }
