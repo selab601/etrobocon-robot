@@ -6,8 +6,6 @@
 #include "../measurement/CountMeasurement.h"
 #include "../device/Arm.h"
 
-#define CLIMB_ARM_TARGET_COUNT 50 //レールと土俵に当たらず走行できるアームの回転量
-
 namespace drive{
     class ClimbingRunning{
 
