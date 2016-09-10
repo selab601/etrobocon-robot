@@ -146,6 +146,11 @@ namespace strategy{
             straightRunning_->run(30);
             return distanceMeasurement_->getResult();
 
+        //ライン検知
+        case StrategyPhase::LINE_DETECTION:
+            curveRunning_->run(50,25);
+            return lineDetection_->getResult();
+
         //ライン復帰
         case StrategyPhase::LINE_RETURN:
             startDistanceMeasurement(500);
