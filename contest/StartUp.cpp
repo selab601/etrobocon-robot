@@ -6,6 +6,7 @@
 
 #define COURSES_NUM 	2 // コースの数
 
+using namespace device;
 using namespace drive;
 using namespace measurement;
 
@@ -151,7 +152,7 @@ namespace contest_pkg{
                 break;
 
             case AutoCalibrationState::ADJUST_ARM:
-                if (setArmAngle()){
+                if (Arm::getInstance()->reset()){
                     autoCalibrationState_ = AutoCalibrationState::FORWARD;
                 }
                 break;
@@ -164,7 +165,7 @@ namespace contest_pkg{
                     autoCalibrationState_ = AutoCalibrationState::STOP;
                     timeMeasurement = TimeMeasurement();
                     timeMeasurement.setBaseTime();
-                    timeMeasurement.setTargetTime(500);
+                    timeMeasurement.setTargetTime(50);
 
                     // キャリブレーション値をセットする
                     brightnessInfo_->setCalibrateValue(whiteValue_, blackValue_);
@@ -174,8 +175,6 @@ namespace contest_pkg{
             case AutoCalibrationState::STOP:
                 display_-> updateDisplay("            STOP            ", 4);
                 if (timeMeasurement.getResult()){
-                    gyroSensor_->reset(); // ジャイロセンサをリセット
-
                     autoCalibrationState_ = AutoCalibrationState::BACK;
                     distanceMeasurement.setTargetDistance(100);
                     distanceMeasurement.startMeasurement();
@@ -183,6 +182,7 @@ namespace contest_pkg{
                 break;
 
             case AutoCalibrationState::BACK:
+                Shippo::getInstance()->furifuri();
                 display_-> updateDisplay("            BACK            ", 4);
                 if (runAndStop(-30, -40)){
                 autoCalibrationState_ = AutoCalibrationState::SHOW_RESULT;
@@ -193,6 +193,7 @@ namespace contest_pkg{
 
             case AutoCalibrationState::SHOW_RESULT:
                 {
+                    Shippo::getInstance()->furifuri();
                     display_-> updateDisplay("  CALIBRATION FINISHED  ", 2);
 
                     char message[30];
@@ -202,10 +203,16 @@ namespace contest_pkg{
                             brightnessInfo_->getBrightness() );
                     display_-> updateDisplay(message, 4);
                     if (isClicked()){
-                        autoCalibrationState_ = AutoCalibrationState::FINISHED;
+                        autoCalibrationState_ = AutoCalibrationState::STOP_FURIFURI;
                     display_-> updateDisplay("                           ", 2);
                     display_-> updateDisplay("                           ", 4);
                     }
+                }
+                break;
+
+            case AutoCalibrationState::STOP_FURIFURI:
+                if (Shippo::getInstance()->pleased()){
+                    autoCalibrationState_ = AutoCalibrationState::FINISHED;
                 }
                 break;
 
@@ -287,46 +294,4 @@ namespace contest_pkg{
         }
     }
 
-    bool StartUp::setArmAngle(){
-        static TimeMeasurement timeMeasurement = TimeMeasurement();
-        static int baseCount = 0;
-        device::Motors* motors = device::Motors::getInstance();
-        switch(armSettingState_){
-            case ArmSettingState::INIT:
-                display_-> updateDisplay("    - ARM ADJUSTING -      ", 2);
-                timeMeasurement.setTargetTime(800);
-                timeMeasurement.setBaseTime();
-                armSettingState_ = ArmSettingState::PULL;
-                break;
-
-            case ArmSettingState::PULL:
-                motors->setPWM(device::MOTOR_ARM, -40);
-                if (timeMeasurement.getResult()){
-                    armSettingState_ = ArmSettingState::PUSH;
-                    motors->setPWM(device::MOTOR_ARM, 0);
-                    baseCount = motors->getCount(device::MOTOR_ARM);
-                }
-                break;
-
-            case ArmSettingState::PUSH:
-                {
-                    int currentCount = motors->getCount(device::MOTOR_ARM);
-                    int pwm = ARM_ANGLE - (currentCount - baseCount);
-                    motors->setPWM(device::MOTOR_ARM, pwm);
-
-                    if (ARM_ANGLE == (currentCount - baseCount)){
-                        armSettingState_ = ArmSettingState::FINISHED;
-                        motors->reset(); // モータのエンコーダ値をリセット
-                        ev3_speaker_play_tone(500,100); // 終わった時に音を出す
-                        display_-> updateDisplay("                           ", 2);
-                    }
-                }
-                break;
-
-            case ArmSettingState::FINISHED:
-                return true;
-                break;
-        }
-        return false;
-    }
 }
