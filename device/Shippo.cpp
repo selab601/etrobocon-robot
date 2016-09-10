@@ -22,13 +22,13 @@ namespace device
         static bool isLeftFurifuri = true;
         switch(isLeftFurifuri){
             case true:
-            if (setDegree(180 + 45, maxPwm)){
+            if (setDegree(-180 + 45, maxPwm)){
                 isLeftFurifuri = !isLeftFurifuri;
             }
             break;
 
             case false:
-            if (setDegree(180 - 45, maxPwm)){
+            if (setDegree(-180 - 45, maxPwm)){
                 isLeftFurifuri = !isLeftFurifuri;
             }
             break;
