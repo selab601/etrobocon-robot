@@ -21,11 +21,12 @@ namespace strategy{
     class PrizeTailVer : public IStrategy{
     private:
         enum class Phase{
+            LINE_TRACE,
             DOWN_ARM,
             LINE_TRACE_UP_TO_PRIZE,
             PUT_IN_LOWER_OF_PRIZE,
             LIFT_PRIZE,
-            BACK_11CM,
+            BACK_16CM,
             DOWN_PRIZE,
             DOWN_SHIPPO,
             PUT_AFTER_BACK,
@@ -34,15 +35,17 @@ namespace strategy{
             CURVE_UP_TO_PRIZE_SIDE,
             STRAIGHT_1_CM,
             GET_PRIZE,
+            LINE_TRACE_UP_TO_GOOL
         };
 
         //懸賞運びの攻略手順
         std::vector<Phase> phaseProcedure_{
+            Phase::LINE_TRACE,
             Phase::DOWN_ARM,                    //アームを下げる
             Phase::LINE_TRACE_UP_TO_PRIZE,      //懸賞前までライントレース
             Phase::PUT_IN_LOWER_OF_PRIZE,       //懸賞の下にアームを入れる
             Phase::LIFT_PRIZE,                  //懸賞を持ち上げる
-            Phase::BACK_11CM,
+            Phase::BACK_16CM,
             Phase::DOWN_PRIZE,                  //懸賞を下ろす
             Phase::DOWN_SHIPPO,                 // しっぽをさげる
             Phase::PUT_AFTER_BACK,              //置いた後にバック
@@ -51,6 +54,7 @@ namespace strategy{
             Phase::CURVE_AFTER_BACK,            //カーブ後にバック
             Phase::LEFT_90_ROTATION,            //左90度カーブ
             Phase::GET_PRIZE,                   // しっぽで懸賞を取る
+            Phase::LINE_TRACE_UP_TO_GOOL        //ゴールまでライントレース
         };
 
         //走行

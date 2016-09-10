@@ -42,8 +42,13 @@ namespace strategy{
 
     //攻略手順
     bool PrizeTailVer::executePhase(Phase phase){
-        static int baceCount = 0;
         switch(phase){
+
+        //ライントレース
+        case Phase::LINE_TRACE:
+            startDistanceMeasurement(1800);
+            lineTrace_->run(30,LineTraceEdge::RIGHT);
+            return distanceMeasurement_->getResult();
 
         //アームを下げる
         case Phase::DOWN_ARM:
@@ -70,8 +75,8 @@ namespace strategy{
             straightRunning_->run(0);
             return Arm::getInstance()->up(15);
 
-        case Phase::BACK_11CM:
-            startDistanceMeasurement(110);
+        case Phase::BACK_16CM:
+            startDistanceMeasurement(160);
             straightRunning_->run(-10);
             return distanceMeasurement_->getResult();
 
@@ -117,6 +122,12 @@ namespace strategy{
                 return true;
             }
             return false;
+
+        //ゴールまでライントレース(カーブと直線で分割するべき)
+        case Phase::LINE_TRACE_UP_TO_GOOL:
+            startDistanceMeasurement(3000);
+            lineTrace_->run(30,LineTraceEdge::RIGHT);
+            return distanceMeasurement_->getResult();
 
         default: return false;
         }
