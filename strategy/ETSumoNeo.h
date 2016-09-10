@@ -93,7 +93,7 @@ namespace strategy{
             StrategyPhase::LINE_TRACE,       //土俵を向くまでライントレース
             StrategyPhase::LINE_TRACE_LITTLE,//すこしライントレース
             StrategyPhase::STOP,             //新幹線検知するまで停止
-            StrategyPhase::WAIT_1_SEC,       //検知後に待つ
+            StrategyPhase::WAIT_2_SEC,       //検知後に待つ
             StrategyPhase::TURN_LITTLE,      //すこし旋回
             StrategyPhase::CLIMB,            //登壇
             StrategyPhase::WAIT_1_SEC,       //登壇後に機体が落ち着くまで待つ

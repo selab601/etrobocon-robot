@@ -154,9 +154,10 @@ namespace strategy{
 
         //ライン復帰
         case StrategyPhase::LINE_RETURN:
-            startDistanceMeasurement(500);
+            startDistanceMeasurement(700);
             linetrace_->run(40,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
+
 
         default: return false;
         }
