@@ -47,7 +47,7 @@ namespace strategy{
         //ライントレース
         case Phase::LINE_TRACE:
             startDistanceMeasurement(1800);
-            lineTrace_->run(30,LineTraceEdge::RIGHT);
+            lineTrace_->run(50,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         //アームを下げる
@@ -58,15 +58,18 @@ namespace strategy{
 
         case Phase::LINE_TRACE_UP_TO_PRIZE:
             lineTrace_->run(15,LineTraceEdge::RIGHT);
-            if (device::SonarSensor::getInstance()->getDistance() <= 4){
+            if (device::SonarSensor::getInstance()->getDistance() <= 5){
                 straightRunning_->run(0);
                 return true;
             }
             return false;
 
+        case Phase::TURN_LEFT:
+            return pivotTurn_->turn(5, 10);
+
         //懸賞の下にアームを入れる
         case Phase::PUT_IN_LOWER_OF_PRIZE:
-            startDistanceMeasurement(30);
+            startDistanceMeasurement(50);
             straightRunning_->run(10);
             return distanceMeasurement_->getResult();
 
@@ -125,9 +128,14 @@ namespace strategy{
 
         //ゴールまでライントレース(カーブと直線で分割するべき)
         case Phase::LINE_TRACE_UP_TO_GOOL:
-            startDistanceMeasurement(3000);
-            lineTrace_->run(30,LineTraceEdge::RIGHT);
+            startDistanceMeasurement(3200);
+            lineTrace_->run(50,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
+
+        case Phase::FINISHED:
+            straightRunning_->run(0);
+            Shippo::getInstance()->furifuri();
+            return false;
 
         default: return false;
         }
