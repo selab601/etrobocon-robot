@@ -230,17 +230,23 @@ namespace strategy{
 
         //上段までライントレース
         case SumoPhase::UPPER_STAGE:
+            static bool isTimeDetected = false;
             startTimeMeasurement(1000);
-            linetrace_->run(20,upperStageEdge_,0.4);//黒よりに変更
-            if(!timeMeasurement_->getResult()){break;}//開始直後は直角無視
-            return rightAngledDetection_->getResult(4.0);
+            linetrace_->run(20,upperStageEdge_,0.4);
+            if(timeMeasurement_->getResult()){
+                isTimeDetected = true;
+            }
+            return isTimeDetected && rightAngledDetection_->getResult(4.0);
 
         //下段までライントレース
         case SumoPhase::DOWN_STAGE:
+            static bool isTimeDetected2 = false;
             startTimeMeasurement(500);
             linetrace_->run(20,downStageEdge_,0.4);
-            if(!timeMeasurement_->getResult()){break;}
-            return rightAngledDetection_->getResult(4.0);
+            if(timeMeasurement_->getResult()){
+                isTimeDetected2 = true;
+            }
+            return isTimeDetected2 && rightAngledDetection_->getResult(4.0);
 
         //3cm直進
         case SumoPhase::STRAIGHT_3_CM:
@@ -305,9 +311,15 @@ namespace strategy{
         switch(extrusionPhase_){
         //ブロックまでライントレース
         case ExtrusionPhase::START_LINE_TRACE:
+            startTimeMeasurement(500);
             linetrace_->run(15,startEdge,0.4);//黒よりに変更
-            if(hoshitoriDetection()){
+            if(timeMeasurement_->getResult()){
+                isTimeDetected = true;
+            }
+            if(isTimeDetected && hoshitoriDetection()){
                 extrusionPhase_ = ExtrusionPhase::EXTRUSION;
+                isTimeDetected = false;
+                //straightRunning_->run(0);
             }
             break;
 
