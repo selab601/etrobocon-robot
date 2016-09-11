@@ -40,6 +40,14 @@ namespace device
         //! 前回の尻尾モータエンコーダ値
         int32_t preTailMotorCount_;
 
+        //! 現在のアームモータPWM値
+        int armMotorPwm_ = 0;
+        //! 現在の左輪モータPWM値
+        int leftMotorPwm_ = 0;
+        //! 現在の右輪PWM値
+        int rightMotorPwm_ = 0;
+        //! 現在のしっぽモータPWM値
+        int tailMotorPwm_ = 0;
     private:
         Motors();
 
@@ -84,6 +92,15 @@ namespace device
          * @throw 予期しないモータ種類が与えられた際のエラー
          */
         void setPWM(motor_kind kind, int pwm);
+
+        /**
+         * @brief 現在のPWM値を取得する
+         *
+         * @param kind モータ種類
+         *
+         * @return PWM値
+         */
+        int getPWM(motor_kind kind);
 
         void setWheelPWM(int leftPWM, int rightPWM);
 
