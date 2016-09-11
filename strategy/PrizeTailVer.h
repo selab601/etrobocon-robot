@@ -24,6 +24,7 @@ namespace strategy{
             LINE_TRACE,
             DOWN_ARM,
             LINE_TRACE_UP_TO_PRIZE,
+            TURN_LEFT,
             PUT_IN_LOWER_OF_PRIZE,
             LIFT_PRIZE,
             BACK_16CM,
@@ -35,7 +36,8 @@ namespace strategy{
             CURVE_UP_TO_PRIZE_SIDE,
             STRAIGHT_1_CM,
             GET_PRIZE,
-            LINE_TRACE_UP_TO_GOOL
+            LINE_TRACE_UP_TO_GOOL,
+            FINISHED,
         };
 
         //懸賞運びの攻略手順
@@ -43,9 +45,10 @@ namespace strategy{
             Phase::LINE_TRACE,
             Phase::DOWN_ARM,                    //アームを下げる
             Phase::LINE_TRACE_UP_TO_PRIZE,      //懸賞前までライントレース
+            Phase::TURN_LEFT,                   //左側のアームで懸賞を押しちゃうことがあるので左に5度向ける
             Phase::PUT_IN_LOWER_OF_PRIZE,       //懸賞の下にアームを入れる
             Phase::LIFT_PRIZE,                  //懸賞を持ち上げる
-            Phase::BACK_16CM,
+            Phase::BACK_16CM,                   //懸賞を下ろす前に下がる
             Phase::DOWN_PRIZE,                  //懸賞を下ろす
             Phase::DOWN_SHIPPO,                 // しっぽをさげる
             Phase::PUT_AFTER_BACK,              //置いた後にバック
@@ -54,7 +57,8 @@ namespace strategy{
             Phase::CURVE_AFTER_BACK,            //カーブ後にバック
             Phase::LEFT_90_ROTATION,            //左90度カーブ
             Phase::GET_PRIZE,                   // しっぽで懸賞を取る
-            Phase::LINE_TRACE_UP_TO_GOOL        //ゴールまでライントレース
+            Phase::LINE_TRACE_UP_TO_GOOL,       //ゴールまでライントレース
+            Phase::FINISHED                     // とまってしっぽふりふり
         };
 
         //走行
