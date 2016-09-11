@@ -263,8 +263,10 @@ namespace strategy{
         static bool isRightCurve;       //右回転するかどうか
         static int turnAngle;           //戻るための旋回角度
         static LineTraceEdge startEdge,endEdge;//往復のライントレースのエッジ
+        static bool isTimeDetected;
 
         if(!initialized){
+            isTimeDetected = false;
             //左側(赤,黄)と右側(青,緑)それぞれ同じ動作をする
             switch(blockColor){
             case Hoshitori::RED:
@@ -327,7 +329,7 @@ namespace strategy{
         case ExtrusionPhase::SECOND_TURN:
             if(turn(isRightCurve,10)){
                 timeMeasurement_->setBaseTime();
-                timeMeasurement_->setTargetTime(1000);
+                timeMeasurement_->setTargetTime(500);
                 extrusionPhase_ = ExtrusionPhase::END_LINE_TRACE;
             }
             break;
@@ -335,8 +337,10 @@ namespace strategy{
         //直角までライントレース
         case ExtrusionPhase::END_LINE_TRACE:
             linetrace_->run(15,endEdge);
-            if(!timeMeasurement_->getResult()){break;}
-            if(rightAngledDetection_->getResult()){
+            if(timeMeasurement_->getResult()){
+                isTimeDetected = true;
+            }
+            if(isTimeDetected && rightAngledDetection_->getResult(4.0)){
                 extrusionPhase_ = ExtrusionPhase::START_LINE_TRACE;//状態を戻しておく
                 initialized = false;
                 return true;
