@@ -7,18 +7,14 @@ using namespace drive;
 namespace drive {
     BackToLineState::BackToLineState() {
         states_.push(BACK_STATE::INIT_TIME);
-        states_.push(BACK_STATE::DOWN_ARM);
         states_.push(BACK_STATE::SET_ARM);
         states_.push(BACK_STATE::INIT_DISTANCE);
         states_.push(BACK_STATE::BACK);
         states_.push(BACK_STATE::FINISH);
-        motors_ = Motors::getInstance();
-        countMeasure_ = new CountMeasurement(MotorKind::ARM, -10);
         distanceMeasurement_ = new DistanceMeasurement();
         straight_ = new StraightRunning();
         initialized_ = false;
         baseCount_ = 0;
-        timeMeasurement_ = new TimeMeasurement();
     }
 
     bool BackToLineState::isExecuted(colorset_t* result) {
@@ -26,8 +22,6 @@ namespace drive {
         switch (states_.front()) {
         case BACK_STATE::INIT_TIME:
         {
-            timeMeasurement_->setTargetTime(800);
-            timeMeasurement_->setBaseTime();
             states_.pop();
             break;
         }
@@ -38,23 +32,9 @@ namespace drive {
             states_.pop();
             break;
         }
-        case BACK_STATE::DOWN_ARM:
-        {
-            motors_->setPWM(motor_kind::MOTOR_ARM, -40);
-            if (timeMeasurement_->getResult()) {
-                motors_->setPWM(motor_kind::MOTOR_ARM, 0);
-                baseCount_ = motors_->getCount(device::MOTOR_ARM);
-                states_.pop();
-            }
-            break;
-        }
         case BACK_STATE::SET_ARM:
         {
-            int currentCount = motors_->getCount(device::MOTOR_ARM);
-            int pwm = BackToLineState::ANGLE - (currentCount - baseCount_);
-            motors_->setPWM(device::MOTOR_ARM, pwm);
-            if (BackToLineState::ANGLE == (currentCount - baseCount_)) {
-                motors_->reset();
+            if (Arm::getInstance()->normal()){
                 states_.pop();
             }
             break;
