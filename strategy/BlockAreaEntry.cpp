@@ -7,7 +7,7 @@ namespace strategy{
     distanceMeasurement_ = measurement::DistanceMeasurement();
     motor_ = device::Motors::getInstance();
     pivotTurn_ = drive::PivotTurn();
-    straightRunning_ = drive::StraightRunning(); 
+    straightRunning_ = drive::StraightRunning();
     lineDetection_ = detection::LineDetection();
     curveRunning_ = drive::CurveRunning();
     bodyAngleMeasurement_ = measurement::BodyAngleMeasurement();
@@ -25,7 +25,7 @@ namespace strategy{
         distanceMeasurement_.startMeasurement();
         Status_ = Status::LINETRACE;
         break;
-      
+
       case Status::LINETRACE:
         if(!distanceMeasurement_.getResult()){
           linetrace_->run(30,drive::LineTraceEdge::LEFT,0.6);
@@ -37,6 +37,7 @@ namespace strategy{
 
       case Status::TURN:
         if(pivotTurn_.turn(90)){
+            straightRunning_.initialize();
           Status_ = Status::STRAIGHT_RUN;
         }
         break;
@@ -44,7 +45,7 @@ namespace strategy{
       case Status::STRAIGHT_RUN:
         //ライン検知するまで
         if(!lineDetection_.getResult()){
-          straightRunning_.run(30);
+          straightRunning_.run(50, 40);
         }else{
           //信地旋回準備
           bodyAngleMeasurement_.setBaseAngle();
@@ -80,7 +81,7 @@ namespace strategy{
         }else{
           Status_ = Status::DONE;
         }
-        break; 
+        break;
 
       case Status::DONE:
         motor_->setWheelPWM(0,0);
