@@ -5,6 +5,8 @@
 #include "StraightRunning.h"
 #include "PivotTurn.h"
 #include "BlockAreaCoordinate.h"
+#include "RegulateDistanceStage.h"
+#include "../measurement/SelfPositionEstimation.h"
 #include <cstdlib>
 
 namespace drive{
@@ -39,18 +41,30 @@ namespace drive{
             STRAIGHT_LEFT,
             TRUN
         };
+
+        Direction EV3Position_;
+        BlockAreaCoordinate currentCoordinate_;
+
+                /*
+         * @brief 2つの座標を比較して位置関係を返す
+         *        from から見て to がどちら側にあるか？
+         *        注意: from からみて、to がX軸、Y軸上になければ使えない
+         * @return to のある向き。重なっていた場合は NONE が返る
+         */
+        Direction getDirection(BlockAreaCoordinate from, BlockAreaCoordinate to);
     private:
         /**
          * @brief EV3が向いている台座の座標(モデル2.3.4参照)
          **/
-        BlockAreaCoordinate currentCoordinate_;
         BlockAreaCoordinate targetCoordinate_;
         BlockAreaCoordinate nextCoordinate_;
         Position goingPosition_;
-        Direction EV3Position_;
         Avoidance avoidance_;
         StraightRunning straightRunning_;
         PivotTurn pivotTurn_;
+        RegulateDistanceStage regulateDistanceStage_;
+        measurement::SelfPositionEstimation* selfPositionEstimation_;
+        bool isFinished_;
         //命名後で考える
         BlockAreaCoordinate horizonal(int diffX);
         BlockAreaCoordinate vertical(int diffY);
@@ -61,13 +75,6 @@ namespace drive{
 
         Destination();
 
-        /*
-         * @brief 2つの座標を比較して位置関係を返す
-         *        from から見て to がどちら側にあるか？
-         *        注意: from からみて、to がX軸、Y軸上になければ使えない
-         * @return to のある向き。重なっていた場合は NONE が返る
-         */
-        Direction getDirection(BlockAreaCoordinate from, BlockAreaCoordinate to);
     public:
         // シングルトンパターン
         static Destination* getInstance();
@@ -78,6 +85,13 @@ namespace drive{
          * @param Psition EV3が向いている台座から見たEV3の位置
          **/
         void setCurrentLocation(int x, int y, Direction EV3Position);
+
+        /**
+         * @param nextCoordinate 次に進む台座の座標
+         * @param goingPosition 次に進む台座の現在台座から見た位置
+         * @brief EV3の現在地の更新を行う
+         **/
+        void update(BlockAreaCoordinate nextCoordinate , Position position);
 
         /**
          * @param 目的地台座の座標

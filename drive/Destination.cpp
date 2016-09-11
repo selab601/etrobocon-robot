@@ -16,6 +16,10 @@ namespace drive{
         avoidance_ = Avoidance();
         straightRunning_ = StraightRunning();
         pivotTurn_ = PivotTurn();
+        isFinished_ = false;
+        selfPositionEstimation_ = measurement::SelfPositionEstimation::getInstance();
+        regulateDistanceStage_  = RegulateDistanceStage();
+        selfPositionEstimation_ -> initMap();
     }
 
     void Destination::setCurrentLocation(int x, int y, drive::Destination::Direction EV3Position) {
@@ -146,6 +150,69 @@ namespace drive{
         return Position::NONE;
     }
 
+    void Destination::update(BlockAreaCoordinate nextCoordinate , Position position){
+        currentCoordinate_ = nextCoordinate;
+        selfPositionEstimation_ -> initMap();
+        switch (position) {
+            case Position::EQUAL:
+                switch(EV3Position_){
+                    case Direction::UP:
+                        EV3Position_ = Direction::DOWN;
+                        break;
+                    case Direction::DOWN:
+                        EV3Position_ = Direction::UP;
+                        break;
+                    case Direction::RIGHT:
+                        EV3Position_ = Direction::LEFT;
+                        break;
+                    case Direction::LEFT:
+                        EV3Position_ = Direction::RIGHT;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case Position::RIGHT:
+                switch(EV3Position_){
+                    case Direction::UP:
+                        EV3Position_ = Direction::RIGHT;
+                        break;
+                    case Direction::DOWN:
+                        EV3Position_ = Direction::LEFT;
+                        break;
+                    case Direction::RIGHT:
+                        EV3Position_ = Direction::DOWN;
+                        break;
+                    case Direction::LEFT:
+                        EV3Position_ = Direction::UP;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case Position::LEFT:
+                switch(EV3Position_){
+                    case Direction::UP:
+                        EV3Position_ = Direction::LEFT;
+                        break;
+                    case Direction::DOWN:
+                        EV3Position_ = Direction::RIGHT;
+                        break;
+                    case Direction::RIGHT:
+                        EV3Position_ = Direction::UP;
+                        break;
+                    case Direction::LEFT:
+                        EV3Position_ = Direction::DOWN;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
+            }
+    }
+
     bool Destination::runTo(int x,int y){
         targetCoordinate_ = Coordinate(x,y);
         Coordinate destination = targetCoordinate_;
@@ -163,94 +230,39 @@ namespace drive{
         // 次どちらの座標に向かって進むのかで場合分け
         Position position = getPosition(EV3Position_ , nextStageDirection);
         goingPosition_ = position;
-
-        bool isFinished = false;
-        switch (position) {
-            case Position::EQUAL:
-                isFinished = pivotTurn_.turn(180);
-                break;
-            case Position::REVERSE:
-                if((nextStageDirection == Direction::UP && currentCoordinate_.getX() == 1) ||
-                    (nextStageDirection == Direction::DOWN && currentCoordinate_.getX() == 4) ||
-                    (nextStageDirection == Direction::RIGHT && currentCoordinate_.getY() == 1) ||
-                    (nextStageDirection == Direction::LEFT && currentCoordinate_.getY() == 4))
-                {
-                    isFinished = avoidance_.startAvoidance(DirectionKind::STRAIGHT_RIGHT);
-                }
-                else
-                {
-                    isFinished = avoidance_.startAvoidance(DirectionKind::STRAIGHT_LEFT);
-                }
-                break;
-            case Position::RIGHT:
-                isFinished = avoidance_.startAvoidance(DirectionKind::RIGHT);
-                break;
-            case Position::LEFT:
-                isFinished = avoidance_.startAvoidance(DirectionKind::LEFT);
-                break;
-            default:
-                break;
-        }
-
-        if (isFinished) {
-            currentCoordinate_ = nextCoordinate;
+        if(!isFinished_){
             switch (position) {
                 case Position::EQUAL:
-                    switch(EV3Position_){
-                        case Direction::UP:
-                            EV3Position_ = Direction::DOWN;
-                            break;
-                        case Direction::DOWN:
-                            EV3Position_ = Direction::UP;
-                            break;
-                        case Direction::RIGHT:
-                            EV3Position_ = Direction::LEFT;
-                            break;
-                        case Direction::LEFT:
-                            EV3Position_ = Direction::RIGHT;
-                            break;
-                        default:
-                            break;
+                    isFinished_ = pivotTurn_.turn(180);
+                    break;
+                case Position::REVERSE:
+                    if((nextStageDirection == Direction::UP && currentCoordinate_.getX() == 1) ||
+                        (nextStageDirection == Direction::DOWN && currentCoordinate_.getX() == 4) ||
+                        (nextStageDirection == Direction::RIGHT && currentCoordinate_.getY() == 1) ||
+                        (nextStageDirection == Direction::LEFT && currentCoordinate_.getY() == 4))
+                    {
+                        isFinished_ = avoidance_.startAvoidance(DirectionKind::STRAIGHT_RIGHT);
+                    }
+                    else
+                    {
+                        isFinished_ = avoidance_.startAvoidance(DirectionKind::STRAIGHT_LEFT);
                     }
                     break;
                 case Position::RIGHT:
-                    switch(EV3Position_){
-                        case Direction::UP:
-                            EV3Position_ = Direction::RIGHT;
-                            break;
-                        case Direction::DOWN:
-                            EV3Position_ = Direction::LEFT;
-                            break;
-                        case Direction::RIGHT:
-                            EV3Position_ = Direction::DOWN;
-                            break;
-                        case Direction::LEFT:
-                            EV3Position_ = Direction::UP;
-                            break;
-                        default:
-                            break;
-                    }
+                    isFinished_ = avoidance_.startAvoidance(DirectionKind::RIGHT);
                     break;
                 case Position::LEFT:
-                    switch(EV3Position_){
-                        case Direction::UP:
-                            EV3Position_ = Direction::LEFT;
-                            break;
-                        case Direction::DOWN:
-                            EV3Position_ = Direction::RIGHT;
-                            break;
-                        case Direction::RIGHT:
-                            EV3Position_ = Direction::UP;
-                            break;
-                        case Direction::LEFT:
-                            EV3Position_ = Direction::DOWN;
-                            break;
-                        default:
-                            break;
-                    }
+                    isFinished_ = avoidance_.startAvoidance(DirectionKind::LEFT);
                     break;
                 default:
                     break;
+            }
+        }
+
+        if (isFinished_) {
+            if(regulateDistanceStage_.run()){
+                isFinished_ = false;
+                update(nextCoordinate , position);
             }
         }
         return false;
