@@ -7,7 +7,7 @@ namespace strategy{
     distanceMeasurement_ = measurement::DistanceMeasurement();
     motor_ = device::Motors::getInstance();
     pivotTurn_ = drive::PivotTurn();
-    straightRunning_ = drive::StraightRunning(); 
+    straightRunning_ = drive::StraightRunning();
     lineDetection_ = detection::LineDetection();
     curveRunning_ = drive::CurveRunning();
     bodyAngleMeasurement_ = measurement::BodyAngleMeasurement();
@@ -104,7 +104,7 @@ namespace strategy{
         break;
 
       case Status::LINETRACE:
-        linetrace_->run(20,drive::LineTraceEdge::LEFT,0.3);
+        linetrace_->run(20,drive::LineTraceEdge::LEFT,0.6);
         return true;
 
     }
