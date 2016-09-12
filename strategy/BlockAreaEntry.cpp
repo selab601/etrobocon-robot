@@ -45,7 +45,7 @@ namespace strategy{
             case Status::STRAIGHT_RUN:
                 //ライン検知するまで
                 if(!lineDetection_.getResult()){
-                    straightRunning_.run(50, 40);
+                    straightRunning_.run(50, 60);
                 }else{
                     //信地旋回準備
                     bodyAngleMeasurement_.setBaseAngle();
