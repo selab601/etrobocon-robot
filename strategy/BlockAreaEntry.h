@@ -27,8 +27,7 @@ namespace strategy{
                 STRAIGHT_SPEED_UP,
                 STRAIGHT_SPEED_DOWN,
 				TURN2,
-				LINETRACE2,
-				BACK,
+				INITIALIZE,
 				DONE
 				};
 			Status Status_;
