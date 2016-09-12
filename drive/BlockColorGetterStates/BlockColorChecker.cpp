@@ -55,22 +55,22 @@ namespace drive {
                 ev3_speaker_play_tone(200, 1000);
                 *result = COLOR_BLACK;
             } else if (hsv.s <= 90) {
-                ev3_speaker_play_tone(1000, 1000);
+                ev3_speaker_play_tone(500, 5000);
                 *result = COLOR_WHITE;
-            } else if (hueValue >= 0 && hueValue <= 10) {
-                ev3_speaker_play_tone(200, 100);
+            } else if (hueValue >= 0 && hueValue <= 20) {
+                ev3_speaker_play_tone(200, 1000);
                 *result = COLOR_RED;
-            } else if (hueValue >= 30 && hueValue <= 60) {
-                ev3_speaker_play_tone(450, 100);
+            } else if (hueValue >= 30 && hueValue <= 80) {
+                ev3_speaker_play_tone(450, 1000);
                 *result = COLOR_YELLOW;
-            } else if (hueValue >= 110 && hueValue <= 140) {
-                ev3_speaker_play_tone(700, 100);
+            } else if (hueValue >= 100 && hueValue <= 140) {
+                ev3_speaker_play_tone(700, 1000);
                 *result = COLOR_GREEN;
-            } else if (hueValue >= 170 && hueValue <= 220) {
-                ev3_speaker_play_tone(700, 100);
+            } else if (hueValue >= 150 && hueValue <= 220) {
+                ev3_speaker_play_tone(950, 1000);
                 *result = COLOR_BLUE;
             } else {
-                ev3_speaker_play_tone(500, 3000);
+                ev3_speaker_play_tone(1000, 5000);
                 *result = COLOR_NONE;
             }
 
