@@ -15,7 +15,9 @@ namespace detection{
 
         colorid_t result;
         // これ以下の各閾値は，実験から求めた．詳しくは2016年度のモデル参照
-        if (hsv.s <= 160) {
+        if (hsv.v < 40) {
+            result = COLOR_BLACK;
+        } else if (hsv.s <= 165) {
             /* 彩度が低い場合はモノクロと判断する */
             /* モノクロの場合，明度から白か黒かを判断する */
             if (hsv.v < 30) {
