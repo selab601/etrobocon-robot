@@ -22,8 +22,7 @@ namespace contest_pkg{
         //ブロック並べ
         sections_.emplace_back(1000,new BlockAreaEntry());
         sections_.emplace_back(1000,new BlockAreaGame());
-        sections_.emplace_back(1000,new BlockAreaExit());
-        sections_.emplace_back(9100,new RCourseStandard());
+        //sections_.emplace_back(9100,new RCourseStandard());
         }
 
         if(course == SelectedCourse::L_COURSE){
