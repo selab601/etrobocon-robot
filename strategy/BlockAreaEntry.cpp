@@ -38,14 +38,28 @@ namespace strategy{
             case Status::TURN:
                 if(pivotTurn_.turn(90)){
                     straightRunning_.initialize();
-                    Status_ = Status::STRAIGHT_RUN;
+                    distanceMeasurement_.setTargetDistance(350);
+                    distanceMeasurement_.startMeasurement();
+                    Status_ = Status::STRAIGHT_SPEED_UP;
                 }
                 break;
 
-            case Status::STRAIGHT_RUN:
+                // 35cm進むまでPWM50
+            case Status::STRAIGHT_SPEED_UP:
+                if (!distanceMeasurement_.getResult()){
+                    straightRunning_.run(50, 100);
+                }
+                else{
+                    straightRunning_.initialize();
+                    Status_ = Status::STRAIGHT_SPEED_DOWN;
+                }
+                break;
+
+                // 35cm進んだら減速する
+            case Status::STRAIGHT_SPEED_DOWN:
                 //ライン検知するまで
                 if(!lineDetection_.getResult()){
-                    straightRunning_.run(50, 60);
+                    straightRunning_.run(20, 100);
                 }else{
                     //信地旋回準備
                     bodyAngleMeasurement_.setBaseAngle();
@@ -58,7 +72,7 @@ namespace strategy{
                 if(bodyAngleMeasurement_.getResult() >= 85){
                     Status_ = Status::LINETRACE2;
                 }else{
-                    curveRunning_.run(30,-5);
+                    curveRunning_.run(30, 0);
                 }
                 break;
 
