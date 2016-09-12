@@ -57,6 +57,7 @@ namespace strategy{
 
         //星取取得
         case StrategyPhase::HOSHITORI:
+            linetrace_->setPid(0.0144,0.0,0.72);
             linetrace_->run(20,LineTraceEdge::RIGHT);
             return hoshitoriDetection(true);
 
@@ -143,7 +144,7 @@ namespace strategy{
 
         //降壇
         case StrategyPhase::GET_OF:
-            startDistanceMeasurement(400);
+            startDistanceMeasurement(450);
             straightRunning_->run(30);
             return distanceMeasurement_->getResult();
 
@@ -171,7 +172,7 @@ namespace strategy{
             return distanceMeasurement_->getResult();
 
         case StrategyPhase::APPROACH_TO_LINE:
-            straightRunning_->run(-20);
+            straightRunning_->run(-15);
             return lineDetection_->getResult();
 
         default: return false;
