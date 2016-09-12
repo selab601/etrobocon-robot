@@ -45,7 +45,11 @@ namespace strategy{
             SUMO,
             GET_OF,
             LINE_DETECTION,
-            LINE_RETURN
+            LINE_RETURN,
+            TURN_RIGHT_90,
+            TURN_LEFT_90,
+            LEAVE_FROM_LINE,
+            APPROACH_TO_LINE,
         };
 
         //相撲全体の状態
@@ -106,7 +110,13 @@ namespace strategy{
             StrategyPhase::STOP,             //新幹線検知するまで停止
             StrategyPhase::WAIT_2_SEC,       //検知後に待つ
             StrategyPhase::GET_OF,           //降段
-            StrategyPhase::LINE_DETECTION,
+            StrategyPhase::TURN_RIGHT_90,
+            StrategyPhase::LEAVE_FROM_LINE,
+            StrategyPhase::WAIT_1_SEC,
+            StrategyPhase::APPROACH_TO_LINE,
+            StrategyPhase::STRAIGHT_4_CM,
+            StrategyPhase::TURN_LEFT_90,
+            //StrategyPhase::LINE_DETECTION,
             StrategyPhase::LINE_RETURN       //ライン復帰
         };
 

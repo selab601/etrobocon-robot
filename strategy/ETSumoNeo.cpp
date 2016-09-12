@@ -123,7 +123,7 @@ namespace strategy{
 
         //4cm進む
         case StrategyPhase::STRAIGHT_4_CM:
-            startDistanceMeasurement(40);
+            startDistanceMeasurement(45);
             straightRunning_->run(15);
             return distanceMeasurement_->getResult();
 
@@ -143,7 +143,7 @@ namespace strategy{
 
         //降壇
         case StrategyPhase::GET_OF:
-            startDistanceMeasurement(350);
+            startDistanceMeasurement(400);
             straightRunning_->run(30);
             return distanceMeasurement_->getResult();
 
@@ -155,9 +155,24 @@ namespace strategy{
         //ライン復帰
         case StrategyPhase::LINE_RETURN:
             startDistanceMeasurement(700);
-            linetrace_->run(40,LineTraceEdge::RIGHT);
+            linetrace_->run(30,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
+        /*以下安全なライン復帰*/
+        case StrategyPhase::TURN_RIGHT_90:
+            return pivotTurn_->turn(-90);
+
+        case StrategyPhase::TURN_LEFT_90:
+            return pivotTurn_->turn(90);
+
+        case StrategyPhase::LEAVE_FROM_LINE:
+            startDistanceMeasurement(100);
+            straightRunning_->run(20);
+            return distanceMeasurement_->getResult();
+
+        case StrategyPhase::APPROACH_TO_LINE:
+            straightRunning_->run(-20);
+            return lineDetection_->getResult();
 
         default: return false;
         }
@@ -319,7 +334,7 @@ namespace strategy{
             if(isTimeDetected && hoshitoriDetection()){
                 extrusionPhase_ = ExtrusionPhase::EXTRUSION;
                 isTimeDetected = false;
-                //straightRunning_->run(0);
+                hasExecutedPhase_ = false;
             }
             break;
 
@@ -340,21 +355,21 @@ namespace strategy{
         //ラインまで旋回
         case ExtrusionPhase::SECOND_TURN:
             if(turn(isRightCurve,10)){
-                timeMeasurement_->setBaseTime();
-                timeMeasurement_->setTargetTime(500);
                 extrusionPhase_ = ExtrusionPhase::END_LINE_TRACE;
             }
             break;
 
         //直角までライントレース
         case ExtrusionPhase::END_LINE_TRACE:
-            linetrace_->run(15,endEdge);
+            startTimeMeasurement(500);
+            linetrace_->run(15,endEdge,0.4);
             if(timeMeasurement_->getResult()){
                 isTimeDetected = true;
             }
             if(isTimeDetected && rightAngledDetection_->getResult(4.0)){
                 extrusionPhase_ = ExtrusionPhase::START_LINE_TRACE;//状態を戻しておく
                 initialized = false;
+                hasExecutedPhase_ = false;
                 return true;
             }
             break;
