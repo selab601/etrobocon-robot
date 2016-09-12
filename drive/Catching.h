@@ -8,6 +8,7 @@
 #include "./CurveRunning.h"
 #include "./LineTrace.h"
 #include "../detection/ColorDetection.h"
+#include "../device/ColorSensor.h"
 #include <stdlib.h>
 
 #define TO_LINE_LENGTH 165  // 6センチになる！
@@ -30,6 +31,7 @@ namespace drive
                 INIT,
                 AVOIDANCE,
                 TURN,
+                TURN_TO_LINE,
                 CATCHING,
                 FINISHED,
             };
