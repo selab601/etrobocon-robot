@@ -339,6 +339,8 @@ namespace drive{
                 break;
 
             case Destination::Direction::NONE:
+                // ここに来ることはないはずなのでデバッグ用
+                ev3_speaker_play_tone(700, 3000);
                 break;
         }
         return DirectionKind::RIGHT;
