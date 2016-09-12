@@ -138,10 +138,10 @@ namespace drive{
 
             case ChangeDirectionState::TURN_TO_LINE:
                 {
-                    curveRunning.run(30, 0);
+                    curveRunning.run(20, -20);
                     int white = device::ColorSensor::getInstance()->getWhiteCalibratedValue();
                     int black = device::ColorSensor::getInstance()->getBlackCalibratedValue();
-                    int mid = black + (white - black)/2;
+                    int mid = black + 10;
                     if (device::ColorSensor::getInstance()->getBrightness() < mid){
                         curveRunning.run(0, 0);
                         state = ChangeDirectionState::CATCHING;
