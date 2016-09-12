@@ -29,8 +29,7 @@ namespace drive{
         }
         else{
             int wheelPwm = (motor_->getPWM(MOTOR_LEFT) + motor_->getPWM(MOTOR_RIGHT)) / 2;
-            int pwmDiff = targetPwm - wheelPwm;
-            if ( (-1 <= pwmDiff) && (1 >= pwmDiff) ){
+            if (targetPwm == wheelPwm){
                 run(targetPwm);
             }
             else {
@@ -67,11 +66,21 @@ namespace drive{
         currentPwm += diff;
 
         bool speedChanged = false;
-        int pwmDiff = targetPwm - currentPwm;
-        if ( (-1 <= pwmDiff) && (1 >= pwmDiff) ){
-            currentPwm = targetPwm;
-            speedChanged = true;
-            changeSpeedInitialized_ = false; // 初期化
+
+        // 加速のとき
+        if (diff > 0.0){
+            if (currentPwm >= targetPwm ){
+                currentPwm = targetPwm;
+                speedChanged = true;
+                changeSpeedInitialized_ = false; // 初期化
+            }
+        }// 減速のとき
+        else{
+            if (currentPwm <= targetPwm ){
+                currentPwm = targetPwm;
+                speedChanged = true;
+                changeSpeedInitialized_ = false; // 初期化
+            }
         }
 
         run((int)currentPwm);
