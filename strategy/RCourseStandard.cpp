@@ -29,6 +29,7 @@ namespace strategy{
 
       case Status::STRAIGHT1_STANDBY:
       	// 直線(1300)，カーブ()　直径(480)，直線()
+        linetrace_->setPid(0.003F, 0.00000033333333F, 0.3F);
         distanceMeasurement_.setTargetDistance(1250);
         distanceMeasurement_.startMeasurement();
         Status_ = Status::STRAIGHT1;
@@ -36,7 +37,7 @@ namespace strategy{
       
       case Status::STRAIGHT1:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(40,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(100,drive::LineTraceEdge::LEFT,0.6);
         }else{
           Status_ = Status::CURVE1_STANDBY;
         }
@@ -67,7 +68,7 @@ namespace strategy{
 
       case Status::STRAIGHT2:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(40,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(100,drive::LineTraceEdge::LEFT,0.6);
         }else{
           Status_ = Status::CURVE2_STANDBY;
         }
@@ -75,7 +76,7 @@ namespace strategy{
 
       //直角に近いカーブ部分
       case Status::CURVE2_STANDBY:
-        distanceMeasurement_.setTargetDistance(880);
+        distanceMeasurement_.setTargetDistance(840);
         distanceMeasurement_.startMeasurement();
         Status_ = Status::CURVE2;
         break;
@@ -90,14 +91,14 @@ namespace strategy{
 
       case Status::STRAIGHT3_STANDBY:
         //ゴールまで
-        distanceMeasurement_.setTargetDistance(1500);
+        distanceMeasurement_.setTargetDistance(1600);
         distanceMeasurement_.startMeasurement();
         Status_ = Status::STRAIGHT3;
         break;
 
       case Status::STRAIGHT3:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(40,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(100,drive::LineTraceEdge::LEFT,0.6);
         }else{
           Status_ = Status::CURVE3_STANDBY;
         }
@@ -105,14 +106,16 @@ namespace strategy{
 
       //最後の直角カーブ部分
       case Status::CURVE3_STANDBY:
-        distanceMeasurement_.setTargetDistance(400);
+        distanceMeasurement_.setTargetDistance(430);
         distanceMeasurement_.startMeasurement();
         Status_ = Status::CURVE3;
         break;
 
       case Status::CURVE3:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(30,drive::LineTraceEdge::LEFT,0.6);
+          //linetrace_->setPid(0.006F, 0.0F, 0.52F);
+          //linetrace_->run(40,drive::LineTraceEdge::LEFT,0.6);
+          curveRunning_.run(39, 60);
         }else{
           Status_ = Status::STRAIGHT4_STANDBY;
         }
@@ -120,14 +123,15 @@ namespace strategy{
 
       case Status::STRAIGHT4_STANDBY:
         //ゴールまで
-        distanceMeasurement_.setTargetDistance(3000);
+        distanceMeasurement_.setTargetDistance(2770);
         distanceMeasurement_.startMeasurement();
+        linetrace_->setPid(0.003F, 0.00000033333333F, 0.3F);
         Status_ = Status::STRAIGHT4;
         break;
 
       case Status::STRAIGHT4:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(40,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(100,drive::LineTraceEdge::LEFT,0.6);
         }else{
           Status_ = Status::DONE;
         }
