@@ -46,7 +46,14 @@ namespace strategy{
 
         //ライントレース
         case Phase::LINE_TRACE:
-            startDistanceMeasurement(1800);
+            startDistanceMeasurement(800);
+            lineTrace_->setPid(0.0144,0.0,0.72);
+            lineTrace_->run(30,LineTraceEdge::RIGHT);
+            return distanceMeasurement_->getResult();
+
+        case Phase::LINE_TRACE2:
+            startDistanceMeasurement(1100);
+            lineTrace_->setPid(0.003,0.0,0.3);
             lineTrace_->run(50,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
@@ -129,8 +136,15 @@ namespace strategy{
 
         //ゴールまでライントレース(カーブと直線で分割するべき)
         case Phase::LINE_TRACE_UP_TO_GOOL:
-            startDistanceMeasurement(3200);
-            lineTrace_->run(30,LineTraceEdge::RIGHT);
+            startDistanceMeasurement(500);
+            lineTrace_->setPid(0.0144,0.0,0.72);
+            lineTrace_->run(40,LineTraceEdge::RIGHT);
+            return distanceMeasurement_->getResult();
+
+        case Phase::LINE_TRACE_UP_TO_GOOL2:
+            startDistanceMeasurement(2900);
+            lineTrace_->setPid(0.003,0.0,0.3);
+            lineTrace_->run(40,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::FINISHED:
