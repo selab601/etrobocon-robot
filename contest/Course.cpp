@@ -4,6 +4,8 @@
  * @aurhor usui kakeru
  */
 #include "Course.h"
+#include "../strategy/ETSumoNeo.h"
+#include "../strategy/PrizeTailVer.h"
 
 using namespace strategy;
 using namespace measurement;
@@ -16,7 +18,7 @@ namespace contest_pkg{
         selfPositionEstimation_ = SelfPositionEstimation::getInstance();
         selfPositionEstimation_->initMap();
         sectionNumber_ = 0;
- 
+
         //それぞれのコースの戦略やライントレースを追加していく
         if(course == SelectedCourse::R_COURSE){
         //ブロック並べ
@@ -28,7 +30,9 @@ namespace contest_pkg{
         if(course == SelectedCourse::L_COURSE){
         sections_.emplace_back(8000,new LCourseStandard());
         //相撲
-        // sections_.emplace_back(200,new TestStrategy2());
+        sections_.emplace_back(200,new ETSumoNeo());
+        //懸賞
+        sections_.emplace_back(200,new PrizeTailVer());
         }
     }
 

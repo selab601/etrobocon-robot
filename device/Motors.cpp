@@ -100,12 +100,16 @@ namespace device
     void Motors::setPWM(motor_kind kind, int pwm){
         switch (kind){
         case MOTOR_ARM:
+            armMotorPwm_ = pwm;
             armMotor_.setPWM(pwm); break;
         case MOTOR_LEFT:
+            leftMotorPwm_ = pwm;
             leftMotor_.setPWM(pwm); break;
         case MOTOR_RIGHT:
+            rightMotorPwm_ = pwm;
             rightMotor_.setPWM(pwm); break;
         case MOTOR_TAIL:
+            tailMotorPwm_ = pwm;
             tailMotor_.setPWM(pwm); break;
         default:
             // TODO: きちんと例外処理する
@@ -113,9 +117,24 @@ namespace device
         }
     }
 
+    int Motors::getPWM(motor_kind kind){
+        switch (kind){
+        case MOTOR_ARM:
+            return armMotorPwm_;
+        case MOTOR_LEFT:
+            return leftMotorPwm_;
+        case MOTOR_RIGHT:
+            return rightMotorPwm_;
+        case MOTOR_TAIL:
+            return tailMotorPwm_;
+        default:
+            // TODO: きちんと例外処理する
+            throw;
+        }
+    }
     void Motors::setWheelPWM(int leftPWM, int rightPWM){
-        leftMotor_.setPWM(leftPWM);
-        rightMotor_.setPWM(rightPWM);
+        setPWM(MOTOR_LEFT, leftPWM);
+        setPWM(MOTOR_RIGHT, rightPWM);
     }
 
     void Motors::steerWheel(int power, int turnRatio){

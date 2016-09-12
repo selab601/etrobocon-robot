@@ -13,17 +13,17 @@ namespace strategy{
   bool LCourseStandard::capture(){
     switch(Status_){
       case Status::STANDBY:
-        //エッジ切り替え地点まで 
+        //エッジ切り替え地点まで
         //最初のストレート:2500
         //カーブ:500
-        distanceMeasurement_.setTargetDistance(6000);
+        distanceMeasurement_.setTargetDistance(5900);
         distanceMeasurement_.startMeasurement();
         Status_ = Status::LINETRACE1;
         break;
-      
+
       case Status::LINETRACE1:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(80,drive::LineTraceEdge::RIGHT,0.6);
+          linetrace_->run(40,drive::LineTraceEdge::RIGHT,0.6);
         }else{
         	//エッジ切り替え準備
 
@@ -36,7 +36,7 @@ namespace strategy{
         if(linetrace_->changeEdge()){
           //ライントレース準備
           //少し進んでから右エッジに変更
-          distanceMeasurement_.setTargetDistance(1000);
+          distanceMeasurement_.setTargetDistance(1100);
           distanceMeasurement_.startMeasurement();
           Status_ = Status::LINETRACE2;
         }
@@ -44,7 +44,7 @@ namespace strategy{
 
       case Status::LINETRACE2:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(80,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(40,drive::LineTraceEdge::LEFT,0.6);
         }else{
           //エッジ切り替え準備
           Status_ = Status::CHANGEEDGE_TO_RIGHT;
@@ -56,7 +56,7 @@ namespace strategy{
         if(linetrace_->changeEdge()){
           //ライントレース準備
           //星取り前の分岐まで
-          distanceMeasurement_.setTargetDistance(1000);
+          distanceMeasurement_.setTargetDistance(900);
           distanceMeasurement_.startMeasurement();
           Status_ = Status::LINETRACE3;
         }
@@ -64,7 +64,7 @@ namespace strategy{
 
       case Status::LINETRACE3:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(80,drive::LineTraceEdge::RIGHT,0.6);
+          linetrace_->run(40,drive::LineTraceEdge::RIGHT,0.6);
         }else{
           Status_ = Status::DONE;
         }

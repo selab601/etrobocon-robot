@@ -41,7 +41,7 @@ namespace strategy{
 
       case Status::DECISION:
         //3個運び終わるまで
-        if(carried == 3){
+        if(carried == 3 || confirmed >= 4){
           Status_ = Status::DONE;
         }else{
           Status_ = Status::TO_DESTINATION;
@@ -125,6 +125,9 @@ namespace strategy{
             blockColorGetter_ = drive::BlockColorGetter();
             Status_ = Status::DECISION;
             break;
+          }else{ //NONE とかの場合
+            blockColorGetter_ = drive::BlockColorGetter();
+            break;
           }
           Status_ = Status::CATCH;
         }
@@ -146,7 +149,7 @@ namespace strategy{
         if(catching_.putBlock()){
           //確認したブロック数，運んだブロック数，ブロックの有無の更新
           block_exist[block_x[confirmed] - 1][block_y[confirmed] - 1] = 0;
-          block_exist[destination_x][destination_y] = 1;
+          block_exist[destination_x - 1][destination_y - 1] = 1;
           confirmed++;
           carried++;
           blockColorGetter_ = drive::BlockColorGetter();
