@@ -162,7 +162,7 @@ namespace drive{
             }
             break;
         case State::LINE_RETURN:
-            curveRunning_->run(30,-5);
+            curveRunning_->run(30,0);
             if(bodyAngle_->getResult() >= 0){
                 state_ = State::START;
                 straightRunning_->run(0);
