@@ -126,6 +126,7 @@ namespace strategy{
             Status_ = Status::DECISION;
             break;
           }else{ //NONE とかの場合
+            blockColorGetter_ = drive::BlockColorGetter();
             break;
           }
           Status_ = Status::CATCH;
