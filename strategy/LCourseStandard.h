@@ -4,33 +4,55 @@
 #include "IStrategy.h"
 #include "drive/LineTrace.h"
 #include "measurement/DistanceMeasurement.h"
-#include "device/Motors.h"
+#include <vector>
 
 namespace strategy{
-	class LCourseStandard : public IStrategy{
-		private:
-			enum class Status
-			{
-				STANDBY,
-				LINETRACE1,
-				CHANGEEDGE_TO_LEFT,
-				LINETRACE2,
-				CHANGEEDGE_TO_RIGHT,
-				LINETRACE3,
-				DONE
-				};
-			Status Status_;
+    class LCourseStandard : public IStrategy{
+        private:
+            enum class Phase
+            {
+                LINETRACE1,
+                LINETRACE2,
+                LINETRACE3,
+                LINETRACE4,
+                LINETRACE5,
+                LINETRACE6,
+                CHANGEEDGE,
+                CURVE1,
+                CURVE2,
+                CURVE3,
+            };
 
-			drive::LineTrace* linetrace_;
-			measurement::DistanceMeasurement distanceMeasurement_;
-			device::Motors* motor_;
+            std::vector<Phase> phaseProcedure_{
+                Phase::LINETRACE1,
+                Phase::CURVE1,
+                Phase::LINETRACE2,
+                Phase::CURVE2,
+                Phase::LINETRACE3,
+                Phase::CHANGEEDGE,
+                Phase::LINETRACE4,
+                Phase::CURVE3,
+                Phase::LINETRACE5,
+                Phase::CHANGEEDGE,
+                Phase::LINETRACE6,
+            };
 
-		public:
-			//コンストラクタ
-			LCourseStandard();
+            drive::LineTrace* linetrace_;
+            measurement::DistanceMeasurement* distanceMeasurement_;
 
-			bool capture();
-	};
+            bool strategySuccess_;
+            bool hasExecutedPhase_;
+
+        public:
+            //コンストラクタ
+            LCourseStandard();
+
+            bool capture();
+        private:
+            bool executePhase(Phase phase);
+            void startDistanceMeasurement(int distance);
+            bool fixedDistanceLineTrace(int distance,int speed,drive::LineTraceEdge edge);
+        };
 }
 
 #endif

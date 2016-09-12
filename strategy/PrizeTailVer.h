@@ -22,6 +22,7 @@ namespace strategy{
     private:
         enum class Phase{
             LINE_TRACE,
+            LINE_TRACE2,
             DOWN_ARM,
             LINE_TRACE_UP_TO_PRIZE,
             TURN_LEFT,
@@ -37,12 +38,14 @@ namespace strategy{
             STRAIGHT_1_CM,
             GET_PRIZE,
             LINE_TRACE_UP_TO_GOOL,
+            LINE_TRACE_UP_TO_GOOL2,
             FINISHED,
         };
 
         //懸賞運びの攻略手順
         std::vector<Phase> phaseProcedure_{
             Phase::LINE_TRACE,
+            Phase::LINE_TRACE2,
             Phase::DOWN_ARM,                    //アームを下げる
             Phase::LINE_TRACE_UP_TO_PRIZE,      //懸賞前までライントレース
             Phase::TURN_LEFT,                   //左側のアームで懸賞を押しちゃうことがあるので左に5度向ける
@@ -58,6 +61,7 @@ namespace strategy{
             Phase::LEFT_90_ROTATION,            //左90度カーブ
             Phase::GET_PRIZE,                   // しっぽで懸賞を取る
             Phase::LINE_TRACE_UP_TO_GOOL,       //ゴールまでライントレース
+            Phase::LINE_TRACE_UP_TO_GOOL2,
             Phase::FINISHED                     // とまってしっぽふりふり
         };
 
