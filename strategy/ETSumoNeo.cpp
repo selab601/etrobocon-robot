@@ -110,7 +110,7 @@ namespace strategy{
 
         //登壇走行
         case StrategyPhase::CLIMB:
-            return climbingRunning_->run(40,550);
+            return climbingRunning_->run(40,600);
 
         //横を向くまで旋回
         case StrategyPhase::TURN_TO_SIDE:
@@ -143,7 +143,7 @@ namespace strategy{
 
         //降壇
         case StrategyPhase::GET_OF:
-            startDistanceMeasurement(400);
+            startDistanceMeasurement(450);
             straightRunning_->run(30);
             return distanceMeasurement_->getResult();
 
