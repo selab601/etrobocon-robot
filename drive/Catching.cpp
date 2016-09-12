@@ -315,32 +315,34 @@ namespace drive{
     DirectionKind Catching::getAdvancableDirection(){
         switch(destination_->EV3Position_){
             case Destination::Direction::RIGHT:
-                if (destination_->currentCoordinate_.getY() == 4){
-                    return DirectionKind::RIGHT;
-                }
-                break;
-
-            case Destination::Direction::LEFT:
                 if (destination_->currentCoordinate_.getY() == 1){
                     return DirectionKind::RIGHT;
                 }
                 break;
 
-            case Destination::Direction::UP:
-                if (destination_->currentCoordinate_.getX() == 4){
+            case Destination::Direction::LEFT:
+                if (destination_->currentCoordinate_.getY() == 4){
                     return DirectionKind::RIGHT;
                 }
                 break;
 
-            case Destination::Direction::DOWN:
+            case Destination::Direction::UP:
                 if (destination_->currentCoordinate_.getX() == 1){
                     return DirectionKind::RIGHT;
                 }
                 break;
 
+            case Destination::Direction::DOWN:
+                if (destination_->currentCoordinate_.getX() == 4){
+                    return DirectionKind::RIGHT;
+                }
+                break;
+
             case Destination::Direction::NONE:
+                // ここに来ることはないはずなのでデバッグ用
+                ev3_speaker_play_tone(700, 3000);
                 break;
         }
-        return DirectionKind::LEFT;
+        return DirectionKind::RIGHT;
     }
 }
