@@ -315,25 +315,25 @@ namespace drive{
     DirectionKind Catching::getAdvancableDirection(){
         switch(destination_->EV3Position_){
             case Destination::Direction::RIGHT:
-                if (destination_->currentCoordinate_.getY() == 4){
-                    return DirectionKind::RIGHT;
-                }
-                break;
-
-            case Destination::Direction::LEFT:
                 if (destination_->currentCoordinate_.getY() == 1){
                     return DirectionKind::RIGHT;
                 }
                 break;
 
+            case Destination::Direction::LEFT:
+                if (destination_->currentCoordinate_.getY() == 4){
+                    return DirectionKind::RIGHT;
+                }
+                break;
+
             case Destination::Direction::UP:
-                if (destination_->currentCoordinate_.getX() == 4){
+                if (destination_->currentCoordinate_.getX() == 1){
                     return DirectionKind::RIGHT;
                 }
                 break;
 
             case Destination::Direction::DOWN:
-                if (destination_->currentCoordinate_.getX() == 1){
+                if (destination_->currentCoordinate_.getX() == 4){
                     return DirectionKind::RIGHT;
                 }
                 break;
@@ -341,6 +341,6 @@ namespace drive{
             case Destination::Direction::NONE:
                 break;
         }
-        return DirectionKind::LEFT;
+        return DirectionKind::RIGHT;
     }
 }
