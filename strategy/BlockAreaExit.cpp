@@ -57,7 +57,7 @@ namespace strategy{
         break;
 
       case Status::FROM_LEFT2:
-        if(!lineDetection_.getResult()){
+        if(!distanceMeasurement_.getResult()){
           straightRunning_.run(20);
         }else{
           motor_->setWheelPWM(0,0);
