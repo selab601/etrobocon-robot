@@ -52,7 +52,6 @@ namespace strategy{
             return fixedDistanceLineTrace(700,50,LineTraceEdge::RIGHT);
 
         case Phase::LINETRACE3:
-            // linetrace_->reset();
             linetrace_->setPid(0.003,0.0,0.3);
             return fixedDistanceLineTrace(300,30,LineTraceEdge::RIGHT);
 
@@ -69,7 +68,6 @@ namespace strategy{
             return fixedDistanceLineTrace(1000,40,LineTraceEdge::LEFT);
 
         case Phase::LINETRACE5:
-            //linetrace_->reset();
             linetrace_->setPid(0.003,0.0,0.3);
             return fixedDistanceLineTrace(200,40,LineTraceEdge::LEFT);
 
