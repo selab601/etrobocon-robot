@@ -90,6 +90,7 @@ namespace drive{
 
         /**
          * @brief ライントレースを行う
+         * @detail I制御を使うときには、必ず呼び出す直前にreset()を呼ばなければならない
          *
          * @param maxPwm モータのPWMの最大値
          * @param edge  ライントレースするエッジ(RIGHT,LEFT)
@@ -101,6 +102,7 @@ namespace drive{
          /**
          * @brief ライントレースを行う
          *         こっちのrun()は事前に全てのset~が呼ばれていることが前提
+         * @detail I制御を使うときには、必ず呼び出す直前にreset()を呼ばなければならない
          * @author kuno
          */
          void run();
@@ -140,7 +142,7 @@ namespace drive{
 
         /**
          * @brief PID制御の内部の情報をリセットする
-         * @details 積分の値、ひとつ前のセンサの値、時間の情報を初期化する
+         * @details 積分の値、ひとつ前のセンサの値、時間の情報を初期化する。I制御を使うときには必ず使う直前に最初に呼ぶ
          * @author Nagaoka
          **/
         void reset();
