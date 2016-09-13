@@ -23,6 +23,7 @@ namespace strategy{
         hasExecutedPhase_       = false;
         strategySuccess_        = false;
         sumoSuccess_            = false;
+        isLineTraceReset_       = false;
 
         hoshitori_              = Hoshitori::NONE;
         extrusionPhase_         = ExtrusionPhase::START_LINE_TRACE;

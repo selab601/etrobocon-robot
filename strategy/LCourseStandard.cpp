@@ -9,6 +9,7 @@ namespace strategy{
         distanceMeasurement_ = new DistanceMeasurement();
         strategySuccess_ = false;
         hasExecutedPhase_ = false;
+        isLineTraceReset_ = false;
     }
 
     bool LCourseStandard::capture(){

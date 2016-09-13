@@ -19,6 +19,7 @@ namespace strategy{
         motors_                 = Motors::getInstance();
         strategySuccess_        = false;
         hasExecutedPhase_       = false;
+        isLineTraceReset_       = false;
     }
 
     //攻略する
