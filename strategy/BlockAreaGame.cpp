@@ -17,15 +17,15 @@ namespace strategy{
     destination_ = drive::Destination::getInstance();
     blockColorGetter_ = drive::BlockColorGetter();
 
-    block_x[0] = 1; block_y[0] = 1; //ブロック1
-    block_x[1] = 1; block_y[1] = 2; //ブロック2
-    block_x[2] = 2; block_y[2] = 2; //ブロック3
-    block_x[3] = 2; block_y[3] = 3; //ブロック4
+    block_x[0] = 2; block_y[0] = 2; //ブロック1
+    block_x[1] = 1; block_y[1] = 3; //ブロック2
+    block_x[2] = 2; block_y[2] = 3; //ブロック3
+    block_x[3] = 1; block_y[3] = 4; //ブロック4
 
-    block_exist[0][0]=1;
-    block_exist[0][1]=1;
     block_exist[1][1]=1;
+    block_exist[0][2]=1;
     block_exist[1][2]=1;
+    block_exist[0][3]=1;
 
     Status_ = Status::STANDBY;
     direction_ = drive::Destination::Direction::DOWN; //進入時の台座に対する相対位置
