@@ -128,7 +128,7 @@ namespace drive{
         usePid_  = false;
         integrated_ = 0;
         diff_[1] = diff_[0] = 0;
-        timeMs_[1] = timeMs_[0] = 0;
+        timeMs_[1] = timeMs_[0] = clock_.now();
     }
 
     bool LineTrace::changeEdge(){
