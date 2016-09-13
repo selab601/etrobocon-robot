@@ -192,6 +192,9 @@ namespace strategy{
         //相撲をクリアしたかどうか
         bool sumoSuccess_;
 
+        //ライントレースのリセットを行ったかどうか
+        bool isLineTraceReset_;
+
         //星取の色が判明してから決まる値
         int climbBeforeLittleAngle_;        //登壇前に少し回転する角度
         int climbAfterSideFaceAngle_;       //登壇後に横を向く角度
@@ -304,6 +307,11 @@ namespace strategy{
          * @param time 検知する時間
          */
         void startTimeMeasurement(int time);
+
+        /**
+         * @brief LineTrace::reset()を一度だけ実行する
+         */
+        void lineTraceReset();
     };
 }
 

@@ -27,6 +27,7 @@ namespace strategy{
         if(!strategySuccess_){
             //難所攻略手順を1つする実行する
             if(executePhase(phaseProcedure_[procedureNumber])){
+                lineTraceReset();
                 procedureNumber++;
                 hasExecutedPhase_ = false;//フラグを戻しておく
                 bodyAngleMeasurement_->setBaseAngle();//車体角度リセット
@@ -46,6 +47,7 @@ namespace strategy{
 
         //ライントレース
         case Phase::LINE_TRACE:
+            lineTraceReset();
             startDistanceMeasurement(800);
             lineTrace_->setPid(0.0144,0.0,0.72);
             lineTrace_->run(30,LineTraceEdge::RIGHT);
@@ -171,6 +173,13 @@ namespace strategy{
             distanceMeasurement_->setTargetDistance(distance);
             distanceMeasurement_->startMeasurement();
             hasExecutedPhase_ = true;
+        }
+    }
+
+    void PrizeTailVer::lineTraceReset(){
+        if(!isLineTraceReset_){
+            lineTrace_->reset();
+            isLineTraceReset_ = true;
         }
     }
 

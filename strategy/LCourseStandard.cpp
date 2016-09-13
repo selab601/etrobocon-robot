@@ -15,6 +15,7 @@ namespace strategy{
         static unsigned int procedureNumber = 0;
         if(!strategySuccess_){
             if(executePhase(phaseProcedure_[procedureNumber])){
+                lineTraceReset();
                 procedureNumber++;
                 hasExecutedPhase_ = false;
                 ev3_speaker_play_tone(500,100);
@@ -31,7 +32,7 @@ namespace strategy{
 
         case Phase::LINETRACE1:
             startDistanceMeasurement(2500);
-            linetrace_->reset();
+            lineTraceReset();
             linetrace_->setPid(0.003,0.00000033333333,0.3);
             linetrace_->run(80,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
@@ -91,6 +92,13 @@ namespace strategy{
         startDistanceMeasurement(distance);
         linetrace_->run(speed,edge);
         return distanceMeasurement_->getResult();
+    }
+
+    void LCourseStandard::lineTraceReset(){
+        if(!isLineTraceReset_){
+            linetrace_->reset();
+            isLineTraceReset_ = true;
+        }
     }
 
 };

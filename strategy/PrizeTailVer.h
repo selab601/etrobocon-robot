@@ -88,6 +88,9 @@ namespace strategy{
 
         //距離検知の設定などを一度だけ行うためのフラグ
         bool hasExecutedPhase_;
+
+        //ライントレースのリセットを行ったかどうか
+        bool isLineTraceReset_;
     public:
         //コンストラクタ
         PrizeTailVer();
@@ -122,6 +125,11 @@ namespace strategy{
          * @param time 検知する距離
          */
         void startDistanceMeasurement(int distance);
+
+        /**
+         * @brief LineTrace::reset()を一度だけ実行する
+         */
+        void lineTraceReset();
 
     };
 }
