@@ -89,7 +89,7 @@ namespace strategy{
       case Status::CURVE2:
         if(!distanceMeasurement_.getResult()){
             //curveRunning_.run(34, 58);
-            linetrace_->run(50,drive::LineTraceEdge::LEFT);
+            linetrace_->run(30,drive::LineTraceEdge::LEFT);
         }else{
           Status_ = Status::STRAIGHT3_STANDBY;
         }
