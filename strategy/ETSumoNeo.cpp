@@ -59,7 +59,7 @@ namespace strategy{
         case StrategyPhase::HOSHITORI:
             linetrace_->setPid(0.0144,0.0,0.72);
             linetrace_->run(20,LineTraceEdge::RIGHT);
-            return hoshitoriDetection(true);
+            return hoshitoriDetection();
 
         case StrategyPhase::SET_VALUE:
             setValue();
@@ -99,10 +99,20 @@ namespace strategy{
             straightRunning_->run(0);
             return objectDetection_->getResult();
 
+        //1秒間待つ,星取も読む
+        case StrategyPhase::WAIT_1_SEC_H:
+            startTimeMeasurement(1000);
+            straightRunning_->run(0);
+            if(timeMeasurement_->getResult()){
+                hoshitoriDetection(true);
+                return true;
+            }
+
         //通り過ぎてから1秒間待つ
         case StrategyPhase::WAIT_1_SEC:
             startTimeMeasurement(1000);
             straightRunning_->run(0);
+            hoshitoriDetection(true);
             return timeMeasurement_->getResult();
 
         //登壇後の動作を安定させるため少し旋回
@@ -111,7 +121,7 @@ namespace strategy{
 
         //登壇走行
         case StrategyPhase::CLIMB:
-            return climbingRunning_->run(40,550);
+            return climbingRunning_->run(40,600);
 
         //横を向くまで旋回
         case StrategyPhase::TURN_TO_SIDE:
@@ -164,7 +174,7 @@ namespace strategy{
             return pivotTurn_->turn(-90);
 
         case StrategyPhase::TURN_LEFT_90:
-            return pivotTurn_->turn(90);
+            return pivotTurn_->turn(85);
 
         case StrategyPhase::LEAVE_FROM_LINE:
             startDistanceMeasurement(100);

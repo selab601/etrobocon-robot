@@ -35,6 +35,7 @@ namespace strategy{
             LINE_TRACE_LITTLE,
             STOP,
             WAIT_1_SEC,
+            WAIT_1_SEC_H,
             TURN_LITTLE,
             CLIMB,
             WAIT_2_SEC,
@@ -89,7 +90,8 @@ namespace strategy{
         //難所攻略手順
         std::vector<StrategyPhase> strategyProcedure_{
             StrategyPhase::INIT,             //車体角度保存
-            StrategyPhase::HOSHITORI,        //星取取得
+            StrategyPhase::HOSHITORI,        //星取検知
+            StrategyPhase::WAIT_1_SEC_H,     //星取取得
             StrategyPhase::SET_VALUE,        //星取が判明したので値を代入
             StrategyPhase::BACK,             //星取を踏まないようにバック
             StrategyPhase::TURN_LEFT,        //左に旋回
@@ -97,7 +99,7 @@ namespace strategy{
             StrategyPhase::LINE_TRACE,       //土俵を向くまでライントレース
             StrategyPhase::LINE_TRACE_LITTLE,//すこしライントレース
             StrategyPhase::STOP,             //新幹線検知するまで停止
-            StrategyPhase::WAIT_2_SEC,       //検知後に待つ
+            StrategyPhase::WAIT_1_SEC,       //検知後に待つ
             StrategyPhase::TURN_LITTLE,      //すこし旋回
             StrategyPhase::CLIMB,            //登壇
             StrategyPhase::WAIT_1_SEC,       //登壇後に機体が落ち着くまで待つ
@@ -108,7 +110,7 @@ namespace strategy{
             StrategyPhase::SUMO,             //相撲-SumoPhase-
             StrategyPhase::BACK_TO_LINE,     //-SumoPhase終了(降段方向を向いている)-ラインまでバック
             StrategyPhase::STOP,             //新幹線検知するまで停止
-            StrategyPhase::WAIT_2_SEC,       //検知後に待つ
+            StrategyPhase::WAIT_1_SEC,       //検知後に待つ
             StrategyPhase::GET_OF,           //降段
             StrategyPhase::TURN_RIGHT_90,
             StrategyPhase::LEAVE_FROM_LINE,
