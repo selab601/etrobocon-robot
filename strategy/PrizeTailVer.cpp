@@ -86,8 +86,8 @@ namespace strategy{
             straightRunning_->run(0);
             return Arm::getInstance()->up(15) || timeMeasurement_->getResult();
 
-        case Phase::BACK_16CM:
-            startDistanceMeasurement(150);
+        case Phase::BACK_14CM:
+            startDistanceMeasurement(140);
             straightRunning_->run(-10);
             return distanceMeasurement_->getResult();
 
@@ -142,9 +142,9 @@ namespace strategy{
             return distanceMeasurement_->getResult();
 
         case Phase::LINE_TRACE_UP_TO_GOOL2:
-            startDistanceMeasurement(2900);
+            startDistanceMeasurement(2700);
             lineTrace_->setPid(0.003,0.0,0.3);
-            lineTrace_->run(40,LineTraceEdge::RIGHT);
+            lineTrace_->run(60,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::FINISHED:
