@@ -31,43 +31,54 @@ namespace strategy{
 
         case Phase::LINETRACE1:
             startDistanceMeasurement(2500);
+            linetrace_->reset();
+            //linetrace_->setPid(0.003,0.00000033333333,0.3);
             linetrace_->setPid(0.003,0.00000033333333,0.3);
-            linetrace_->run(100,LineTraceEdge::RIGHT);
+            linetrace_->run(80,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::CURVE1:
+            //linetrace_->setPid(0.005,0.00000063333333,0.3);
             linetrace_->setPid(0.0144,0.0,0.72);
-            return fixedDistanceLineTrace(700,40,LineTraceEdge::RIGHT);
+
+            return fixedDistanceLineTrace(700,50,LineTraceEdge::RIGHT);
 
         case Phase::LINETRACE2:
-            linetrace_->setPid(0.003,0.00000033333333,0.3);
-            return fixedDistanceLineTrace(1400,100,LineTraceEdge::RIGHT);
+            linetrace_->setPid(0.003,0.0,0.3);
+            return fixedDistanceLineTrace(1250,80,LineTraceEdge::RIGHT);
 
         case Phase::CURVE2:
+            //linetrace_->setPid(0.004,0.0000003333333,0.4);
             linetrace_->setPid(0.0144,0.0,0.72);
-            return fixedDistanceLineTrace(700,40,LineTraceEdge::RIGHT);
+            return fixedDistanceLineTrace(700,50,LineTraceEdge::RIGHT);
 
         case Phase::LINETRACE3:
-            linetrace_->setPid(0.003,0.00000033333333,0.3);
-            return fixedDistanceLineTrace(300,40,LineTraceEdge::RIGHT);
+       // linetrace_->reset();
+            //linetrace_->setPid(0.0144,0.0,0.72);
+            linetrace_->setPid(0.003,0.0,0.3);
+            return fixedDistanceLineTrace(300,30,LineTraceEdge::RIGHT);
 
         case Phase::CHANGEEDGE:
             return linetrace_->changeEdge();
 
         case Phase::LINETRACE4:
-            linetrace_->setPid(0.003,0.00000033333333,0.3);
-            return fixedDistanceLineTrace(300,40,LineTraceEdge::LEFT);
+           // linetrace_->setPid(0.003,0.00000033333333,0.3);
+            linetrace_->setPid(0.0144,0.0,0.72);
+
+            return fixedDistanceLineTrace(300,30,LineTraceEdge::LEFT);
 
         case Phase::CURVE3:
             linetrace_->setPid(0.0144,0.0,0.72);
             return fixedDistanceLineTrace(1000,40,LineTraceEdge::LEFT);
 
         case Phase::LINETRACE5:
-            linetrace_->setPid(0.003,0.00000033333333,0.3);
-            return fixedDistanceLineTrace(200,50,LineTraceEdge::LEFT);
+            //linetrace_->reset();
+            linetrace_->setPid(0.003,0.0,0.3);
+            //linetrace_->setPid(0.0144,0.0,0.72);
+            return fixedDistanceLineTrace(200,40,LineTraceEdge::LEFT);
 
         case Phase::LINETRACE6:
-            linetrace_->setPid(0.003,0.00000033333333,0.3);
+            linetrace_->setPid(0.003,0.0,0.3);
             return fixedDistanceLineTrace(600,40,LineTraceEdge::RIGHT);
 
         default: return false;
