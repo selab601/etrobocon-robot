@@ -105,6 +105,14 @@ namespace drive{
          */
          void run();
 
+         /**
+         * @brief ライントレースを行う
+         *         こっちのrun()は事前に全てのset~が呼ばれていることが前提
+         * @detail 必ず呼び出す直前にreset()を呼ばなければならない
+         * @param deltaRad カーブ曲がるときのdeltaRad
+         */
+         void runCurve(int deltaRad );
+
         /**
          * @brief ライントレースするエッジをセットする
          * @param edge ライントレースするエッジ(RIGHT/LEFT)
