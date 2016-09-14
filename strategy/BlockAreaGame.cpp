@@ -31,6 +31,20 @@ namespace strategy{
     direction_ = drive::Destination::Direction::DOWN; //進入時の台座に対する相対位置
     result = new drive::colorset_t;
   }
+  bool BlockAreaGame::runTo(int x,int y){
+    drive::BlockAreaCoordinate currentCoordinate = destination_->currentCoordinate_;
+    drive::BlockAreaCoordinate destination = drive::BlockAreaCoordinate(x,y);
+    drive::BlockAreaCoordinate nextCoordinate = destination_->getNextStageCoordinate(destination);
+    drive::Destination::Direction direction = destination_->getDirection(currentCoordinate, nextCoordinate);
+    drive::Destination::Position position = destination_->getPosition(destination_->EV3Position_, direction);
+    if((position == drive::Destination::Position::REVERSE) && (block_exist[currentCoordinate.getX()-1][currentCoordinate.getY()-1] == 0)){
+        catching_.catchBlock(x,y);
+        return false;
+    }
+    else{
+        return destination_->runTo(x,y);
+    }
+  }
 
   bool BlockAreaGame::capture(){
     switch(Status_){
@@ -50,7 +64,7 @@ namespace strategy{
 
       case Status::TO_DESTINATION:
         //ブロックの確認した数に応じて目的地決定
-        if(destination_->runTo(block_x[confirmed],block_y[confirmed])){
+        if(runTo(block_x[confirmed],block_y[confirmed])){
           Status_ = Status::BLOCK_COLOR_GET;
         }
         break;
@@ -140,7 +154,7 @@ namespace strategy{
         break;
 
       case Status::TO_INSTALLATION:
-        if(destination_->runTo(destination_x,destination_y)){
+        if(runTo(destination_x,destination_y)){
           Status_ = Status::INSTALLATION;
         }
         break;
