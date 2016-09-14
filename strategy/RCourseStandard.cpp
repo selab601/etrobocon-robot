@@ -19,6 +19,10 @@ namespace strategy{
 
       //スピード競技前の90°カーブを検知
       case Status::DETECTION_CURVE:
+        //HIYOKO -85
+        //KOTORI -83
+        //SELAB  -82
+        //KAKERUN -85
         if(bodyAngleMeasurement_.getResult() <= -85){
           Status_ = Status::STRAIGHT1_STANDBY;
         }else{
@@ -29,7 +33,11 @@ namespace strategy{
 
       case Status::STRAIGHT1_STANDBY:
       	// 直線(1300)，カーブ()　直径(480)，直線()
-        linetrace_->setPid(0.003F, 0.00000033333333F, 0.3F);
+        linetrace_->setPid(0.003F, 0.0, 0.3F);
+        //HIYOKO(1250)
+        //KOTORI(1250)
+        //SELAB(1230)
+        //KAKERUN(1250)
         distanceMeasurement_.setTargetDistance(1250);
         distanceMeasurement_.startMeasurement();
         Status_ = Status::STRAIGHT1;
@@ -45,15 +53,22 @@ namespace strategy{
 
       //第一カーブ部分
       case Status::CURVE1_STANDBY:
-        distanceMeasurement_.setTargetDistance(744);
+        //HIYOKO(744)
+        //KOTORI(744)
+        //SELAB(730)
+        //KAKERUN(715)
+        distanceMeasurement_.setTargetDistance(715);
         distanceMeasurement_.startMeasurement();
         Status_ = Status::CURVE1;
         break;
 
       case Status::CURVE1:
         if(!distanceMeasurement_.getResult()){
-          //成功(56,32)
-          curveRunning_.run(56, 32);
+          //HIYOKO(56,32)
+          //KOTORI(56,32)
+          //SELAB(56,32)
+          //KAKERUN(63,31)
+          curveRunning_.run(63, 31);
         }else{
           Status_ = Status::STRAIGHT2_STANDBY;
         }
@@ -83,14 +98,19 @@ namespace strategy{
 
       case Status::CURVE2:
         if(!distanceMeasurement_.getResult()){
-          curveRunning_.run(34, 58);
+          //HIYOKO(34,58)
+          //KOTORI(35,58)
+          //SELAB(35,58)
+          //KAKERUN(31,61) 
+          curveRunning_.run(31, 61);
         }else{
           Status_ = Status::STRAIGHT3_STANDBY;
         }
         break;
 
       case Status::STRAIGHT3_STANDBY:
-        //ゴールまで
+        //直線2
+        //KAKERUN(1550)
         distanceMeasurement_.setTargetDistance(1600);
         distanceMeasurement_.startMeasurement();
         Status_ = Status::STRAIGHT3;
@@ -115,7 +135,12 @@ namespace strategy{
         if(!distanceMeasurement_.getResult()){
           //linetrace_->setPid(0.006F, 0.0F, 0.52F);
           //linetrace_->run(40,drive::LineTraceEdge::LEFT,0.6);
-          curveRunning_.run(39, 60);
+          //
+          //HIYOKO(39,60)
+          //KOTORI(39,60)
+          //SELAB(39,62)
+          //KAKERUN(35,63) 失敗
+          curveRunning_.run(35, 63);
         }else{
           Status_ = Status::STRAIGHT4_STANDBY;
         }
@@ -125,7 +150,7 @@ namespace strategy{
         //ゴールまで
         distanceMeasurement_.setTargetDistance(2770);
         distanceMeasurement_.startMeasurement();
-        linetrace_->setPid(0.003F, 0.00000033333333F, 0.3F);
+        linetrace_->setPid(0.003F, 0.0, 0.3F);
         Status_ = Status::STRAIGHT4;
         break;
 
