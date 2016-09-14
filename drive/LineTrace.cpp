@@ -96,7 +96,7 @@ namespace drive{
         diff_[0] = brightness*10 - targetValue_;
         timeMs_[0] = timeMs;
 
-        int timeDiff = timeMs_[1] - timeMs_[0];
+        int timeDiff = timeMs_[0] - timeMs_[1];
 
         // 積分の計算
         integrated_ += timeDiff * (diff_[1] + diff_[0]) / 2;
@@ -110,7 +110,7 @@ namespace drive{
         else{
             turn = kp_ * (double)diff_[0] +
                    ki_ * (double)integrated_ +
-                   kd_ * (double)(diff_[1] - diff_[0]) / (double)timeDiff;
+                   kd_ * (double)(diff_[0] - diff_[1]) / (double)timeDiff;
         }
         return turn;
     }
@@ -128,7 +128,7 @@ namespace drive{
         usePid_  = false;
         integrated_ = 0;
         diff_[1] = diff_[0] = 0;
-        timeMs_[1] = timeMs_[0] = 0;
+        timeMs_[1] = timeMs_[0] = clock_.now();
     }
 
     bool LineTrace::changeEdge(){
