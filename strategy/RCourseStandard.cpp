@@ -1,4 +1,5 @@
 #include "RCourseStandard.h"
+#include "device/Shippo.h"
 
 
 namespace strategy{
@@ -26,7 +27,7 @@ namespace strategy{
         //KOTORI -83
         //SELAB  -82
         //KAKERUN -85
-        if(bodyAngleMeasurement_.getResult() <= -85){
+        if(bodyAngleMeasurement_.getResult() <= -80){
           Status_ = Status::STRAIGHT1_STANDBY;
         }else{
           linetrace_->run(20,drive::LineTraceEdge::LEFT,0.6);
@@ -50,7 +51,7 @@ namespace strategy{
 
       case Status::STRAIGHT1:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(100,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.6);
         }else{
           Status_ = Status::CURVE1_STANDBY;
         }
@@ -77,11 +78,6 @@ namespace strategy{
 
       case Status::CURVE1:
         if(!distanceMeasurement_.getResult()){
-          //HIYOKO(56,32)
-          //KOTORI(56,32)
-          //SELAB(56,32)
-          //KAKERUN(63,31)
-          //curveRunning_.run(63, 31);
           linetrace_->runCurve(750); // 750でカーブいい感じ
         }else{
           Status_ = Status::STRAIGHT2_STANDBY;
@@ -94,12 +90,13 @@ namespace strategy{
         //直線2
         distanceMeasurement_.setTargetDistance(1350);
         distanceMeasurement_.startMeasurement();
+        linetrace_->setPid(0.003F, 0.0F, 0.3F);
         Status_ = Status::STRAIGHT2;
         break;
 
       case Status::STRAIGHT2:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(100,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.6);
         }else{
           Status_ = Status::CURVE2_STANDBY;
         }
@@ -110,6 +107,7 @@ namespace strategy{
         ev3_speaker_play_tone(500,200);
         distanceMeasurement_.setTargetDistance(840);
         distanceMeasurement_.startMeasurement();
+        linetrace_->setPid(0.0144,0.0,0.72);
         Status_ = Status::CURVE2;
         break;
 
@@ -132,12 +130,13 @@ namespace strategy{
         //KAKERUN(1550)
         distanceMeasurement_.setTargetDistance(1600);
         distanceMeasurement_.startMeasurement();
+        linetrace_->setPid(0.003F, 0.0F, 0.3F);
         Status_ = Status::STRAIGHT3;
         break;
 
       case Status::STRAIGHT3:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(100,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.6);
         }else{
           Status_ = Status::CURVE3_STANDBY;
         }
@@ -160,13 +159,6 @@ namespace strategy{
       case Status::CURVE3:
         if(!distanceMeasurement_.getResult()){
           //linetrace_->setPid(0.006F, 0.0F, 0.52F);
-          //linetrace_->run(40,drive::LineTraceEdge::LEFT,0.6);
-          //
-          //HIYOKO(39,60)
-          //KOTORI(39,60)
-          //SELAB(39,62)
-          //KAKERUN(35,63) 失敗
-          //curveRunning_.run(35, 63);
             linetrace_->runCurve(-750); // 750でカーブいい感じ
         }else{
           Status_ = Status::STRAIGHT4_STANDBY;
@@ -185,7 +177,7 @@ namespace strategy{
 
       case Status::STRAIGHT4:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(100,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.6);
         }else{
           Status_ = Status::DONE;
         }
@@ -193,6 +185,7 @@ namespace strategy{
 
       case Status::DONE:
         motor_->setWheelPWM(0,0);
+        device::Shippo::getInstance()->furifuri();  // 終わったらしっぽふりふり
         return true;
     }
     return false;

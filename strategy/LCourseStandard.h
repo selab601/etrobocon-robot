@@ -42,6 +42,7 @@ namespace strategy{
 
             bool strategySuccess_;
             bool hasExecutedPhase_;
+            bool isLineTraceReset_;
 
         public:
             //コンストラクタ
@@ -51,7 +52,19 @@ namespace strategy{
         private:
             bool executePhase(Phase phase);
             void startDistanceMeasurement(int distance);
+            /**
+             * @brief 一定距離ライントレース
+             *
+             * @param distance 走行距離
+             * @param speed 走行スピード
+             * @param edge ライントレースのエッジ
+             * @return 一定距離走行:true,走行中:false
+             */
             bool fixedDistanceLineTrace(int distance,int speed,drive::LineTraceEdge edge);
+            /**
+             * @brief LineTrace::reset()を一度だけ実行する
+             */
+            void lineTraceReset();
         };
 }
 

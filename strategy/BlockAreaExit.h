@@ -1,9 +1,9 @@
 /*
- * @brief ブロック並べエリアへ侵入
+ * @brief ブロック並べエリアから退場
  */
 
-#ifndef _BLOCK_AREA_ENTRY_H
-#define _BLOCK_AREA_ENTRY_H
+#ifndef _BLOCK_AREA_EXIT_H
+#define _BLOCK_AREA_EXIT_H
 
 #include "IStrategy.h"
 #include "drive/LineTrace.h"
@@ -16,19 +16,24 @@
 #include "measurement/BodyAngleMeasurement.h"
 #include "detection/ColorDetection.h"
 
+#include "drive/Destination.h"
+#include <string.h>
+
 namespace strategy{
-	class BlockAreaEntry : public IStrategy{
+	class BlockAreaExit : public IStrategy{
 		private:
 			enum class Status
 			{
-				STANDBY,
-				LINETRACE,
-				TURN,
-                STRAIGHT_SPEED_UP,
+				TO_DESTINATION,
+				CONFIRM_EV3_POSITION,
+				FROM_UP,
+				FROM_LEFT1,
+				FROM_LEFT2,
+				FROM_LEFT3,
+				STRAIGHT_SPEED_UP,
                 STRAIGHT_SPEED_DOWN,
-				TURN2,
-				INITIALIZE,
-				DONE
+				TURN,
+				LINETRACE
 				};
 			Status Status_;
 
@@ -42,9 +47,10 @@ namespace strategy{
 			measurement::BodyAngleMeasurement bodyAngleMeasurement_;
 			detection::ColorDetection colorDetection_;
 
+			drive::Destination* destination_;
 		public:
 			//コンストラクタ
-			BlockAreaEntry();
+			BlockAreaExit();
 
 			bool capture();
 	};
