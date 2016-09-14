@@ -1,4 +1,5 @@
 #include "BlockAreaEntry.h"
+#include "../drive/Catching.h"
 
 
 namespace strategy{
@@ -18,10 +19,11 @@ namespace strategy{
     }
 
     bool BlockAreaEntry::capture(){
+        static drive::Catching catching = drive::Catching();
         switch(Status_){
             case Status::STANDBY:
                 //侵入場所の真横まで
-                distanceMeasurement_.setTargetDistance(550);
+                distanceMeasurement_.setTargetDistance(580);
                 distanceMeasurement_.startMeasurement();
                 Status_ = Status::LINETRACE;
                 break;
@@ -36,7 +38,7 @@ namespace strategy{
                 break;
 
             case Status::TURN:
-                if(pivotTurn_.turn(90)){
+                if(pivotTurn_.turn(80)){
                     straightRunning_.initialize();
                     distanceMeasurement_.setTargetDistance(350);
                     distanceMeasurement_.startMeasurement();
@@ -70,29 +72,14 @@ namespace strategy{
             case Status::TURN2:
                 //90°信地旋回
                 if(bodyAngleMeasurement_.getResult() >= 85){
-                    Status_ = Status::LINETRACE2;
+                    Status_ = Status::INITIALIZE;
                 }else{
-                    curveRunning_.run(30, 0);
+                    curveRunning_.run(30, -2);
                 }
                 break;
 
-            case Status::LINETRACE2:
-                //色検知するまで
-                if(colorDetection_.getResult() == COLOR_RED || colorDetection_.getResult() == COLOR_YELLOW || colorDetection_.getResult() == COLOR_GREEN || colorDetection_.getResult() == COLOR_BLUE){
-                    motor_->setWheelPWM(0,0);
-                    distanceMeasurement_.setTargetDistance(140);
-                    distanceMeasurement_.startMeasurement();
-                    Status_ = Status::BACK;
-                }else{
-                    linetrace_->setPid(0.006F, 0.0F, 0.52F);
-                    linetrace_->run(20,drive::LineTraceEdge::RIGHT,0.3);
-                }
-                break;
-
-            case Status::BACK:
-                if(!distanceMeasurement_.getResult()){
-                    straightRunning_.run(-10);
-                }else{
+            case Status::INITIALIZE:
+                if (catching.putBlock()){
                     Status_ = Status::DONE;
                 }
                 break;

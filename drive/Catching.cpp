@@ -117,6 +117,7 @@ namespace drive{
         static PivotTurn pivotTurn = PivotTurn();
         static DirectionKind directionKind = getAdvancableDirection();
         static TurnDirection turnDirection = DirectionKind::LEFT == directionKind? TurnDirection::RIGHT : TurnDirection::LEFT;
+        static CurveRunning curveRunning = CurveRunning();
         switch (state){
             case ChangeDirectionState::INIT:
                 state = ChangeDirectionState::AVOIDANCE;
@@ -130,8 +131,21 @@ namespace drive{
                 break;
 
             case ChangeDirectionState::TURN:
-                if (pivotTurn.turn(150)){
-                    state = ChangeDirectionState::CATCHING;
+                if (pivotTurn.turn(90)){
+                    state = ChangeDirectionState::TURN_TO_LINE;
+                }
+                break;
+
+            case ChangeDirectionState::TURN_TO_LINE:
+                {
+                    curveRunning.run(20, -20);
+                    int white = device::ColorSensor::getInstance()->getWhiteCalibratedValue();
+                    int black = device::ColorSensor::getInstance()->getBlackCalibratedValue();
+                    int mid = black + 10;
+                    if (device::ColorSensor::getInstance()->getBrightness() < mid){
+                        curveRunning.run(0, 0);
+                        state = ChangeDirectionState::CATCHING;
+                    }
                 }
                 break;
 
@@ -249,7 +263,7 @@ namespace drive{
                 return turn(-90);
 
             case TurnDirection::LEFT:
-                return turn(90);
+                return turn(80);
 
             case TurnDirection::STRAIGHT:
                 return straight(145);

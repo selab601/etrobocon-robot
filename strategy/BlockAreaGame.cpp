@@ -7,25 +7,25 @@ namespace strategy{
     distanceMeasurement_ = measurement::DistanceMeasurement();
     motor_ = device::Motors::getInstance();
     pivotTurn_ = drive::PivotTurn();
-    straightRunning_ = drive::StraightRunning(); 
+    straightRunning_ = drive::StraightRunning();
     lineDetection_ = detection::LineDetection();
     curveRunning_ = drive::CurveRunning();
     bodyAngleMeasurement_ = measurement::BodyAngleMeasurement();
     colorDetection_ = detection::ColorDetection();
 
     catching_ = drive::Catching();
-    destination_ = drive::Destination::getInstance();    
+    destination_ = drive::Destination::getInstance();
     blockColorGetter_ = drive::BlockColorGetter();
 
     block_x[0] = 2; block_y[0] = 2; //ブロック1
-    block_x[1] = 4; block_y[1] = 2; //ブロック2
-    block_x[2] = 3; block_y[2] = 3; //ブロック3
-    block_x[3] = 2; block_y[3] = 4; //ブロック4
+    block_x[1] = 3; block_y[2] = 2; //ブロック3
+    block_x[2] = 3; block_y[1] = 1; //ブロック2
+    block_x[3] = 4; block_y[3] = 1; //ブロック4
 
     block_exist[1][1]=1;
-    block_exist[3][1]=1;
-    block_exist[2][2]=1;
-    block_exist[1][3]=1;
+    block_exist[2][1]=1;
+    block_exist[2][0]=1;
+    block_exist[3][0]=1;
 
     Status_ = Status::STANDBY;
     direction_ = drive::Destination::Direction::DOWN; //進入時の台座に対する相対位置
@@ -47,12 +47,12 @@ namespace strategy{
           Status_ = Status::TO_DESTINATION;
         }
         break;
-      
+
       case Status::TO_DESTINATION:
         //ブロックの確認した数に応じて目的地決定
         if(destination_->runTo(block_x[confirmed],block_y[confirmed])){
           Status_ = Status::BLOCK_COLOR_GET;
-        }    
+        }
         break;
 
       case Status::BLOCK_COLOR_GET:
