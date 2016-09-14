@@ -33,6 +33,7 @@ namespace drive{
 
     void LineTrace::run(int maxPwm,LineTraceEdge edge ,double relativeTarget){
         setTarget(relativeTarget);
+        setMaxPwm(maxPwm);
         calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,edge);
     }
 
@@ -135,56 +136,48 @@ namespace drive{
 
         switch(edgeChangeStatus_){
 
-            case LineTraceEdgeChangePhase::INIT:
-                //反対のエッジに移動するための距離を設定
-                distanceMeasurement_->setTargetDistance(50);
-                distanceMeasurement_->startMeasurement();
-                //次のフェイズに
-                edgeChangeStatus_ = LineTraceEdgeChangePhase::ACROSS;
-                return false;
-
             case LineTraceEdgeChangePhase::ACROSS:
+                //エッジの移動
                 if(edge_==LineTraceEdge::RIGHT){
                     //現在右エッジなので左エッジに移動
-                    motors_->setPWM(device::MOTOR_LEFT, DEFAULT_MAXPWM*0.7);
-                    motors_->setPWM(device::MOTOR_RIGHT, DEFAULT_MAXPWM);
+                    motors_->setPWM(device::MOTOR_LEFT, maxPwm_*0.95);
+                    motors_->setPWM(device::MOTOR_RIGHT, maxPwm_);
                 }
                 else {
                     //現在左エッジなので右エッジに移動
-                    motors_->setPWM(device::MOTOR_LEFT, DEFAULT_MAXPWM);
-                    motors_->setPWM(device::MOTOR_RIGHT, DEFAULT_MAXPWM*0.7);
+                    motors_->setPWM(device::MOTOR_LEFT, maxPwm_);
+                    motors_->setPWM(device::MOTOR_RIGHT, maxPwm_*0.95);
                 }
-                //一定距離走ったらエッジを切り替え
-                if(distanceMeasurement_->getResult()){
+
+                //光の値から今いる場所を確認
+                margin_= colorSensor_->getBrightness()*10 - blackValue_;
+
+                //黒のキャリブ値との差が一定以下(15以下)になったら設定エッジの変更
+                if(margin_ < 15){
+                    //ev3_speaker_play_tone(500,100);
                     if(edge_==LineTraceEdge::RIGHT){
                         //右エッジ→左エッジ
                         setEdge(LineTraceEdge::LEFT);
+                        //切り替えのための傾きを直す
+                        //motors_->setPWM(device::MOTOR_LEFT, maxPwm_);
+                        //motors_->setPWM(device::MOTOR_RIGHT, maxPwm_*0.8);
                     }
                     else{
                         //左エッジ→右エッジ
                         setEdge(LineTraceEdge::RIGHT);
+                        //切り替えのための傾きを直す
+                        //motors_->setPWM(device::MOTOR_LEFT, maxPwm_*0.8);
+                        //motors_->setPWM(device::MOTOR_RIGHT, maxPwm_);
                     }
-                    //次のフェイズの準備
-                    distanceMeasurement_->setTargetDistance(50);
-                    distanceMeasurement_->startMeasurement();
-                    //次のフェイズに
-                    edgeChangeStatus_ = LineTraceEdgeChangePhase::ADJUST;
-                }
-                return false;
-
-            case LineTraceEdgeChangePhase::ADJUST:
-                //修正用にちょっとライントレース
-                run(30,edge_,0.6);
-                if(distanceMeasurement_->getResult()){
-                    //次のフェイズに
                     edgeChangeStatus_ = LineTraceEdgeChangePhase::END;
                 }
                 return false;
 
+
             case LineTraceEdgeChangePhase::END:
                 //エッジ切り替え完了
                 //フェイズのリセット
-                edgeChangeStatus_ = LineTraceEdgeChangePhase::INIT;
+                edgeChangeStatus_ = LineTraceEdgeChangePhase::ACROSS;
                 return true;
 
             default:

@@ -41,9 +41,7 @@ namespace drive{
         LineTrace();
 
         enum class LineTraceEdgeChangePhase{
-            INIT,
             ACROSS,
-            ADJUST,
             END
         };
 
@@ -64,11 +62,13 @@ namespace drive{
         double  ki_;
         double  kd_;
 
+        int margin_;
+
         //ライントレースを行うエッジ
         LineTraceEdge edge_;
 
         //エッジ切り替えメソッドでの状態
-        LineTraceEdgeChangePhase edgeChangeStatus_ = LineTraceEdgeChangePhase::INIT;
+        LineTraceEdgeChangePhase edgeChangeStatus_ = LineTraceEdgeChangePhase::ACROSS;
 
         //距離検知
         measurement::DistanceMeasurement* distanceMeasurement_;
