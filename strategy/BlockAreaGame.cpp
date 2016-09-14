@@ -38,6 +38,9 @@ namespace strategy{
     drive::Destination::Direction direction = destination_->getDirection(currentCoordinate, nextCoordinate);
     drive::Destination::Position position = destination_->getPosition(destination_->EV3Position_, direction);
     if((position == drive::Destination::Position::REVERSE) && (block_exist[currentCoordinate.getX()-1][currentCoordinate.getY()-1] == 0)){
+        if(x == currentCoordinate.getX() && y == currentCoordinate.getY()){
+            return true;
+        }
         catching_.catchBlock(x,y);
         return false;
     }
