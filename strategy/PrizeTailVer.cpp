@@ -19,6 +19,7 @@ namespace strategy{
         motors_                 = Motors::getInstance();
         strategySuccess_        = false;
         hasExecutedPhase_       = false;
+        isLineTraceReset_       = false;
     }
 
     //攻略する
@@ -27,6 +28,7 @@ namespace strategy{
         if(!strategySuccess_){
             //難所攻略手順を1つする実行する
             if(executePhase(phaseProcedure_[procedureNumber])){
+                lineTraceReset();
                 procedureNumber++;
                 hasExecutedPhase_ = false;//フラグを戻しておく
                 bodyAngleMeasurement_->setBaseAngle();//車体角度リセット
@@ -46,6 +48,7 @@ namespace strategy{
 
         //ライントレース
         case Phase::LINE_TRACE:
+            lineTraceReset();
             startDistanceMeasurement(800);
             lineTrace_->setPid(0.0144,0.0,0.72);
             lineTrace_->run(30,LineTraceEdge::RIGHT);
@@ -86,8 +89,8 @@ namespace strategy{
             straightRunning_->run(0);
             return Arm::getInstance()->up(15) || timeMeasurement_->getResult();
 
-        case Phase::BACK_16CM:
-            startDistanceMeasurement(150);
+        case Phase::BACK_14CM:
+            startDistanceMeasurement(140);
             straightRunning_->run(-10);
             return distanceMeasurement_->getResult();
 
@@ -142,9 +145,9 @@ namespace strategy{
             return distanceMeasurement_->getResult();
 
         case Phase::LINE_TRACE_UP_TO_GOOL2:
-            startDistanceMeasurement(2900);
+            startDistanceMeasurement(2700);
             lineTrace_->setPid(0.003,0.0,0.3);
-            lineTrace_->run(40,LineTraceEdge::RIGHT);
+            lineTrace_->run(60,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::FINISHED:
@@ -171,6 +174,13 @@ namespace strategy{
             distanceMeasurement_->setTargetDistance(distance);
             distanceMeasurement_->startMeasurement();
             hasExecutedPhase_ = true;
+        }
+    }
+
+    void PrizeTailVer::lineTraceReset(){
+        if(!isLineTraceReset_){
+            lineTrace_->reset();
+            isLineTraceReset_ = true;
         }
     }
 
