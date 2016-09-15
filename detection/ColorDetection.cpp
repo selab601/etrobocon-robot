@@ -18,6 +18,7 @@ namespace detection{
         if (hsv.v < 40) {
             result = COLOR_BLACK;
         } else if (hsv.s <= 165) {
+
             /* 彩度が低い場合はモノクロと判断する */
             /* モノクロの場合，明度から白か黒かを判断する */
             if (hsv.v > 30) {
@@ -28,11 +29,11 @@ namespace detection{
         } else {
             /* 彩度が高い場合は色があると判断する */
             /* 色がある場合，色相からその色を判断する */
-            if (hsv.h >= 0 && hsv.h <= 29) {
+            if (hsv.h >= 0 && hsv.h <= 40) {
                 result = COLOR_RED;
-            } else if (hsv.h >= 30 && hsv.h <= 80) {
+            } else if (hsv.h >= 50 && hsv.h <= 80) {
                 result = COLOR_YELLOW;
-            } else if (hsv.h >= 110 && hsv.h <= 140) {
+            } else if (hsv.h >= 100 && hsv.h <= 140) {
                 result = COLOR_GREEN;
             } else if (hsv.h >= 150 && hsv.h <= 220) {
                 result = COLOR_BLUE;
