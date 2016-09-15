@@ -298,15 +298,17 @@ namespace strategy{
          * @brief 距離検知を開始する
          * @details setTarget,startを同時に行い、フラグ管理も行う
          * @param distance 検知する距離
+         * @param flagChange フラグを変更するかどうか
          */
-        void startDistanceMeasurement(int distance);
+        void startDistanceMeasurement(int distance,bool flagChange = true);
 
         /**
          * @brief 時間検知を開始する
          * @details setBase,setTargetを同時に行い、フラグ管理も行う
          * @param time 検知する時間
+         * @param flagChange フラグを変更するかどうか
          */
-        void startTimeMeasurement(int time);
+        void startTimeMeasurement(int time,bool flagChange = true);
 
         /**
          * @brief LineTrace::reset()を一度だけ実行する
