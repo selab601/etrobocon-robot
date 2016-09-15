@@ -217,9 +217,18 @@ namespace drive{
         targetCoordinate_ = Coordinate(x,y);
         Coordinate destination = targetCoordinate_;
         Coordinate diff = (destination - currentCoordinate_);
+        static Position prePosition = Position::NONE;
         if(diff.getX() == 0 && diff.getY() == 0)
         {
-            return true;
+            if ( prePosition == Position::EQUAL ){
+                if (pivotTurn_.turn(-20)){
+                    return true;
+                }
+                return false;
+            }
+            else{
+                return true;
+            }
         }
 
         Coordinate nextCoordinate = getNextStageCoordinate(destination);
@@ -229,6 +238,7 @@ namespace drive{
 
         // 次どちらの座標に向かって進むのかで場合分け
         Position position = getPosition(EV3Position_ , nextStageDirection);
+        prePosition = position;
         goingPosition_ = position;
         if(!isFinished_){
             switch (position) {

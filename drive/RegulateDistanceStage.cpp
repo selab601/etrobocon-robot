@@ -17,7 +17,7 @@ namespace drive{
         if(!initialized_){
             if(y_ < 100){
                 //直進時の目標位置をセット(X座標)
-                regulateDistance_ = 450;
+                regulateDistance_ = 460;
                 position_ = x_;
             }
             else{

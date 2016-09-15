@@ -28,7 +28,7 @@ namespace strategy{
             TURN_LEFT,
             PUT_IN_LOWER_OF_PRIZE,
             LIFT_PRIZE,
-            BACK_16CM,
+            BACK_14CM,
             DOWN_PRIZE,
             DOWN_SHIPPO,
             PUT_AFTER_BACK,
@@ -51,7 +51,7 @@ namespace strategy{
             Phase::TURN_LEFT,                   //左側のアームで懸賞を押しちゃうことがあるので左に5度向ける
             Phase::PUT_IN_LOWER_OF_PRIZE,       //懸賞の下にアームを入れる
             Phase::LIFT_PRIZE,                  //懸賞を持ち上げる
-            Phase::BACK_16CM,                   //懸賞を下ろす前に下がる
+            Phase::BACK_14CM,                   //懸賞を下ろす前に下がる
             Phase::DOWN_PRIZE,                  //懸賞を下ろす
             Phase::DOWN_SHIPPO,                 // しっぽをさげる
             Phase::PUT_AFTER_BACK,              //置いた後にバック
@@ -88,6 +88,9 @@ namespace strategy{
 
         //距離検知の設定などを一度だけ行うためのフラグ
         bool hasExecutedPhase_;
+
+        //ライントレースのリセットを行ったかどうか
+        bool isLineTraceReset_;
     public:
         //コンストラクタ
         PrizeTailVer();
@@ -122,6 +125,11 @@ namespace strategy{
          * @param time 検知する距離
          */
         void startDistanceMeasurement(int distance);
+
+        /**
+         * @brief LineTrace::reset()を一度だけ実行する
+         */
+        void lineTraceReset();
 
     };
 }
