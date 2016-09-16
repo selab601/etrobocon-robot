@@ -78,7 +78,7 @@ namespace strategy{
         case Phase::LINETRACE6:
             //エッジ切り替え直後
             linetrace_->setPid();
-            return fixedDistanceLineTrace(600,50,LineTraceEdge::RIGHT);
+            return fixedDistanceLineTrace(700,50,LineTraceEdge::RIGHT);
 
         default: return false;
         }
