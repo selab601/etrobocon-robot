@@ -15,9 +15,10 @@ namespace detection{
 
         colorid_t result;
         // これ以下の各閾値は，実験から求めた．詳しくは2016年度のモデル参照
-        if (hsv.v < 40) {
+        if (hsv.v < 30) {
             result = COLOR_BLACK;
-        } else if (hsv.s <= 165) {
+        } else if (hsv.s <= 160) {
+            /* ここで板の色を切ってしまうと青や緑に影響する */
             /* 彩度が低い場合はモノクロと判断する */
             /* モノクロの場合，明度から白か黒かを判断する */
             if (hsv.v > 30) {
@@ -28,13 +29,19 @@ namespace detection{
         } else {
             /* 彩度が高い場合は色があると判断する */
             /* 色がある場合，色相からその色を判断する */
-            if (hsv.h >= 0 && hsv.h <= 29) {
+            if (hsv.h >= 0 && hsv.h <= 30) {
                 result = COLOR_RED;
-            } else if (hsv.h >= 30 && hsv.h <= 80) {
-                result = COLOR_YELLOW;
-            } else if (hsv.h >= 110 && hsv.h <= 140) {
+            } else if (hsv.h >= 50 && hsv.h <= 80) {
+                /* 彩度が高ければ黄色と判断する
+                   彩度が低ければ板の色(白)と判断する*/
+                if(hsv.s >= 200){
+                    result = COLOR_YELLOW;
+                }else{
+                    result = COLOR_WHITE;
+                }
+            } else if (hsv.h >= 90 && hsv.h <= 130) {
                 result = COLOR_GREEN;
-            } else if (hsv.h >= 150 && hsv.h <= 220) {
+            } else if (hsv.h >= 140 && hsv.h <= 220) {
                 result = COLOR_BLUE;
             } else {
                 result = COLOR_NONE;
