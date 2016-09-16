@@ -80,7 +80,7 @@ namespace strategy{
         //ラインに近づくように直進走行
         case StrategyPhase::STRAIGHT:
             startDistanceMeasurement(150);
-            straightRunning_->run(30);
+            straightRunning_->run(20);
             return lineDetection_->getResult() || distanceMeasurement_->getResult();
 
         //土俵を向くまでライントレース
@@ -165,11 +165,15 @@ namespace strategy{
             curveRunning_->run(20,10);
             return lineDetection_->getResult();
 
-        //ライン復帰
+        //復帰後のライントレーストレース
         case StrategyPhase::LINE_RETURN:
-            startDistanceMeasurement(700);
+            startDistanceMeasurement(1400);
             lineTraceReset();
-            linetrace_->run(30,LineTraceEdge::RIGHT);
+            linetrace_->setEdge(LineTraceEdge::RIGHT);
+            linetrace_->setMaxPwm(60);
+            linetrace_->setPid(0.003,0,0.3);
+            linetrace_->setTarget(0.5);
+            linetrace_->runCurve(-380);
             return distanceMeasurement_->getResult();
 
         /*以下安全なライン復帰*/
@@ -177,7 +181,7 @@ namespace strategy{
             return pivotTurn_->turn(-90,30);
 
         case StrategyPhase::TURN_LEFT_90:
-            return pivotTurn_->turn(85);
+            return turn(false,20);
 
         case StrategyPhase::LEAVE_FROM_LINE:
             startDistanceMeasurement(100);
@@ -252,7 +256,7 @@ namespace strategy{
 
         //三回目の旋回
         case SumoPhase::THIRD_TURN:
-            return pivotTurn_->turn(thirdTurnAngle_,30);
+            return pivotTurn_->turn(thirdTurnAngle_);
 
         //旋回すると尻尾が新幹線にぶつかるのでカーブをして上を向く
         case SumoPhase::CURVE_TOP:
@@ -307,28 +311,28 @@ namespace strategy{
             switch(blockColor){
             case Hoshitori::RED:
                 isRightCurve = true;
-                turnAngle = 200;
+                turnAngle = 205;
                 startEdge = LineTraceEdge::RIGHT;
                 endEdge = LineTraceEdge::LEFT;
             break;
 
             case Hoshitori::YELLOW:
                 isRightCurve = true;
-                turnAngle = -160;
+                turnAngle = -155;
                 startEdge = LineTraceEdge::RIGHT;
                 endEdge = LineTraceEdge::LEFT;
                 break;
 
             case Hoshitori::BLUE:
                 isRightCurve = false;
-                turnAngle = -200;
+                turnAngle = -205;
                 startEdge = LineTraceEdge::LEFT;
                 endEdge = LineTraceEdge::RIGHT;
                 break;
 
             case Hoshitori::GREEN:
                 isRightCurve = false;
-                turnAngle = 160;
+                turnAngle = 155;
                 startEdge = LineTraceEdge::LEFT;
                 endEdge = LineTraceEdge::RIGHT;
                 break;
@@ -434,7 +438,7 @@ namespace strategy{
             upperStageEdge_ = LineTraceEdge::LEFT;
             downStageEdge_ = LineTraceEdge::LEFT;
             firstTurnAngle_ = 90;
-            secondTurnAngle_ = 90;
+            secondTurnAngle_ = 85;
             thirdTurnAngle_ = -90;
             isRightCurve_ = true;
             isCorrect_ = false;
@@ -450,7 +454,7 @@ namespace strategy{
             upperStageEdge_ = LineTraceEdge::RIGHT;
             downStageEdge_ = LineTraceEdge::RIGHT;
             firstTurnAngle_ = -90;
-            secondTurnAngle_ = -90;
+            secondTurnAngle_ = -85;
             thirdTurnAngle_ = 90;
             isRightCurve_ = false;
             isCorrect_ = true;
@@ -466,7 +470,7 @@ namespace strategy{
             upperStageEdge_ = LineTraceEdge::RIGHT;
             downStageEdge_ = LineTraceEdge::LEFT;
             firstTurnAngle_ = 90;
-            secondTurnAngle_ = -90;
+            secondTurnAngle_ = -85;
             thirdTurnAngle_ = -90;
             isRightCurve_ = false;
             isCorrect_ = false;
@@ -482,7 +486,7 @@ namespace strategy{
             upperStageEdge_ = LineTraceEdge::LEFT;
             downStageEdge_ = LineTraceEdge::RIGHT;
             firstTurnAngle_ = -90;
-            secondTurnAngle_ = 90;
+            secondTurnAngle_ = 85;
             thirdTurnAngle_ = 90;
             isRightCurve_ = true;
             isCorrect_ = true;
