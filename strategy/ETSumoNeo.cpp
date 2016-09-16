@@ -60,7 +60,7 @@ namespace strategy{
         //星取取得
         case StrategyPhase::HOSHITORI:
             linetrace_->setPid(0.0144,0.0,0.72);
-            linetrace_->run(20,LineTraceEdge::RIGHT);
+            linetrace_->run(30,LineTraceEdge::RIGHT);
             return hoshitoriDetection();
 
         case StrategyPhase::SET_VALUE:
@@ -127,7 +127,7 @@ namespace strategy{
 
         //横を向くまで旋回
         case StrategyPhase::TURN_TO_SIDE:
-            return pivotTurn_->turn(climbAfterSideFaceAngle_,30);
+            return pivotTurn_->turn(climbAfterSideFaceAngle_);
 
         //ラインまでバック
         case StrategyPhase::BACK_TO_LINE:
@@ -167,7 +167,7 @@ namespace strategy{
 
         //復帰後のライントレーストレース
         case StrategyPhase::LINE_RETURN:
-            startDistanceMeasurement(1400);
+            startDistanceMeasurement(1350);
             lineTraceReset();
             linetrace_->setEdge(LineTraceEdge::RIGHT);
             linetrace_->setMaxPwm(60);
@@ -265,7 +265,7 @@ namespace strategy{
         //上段までライントレース
         case SumoPhase::UPPER_STAGE:
             static bool isTimeDetected = false;
-            startTimeMeasurement(1000);
+            startTimeMeasurement(800);
             linetrace_->run(20,upperStageEdge_,0.4);
             if(timeMeasurement_->getResult()){
                 isTimeDetected = true;
@@ -275,7 +275,7 @@ namespace strategy{
         //下段までライントレース
         case SumoPhase::DOWN_STAGE:
             static bool isTimeDetected2 = false;
-            startTimeMeasurement(500);
+            startTimeMeasurement(400);
             linetrace_->run(20,downStageEdge_,0.4);
             if(timeMeasurement_->getResult()){
                 isTimeDetected2 = true;
