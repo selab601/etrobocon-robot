@@ -91,7 +91,7 @@ namespace strategy{
 
         case Phase::BACK_14CM:
             startDistanceMeasurement(140);
-            straightRunning_->run(-10);
+            straightRunning_->run(-15);
             return distanceMeasurement_->getResult();
 
         //下ろす
@@ -116,7 +116,10 @@ namespace strategy{
 
         //左に90度旋回
         case Phase::LEFT_90_ROTATION:
-            return pivotTurn_->turn(90, 10);
+            return pivotTurn_->turn(90,30);
+
+        case Phase::LEFT_90_ROTATION_SLOWLY:
+            return pivotTurn_->turn(90,10);
 
         //懸賞の左側にカーブで移動
         case Phase::CURVE_UP_TO_PRIZE_SIDE:
