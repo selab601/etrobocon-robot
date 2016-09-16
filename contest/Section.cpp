@@ -13,10 +13,10 @@ namespace contest_pkg{
 
 
     /* コンストラクタ */
-    Section::Section(int sectionDistance, IStrategy* strategy, bool useRelativeDistance){
-        this->sectionDistance_ = sectionDistance;
-        this->strategy_ = strategy;
-        this->useRelativeDistance_ = useRelativeDistance;
+    Section::Section(IStrategy* strategy, int sectionDistance, bool useRelativeDistance){
+        sectionDistance_ = sectionDistance;
+        strategy_ = strategy;
+        useRelativeDistance_ = useRelativeDistance;
         isCaptured_ = false;
         isChecked_ = false;
         isStarted_ = false;
