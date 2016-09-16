@@ -181,11 +181,11 @@ namespace strategy{
 
         case StrategyPhase::LEAVE_FROM_LINE:
             startDistanceMeasurement(100);
-            straightRunning_->run(30);
+            straightRunning_->run(20);
             return distanceMeasurement_->getResult();
 
         case StrategyPhase::APPROACH_TO_LINE:
-            straightRunning_->run(-20);
+            straightRunning_->run(-15);
             return lineDetection_->getResult();
 
         default: return false;
