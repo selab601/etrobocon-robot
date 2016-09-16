@@ -15,12 +15,14 @@
 #include "drive/CurveRunning.h"
 #include "measurement/BodyAngleMeasurement.h"
 #include "detection/ColorDetection.h"
+#include <cstdlib>
 
 #include "drive/Destination.h"
 #include "drive/Catching.h"
 #include "drive/BlockColorGetter.h"
 #include "drive/BlockColorGetterStates/IBlockColorGetterState.h"
 #include "../drive/BlockAreaCoordinate.h"
+#include <vector>
 //#include "ev3api.h"
 
 namespace strategy{
@@ -68,11 +70,25 @@ namespace strategy{
 
 			int carried = 0; //運んだブロックの数
 			int confirmed = 0; //確認したブロック数　黒ブロックを確認した際の
+            bool isFinishedNearStage_ = false;
 
 			//目的地保存用
 			int destination_x; int destination_y;
 
             bool runTo(int x , int y);
+
+            std::vector<drive::BlockAreaCoordinate*>* priorInformation_;
+            std::vector<drive::BlockAreaCoordinate*>* redStage_;
+            std::vector<drive::BlockAreaCoordinate*>* yellowStage_;
+            std::vector<drive::BlockAreaCoordinate*>* greenStage_;
+            std::vector<drive::BlockAreaCoordinate*>* blueStage_;
+
+            /**
+             * @brief 引数に与えられたものの一番近い座標を次の目的地座標にセットする
+             **/
+            bool nearStage(std::vector<drive::BlockAreaCoordinate*> &coordinate , int method);
+
+
 
 		public:
 			//コンストラクタ
