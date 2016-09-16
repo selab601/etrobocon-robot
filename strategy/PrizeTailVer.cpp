@@ -57,7 +57,7 @@ namespace strategy{
         case Phase::LINE_TRACE2:
             startDistanceMeasurement(1100);
             lineTrace_->setPid(0.003,0.0,0.3);
-            lineTrace_->run(50,LineTraceEdge::RIGHT);
+            lineTrace_->run(60,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         //アームを下げる
@@ -155,7 +155,7 @@ namespace strategy{
 
         case Phase::FINISHED:
             straightRunning_->run(0);
-            Shippo::getInstance()->furifuri();
+            //Shippo::getInstance()->furifuri();
             return false;
 
         default: return false;
