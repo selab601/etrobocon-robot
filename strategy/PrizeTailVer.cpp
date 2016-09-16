@@ -57,7 +57,7 @@ namespace strategy{
         case Phase::LINE_TRACE2:
             startDistanceMeasurement(1100);
             lineTrace_->setPid(0.003,0.0,0.3);
-            lineTrace_->run(50,LineTraceEdge::RIGHT);
+            lineTrace_->run(60,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         //アームを下げる
@@ -91,7 +91,7 @@ namespace strategy{
 
         case Phase::BACK_14CM:
             startDistanceMeasurement(140);
-            straightRunning_->run(-10);
+            straightRunning_->run(-15);
             return distanceMeasurement_->getResult();
 
         //下ろす
@@ -116,7 +116,10 @@ namespace strategy{
 
         //左に90度旋回
         case Phase::LEFT_90_ROTATION:
-            return pivotTurn_->turn(90, 10);
+            return pivotTurn_->turn(90,30);
+
+        case Phase::LEFT_90_ROTATION_SLOWLY:
+            return pivotTurn_->turn(90,10);
 
         //懸賞の左側にカーブで移動
         case Phase::CURVE_UP_TO_PRIZE_SIDE:
@@ -152,7 +155,7 @@ namespace strategy{
 
         case Phase::FINISHED:
             straightRunning_->run(0);
-            Shippo::getInstance()->furifuri();
+            //Shippo::getInstance()->furifuri();
             return false;
 
         default: return false;
