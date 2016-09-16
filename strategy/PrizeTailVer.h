@@ -46,7 +46,7 @@ namespace strategy{
         //懸賞運びの攻略手順
         std::vector<Phase> phaseProcedure_{
             //Phase::LINE_TRACE,
-            //Phase::LINE_TRACE2,
+            Phase::LINE_TRACE2,
             Phase::DOWN_ARM,                    //アームを下げる
             Phase::LINE_TRACE_UP_TO_PRIZE,      //懸賞前までライントレース
             Phase::TURN_LEFT,                   //左側のアームで懸賞を押しちゃうことがあるので左に5度向ける
