@@ -14,12 +14,20 @@ namespace strategy{
   bool RCourseStandard::capture(){
     switch(Status_){
       case Status::DETECTION_STANDBY:
+          ev3_speaker_set_volume(7);
+        ev3_speaker_play_tone(500,200);
+        linetrace_->reset();
+        linetrace_->setPid();
         bodyAngleMeasurement_.setBaseAngle();
         Status_ = Status::DETECTION_CURVE;
         break;
 
       //スピード競技前の90°カーブを検知
       case Status::DETECTION_CURVE:
+        //HIYOKO -85
+        //KOTORI -83
+        //SELAB  -82
+        //KAKERUN -85
         if(bodyAngleMeasurement_.getResult() <= -80){
           Status_ = Status::STRAIGHT1_STANDBY;
         }else{
@@ -29,9 +37,15 @@ namespace strategy{
         break;
 
       case Status::STRAIGHT1_STANDBY:
-      	// 直線(1300)，カーブ()直径(480)，直線()
-        linetrace_->setPid(0.003F, 0.0F, 0.3F);
-        distanceMeasurement_.setTargetDistance(1250);
+        ev3_speaker_play_tone(500,200);
+      	// 直線(1300)，カーブ()　直径(480)，直線()
+        linetrace_->reset();
+        linetrace_->setPid(0.003F, 0.0, 0.3F);
+        //HIYOKO(1250)
+        //KOTORI(1250)
+        //SELAB(1230)
+        //KAKERUN(1250)
+        distanceMeasurement_.setTargetDistance(1300);
         distanceMeasurement_.startMeasurement();
         Status_ = Status::STRAIGHT1;
         break;
@@ -46,25 +60,36 @@ namespace strategy{
 
       //第一カーブ部分
       case Status::CURVE1_STANDBY:
-        distanceMeasurement_.setTargetDistance(800);
+        ev3_speaker_play_tone(500,200);
+        //HIYOKO(744)
+        //KOTORI(744)
+        //SELAB(730)
+        //KAKERUN(715)
+        distanceMeasurement_.setTargetDistance(550);
         distanceMeasurement_.startMeasurement();
-        linetrace_->setPid(0.0144,0.0,0.72);
+
+        // カーブ用ライントレース
+        linetrace_->reset();
+        linetrace_->setTarget(0.5);
+        linetrace_->setEdge(drive::LineTraceEdge::LEFT);
+        linetrace_->setPid(0.005,0,0.6);
+        linetrace_->setMaxPwm(60);
         Status_ = Status::CURVE1;
         break;
 
       case Status::CURVE1:
         if(!distanceMeasurement_.getResult()){
-          //成功(56,32)
-          //curveRunning_.run(56, 32);
-            linetrace_->run(50,drive::LineTraceEdge::LEFT);
+          linetrace_->runCurve(750); // 750でカーブいい感じ
         }else{
           Status_ = Status::STRAIGHT2_STANDBY;
         }
         break;
 
       case Status::STRAIGHT2_STANDBY:
+        ev3_speaker_play_tone(500,200);
+        linetrace_->reset();
         //直線2
-        distanceMeasurement_.setTargetDistance(1200);
+        distanceMeasurement_.setTargetDistance(1350);
         distanceMeasurement_.startMeasurement();
         linetrace_->setPid(0.003F, 0.0F, 0.3F);
         Status_ = Status::STRAIGHT2;
@@ -80,7 +105,8 @@ namespace strategy{
 
       //直角に近いカーブ部分
       case Status::CURVE2_STANDBY:
-        distanceMeasurement_.setTargetDistance(1200);
+        ev3_speaker_play_tone(500,200);
+        distanceMeasurement_.setTargetDistance(840);
         distanceMeasurement_.startMeasurement();
         linetrace_->setPid(0.0144,0.0,0.72);
         Status_ = Status::CURVE2;
@@ -88,15 +114,21 @@ namespace strategy{
 
       case Status::CURVE2:
         if(!distanceMeasurement_.getResult()){
-            //curveRunning_.run(34, 58);
-            linetrace_->run(30,drive::LineTraceEdge::LEFT);
+          //HIYOKO(34,58)
+          //KOTORI(35,58)
+          //SELAB(35,58)
+          //KAKERUN(31,61
+          curveRunning_.run(35, 58);    // TODO: 機体に応じて変更
         }else{
           Status_ = Status::STRAIGHT3_STANDBY;
         }
         break;
 
       case Status::STRAIGHT3_STANDBY:
-        //ゴールまで
+        ev3_speaker_play_tone(500,200);
+        linetrace_->reset();
+        //直線2
+        //KAKERUN(1550)
         distanceMeasurement_.setTargetDistance(1600);
         distanceMeasurement_.startMeasurement();
         linetrace_->setPid(0.003F, 0.0F, 0.3F);
@@ -113,28 +145,34 @@ namespace strategy{
 
       //最後の直角カーブ部分
       case Status::CURVE3_STANDBY:
-        distanceMeasurement_.setTargetDistance(500);
+        ev3_speaker_play_tone(500,200);
+        distanceMeasurement_.setTargetDistance(430);
         distanceMeasurement_.startMeasurement();
-        linetrace_->setPid(0.0144,0.0,0.72);
+
+        linetrace_->reset();
+        linetrace_->setPid(0.005,0,0.6);
+        linetrace_->setTarget(0.5);
+        linetrace_->setEdge(drive::LineTraceEdge::LEFT);
+        linetrace_->setMaxPwm(60);
         Status_ = Status::CURVE3;
         break;
 
       case Status::CURVE3:
         if(!distanceMeasurement_.getResult()){
           //linetrace_->setPid(0.006F, 0.0F, 0.52F);
-          //linetrace_->run(40,drive::LineTraceEdge::LEFT,0.6);
-          //curveRunning_.run(39, 60);
-            linetrace_->run(50,drive::LineTraceEdge::LEFT);
+            linetrace_->runCurve(-750); // 750でカーブいい感じ
         }else{
           Status_ = Status::STRAIGHT4_STANDBY;
         }
         break;
 
       case Status::STRAIGHT4_STANDBY:
+        ev3_speaker_play_tone(500,200);
+        ev3_speaker_set_volume(1);
         //ゴールまで
         distanceMeasurement_.setTargetDistance(2770);
         distanceMeasurement_.startMeasurement();
-        linetrace_->setPid(0.003F, 0.0F, 0.3F);
+        linetrace_->setPid(0.003F, 0.0, 0.3F);
         Status_ = Status::STRAIGHT4;
         break;
 
