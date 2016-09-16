@@ -73,12 +73,13 @@ namespace strategy{
         case Phase::LINETRACE5:
             //エッジ切り替え直前
             linetrace_->setPid();
-            return fixedDistanceLineTrace(200,50,LineTraceEdge::LEFT);
+            return fixedDistanceLineTrace(300,50,LineTraceEdge::LEFT);
 
         case Phase::LINETRACE6:
             //エッジ切り替え直後
+            //エッジ切り替えに使う距離が毎回違うので早めに終了させる
             linetrace_->setPid();
-            return fixedDistanceLineTrace(700,50,LineTraceEdge::RIGHT);
+            return fixedDistanceLineTrace(450,50,LineTraceEdge::RIGHT);
 
         default: return false;
         }
