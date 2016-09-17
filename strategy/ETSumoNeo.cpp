@@ -116,7 +116,6 @@ namespace strategy{
         case StrategyPhase::WAIT_1_SEC:
             startTimeMeasurement(1000);
             straightRunning_->run(0);
-            hoshitoriDetection(true);
             return timeMeasurement_->getResult();
 
         //登壇後の動作を安定させるため少し旋回
@@ -193,7 +192,6 @@ namespace strategy{
         case StrategyPhase::APPROACH_TO_LINE:
             startDistanceMeasurement(30);
             straightRunning_->run(-8);
-            //return lineDetection_->getResult();
             return distanceMeasurement_->getResult();
 
         case StrategyPhase::APPROACH_TO_LINE2:
