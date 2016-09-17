@@ -133,6 +133,8 @@ namespace drive{
         static CurveRunning curveRunning = CurveRunning();
         switch (state){
             case ChangeDirectionState::INIT:
+                directionKind = getAdvancableDirection();
+                turnDirection = DirectionKind::LEFT == directionKind? TurnDirection::RIGHT : TurnDirection::LEFT;
                 state = ChangeDirectionState::AVOIDANCE;
                 break;
 
