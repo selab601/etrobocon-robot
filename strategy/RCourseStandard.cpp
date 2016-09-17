@@ -90,8 +90,9 @@ namespace strategy{
         linetrace_->reset();
         //直線2
         //HIYOKO 1350
+        //KOTORI 1250
         //SELAB 1250
-        distanceMeasurement_.setTargetDistance(1250); //1350
+        distanceMeasurement_.setTargetDistance(1350); //1350
         distanceMeasurement_.startMeasurement();
         linetrace_->setPid(0.003F, 0.0F, 0.3F);
         Status_ = Status::STRAIGHT2;
@@ -118,10 +119,10 @@ namespace strategy{
       case Status::CURVE2:
         if(!distanceMeasurement_.getResult()){
           //HIYOKO(34,58)
-          //KOTORI(35,58)
+          //KOTORI(35,58) //電池(33,59)
           //SELAB(35,58)  電池 (33,60)
           //KAKERUN(31,61
-          curveRunning_.run(33, 60);    // TODO: 機体に応じて変更
+          curveRunning_.run(34, 58);    // TODO: 機体に応じて変更
         }else{
           Status_ = Status::STRAIGHT3_STANDBY;
         }

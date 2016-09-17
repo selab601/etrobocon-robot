@@ -38,7 +38,7 @@ namespace strategy{
 
       case Status::FROM_UP:
         //超信地旋回
-        if(pivotTurn_.turn(100)){ //10°補正ver 本来90°
+        if(pivotTurn_.turn(110)){ //10°補正ver 本来90° (KOTORI 110) (HIYOKO 105)
           straightRunning_.initialize();
           distanceMeasurement_.setTargetDistance(200); //ライン間は30cm
           distanceMeasurement_.startMeasurement();
@@ -48,7 +48,7 @@ namespace strategy{
 
       case Status::FROM_LEFT1:
         //下から直接ラインへ
-        if(pivotTurn_.turn(-20)){ //10°補正ver 本来-30°
+        if(pivotTurn_.turn(-20)){ //10°補正ver 本来-30° (KOTORI -10) (HIYOKO -20) 
           distanceMeasurement_.setTargetDistance(200); //ライン間は30cm
           distanceMeasurement_.startMeasurement();
           Status_ = Status::FROM_LEFT2;
@@ -66,7 +66,7 @@ namespace strategy{
         break;
 
       case Status::FROM_LEFT3:
-        if(pivotTurn_.turn(30)){
+        if(pivotTurn_.turn(35)){
           distanceMeasurement_.setTargetDistance(200); //ラインまで38cm
           distanceMeasurement_.startMeasurement();
           Status_ = Status::STRAIGHT_SPEED_UP;

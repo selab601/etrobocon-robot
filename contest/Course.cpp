@@ -22,9 +22,9 @@ namespace contest_pkg{
         //それぞれのコースの戦略やライントレースを追加していく
         if(course == SelectedCourse::R_COURSE){
         //ブロック並べ
-        sections_.emplace_back(new BlockAreaEntry());
-        sections_.emplace_back(new BlockAreaGame());
-        sections_.emplace_back(new BlockAreaExit());
+        //sections_.emplace_back(new BlockAreaEntry());
+        //sections_.emplace_back(new BlockAreaGame());
+        //sections_.emplace_back(new BlockAreaExit());
         sections_.emplace_back(new RCourseStandard());
         }
 
