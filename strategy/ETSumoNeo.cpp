@@ -59,8 +59,9 @@ namespace strategy{
 
         //星取取得
         case StrategyPhase::HOSHITORI:
-            linetrace_->setPid(0.0144,0.0,0.72);
-            linetrace_->run(30,LineTraceEdge::RIGHT);
+            //linetrace_->setPid(0.0144,0.0,0.72);
+            linetrace_->setPid();
+            linetrace_->run(20,LineTraceEdge::RIGHT);
             return hoshitoriDetection();
 
         case StrategyPhase::SET_VALUE:
@@ -86,6 +87,7 @@ namespace strategy{
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
             startDistanceMeasurement(900);
+            linetrace_->setPid(0.0144,0.0,0.72);
             linetrace_->run(40,LineTraceEdge::RIGHT);
             //距離検知or車体角度が土俵を向いたらtrue
             return distanceMeasurement_->getResult() || bodyAngleMeasurement_->getResult() >= 180;
