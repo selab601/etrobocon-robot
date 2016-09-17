@@ -21,7 +21,7 @@ namespace drive{
 
         switch(state_){
             case State::INIT:
-                lineTrace->setPid();
+                lineTrace->setPid(0.0168, 0, 0.924);
                 lineTrace->setMaxPwm(20);
                 lineTrace->setEdge(LineTraceEdge::RIGHT);
                 lineTrace->setTarget(0.42); // 黒寄り
@@ -53,7 +53,7 @@ namespace drive{
                 if ( turn(direction) ){
                     baseLength = estimation->getMigrationLength();
 
-                    lineTrace->setPid();
+                    lineTrace->setPid(0.0168, 0, 0.924);
                     lineTrace->setMaxPwm(20);
                     lineTrace->setEdge(LineTraceEdge::RIGHT);
                     lineTrace->setTarget(0.42); // 黒寄り
@@ -186,7 +186,7 @@ namespace drive{
 
         switch(state){
             case State::INIT:
-                lineTrace->setPid();
+                lineTrace->setPid(0.0168, 0, 0.924);
                 lineTrace->setMaxPwm(20);
                 lineTrace->setEdge(LineTraceEdge::RIGHT);
                 lineTrace->setTarget(0.42); // 黒寄り
