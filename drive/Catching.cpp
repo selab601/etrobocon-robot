@@ -348,25 +348,25 @@ namespace drive{
         switch(destination_->EV3Position_){
             case Destination::Direction::RIGHT:
                 if (destination_->currentCoordinate_.getY() == 1){
-                    return DirectionKind::RIGHT;
+                    return DirectionKind::LEFT;
                 }
                 break;
 
             case Destination::Direction::LEFT:
                 if (destination_->currentCoordinate_.getY() == 4){
-                    return DirectionKind::RIGHT;
+                    return DirectionKind::LEFT;
                 }
                 break;
 
             case Destination::Direction::UP:
                 if (destination_->currentCoordinate_.getX() == 1){
-                    return DirectionKind::RIGHT;
+                    return DirectionKind::LEFT;
                 }
                 break;
 
             case Destination::Direction::DOWN:
                 if (destination_->currentCoordinate_.getX() == 4){
-                    return DirectionKind::RIGHT;
+                    return DirectionKind::LEFT;
                 }
                 break;
 
