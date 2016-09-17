@@ -306,7 +306,7 @@ namespace drive{
             initialized = true;
         }
         else{
-            int pwm = (length - currentLength)/3 + 5;
+            int pwm = (length - currentLength)/3 + 20;
             curveRunning.run(pwm, pwm);
 
             if(currentLength >= length){
