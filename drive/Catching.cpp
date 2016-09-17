@@ -17,6 +17,7 @@ namespace drive{
         SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
         LineTrace* lineTrace = LineTrace::getInstance();
         static long baseLength = 0;
+        static PivotTurn pivotTurn = PivotTurn();
 
         switch(state_){
             case State::INIT:
@@ -25,8 +26,20 @@ namespace drive{
                 lineTrace->setEdge(LineTraceEdge::RIGHT);
                 lineTrace->setTarget(0.42); // 黒寄り
 
-                state_ = State::TO_BLOCK;
+                if (TurnDirection::STRAIGHT == direction){
+                    state_ = State::TURN_RIGHT;
+                }
+                else{
+                    state_ = State::TO_BLOCK;
+                }
                 break;
+
+            case State::TURN_RIGHT:
+                if (pivotTurn.turn(-20)){
+                    state_ = State::TO_BLOCK;
+                }
+                break;
+
 
             case State::TO_BLOCK:
                 lineTrace->run();
@@ -210,6 +223,7 @@ namespace drive{
                 break;
 
             case State::TURN:   //使わない
+            case State::TURN_RIGHT:   //使わない
                 break;
         }
 

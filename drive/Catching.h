@@ -20,6 +20,7 @@ namespace drive
             enum class State
             {
                 INIT,
+                TURN_RIGHT,
                 TO_BLOCK,
                 TURN,
                 TO_LINE,
