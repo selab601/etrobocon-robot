@@ -79,7 +79,7 @@ namespace strategy{
 
       case Status::CURVE1:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->runCurve(750); // 750でカーブいい感じ
+          linetrace_->runCurve(800);
         }else{
           Status_ = Status::STRAIGHT2_STANDBY;
         }
@@ -163,7 +163,7 @@ namespace strategy{
       case Status::CURVE3:
         if(!distanceMeasurement_.getResult()){
           //linetrace_->setPid(0.006F, 0.0F, 0.52F);
-            linetrace_->runCurve(-750); // 750でカーブいい感じ
+            linetrace_->runCurve(-900);
         }else{
           Status_ = Status::STRAIGHT4_STANDBY;
         }
