@@ -104,12 +104,13 @@ namespace strategy{
 
         //1秒間待つ,星取も読む
         case StrategyPhase::WAIT_1_SEC_H:
+            static bool isTimeDetected = false;
             startTimeMeasurement(1000);
             straightRunning_->run(0);
             if(timeMeasurement_->getResult()){
-                hoshitoriDetection(true);
-                return true;
+                isTimeDetected = true;
             }
+            return isTimeDetected && hoshitoriDetection(true);
 
         //通り過ぎてから1秒間待つ
         case StrategyPhase::WAIT_1_SEC:
@@ -190,6 +191,12 @@ namespace strategy{
             return distanceMeasurement_->getResult();
 
         case StrategyPhase::APPROACH_TO_LINE:
+            startDistanceMeasurement(30);
+            straightRunning_->run(-8);
+            //return lineDetection_->getResult();
+            return distanceMeasurement_->getResult();
+
+        case StrategyPhase::APPROACH_TO_LINE2:
             straightRunning_->run(-15);
             return lineDetection_->getResult();
 
