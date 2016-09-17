@@ -247,12 +247,14 @@ namespace drive{
                 // 右にまがるとき
                 if (0 > diffDegree ){
                     diffDegree *= -1;
-                    int pwm = diffDegree + 5;
+                    int pwm = diffDegree + 15;
+                    pwm = pwm > 60? 60: pwm;
                     curveRunning.run(0,  pwm);
                 }
                 // 左に曲がるとき
                 else {
-                    int pwm = diffDegree + 5;
+                    int pwm = diffDegree + 15;
+                    pwm = pwm > 60? 60: pwm;
                     curveRunning.run(pwm, pwm/10);
                 }
 
