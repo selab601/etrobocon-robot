@@ -118,6 +118,8 @@ namespace strategy{
         }
         else{
             if(runTo(destination_x,destination_y)){
+                drive::BlockAreaCoordinate currentCoordinate = destination_->currentCoordinate_;
+                block_exist[currentCoordinate.getX() - 1][currentCoordinate.getY() - 1] = 0;
                 isFinishedNearStage_ = false;
                 Status_ = Status::BLOCK_COLOR_GET;
             }
@@ -166,7 +168,6 @@ namespace strategy{
       case Status::INSTALLATION:
         if(catching_.putBlock()){
           //確認したブロック数，運んだブロック数，ブロックの有無の更新
-          block_exist[block_x[confirmed] - 1][block_y[confirmed] - 1] = 0;
           block_exist[destination_x - 1][destination_y - 1] = 2;
           confirmed++;
           carried++;
