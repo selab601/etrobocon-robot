@@ -17,7 +17,7 @@ namespace strategy{
           ev3_speaker_set_volume(7);
         ev3_speaker_play_tone(500,200);
         linetrace_->reset();
-        linetrace_->setPid();
+        linetrace_->setPid(0.018, 0, 1.2);
         bodyAngleMeasurement_.setBaseAngle();
         Status_ = Status::DETECTION_CURVE;
         break;
@@ -31,7 +31,7 @@ namespace strategy{
         if(bodyAngleMeasurement_.getResult() <= -90){
           Status_ = Status::STRAIGHT1_STANDBY;
         }else{
-          linetrace_->run(20,drive::LineTraceEdge::LEFT,0.7);
+          linetrace_->run(40,drive::LineTraceEdge::LEFT,0.7);
         }
 
         break;
