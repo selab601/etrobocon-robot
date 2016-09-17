@@ -220,15 +220,15 @@ namespace drive{
         static Position prePosition = Position::NONE;
         if(diff.getX() == 0 && diff.getY() == 0)
         {
-            if ( prePosition == Position::EQUAL ){
-                if (pivotTurn_.turn(-20)){
+            //if ( prePosition == Position::EQUAL ){
+                if (pivotTurn_.turn(-10)){//20だとだめだった
                     return true;
                 }
                 return false;
-            }
-            else{
-                return true;
-            }
+            //}
+            //else{
+            //    return true;
+            //}
         }
 
         Coordinate nextCoordinate = getNextStageCoordinate(destination);
