@@ -42,7 +42,6 @@ namespace strategy{
         }
         if(procedureNumber == strategyProcedure_.size()){//最後まで終わったら
             strategySuccess_ = true;
-            straightRunning_->run(0);//あとで消す
             return true;
         }
         return strategySuccess_;
@@ -59,7 +58,8 @@ namespace strategy{
 
         //星取取得
         case StrategyPhase::HOSHITORI:
-            linetrace_->setPid(0.0144,0.0,0.72);
+            //linetrace_->setPid(0.0144,0.0,0.72);
+            linetrace_->setPid();
             linetrace_->run(20,LineTraceEdge::RIGHT);
             return hoshitoriDetection();
 
@@ -86,7 +86,8 @@ namespace strategy{
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
             startDistanceMeasurement(900);
-            linetrace_->run(30,LineTraceEdge::RIGHT);
+            linetrace_->setPid(0.0144,0.0,0.72);
+            linetrace_->run(40,LineTraceEdge::RIGHT);
             //距離検知or車体角度が土俵を向いたらtrue
             return distanceMeasurement_->getResult() || bodyAngleMeasurement_->getResult() >= 180;
 
@@ -123,7 +124,7 @@ namespace strategy{
 
         //登壇走行
         case StrategyPhase::CLIMB:
-            return climbingRunning_->run(40,600);
+            return climbingRunning_->run(50,600);
 
         //横を向くまで旋回
         case StrategyPhase::TURN_TO_SIDE:
@@ -157,7 +158,7 @@ namespace strategy{
         //降壇
         case StrategyPhase::GET_OF:
             startDistanceMeasurement(450);
-            straightRunning_->run(30);
+            straightRunning_->run(50);
             return distanceMeasurement_->getResult();
 
         //ライン検知
@@ -165,19 +166,23 @@ namespace strategy{
             curveRunning_->run(20,10);
             return lineDetection_->getResult();
 
-        //ライン復帰
+        //復帰後のライントレーストレース
         case StrategyPhase::LINE_RETURN:
-            startDistanceMeasurement(700);
+            startDistanceMeasurement(1350);
             lineTraceReset();
-            linetrace_->run(30,LineTraceEdge::RIGHT);
+            linetrace_->setEdge(LineTraceEdge::RIGHT);
+            linetrace_->setMaxPwm(60);
+            linetrace_->setPid(0.003,0,0.3);
+            linetrace_->setTarget(0.5);
+            linetrace_->runCurve(-380);
             return distanceMeasurement_->getResult();
 
         /*以下安全なライン復帰*/
         case StrategyPhase::TURN_RIGHT_90:
-            return pivotTurn_->turn(-90);
+            return pivotTurn_->turn(-90,30);
 
         case StrategyPhase::TURN_LEFT_90:
-            return pivotTurn_->turn(85);
+            return turn(false,20);
 
         case StrategyPhase::LEAVE_FROM_LINE:
             startDistanceMeasurement(100);
@@ -244,11 +249,11 @@ namespace strategy{
 
         //一回目の旋回
         case SumoPhase::FIRST_TURN:
-            return pivotTurn_->turn(firstTurnAngle_);
+            return pivotTurn_->turn(firstTurnAngle_,30);
 
         //二回目の旋回
         case SumoPhase::SECOND_TURN:
-            return pivotTurn_->turn(secondTurnAngle_);
+            return pivotTurn_->turn(secondTurnAngle_,30);
 
         //三回目の旋回
         case SumoPhase::THIRD_TURN:
@@ -256,12 +261,12 @@ namespace strategy{
 
         //旋回すると尻尾が新幹線にぶつかるのでカーブをして上を向く
         case SumoPhase::CURVE_TOP:
-            return curve(isRightCurve_,20);
+            return curve(isRightCurve_,30);
 
         //上段までライントレース
         case SumoPhase::UPPER_STAGE:
             static bool isTimeDetected = false;
-            startTimeMeasurement(1000);
+            startTimeMeasurement(800);
             linetrace_->run(20,upperStageEdge_,0.4);
             if(timeMeasurement_->getResult()){
                 isTimeDetected = true;
@@ -271,7 +276,7 @@ namespace strategy{
         //下段までライントレース
         case SumoPhase::DOWN_STAGE:
             static bool isTimeDetected2 = false;
-            startTimeMeasurement(500);
+            startTimeMeasurement(400);
             linetrace_->run(20,downStageEdge_,0.4);
             if(timeMeasurement_->getResult()){
                 isTimeDetected2 = true;
@@ -307,28 +312,28 @@ namespace strategy{
             switch(blockColor){
             case Hoshitori::RED:
                 isRightCurve = true;
-                turnAngle = 200;
+                turnAngle = 205;
                 startEdge = LineTraceEdge::RIGHT;
                 endEdge = LineTraceEdge::LEFT;
             break;
 
             case Hoshitori::YELLOW:
                 isRightCurve = true;
-                turnAngle = -160;
+                turnAngle = -155;
                 startEdge = LineTraceEdge::RIGHT;
                 endEdge = LineTraceEdge::LEFT;
                 break;
 
             case Hoshitori::BLUE:
                 isRightCurve = false;
-                turnAngle = -200;
+                turnAngle = -205;
                 startEdge = LineTraceEdge::LEFT;
                 endEdge = LineTraceEdge::RIGHT;
                 break;
 
             case Hoshitori::GREEN:
                 isRightCurve = false;
-                turnAngle = 160;
+                turnAngle = 155;
                 startEdge = LineTraceEdge::LEFT;
                 endEdge = LineTraceEdge::RIGHT;
                 break;
@@ -341,13 +346,14 @@ namespace strategy{
         switch(extrusionPhase_){
         //ブロックまでライントレース
         case ExtrusionPhase::START_LINE_TRACE:
-            startTimeMeasurement(500);
+            startTimeMeasurement(500,false);
+            startDistanceMeasurement(150);//15cm移動したら色検知ミスと判断
             lineTraceReset();
             linetrace_->run(15,startEdge,0.4);//黒よりに変更
             if(timeMeasurement_->getResult()){
                 isTimeDetected = true;
             }
-            if(isTimeDetected && hoshitoriDetection()){
+            if((isTimeDetected && hoshitoriDetection()) || distanceMeasurement_->getResult()){
                 extrusionPhase_ = ExtrusionPhase::EXTRUSION;
                 isTimeDetected = false;
                 hasExecutedPhase_ = false;
@@ -363,7 +369,7 @@ namespace strategy{
 
         //台座を誤検知しないように旋回しておきたい
         case ExtrusionPhase::FIRST_TURN:
-            if(pivotTurn_->turn(turnAngle)){
+            if(pivotTurn_->turn(turnAngle,40)){
                 extrusionPhase_ = ExtrusionPhase::SECOND_TURN;
             }
             break;
@@ -377,7 +383,7 @@ namespace strategy{
 
         //直角までライントレース
         case ExtrusionPhase::END_LINE_TRACE:
-            startTimeMeasurement(500);
+            startTimeMeasurement(300);
             lineTraceReset();
             linetrace_->run(15,endEdge,0.4);
             if(timeMeasurement_->getResult()){
@@ -433,7 +439,7 @@ namespace strategy{
             upperStageEdge_ = LineTraceEdge::LEFT;
             downStageEdge_ = LineTraceEdge::LEFT;
             firstTurnAngle_ = 90;
-            secondTurnAngle_ = 90;
+            secondTurnAngle_ = 85;
             thirdTurnAngle_ = -90;
             isRightCurve_ = true;
             isCorrect_ = false;
@@ -449,7 +455,7 @@ namespace strategy{
             upperStageEdge_ = LineTraceEdge::RIGHT;
             downStageEdge_ = LineTraceEdge::RIGHT;
             firstTurnAngle_ = -90;
-            secondTurnAngle_ = -90;
+            secondTurnAngle_ = -85;
             thirdTurnAngle_ = 90;
             isRightCurve_ = false;
             isCorrect_ = true;
@@ -465,7 +471,7 @@ namespace strategy{
             upperStageEdge_ = LineTraceEdge::RIGHT;
             downStageEdge_ = LineTraceEdge::LEFT;
             firstTurnAngle_ = 90;
-            secondTurnAngle_ = -90;
+            secondTurnAngle_ = -85;
             thirdTurnAngle_ = -90;
             isRightCurve_ = false;
             isCorrect_ = false;
@@ -481,7 +487,7 @@ namespace strategy{
             upperStageEdge_ = LineTraceEdge::LEFT;
             downStageEdge_ = LineTraceEdge::RIGHT;
             firstTurnAngle_ = -90;
-            secondTurnAngle_ = 90;
+            secondTurnAngle_ = 85;
             thirdTurnAngle_ = 90;
             isRightCurve_ = true;
             isCorrect_ = true;
@@ -524,20 +530,24 @@ namespace strategy{
     }
 
     //距離検知をまとめたもの
-    void ETSumoNeo::startDistanceMeasurement(int distance){
+    void ETSumoNeo::startDistanceMeasurement(int distance,bool flagChange){
         if(!hasExecutedPhase_){
             distanceMeasurement_->setTargetDistance(distance);
             distanceMeasurement_->startMeasurement();
-            hasExecutedPhase_ = true;
+            if(flagChange){
+                hasExecutedPhase_ = true;
+            }
         }
     }
 
     //時間検知をまとめたもの
-    void ETSumoNeo::startTimeMeasurement(int time){
+    void ETSumoNeo::startTimeMeasurement(int time,bool flagChange){
         if(!hasExecutedPhase_){
             timeMeasurement_->setBaseTime();
             timeMeasurement_->setTargetTime(time);
-            hasExecutedPhase_ = true;
+            if(flagChange){
+                hasExecutedPhase_ = true;
+            }
         }
     }
 

@@ -62,6 +62,14 @@ namespace strategy{
              */
             bool fixedDistanceLineTrace(int distance,int speed,drive::LineTraceEdge edge);
             /**
+             * @brief 一定距離カーブライントレース
+             *
+             * @param distance 走行距離
+             * @param deltaRad 角度？
+             * @return 一定距離走行:true,走行中:false
+             */
+            bool fixedDistanceCurveLineTrace(int distance,int deltaRad);
+            /**
              * @brief LineTrace::reset()を一度だけ実行する
              */
             void lineTraceReset();

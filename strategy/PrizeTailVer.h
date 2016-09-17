@@ -34,6 +34,8 @@ namespace strategy{
             PUT_AFTER_BACK,
             CURVE_AFTER_BACK,
             LEFT_90_ROTATION,
+            LEFT_90_ROTATION_SLOWLY,
+            RIGHT_10_ROTATION,
             CURVE_UP_TO_PRIZE_SIDE,
             STRAIGHT_1_CM,
             GET_PRIZE,
@@ -55,11 +57,12 @@ namespace strategy{
             Phase::DOWN_PRIZE,                  //懸賞を下ろす
             Phase::DOWN_SHIPPO,                 // しっぽをさげる
             Phase::PUT_AFTER_BACK,              //置いた後にバック
-            Phase::LEFT_90_ROTATION,            //左90度旋回
+            Phase::LEFT_90_ROTATION_SLOWLY,     //左90度旋回
             Phase::CURVE_UP_TO_PRIZE_SIDE,      //懸賞の横までカーブ
             Phase::CURVE_AFTER_BACK,            //カーブ後にバック
-            Phase::LEFT_90_ROTATION,            //左90度カーブ
+            Phase::LEFT_90_ROTATION_SLOWLY,     //左90度カーブ
             Phase::GET_PRIZE,                   // しっぽで懸賞を取る
+            //Phase::RIGHT_10_ROTATION,           //ライン超えてもいいように旋回
             Phase::LINE_TRACE_UP_TO_GOOL,       //ゴールまでライントレース
             Phase::LINE_TRACE_UP_TO_GOOL2,
             Phase::FINISHED                     // とまってしっぽふりふり
