@@ -42,7 +42,6 @@ namespace strategy{
         }
         if(procedureNumber == strategyProcedure_.size()){//最後まで終わったら
             strategySuccess_ = true;
-            straightRunning_->run(0);//あとで消す
             return true;
         }
         return strategySuccess_;
