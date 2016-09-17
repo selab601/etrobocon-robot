@@ -17,10 +17,10 @@ namespace strategy{
     destination_ = drive::Destination::getInstance();
     blockColorGetter_ = drive::BlockColorGetter();
 
-    block_x[0] = 2; block_y[0] = 2; //ブロック1
-    block_x[1] = 2; block_y[1] = 3; //ブロック3
-    block_x[2] = 3; block_y[2] = 3; //ブロック2
-    block_x[3] = 3; block_y[3] = 2; //ブロック4
+    block_x[0] = 1; block_y[0] = 1; //ブロック1
+    block_x[1] = 1; block_y[1] = 4; //ブロック3
+    block_x[2] = 4; block_y[2] = 1; //ブロック2
+    block_x[3] = 4; block_y[3] = 4; //ブロック4
 
     block_exist[block_x[0]-1][block_y[0]-1]=1;
     block_exist[block_x[1]-1][block_y[1]-1]=1;
