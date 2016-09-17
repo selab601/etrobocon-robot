@@ -299,11 +299,14 @@ namespace drive{
         SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
         static long baseLength = 0;
         static bool initialized = false;
+        static PivotTurn pivotTurn = PivotTurn();
         long currentLength = estimation->getMigrationLength() - baseLength;
 
         if (!initialized ){
             baseLength = estimation->getMigrationLength();
-            initialized = true;
+            if (pivotTurn.turn(-4)){    // TODO: 実験して角度を調整
+                initialized = true;
+            }
         }
         else{
             int pwm = (length - currentLength)/3 + 20;
