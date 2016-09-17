@@ -16,6 +16,8 @@
 #include "measurement/BodyAngleMeasurement.h"
 #include "detection/ColorDetection.h"
 
+#include "measurement/SelfPositionEstimation.h"
+
 namespace strategy{
 	class BlockAreaEntry : public IStrategy{
 		private:
@@ -41,6 +43,8 @@ namespace strategy{
 			drive::CurveRunning curveRunning_;
 			measurement::BodyAngleMeasurement bodyAngleMeasurement_;
 			detection::ColorDetection colorDetection_;
+
+			measurement::SelfPositionEstimation* selfPositionEstimation_;
 
 		public:
 			//コンストラクタ

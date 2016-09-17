@@ -17,15 +17,15 @@ namespace strategy{
     destination_ = drive::Destination::getInstance();
     blockColorGetter_ = drive::BlockColorGetter();
 
-    block_x[0] = 2; block_y[0] = 2; //ブロック1
-    block_x[1] = 3; block_y[2] = 2; //ブロック3
-    block_x[2] = 3; block_y[1] = 1; //ブロック2
-    block_x[3] = 4; block_y[3] = 1; //ブロック4
+    block_x[0] = 2; block_y[0] = 1; //ブロック1
+    block_x[1] = 2; block_y[1] = 3; //ブロック3
+    block_x[2] = 3; block_y[2] = 3; //ブロック2
+    block_x[3] = 3; block_y[3] = 2; //ブロック4
 
-    block_exist[1][1]=1;
-    block_exist[2][1]=1;
-    block_exist[2][0]=1;
-    block_exist[3][0]=1;
+    block_exist[block_x[0]-1][block_y[0]-1]=1;
+    block_exist[block_x[1]-1][block_y[1]-1]=1;
+    block_exist[block_x[2]-1][block_y[2]-1]=1;
+    block_exist[block_x[3]-1][block_y[3]-1]=1;
 
     priorInformation_ = new std::vector<drive::BlockAreaCoordinate*>();
     priorInformation_->emplace_back(new drive::BlockAreaCoordinate(block_x[0] , block_y[0]));
@@ -118,6 +118,8 @@ namespace strategy{
         }
         else{
             if(runTo(destination_x,destination_y)){
+                drive::BlockAreaCoordinate currentCoordinate = destination_->currentCoordinate_;
+                block_exist[currentCoordinate.getX() - 1][currentCoordinate.getY() - 1] = 0;
                 isFinishedNearStage_ = false;
                 Status_ = Status::BLOCK_COLOR_GET;
             }
@@ -166,7 +168,6 @@ namespace strategy{
       case Status::INSTALLATION:
         if(catching_.putBlock()){
           //確認したブロック数，運んだブロック数，ブロックの有無の更新
-          block_exist[block_x[confirmed] - 1][block_y[confirmed] - 1] = 0;
           block_exist[destination_x - 1][destination_y - 1] = 2;
           confirmed++;
           carried++;

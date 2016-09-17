@@ -38,7 +38,7 @@ namespace strategy{
 
       case Status::FROM_UP:
         //超信地旋回
-        if(pivotTurn_.turn(90)){
+        if(pivotTurn_.turn(100)){ //10°補正ver 本来90°
           straightRunning_.initialize();
           distanceMeasurement_.setTargetDistance(200); //ライン間は30cm
           distanceMeasurement_.startMeasurement();
@@ -48,7 +48,7 @@ namespace strategy{
 
       case Status::FROM_LEFT1:
         //下から直接ラインへ
-        if(pivotTurn_.turn(-30)){
+        if(pivotTurn_.turn(-20)){ //10°補正ver 本来-30°
           distanceMeasurement_.setTargetDistance(200); //ライン間は30cm
           distanceMeasurement_.startMeasurement();
           Status_ = Status::FROM_LEFT2;
@@ -96,15 +96,15 @@ namespace strategy{
 
       case Status::TURN:
         //90°信地旋回
-        if(bodyAngleMeasurement_.getResult() <= -85){
+        if(bodyAngleMeasurement_.getResult() <= -88){
           Status_ = Status::LINETRACE;
         }else{
-          curveRunning_.run(0, 30);
+          curveRunning_.run(-5, 30);
         }
         break;
 
       case Status::LINETRACE:
-        linetrace_->run(20,drive::LineTraceEdge::LEFT,0.6);
+        linetrace_->run(20,drive::LineTraceEdge::LEFT,0.8);
         return true;
 
     }
