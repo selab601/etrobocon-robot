@@ -34,46 +34,52 @@ namespace strategy{
         case Phase::LINETRACE1:
             startDistanceMeasurement(2500);
             lineTraceReset();
-            linetrace_->setPid(0.003,0.00000033333333,0.3);
+            linetrace_->setPid();
             linetrace_->run(80,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::CURVE1:
-            linetrace_->setPid(0.0144,0.0,0.72);
-
-            return fixedDistanceLineTrace(700,50,LineTraceEdge::RIGHT);
+            linetrace_->setPid();
+            linetrace_->setMaxPwm(60);
+            return fixedDistanceCurveLineTrace(700,-1050);
 
         case Phase::LINETRACE2:
-            linetrace_->setPid(0.003,0.0,0.3);
+            linetrace_->setPid();
             return fixedDistanceLineTrace(1250,80,LineTraceEdge::RIGHT);
 
         case Phase::CURVE2:
-            linetrace_->setPid(0.0144,0.0,0.72);
-            return fixedDistanceLineTrace(700,50,LineTraceEdge::RIGHT);
+            linetrace_->setPid();
+            linetrace_->setMaxPwm(60);
+            return fixedDistanceCurveLineTrace(700,380);
 
         case Phase::LINETRACE3:
-            linetrace_->setPid(0.003,0.0,0.3);
-            return fixedDistanceLineTrace(300,30,LineTraceEdge::RIGHT);
+            //エッジ切り替え直前
+            linetrace_->setPid();
+            return fixedDistanceLineTrace(300,50,LineTraceEdge::RIGHT);
 
         case Phase::CHANGEEDGE:
             return linetrace_->changeEdge();
 
         case Phase::LINETRACE4:
-            linetrace_->setPid(0.0144,0.0,0.72);
-
-            return fixedDistanceLineTrace(300,30,LineTraceEdge::LEFT);
+            //エッジ切り替え直後
+            linetrace_->setPid();
+            return fixedDistanceLineTrace(300,50,LineTraceEdge::LEFT);
 
         case Phase::CURVE3:
-            linetrace_->setPid(0.0144,0.0,0.72);
-            return fixedDistanceLineTrace(1000,40,LineTraceEdge::LEFT);
+            linetrace_->setPid();
+            linetrace_->setMaxPwm(60);
+            return fixedDistanceCurveLineTrace(700,320);
 
         case Phase::LINETRACE5:
-            linetrace_->setPid(0.003,0.0,0.3);
-            return fixedDistanceLineTrace(200,40,LineTraceEdge::LEFT);
+            //エッジ切り替え直前
+            linetrace_->setPid();
+            return fixedDistanceLineTrace(300,50,LineTraceEdge::LEFT);
 
         case Phase::LINETRACE6:
-            linetrace_->setPid(0.003,0.0,0.3);
-            return fixedDistanceLineTrace(600,40,LineTraceEdge::RIGHT);
+            //エッジ切り替え直後
+            //エッジ切り替えに使う距離が毎回違うので早めに終了させる
+            linetrace_->setPid();
+            return fixedDistanceLineTrace(450,50,LineTraceEdge::RIGHT);
 
         default: return false;
         }
@@ -90,6 +96,12 @@ namespace strategy{
     bool LCourseStandard::fixedDistanceLineTrace(int distance,int speed,LineTraceEdge edge){
         startDistanceMeasurement(distance);
         linetrace_->run(speed,edge);
+        return distanceMeasurement_->getResult();
+    }
+
+    bool LCourseStandard::fixedDistanceCurveLineTrace(int distance,int deltaRad){
+        startDistanceMeasurement(distance);
+        linetrace_->runCurve(deltaRad);
         return distanceMeasurement_->getResult();
     }
 
