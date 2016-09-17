@@ -110,7 +110,11 @@ namespace strategy{
             if(timeMeasurement_->getResult()){
                 isTimeDetected = true;
             }
-            return isTimeDetected && hoshitoriDetection(true);
+            if(isTimeDetected){
+                return hoshitoriDetection(true);
+            }else{
+                return false;
+            }
 
         //通り過ぎてから1秒間待つ
         case StrategyPhase::WAIT_1_SEC:
