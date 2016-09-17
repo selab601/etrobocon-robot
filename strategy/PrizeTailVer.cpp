@@ -49,15 +49,16 @@ namespace strategy{
         //ライントレース
         case Phase::LINE_TRACE:
             lineTraceReset();
-            startDistanceMeasurement(800);
-            lineTrace_->setPid(0.0144,0.0,0.72);
-            lineTrace_->run(30,LineTraceEdge::RIGHT);
+            startDistanceMeasurement(1000);
+            lineTrace_->setPid();
+            lineTrace_->run(60,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::LINE_TRACE2:
-            startDistanceMeasurement(1100);
+            lineTraceReset();
+            startDistanceMeasurement(350);
             lineTrace_->setPid(0.003,0.0,0.3);
-            lineTrace_->run(60,LineTraceEdge::RIGHT);
+            lineTrace_->run(40,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         //アームを下げる
@@ -91,7 +92,7 @@ namespace strategy{
 
         case Phase::BACK_14CM:
             startDistanceMeasurement(140);
-            straightRunning_->run(-15);
+            straightRunning_->run(-10);
             return distanceMeasurement_->getResult();
 
         //下ろす
@@ -140,21 +141,30 @@ namespace strategy{
             }
             return false;
 
-        //ゴールまでライントレース(カーブと直線で分割するべき)
+        case Phase::RIGHT_10_ROTATION:
+            return pivotTurn_->turn(-10,20);
+
+        //ゴールまでライントレース
         case Phase::LINE_TRACE_UP_TO_GOOL:
+            //startDistanceMeasurement(350);//カーブ用
             startDistanceMeasurement(500);
             lineTrace_->setPid(0.0144,0.0,0.72);
+            // lineTrace_->setEdge(LineTraceEdge::RIGHT);
+            // lineTrace_->setMaxPwm(60);
+            // lineTrace_->runCurve(1080);
             lineTrace_->run(40,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::LINE_TRACE_UP_TO_GOOL2:
+            //startDistanceMeasurement(2850);//カーブ用
             startDistanceMeasurement(2700);
-            lineTrace_->setPid(0.003,0.0,0.3);
-            lineTrace_->run(60,LineTraceEdge::RIGHT);
+            lineTrace_->setPid();
+            lineTrace_->run(80,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::FINISHED:
             straightRunning_->run(0);
+            //尻尾を振らなければ次のテスト時に尻尾を合わせなくて良くなる
             //Shippo::getInstance()->furifuri();
             return false;
 

@@ -42,7 +42,6 @@ namespace strategy{
         }
         if(procedureNumber == strategyProcedure_.size()){//最後まで終わったら
             strategySuccess_ = true;
-            straightRunning_->run(0);//あとで消す
             return true;
         }
         return strategySuccess_;
@@ -59,7 +58,8 @@ namespace strategy{
 
         //星取取得
         case StrategyPhase::HOSHITORI:
-            linetrace_->setPid(0.0144,0.0,0.72);
+            //linetrace_->setPid(0.0144,0.0,0.72);
+            linetrace_->setPid();
             linetrace_->run(20,LineTraceEdge::RIGHT);
             return hoshitoriDetection();
 
@@ -86,6 +86,7 @@ namespace strategy{
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
             startDistanceMeasurement(900);
+            linetrace_->setPid(0.0144,0.0,0.72);
             linetrace_->run(40,LineTraceEdge::RIGHT);
             //距離検知or車体角度が土俵を向いたらtrue
             return distanceMeasurement_->getResult() || bodyAngleMeasurement_->getResult() >= 180;
@@ -127,7 +128,7 @@ namespace strategy{
 
         //横を向くまで旋回
         case StrategyPhase::TURN_TO_SIDE:
-            return pivotTurn_->turn(climbAfterSideFaceAngle_,30);
+            return pivotTurn_->turn(climbAfterSideFaceAngle_);
 
         //ラインまでバック
         case StrategyPhase::BACK_TO_LINE:
@@ -167,7 +168,7 @@ namespace strategy{
 
         //復帰後のライントレーストレース
         case StrategyPhase::LINE_RETURN:
-            startDistanceMeasurement(1400);
+            startDistanceMeasurement(1350);
             lineTraceReset();
             linetrace_->setEdge(LineTraceEdge::RIGHT);
             linetrace_->setMaxPwm(60);
@@ -265,7 +266,7 @@ namespace strategy{
         //上段までライントレース
         case SumoPhase::UPPER_STAGE:
             static bool isTimeDetected = false;
-            startTimeMeasurement(1000);
+            startTimeMeasurement(800);
             linetrace_->run(20,upperStageEdge_,0.4);
             if(timeMeasurement_->getResult()){
                 isTimeDetected = true;
@@ -275,7 +276,7 @@ namespace strategy{
         //下段までライントレース
         case SumoPhase::DOWN_STAGE:
             static bool isTimeDetected2 = false;
-            startTimeMeasurement(500);
+            startTimeMeasurement(400);
             linetrace_->run(20,downStageEdge_,0.4);
             if(timeMeasurement_->getResult()){
                 isTimeDetected2 = true;
