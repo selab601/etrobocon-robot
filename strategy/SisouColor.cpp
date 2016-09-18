@@ -4,8 +4,23 @@ using namespace drive;
 using namespace detection;
 using namespace measurement;
 
+/*
+使い方
+ロガーを起動しながら実行すればOK
+コンストラクタないのフラグを変更する(RCourse_);
+Course.cppに戦略として追加する
+Rコースの場合、赤の隣の黄色(2,1)から赤に向けて設置するだけ
+黄、赤、青、緑のHSV値をロガーで確認する
+Lコースの場合、スタート地点からスタート
+星取4色、木の色のHSV値をロガーで確認する
+本番前はコードのCourse.cppを確認してSisouColor戦略を使ってないか確認しよう!
+*/
 namespace strategy{
     SisouColor::SisouColor(){
+
+        //RCourse_ = true;//右コース使う場合
+        RCourse_ = false;//左コース使う場合
+
         linetrace_              = LineTrace::getInstance();
         straightRunning_        = new StraightRunning();
         climbingRunning_        = new ClimbingRunning();
@@ -28,8 +43,6 @@ namespace strategy{
         hoshitori_              = Hoshitori::NONE;
         extrusionPhase_         = ExtrusionPhase::START_LINE_TRACE;
 
-        //RCourse_ = true;//右コース使う場合
-        RCourse_ = false;//左コース使う場合
     }
 
     bool SisouColor::capture(){
