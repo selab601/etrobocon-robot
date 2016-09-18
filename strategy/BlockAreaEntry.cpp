@@ -81,9 +81,9 @@ namespace strategy{
                 break;
 
             case Status::INITIALIZE:
-                if (catching.putBlock()){
+                //if (catching.putBlock()){
                     Status_ = Status::DONE;
-                }
+                //}
                 break;
 
             case Status::DONE:
