@@ -36,6 +36,7 @@ namespace strategy{
 				BLOCK_COLOR_GET,
 				CATCH,
 				TO_INSTALLATION,
+                TO_EXIT_COORDINATE,
 				INSTALLATION,
 				DONE
 				};
@@ -77,18 +78,18 @@ namespace strategy{
 
             bool runTo(int x , int y);
 
-            std::vector<drive::BlockAreaCoordinate*>* priorInformation_;
-            std::vector<drive::BlockAreaCoordinate*>* redStage_;
-            std::vector<drive::BlockAreaCoordinate*>* yellowStage_;
-            std::vector<drive::BlockAreaCoordinate*>* greenStage_;
-            std::vector<drive::BlockAreaCoordinate*>* blueStage_;
+            std::vector<drive::BlockAreaCoordinate> priorInformation_;
+            std::vector<drive::BlockAreaCoordinate> redStage_;
+            std::vector<drive::BlockAreaCoordinate> yellowStage_;
+            std::vector<drive::BlockAreaCoordinate> greenStage_;
+            std::vector<drive::BlockAreaCoordinate> blueStage_;
 
             /**
              * @brief 引数に与えられたものの一番近い座標を次の目的地座標にセットする
              **/
-            bool nearStage(std::vector<drive::BlockAreaCoordinate*> &coordinate , int method);
+            bool nearStage(std::vector<drive::BlockAreaCoordinate> coordinate , int method);
 
-
+        colorid_t getColorOfStage(drive::BlockAreaCoordinate coordinate);
 
 		public:
 			//コンストラクタ

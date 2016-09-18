@@ -24,7 +24,6 @@ namespace strategy{
 		private:
 			enum class Status
 			{
-				TO_DESTINATION,
 				CONFIRM_EV3_POSITION,
 				FROM_UP,
 				FROM_LEFT1,

@@ -14,6 +14,8 @@ namespace strategy{
         bodyAngleMeasurement_ = measurement::BodyAngleMeasurement();
         colorDetection_ = detection::ColorDetection();
 
+        selfPositionEstimation_ = measurement::SelfPositionEstimation::getInstance();
+
         Status_ = Status::STANDBY;
 
     }
@@ -86,6 +88,7 @@ namespace strategy{
 
             case Status::DONE:
                 motor_->setWheelPWM(0,0);
+                selfPositionEstimation_->initMap();
                 return true;
         }
         return false;
