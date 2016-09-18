@@ -104,18 +104,22 @@ namespace strategy{
 
         //1秒間待つ,星取も読む
         case StrategyPhase::WAIT_1_SEC_H:
+            static bool isTimeDetected = false;
             startTimeMeasurement(1000);
             straightRunning_->run(0);
             if(timeMeasurement_->getResult()){
-                hoshitoriDetection(true);
-                return true;
+                isTimeDetected = true;
+            }
+            if(isTimeDetected){
+                return hoshitoriDetection(true);
+            }else{
+                return false;
             }
 
         //通り過ぎてから1秒間待つ
         case StrategyPhase::WAIT_1_SEC:
             startTimeMeasurement(1000);
             straightRunning_->run(0);
-            hoshitoriDetection(true);
             return timeMeasurement_->getResult();
 
         //登壇後の動作を安定させるため少し旋回
@@ -172,7 +176,7 @@ namespace strategy{
             lineTraceReset();
             linetrace_->setEdge(LineTraceEdge::RIGHT);
             linetrace_->setMaxPwm(60);
-            linetrace_->setPid(0.003,0,0.3);
+            linetrace_->setPid(0.006,0,0.6);
             linetrace_->setTarget(0.5);
             linetrace_->runCurve(-380);
             return distanceMeasurement_->getResult();
@@ -185,11 +189,23 @@ namespace strategy{
             return turn(false,20);
 
         case StrategyPhase::LEAVE_FROM_LINE:
-            startDistanceMeasurement(100);
+            startDistanceMeasurement(80);
             straightRunning_->run(20);
             return distanceMeasurement_->getResult();
 
         case StrategyPhase::APPROACH_TO_LINE:
+            static bool initialized = false;
+            if(!initialized){
+                straightRunning_->initialize();
+                initialized = true;
+            }
+            //startDistanceMeasurement(30);
+            straightRunning_->run(-8,50);
+            //straightRunning_->run(-15,80);
+            //return distanceMeasurement_->getResult();
+            return lineDetection_->getResult();
+
+        case StrategyPhase::APPROACH_TO_LINE2:
             straightRunning_->run(-15);
             return lineDetection_->getResult();
 
