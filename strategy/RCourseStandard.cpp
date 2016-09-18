@@ -31,7 +31,7 @@ namespace strategy{
         if(bodyAngleMeasurement_.getResult() <= -80){ // -90 だと検知しないことがある
           Status_ = Status::STRAIGHT1_STANDBY;
         }else{
-          linetrace_->run(40,drive::LineTraceEdge::LEFT,0.7);
+          linetrace_->run(40,drive::LineTraceEdge::LEFT, 0.5);
         }
 
         break;
@@ -52,7 +52,7 @@ namespace strategy{
 
       case Status::STRAIGHT1:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.5);
         }else{
           Status_ = Status::CURVE1_STANDBY;
         }
@@ -100,7 +100,7 @@ namespace strategy{
 
       case Status::STRAIGHT2:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.5);
         }else{
           Status_ = Status::CURVE2_STANDBY;
         }
@@ -141,7 +141,7 @@ namespace strategy{
 
       case Status::STRAIGHT3:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.5);
         }else{
           Status_ = Status::CURVE3_STANDBY;
         }
@@ -182,7 +182,7 @@ namespace strategy{
 
       case Status::STRAIGHT4:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.6);
+          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.5);
         }else{
           Status_ = Status::DONE;
         }
