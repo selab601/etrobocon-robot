@@ -15,18 +15,11 @@ namespace strategy{
 
     destination_ = drive::Destination::getInstance();
 
-    Status_ = Status::TO_DESTINATION;
+    Status_ = Status::CONFIRM_EV3_POSITION;
   }
 
   bool BlockAreaExit::capture(){
     switch(Status_){
-      case Status::TO_DESTINATION:
-        //(4,4)へ移動
-        if(destination_->runTo(4,4)){
-          Status_ = Status::CONFIRM_EV3_POSITION;
-        }
-        break;
-
       case Status::CONFIRM_EV3_POSITION:
         //取りうる車体位置は二通り UP or LEFT
         if(!strcmp(destination_->getEV3Position(),"UP")){

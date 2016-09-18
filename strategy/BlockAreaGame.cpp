@@ -106,7 +106,7 @@ namespace strategy{
       case Status::DECISION:
         //3個運び終わるまで
         if(carried == 3 || confirmed >= 4){
-          Status_ = Status::DONE;
+          Status_ = Status::TO_EXIT_COORDINATE;
         }else{
           Status_ = Status::TO_DESTINATION;
         }
@@ -181,6 +181,12 @@ namespace strategy{
           carried++;
           blockColorGetter_ = drive::BlockColorGetter();
           Status_ = Status::DECISION;
+        }
+        break;
+
+      case Status::TO_EXIT_COORDINATE:
+        if (runTo(4,4)) {
+            Status_ = Status::DONE;
         }
         break;
 

@@ -36,6 +36,7 @@ namespace strategy{
 				BLOCK_COLOR_GET,
 				CATCH,
 				TO_INSTALLATION,
+                TO_EXIT_COORDINATE,
 				INSTALLATION,
 				DONE
 				};
