@@ -99,8 +99,20 @@ namespace strategy{
   bool BlockAreaGame::capture(){
     switch(Status_){
       case Status::STANDBY:
-        destination_->setCurrentLocation(1,2,direction_); // 侵入後ゲーム開始位置で更新
-        Status_ = Status::DECISION;
+      destination_->setCurrentLocation(1,2,direction_); // 侵入後ゲーム開始位置で更新
+        if(block_exist[0][1] == 0){
+            if(block_exist[0][0] == 1){
+                if(catching_.catchBlock(1,1)){
+                Status_ = Status::DECISION;
+                }
+            }
+            else if(catching_.catchBlock(2,2)){
+                Status_ = Status::DECISION;
+            }
+        }
+        else{
+            Status_ = Status::DECISION;
+        }
         break;
 
       case Status::DECISION:
