@@ -21,6 +21,10 @@ namespace drive{
         BlockAreaCoordinate operator-(BlockAreaCoordinate &cor) {
             return BlockAreaCoordinate(x_-cor.getX(), y_-cor.getY());
         }
+
+        bool operator==(BlockAreaCoordinate &cor) {
+            return x_ == cor.getX() && y_ == cor.getY();
+        }
     };
 };
 

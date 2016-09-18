@@ -136,6 +136,14 @@ namespace strategy{
             blockColorGetter_ = drive::BlockColorGetter();
             Status_ = Status::DECISION;
             break;
+          } else if(getColorOfStage(drive::BlockAreaCoordinate(destination_x, destination_y)) == result->blockColor) {
+            //確認したブロック数，運んだブロック数，ブロックの有無の更新
+            block_exist[destination_x - 1][destination_y - 1] = 2;
+            confirmed++;
+            carried++;
+            blockColorGetter_ = drive::BlockColorGetter();
+            Status_ = Status::DECISION;
+            break;
           } else if(result->blockColor == COLOR_RED){         //赤ブロック
             //目的地台座上にブロックがなければ，目的地とする
             nearStage(redStage_ , 0);
@@ -182,4 +190,20 @@ namespace strategy{
     }
     return false;
   }
+
+    colorid_t BlockAreaGame::getColorOfStage(drive::BlockAreaCoordinate coordinate) {
+        for (auto cor : redStage_) {
+            if (coordinate == cor) { return COLOR_RED; }
+        }
+        for (auto cor : yellowStage_) {
+            if (coordinate == cor) { return COLOR_YELLOW; }
+        }
+        for (auto cor : blueStage_) {
+            if (coordinate == cor) { return COLOR_BLUE; }
+        }
+        for (auto cor : greenStage_) {
+            if (coordinate == cor) { return COLOR_GREEN; }
+        }
+        return COLOR_NONE;
+    }
 };

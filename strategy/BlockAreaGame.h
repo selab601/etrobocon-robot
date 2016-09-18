@@ -88,6 +88,7 @@ namespace strategy{
              **/
             bool nearStage(std::vector<drive::BlockAreaCoordinate> coordinate , int method);
 
+        colorid_t getColorOfStage(drive::BlockAreaCoordinate coordinate);
 
 		public:
 			//コンストラクタ
