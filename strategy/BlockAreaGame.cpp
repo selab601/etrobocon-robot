@@ -14,13 +14,14 @@ namespace strategy{
     colorDetection_ = detection::ColorDetection();
 
     catching_ = drive::Catching();
+    sholdMoveBlock_ = true;
     destination_ = drive::Destination::getInstance();
     blockColorGetter_ = drive::BlockColorGetter();
 
     block_x[0] = 1; block_y[0] = 1; //ブロック1
-    block_x[1] = 1; block_y[1] = 4; //ブロック3
-    block_x[2] = 4; block_y[2] = 1; //ブロック2
-    block_x[3] = 4; block_y[3] = 4; //ブロック4
+    block_x[1] = 1; block_y[1] = 2; //ブロック3
+    block_x[2] = 2; block_y[2] = 2; //ブロック2
+    block_x[3] = 3; block_y[3] = 2; //ブロック4
 
     block_exist[block_x[0]-1][block_y[0]-1]=1;
     block_exist[block_x[1]-1][block_y[1]-1]=1;
@@ -134,33 +135,64 @@ namespace strategy{
             block_exist[destination_x - 1][destination_y - 1] = 2;
             confirmed++;
             blockColorGetter_ = drive::BlockColorGetter();
-            Status_ = Status::DECISION;
-            break;
+            sholdMoveBlock_ = false;
           } else if(getColorOfStage(drive::BlockAreaCoordinate(destination_x, destination_y)) == result->blockColor) {
             //確認したブロック数，運んだブロック数，ブロックの有無の更新
             block_exist[destination_x - 1][destination_y - 1] = 2;
             confirmed++;
             carried++;
             blockColorGetter_ = drive::BlockColorGetter();
-            Status_ = Status::DECISION;
-            break;
+            sholdMoveBlock_ = false;
           } else if(result->blockColor == COLOR_RED){         //赤ブロック
             //目的地台座上にブロックがなければ，目的地とする
             nearStage(redStage_ , 0);
+            sholdMoveBlock_ = true;
           }else if(result->blockColor == COLOR_YELLOW){       //黄色ブロック
             nearStage(yellowStage_ , 0);
+            sholdMoveBlock_ = true;
           }else if(result->blockColor == COLOR_GREEN){         //緑ブロック
             nearStage(greenStage_ , 0);
+            sholdMoveBlock_ = true;
           }else if(result->blockColor == COLOR_BLUE){          //青ブロック
             nearStage(blueStage_ , 0);
+            sholdMoveBlock_ = true;
           }else{ //NONE とかの場合
             blockColorGetter_ = drive::BlockColorGetter();
             break;
           }
-          Status_ = Status::CATCH;
+
+          distanceMeasurement_.setTargetDistance(100);
+          distanceMeasurement_.startMeasurement();
+          Status_ = Status::BACK_TO_LINE;
         }
         break;
 
+    case Status::BACK_TO_LINE:
+    {
+        drive::BlockAreaCoordinate currentCoordinate = destination_->currentCoordinate_;
+        drive::BlockAreaCoordinate destination = drive::BlockAreaCoordinate(destination_x, destination_y);
+        drive::BlockAreaCoordinate nextCoordinate = destination_->getNextStageCoordinate(destination);
+        drive::Destination::Direction direction = destination_->getDirection(currentCoordinate, nextCoordinate);
+        drive::Destination::Position position = destination_->getPosition(destination_->EV3Position_, direction);
+        // 後ろに移動する場合(EQUAL)以外は戻る
+        // ブロックを動かさない場合も戻る
+        if(position == drive::Destination::Position::EQUAL
+           || sholdMoveBlock_ == false){
+          straightRunning_.run(-20);
+          if (!distanceMeasurement_.getResult()) {
+              break;
+          }
+        }
+
+        // 戻り終えたら/戻らなくて良い場合は
+        if (sholdMoveBlock_) {
+            Status_ = Status::CATCH;
+        } else {
+            Status_ = Status::DECISION;
+        }
+
+        break;
+    }
       case Status::CATCH:
         if(catching_.catchBlock(destination_x,destination_y)){
           Status_ = Status::TO_INSTALLATION;

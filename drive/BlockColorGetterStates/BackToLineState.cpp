@@ -9,7 +9,6 @@ namespace drive {
         states_.push(BACK_STATE::INIT_TIME);
         states_.push(BACK_STATE::SET_ARM);
         states_.push(BACK_STATE::INIT_DISTANCE);
-        states_.push(BACK_STATE::BACK);
         states_.push(BACK_STATE::FINISH);
         distanceMeasurement_ = new DistanceMeasurement();
         straight_ = new StraightRunning();

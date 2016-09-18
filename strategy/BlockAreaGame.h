@@ -36,6 +36,7 @@ namespace strategy{
 				BLOCK_COLOR_GET,
 				CATCH,
 				TO_INSTALLATION,
+                BACK_TO_LINE,
                 TO_EXIT_COORDINATE,
 				INSTALLATION,
 				DONE
@@ -59,6 +60,8 @@ namespace strategy{
 			drive::colorset_t* result;
 
 			drive::Destination::Direction direction_;
+
+        bool sholdMoveBlock_;
 
 			//事前情報管理
 			//黄色：(1,1) 青(4,4)
