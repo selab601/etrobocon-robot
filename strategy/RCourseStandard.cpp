@@ -28,7 +28,7 @@ namespace strategy{
         //KOTORI -83
         //SELAB  -82
         //KAKERUN -85
-        if(bodyAngleMeasurement_.getResult() <= -90){
+        if(bodyAngleMeasurement_.getResult() <= -80){ // -90 だと検知しないことがある
           Status_ = Status::STRAIGHT1_STANDBY;
         }else{
           linetrace_->run(40,drive::LineTraceEdge::LEFT,0.7);
