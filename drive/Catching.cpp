@@ -24,7 +24,7 @@ namespace drive{
                 lineTrace->setPid(0.0168, 0, 0.924);
                 lineTrace->setMaxPwm(20);
                 lineTrace->setEdge(LineTraceEdge::RIGHT);
-                lineTrace->setTarget(0.42); // 黒寄り
+                lineTrace->setTarget(0.2); // 黒寄り
 
                 if (TurnDirection::STRAIGHT == direction){
                     state_ = State::TURN_RIGHT;
@@ -56,7 +56,7 @@ namespace drive{
                     lineTrace->setPid(0.0168, 0, 0.924);
                     lineTrace->setMaxPwm(20);
                     lineTrace->setEdge(LineTraceEdge::RIGHT);
-                    lineTrace->setTarget(0.42); // 黒寄り
+                    lineTrace->setTarget(0.2); // 黒寄り
 
                     state_ = State::TO_LINE;
                 }
@@ -191,7 +191,7 @@ namespace drive{
                 lineTrace->setPid(0.0168, 0, 0.924);
                 lineTrace->setMaxPwm(20);
                 lineTrace->setEdge(LineTraceEdge::RIGHT);
-                lineTrace->setTarget(0.42); // 黒寄り
+                lineTrace->setTarget(0.2); // 黒寄り
 
                 state = State::TO_BLOCK;
                 break;
