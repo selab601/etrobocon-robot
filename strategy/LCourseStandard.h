@@ -21,6 +21,7 @@ namespace strategy{
                 CURVE1,
                 CURVE2,
                 CURVE3,
+                LINE_IGNORE,
             };
 
             std::vector<Phase> phaseProcedure_{
@@ -29,11 +30,12 @@ namespace strategy{
                 Phase::LINETRACE2,
                 Phase::CURVE2,
                 Phase::LINETRACE3,
-                Phase::CHANGEEDGE,
-                Phase::LINETRACE4,
+                //Phase::CHANGEEDGE,
+                Phase::LINE_IGNORE,
+                //Phase::LINETRACE4,
                 Phase::CURVE3,
-                Phase::LINETRACE5,
-                Phase::CHANGEEDGE,
+                //Phase::LINETRACE5,
+                //Phase::CHANGEEDGE,
                 Phase::LINETRACE6,
             };
 

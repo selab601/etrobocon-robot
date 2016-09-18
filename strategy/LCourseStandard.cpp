@@ -56,7 +56,8 @@ namespace strategy{
         case Phase::LINETRACE3:
             //エッジ切り替え直前
             linetrace_->setPid();
-            return fixedDistanceLineTrace(300,50,LineTraceEdge::RIGHT);
+            //return fixedDistanceLineTrace(300,50,LineTraceEdge::RIGHT);
+            return fixedDistanceLineTrace(870,70,LineTraceEdge::RIGHT);
 
         case Phase::CHANGEEDGE:
             //startDistanceMeasurement(300);
@@ -81,7 +82,13 @@ namespace strategy{
             //エッジ切り替え直後
             //エッジ切り替えに使う距離が毎回違うので早めに終了させる
             linetrace_->setPid();
-            return fixedDistanceLineTrace(250,40,LineTraceEdge::RIGHT);
+            //return fixedDistanceLineTrace(250,40,LineTraceEdge::RIGHT);
+            return fixedDistanceLineTrace(800,40,LineTraceEdge::RIGHT);
+
+        case Phase::LINE_IGNORE:
+            linetrace_->setPid(0,0,0);
+            linetrace_->setMaxPwm(60);
+            return fixedDistanceCurveLineTrace(200,320);
 
         default: return false;
         }
