@@ -117,7 +117,7 @@ namespace strategy{
             StrategyPhase::LEAVE_FROM_LINE,
             StrategyPhase::WAIT_1_SEC,
             StrategyPhase::APPROACH_TO_LINE,
-            StrategyPhase::APPROACH_TO_LINE2,
+            //StrategyPhase::APPROACH_TO_LINE2,
             StrategyPhase::STRAIGHT_4_CM,
             StrategyPhase::TURN_LEFT_90,
             //StrategyPhase::LINE_DETECTION,
