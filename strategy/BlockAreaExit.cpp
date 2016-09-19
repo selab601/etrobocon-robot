@@ -60,7 +60,7 @@ namespace strategy{
 
       case Status::FROM_LEFT3:
         if(pivotTurn_.turn(-40)){
-          distanceMeasurement_.setTargetDistance(200); //ラインまで38cm
+          distanceMeasurement_.setTargetDistance(230); //ラインまで38cm
           distanceMeasurement_.startMeasurement();
           Status_ = Status::STRAIGHT_SPEED_UP;
         }
@@ -78,7 +78,7 @@ namespace strategy{
 
       case Status::STRAIGHT_SPEED_DOWN:
         //ライン検知するまで
-        if(!lineDetection_.getResult()){
+        if(!lineDetection_.getResult(30)){
           straightRunning_.run(20, 100);
         }else{
           //信地旋回準備
