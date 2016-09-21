@@ -34,7 +34,7 @@ namespace detection{
             } else if (hsv.h >= 50 && hsv.h <= 80) {
                 /* 彩度が高ければ黄色と判断する
                    彩度が低ければ板の色(白)と判断する*/
-                if(hsv.s >= 200){
+                if(hsv.s >= 190){
                     result = COLOR_YELLOW;
                 }else{
                     result = COLOR_WHITE;
