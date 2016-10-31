@@ -122,7 +122,8 @@ namespace strategy{
           //KOTORI(35,58) //電池(33,59)
           //SELAB(35,58)  電池 (33,60)
           //KAKERUN(31,61
-          curveRunning_.run(35, 59);    // TODO: 機体に応じて変更
+          //curveRunning_.run(35, 59);    // TODO: 機体に応じて変更
+          curveRunning_.run(35, 58);    // TODO: 機体に応じて変更
         }else{
           Status_ = Status::STRAIGHT3_STANDBY;
         }
