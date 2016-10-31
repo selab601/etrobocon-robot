@@ -51,14 +51,14 @@ namespace strategy{
             lineTraceReset();
             startDistanceMeasurement(1000);
             lineTrace_->setPid();
-            lineTrace_->run(60,LineTraceEdge::RIGHT);
+            lineTrace_->run(50,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::LINE_TRACE2:
             lineTraceReset();
             startDistanceMeasurement(350);
             lineTrace_->setPid(0.003,0.0,0.3);
-            lineTrace_->run(30,LineTraceEdge::RIGHT);
+            lineTrace_->run(20,LineTraceEdge::RIGHT);//ここのスピード
             return distanceMeasurement_->getResult();
 
         //アームを下げる
@@ -91,7 +91,7 @@ namespace strategy{
             return Arm::getInstance()->up(15) || timeMeasurement_->getResult();
 
         case Phase::BACK_14CM:
-            startDistanceMeasurement(140);
+            startDistanceMeasurement(125);//ここの距離確認(ラインの右側にいるかどうか)
             straightRunning_->run(-10);
             return distanceMeasurement_->getResult();
 

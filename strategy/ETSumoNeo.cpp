@@ -175,6 +175,7 @@ namespace strategy{
             startDistanceMeasurement(1350);
             lineTraceReset();
             linetrace_->setEdge(LineTraceEdge::RIGHT);
+            //試走で一回失敗
             linetrace_->setMaxPwm(60);
             linetrace_->setPid(0.006,0,0.6);
             linetrace_->setTarget(0.5);
@@ -199,10 +200,7 @@ namespace strategy{
                 straightRunning_->initialize();
                 initialized = true;
             }
-            //startDistanceMeasurement(30);
             straightRunning_->run(-8,50);
-            //straightRunning_->run(-15,80);
-            //return distanceMeasurement_->getResult();
             return lineDetection_->getResult();
 
         case StrategyPhase::APPROACH_TO_LINE2:
