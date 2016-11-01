@@ -253,9 +253,9 @@ namespace strategy{
 
         // ライン検知するまで進む
       case Status::LINE_DETECT:
-        straightRunning_.run(35);
+        straightRunning_.run(40);
         if(lineDetection_.getResult(30)){
-            Status_ = Status::TO_GATE;
+            Status_ = Status::TO_GATE_CURVE;
             ev3_speaker_play_tone(500,200);
 
             //distanceMeasurement_.startMeasurement();
@@ -264,20 +264,30 @@ namespace strategy{
         break;
 
 
-      case Status::TO_GATE:
+      case Status::TO_GATE_CURVE:
         //linetrace_->setPid(0.019, 0.0, 1.4);
         //linetrace_->run(25, drive::LineTraceEdge::RIGHT ,0.5);
         //curveRunning_.run(30, 5);
-        curveRunning_.run(30, 2);
+        curveRunning_.run(60, 4);
 
         if (estimation->getAngle() - baseAngle >= 80){
             ev3_speaker_play_tone(500,200);
+
+            distanceMeasurement_.startMeasurement();
+            distanceMeasurement_.setTargetDistance(50);
+            Status_ = Status::TO_GATE_STRAIGHT;
+        }
+        break;
+
+      case Status::TO_GATE_STRAIGHT:
+        straightRunning_.run(50);
+        if (distanceMeasurement_.getResult()){
             Status_ = Status::TURN;
         }
         break;
 
       case Status::TURN:
-        if (pivotTurn_.turn(-170)){
+        if (pivotTurn_.turn(-170, 40)){
             Status_ = Status::STRAIGHT4_STANDBY;
         }
         break;
@@ -296,7 +306,7 @@ namespace strategy{
 
       case Status::STRAIGHT4:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.5);
+          linetrace_->run(80,drive::LineTraceEdge::LEFT,0.5);
         }else{
           Status_ = Status::DONE;
         }

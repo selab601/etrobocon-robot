@@ -40,7 +40,8 @@ namespace strategy{
                 TO_NEAR_GATE_LINE_STRAIGHT,
                 LINE_DETECT,
 
-                TO_GATE,
+                TO_GATE_CURVE,
+                TO_GATE_STRAIGHT,
                 TURN,
 
                 STRAIGHT4_STANDBY,
