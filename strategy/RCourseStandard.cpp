@@ -30,6 +30,10 @@ namespace strategy{
         linetrace_->reset();
         linetrace_->setPid(0.018, 0, 1.2);
         bodyAngleMeasurement_.setBaseAngle();
+
+        baseLength = estimation->getMigrationLength();
+        targetLength = 0;
+        angleCounter = 0;
         Status_ = Status::DETECTION_CURVE;
         break;
 
@@ -40,9 +44,24 @@ namespace strategy{
         //SELAB  -82
         //KAKERUN -85
         if(bodyAngleMeasurement_.getResult() <= -80){ // -90 だと検知しないことがある
+            angleCounter = 0;
           Status_ = Status::STRAIGHT1_STANDBY;
         }else{
-          linetrace_->run(40,drive::LineTraceEdge::LEFT, 0.5);
+          linetrace_->run(50,drive::LineTraceEdge::LEFT, 0.5);
+        }
+
+        if (estimation->getMigrationLength() - baseLength >= targetLength){
+            // 角度を測る
+            if (angleCounter < 5 ){
+                ev3_speaker_play_tone(500, 100);
+                angle[angleCounter++] += estimation->getAngle();
+                targetLength += 70;
+            }
+            else{
+                // 5回計測した角度の平均をベースにセットする
+                baseAngle =
+                    (angle[0] + angle[1] + angle[2] + angle[3] + angle[4]) / 5;
+            }
         }
 
         break;
