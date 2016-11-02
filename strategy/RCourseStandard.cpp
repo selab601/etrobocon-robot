@@ -71,7 +71,7 @@ namespace strategy{
 
         // ショートカット用
         baseLength = estimation->getMigrationLength();
-        targetLength = 300;
+        targetLength = 500;
 
       	// 直線(1300)，カーブ()　直径(480)，直線()
         linetrace_->reset();
@@ -87,7 +87,7 @@ namespace strategy{
 
       case Status::STRAIGHT1:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.5);
+          linetrace_->run(75,drive::LineTraceEdge::LEFT,0.5);
         }else{
           Status_ = Status::CURVE1_STANDBY;
         }
@@ -132,7 +132,7 @@ namespace strategy{
 
         // ショートカットするとき
         if (RCOURSE_SHORTCUT_FLAG != 0){
-            if (estimation->getAngle() - baseAngle >= 70){
+            if (estimation->getAngle() - baseAngle >= 60){
                 Status_ = Status::TO_NEAR_GATE_LINE_CURVE;
             }
         }
@@ -233,7 +233,7 @@ namespace strategy{
         // ショートカットVer
         // GATEのピンクのところあたりまでカーブで進む
       case Status::TO_NEAR_GATE_LINE_CURVE:
-        curveRunning_.run(37, 58); // TODO: 調整必要かも
+        curveRunning_.run(45, 58); // TODO: 調整必要かも
         if (estimation->getAngle() - baseAngle <= 30){
             Status_ = Status::TO_NEAR_GATE_LINE_STRAIGHT;
 
@@ -268,9 +268,9 @@ namespace strategy{
         //linetrace_->setPid(0.019, 0.0, 1.4);
         //linetrace_->run(25, drive::LineTraceEdge::RIGHT ,0.5);
         //curveRunning_.run(30, 5);
-        curveRunning_.run(60, 4);
+        curveRunning_.run(60, 6);
 
-        if (estimation->getAngle() - baseAngle >= 80){
+        if (estimation->getAngle() - baseAngle >= 64){
             ev3_speaker_play_tone(500,200);
 
             distanceMeasurement_.startMeasurement();
