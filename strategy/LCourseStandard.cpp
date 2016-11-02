@@ -7,6 +7,7 @@ namespace strategy{
     LCourseStandard::LCourseStandard(){
         linetrace_ = LineTrace::getInstance();
         distanceMeasurement_ = new DistanceMeasurement();
+        curveRunning_ = new CurveRunning();
         strategySuccess_ = false;
         hasExecutedPhase_ = false;
         isLineTraceReset_ = false;
@@ -54,37 +55,41 @@ namespace strategy{
             return fixedDistanceCurveLineTrace(700,380);
 
         case Phase::LINETRACE3:
-            //エッジ切り替え直前
             linetrace_->setPid();
-            //return fixedDistanceLineTrace(300,50,LineTraceEdge::RIGHT);
-            return fixedDistanceLineTrace(870,70,LineTraceEdge::RIGHT);
+            return fixedDistanceLineTrace(300,40,LineTraceEdge::RIGHT);
 
         case Phase::CHANGEEDGE:
-            //startDistanceMeasurement(300);
-            return linetrace_->changeEdge();/* || distanceMeasurement_->getResult();*/
+            return linetrace_->changeEdge();
+
+        case Phase::CHANGEEDGE_R_L:
+            startDistanceMeasurement(70);
+            curveRunning_->run(50,40);
+            return distanceMeasurement_->getResult();
+
+        case Phase::CHANGEEDGE_L_R:
+            startDistanceMeasurement(70);
+            curveRunning_->run(40,50);
+            return distanceMeasurement_->getResult();
 
         case Phase::LINETRACE4:
-            //エッジ切り替え直後
             linetrace_->setPid();
-            return fixedDistanceLineTrace(300,50,LineTraceEdge::LEFT);
+            return fixedDistanceLineTrace(400,80,LineTraceEdge::LEFT);
 
         case Phase::CURVE3:
             linetrace_->setPid(0.006,0,0.4);
-            linetrace_->setMaxPwm(60);
-            return fixedDistanceCurveLineTrace(700,320);
+            linetrace_->setMaxPwm(70);
+            linetrace_->setEdge(LineTraceEdge::LEFT);
+            return fixedDistanceCurveLineTrace(800,320);
 
         case Phase::LINETRACE5:
-            //エッジ切り替え直前
             linetrace_->setPid();
-            return fixedDistanceLineTrace(400,40,LineTraceEdge::LEFT);
+            return fixedDistanceLineTrace(300,40,LineTraceEdge::LEFT);
 
         case Phase::LINETRACE6:
-            //エッジ切り替え直後
-            //エッジ切り替えに使う距離が毎回違うので早めに終了させる
             linetrace_->setPid();
-            //return fixedDistanceLineTrace(250,40,LineTraceEdge::RIGHT);
-            return fixedDistanceLineTrace(800,40,LineTraceEdge::RIGHT);
+            return fixedDistanceLineTrace(800,70,LineTraceEdge::RIGHT);
 
+        //ライン無視走行
         case Phase::LINE_IGNORE:
             linetrace_->setPid(0,0,0);
             linetrace_->setMaxPwm(60);
