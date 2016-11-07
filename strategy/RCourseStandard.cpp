@@ -245,7 +245,7 @@ namespace strategy{
 
         // ライン検知できるようにGATEのピンクのところ抜ける
       case Status::TO_NEAR_GATE_LINE_STRAIGHT:
-        straightRunning_.run(35, 70);
+        straightRunning_.run(45, 70);
         if (distanceMeasurement_.getResult()){
             Status_ = Status::LINE_DETECT;
         }
