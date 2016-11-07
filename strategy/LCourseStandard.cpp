@@ -56,19 +56,19 @@ namespace strategy{
 
         case Phase::LINETRACE3:
             linetrace_->setPid();
-            return fixedDistanceLineTrace(300,40,LineTraceEdge::RIGHT);
+            return fixedDistanceLineTrace(300,50,LineTraceEdge::RIGHT);
 
         case Phase::CHANGEEDGE:
             return linetrace_->changeEdge();
 
         case Phase::CHANGEEDGE_R_L:
-            startDistanceMeasurement(70);
-            curveRunning_->run(50,40);
+            startDistanceMeasurement(100);
+            curveRunning_->run(60,48);
             return distanceMeasurement_->getResult();
 
         case Phase::CHANGEEDGE_L_R:
-            startDistanceMeasurement(70);
-            curveRunning_->run(40,50);
+            startDistanceMeasurement(100);
+            curveRunning_->run(48,60);
             return distanceMeasurement_->getResult();
 
         case Phase::LINETRACE4:
@@ -83,7 +83,7 @@ namespace strategy{
 
         case Phase::LINETRACE5:
             linetrace_->setPid();
-            return fixedDistanceLineTrace(300,40,LineTraceEdge::LEFT);
+            return fixedDistanceLineTrace(300,50,LineTraceEdge::LEFT);
 
         case Phase::LINETRACE6:
             linetrace_->setPid();
