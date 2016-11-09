@@ -43,6 +43,7 @@ namespace strategy{
 
             // 尻尾を上に向けて止める
         case Phase::STOP_FURIFURI:
+            curveRunning_->run(0, 0);
             return Shippo::getInstance()->pleased();
 
         default: return false;
