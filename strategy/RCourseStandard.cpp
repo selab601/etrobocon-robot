@@ -1,5 +1,4 @@
 #include "RCourseStandard.h"
-#include "device/Shippo.h"
 
 
 namespace strategy{
@@ -191,7 +190,6 @@ namespace strategy{
 
       case Status::DONE:
         motor_->setWheelPWM(0,0);
-        device::Shippo::getInstance()->furifuri();  // 終わったらしっぽふりふり
         return true;
     }
     return false;
