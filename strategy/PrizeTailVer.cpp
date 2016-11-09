@@ -84,7 +84,7 @@ namespace strategy{
         //懸賞の下にアームを入れる
         case Phase::PUT_IN_LOWER_OF_PRIZE:
             startDistanceMeasurement(50);
-            straightRunning_->run(10);
+            straightRunning_->run(20);
             return distanceMeasurement_->getResult();
 
         //持ち上げる
@@ -95,7 +95,7 @@ namespace strategy{
 
         case Phase::BACK_14CM:
             startDistanceMeasurement(125);//ここの距離確認(ラインの右側にいるかどうか)
-            straightRunning_->run(-10);
+            straightRunning_->run(-20);
             return distanceMeasurement_->getResult();
 
         //下ろす
@@ -109,21 +109,24 @@ namespace strategy{
         //すこし下がる
         case Phase::PUT_AFTER_BACK:
             startDistanceMeasurement(50);
-            straightRunning_->run(-10);
+            straightRunning_->run(-20);
             return distanceMeasurement_->getResult();
 
         //
         case Phase::CURVE_AFTER_BACK:
             startDistanceMeasurement(35);
-            straightRunning_->run(-10);
+            straightRunning_->run(-20);
             return distanceMeasurement_->getResult();
 
         //左に90度旋回
         case Phase::LEFT_90_ROTATION:
             return pivotTurn_->turn(90,30);
 
-        case Phase::LEFT_90_ROTATION_SLOWLY:
-            return pivotTurn_->turn(90,10);
+        case Phase::LEFT_70_ROTATION:
+            return pivotTurn_->turn(70,30);
+
+        case Phase::LEFT_20_ROTATION_SLOWLY:
+            return pivotTurn_->turn(20,10);
 
         //懸賞の左側にカーブで移動
         case Phase::CURVE_UP_TO_PRIZE_SIDE:
