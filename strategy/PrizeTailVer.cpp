@@ -51,15 +51,18 @@ namespace strategy{
             lineTraceReset();
             startDistanceMeasurement(1000);
             lineTrace_->setPid();
-            lineTrace_->run(50,LineTraceEdge::RIGHT);
+            lineTrace_->run(70,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::LINE_TRACE2:
             lineTraceReset();
-            startDistanceMeasurement(350);
             lineTrace_->setPid(0.003,0.0,0.3);
-            lineTrace_->run(20,LineTraceEdge::RIGHT);//ここのスピード
-            return distanceMeasurement_->getResult();
+            lineTrace_->run(40,LineTraceEdge::RIGHT);//ここのスピード
+
+            if (device::SonarSensor::getInstance()->getDistance() <= (5 + 15)){
+                return true;
+            }
+            return false;
 
         //アームを下げる
         case Phase::DOWN_ARM:
