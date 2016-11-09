@@ -59,7 +59,7 @@ namespace strategy{
             lineTrace_->setPid(0.003,0.0,0.3);
             lineTrace_->run(40,LineTraceEdge::RIGHT);//ここのスピード
 
-            if (device::SonarSensor::getInstance()->getDistance() <= (5 + 15)){
+            if (device::SonarSensor::getInstance()->getDistance() <= (5 + 25)){
                 return true;
             }
             return false;
@@ -68,22 +68,22 @@ namespace strategy{
         case Phase::DOWN_ARM:
             lineTrace_->setPid();
             lineTrace_->setTarget(0.4);
-            return Arm::getInstance()->down();
+            return Arm::getInstance()->down(20);
 
         case Phase::LINE_TRACE_UP_TO_PRIZE:
             lineTrace_->run(15,LineTraceEdge::RIGHT);
-            if (device::SonarSensor::getInstance()->getDistance() <= 5){
+            if (device::SonarSensor::getInstance()->getDistance() <= 8){
                 straightRunning_->run(0);
                 return true;
             }
             return false;
 
         case Phase::TURN_LEFT:
-            return pivotTurn_->turn(5, 10);
+            return pivotTurn_->turn(3, 10);
 
         //懸賞の下にアームを入れる
         case Phase::PUT_IN_LOWER_OF_PRIZE:
-            startDistanceMeasurement(50);
+            startDistanceMeasurement(90);
             straightRunning_->run(20);
             return distanceMeasurement_->getResult();
 
@@ -91,7 +91,7 @@ namespace strategy{
         case Phase::LIFT_PRIZE:
             startTimeMeasurement(1000);
             straightRunning_->run(0);
-            return Arm::getInstance()->up(15) || timeMeasurement_->getResult();
+            return Arm::getInstance()->up(40) || timeMeasurement_->getResult();
 
         case Phase::BACK_14CM:
             startDistanceMeasurement(125);//ここの距離確認(ラインの右側にいるかどうか)
@@ -114,8 +114,8 @@ namespace strategy{
 
         //
         case Phase::CURVE_AFTER_BACK:
-            startDistanceMeasurement(35);
-            straightRunning_->run(-20);
+            startDistanceMeasurement(5);
+            straightRunning_->run(-10);
             return distanceMeasurement_->getResult();
 
         //左に90度旋回
@@ -130,7 +130,7 @@ namespace strategy{
 
         //懸賞の左側にカーブで移動
         case Phase::CURVE_UP_TO_PRIZE_SIDE:
-            curveRunning_->run(12,30);
+            curveRunning_->run(13, 30);
             return bodyAngleMeasurement_->getResult() <= -90;
 
         //尻尾を動かす

@@ -49,8 +49,8 @@ namespace strategy{
         std::vector<Phase> phaseProcedure_{
             Phase::LINE_TRACE,
             Phase::LINE_TRACE2,
-            Phase::DOWN_ARM,                    //アームを下げる
             Phase::LINE_TRACE_UP_TO_PRIZE,      //懸賞前までライントレース
+            Phase::DOWN_ARM,                    //アームを下げる
             Phase::TURN_LEFT,                   //左側のアームで懸賞を押しちゃうことがあるので左に5度向ける
             Phase::PUT_IN_LOWER_OF_PRIZE,       //懸賞の下にアームを入れる
             Phase::LIFT_PRIZE,                  //懸賞を持ち上げる
