@@ -36,7 +36,7 @@ namespace strategy{
             if (isClicked()){
                 return true;
             }
-            if (device::SonarSensor::getInstance()->getDistance() <= 5){
+            if (device::SonarSensor::getInstance()->getDistance() <= 10){
                 return true;
             }
             return false;
