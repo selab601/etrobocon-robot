@@ -55,8 +55,7 @@ namespace strategy{
             Phase::PUT_IN_LOWER_OF_PRIZE,       //懸賞の下にアームを入れる
             Phase::LIFT_PRIZE,                  //懸賞を持ち上げる
             Phase::BACK_14CM,                   //懸賞を下ろす前に下がる
-            Phase::DOWN_PRIZE,                  //懸賞を下ろす
-            Phase::DOWN_SHIPPO,                 // しっぽをさげる
+            Phase::DOWN_PRIZE,                  //懸賞を下ろす・しっぽさげる
             Phase::PUT_AFTER_BACK,              //置いた後にバック
             Phase::LEFT_90_ROTATION,            //左90度旋回
             Phase::CURVE_UP_TO_PRIZE_SIDE,      //懸賞の横までカーブ

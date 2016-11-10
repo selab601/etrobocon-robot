@@ -100,11 +100,21 @@ namespace strategy{
 
         //下ろす
         case Phase::DOWN_PRIZE:
-            straightRunning_->run(0);
-            return Arm::getInstance()->normal(15);
+            {
+                straightRunning_->run(0);
+                static bool shippoBored = false;
+                static bool armNormal = false;
+                if (!shippoBored){
+                    shippoBored =  Shippo::getInstance()->bored(40);
+                }
+                if (!armNormal){
+                    armNormal =  Arm::getInstance()->normal(15);
+                }
+                return shippoBored && armNormal;
+            }
 
         case Phase::DOWN_SHIPPO:
-            return Shippo::getInstance()->bored();
+            return Shippo::getInstance()->bored(40);
 
         //すこし下がる
         case Phase::PUT_AFTER_BACK:
