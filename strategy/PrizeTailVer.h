@@ -28,6 +28,7 @@ namespace strategy{
             TURN_LEFT,
             PUT_IN_LOWER_OF_PRIZE,
             LIFT_PRIZE,
+            LIFT_RETRY,
             BACK_14CM,
             DOWN_PRIZE,
             DOWN_SHIPPO,

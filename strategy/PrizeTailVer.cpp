@@ -24,23 +24,25 @@ namespace strategy{
 
     //攻略する
     bool PrizeTailVer::capture(){
-        static unsigned int procedureNumber = 0;
         if(!strategySuccess_){
-            //難所攻略手順を1つする実行する
-            if(executePhase(phaseProcedure_[procedureNumber])){
+            //最後まで終わったら
+            if (phaseProcedure_.size() == 0 ){
+                strategySuccess_ = true;
+                return true;
+            }
+
+            //難所攻略手順を1つ実行する
+            if(executePhase(phaseProcedure_.front())){
                 lineTraceReset();
-                procedureNumber++;
+                phaseProcedure_.erase(phaseProcedure_.begin());
                 hasExecutedPhase_ = false;//フラグを戻しておく
                 bodyAngleMeasurement_->setBaseAngle();//車体角度リセット
                 ev3_speaker_play_tone ( 500, 100);//音を出す
             }
         }
-        //最後まで終わったら
-        if(procedureNumber == phaseProcedure_.size()){
-            strategySuccess_ = true;
-        }
         return strategySuccess_;
     }
+
 
     //攻略手順
     bool PrizeTailVer::executePhase(Phase phase){
@@ -91,7 +93,27 @@ namespace strategy{
         case Phase::LIFT_PRIZE:
             startTimeMeasurement(1000);
             straightRunning_->run(0);
-            return Arm::getInstance()->up(40) || timeMeasurement_->getResult();
+
+            // うまく持ち上げられなかった場合やり直し
+            if (timeMeasurement_->getResult()){
+                phaseProcedure_.insert(phaseProcedure_.begin() + 1, Phase::LIFT_RETRY);
+                ev3_speaker_play_tone(700, 200);
+                return true;
+            }
+            if( Arm::getInstance()->up(30) ){
+                ev3_speaker_play_tone(300, 200);
+                return true;
+            }
+            return false;
+
+
+            // 持ち上げるのがうまく行かなかったときやり直す
+        case Phase::LIFT_RETRY:
+            if (Arm::getInstance()->setDegree(45, 50)){
+                phaseProcedure_.insert(phaseProcedure_.begin() + 1, Phase::LIFT_PRIZE);
+                return true;
+            }
+            return false;
 
         case Phase::BACK_14CM:
             startDistanceMeasurement(125);//ここの距離確認(ラインの右側にいるかどうか)
