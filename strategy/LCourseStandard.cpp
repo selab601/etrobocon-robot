@@ -7,6 +7,7 @@ namespace strategy{
     LCourseStandard::LCourseStandard(){
         linetrace_ = LineTrace::getInstance();
         distanceMeasurement_ = new DistanceMeasurement();
+        bodyAngleMeasurement_ = BodyAngleMeasurement();
         strategySuccess_ = false;
         hasExecutedPhase_ = false;
         isLineTraceReset_ = false;
@@ -33,20 +34,26 @@ namespace strategy{
         switch(phase){
 
         case Phase::LINETRACE1:
-            startDistanceMeasurement(2500);
+            startDistanceMeasurement(2500 - LCOURSE_SHORTCUT_LENGTH);
             lineTraceReset();
             linetrace_->setPid();
             linetrace_->run(80,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::CURVE1:
-            linetrace_->setPid(0.006,0,0.4);
+            // linetrace_->setPid(0.006,0,0.4);
+            linetrace_->setPid(0, 0, 0);
             linetrace_->setMaxPwm(60);
-            return fixedDistanceCurveLineTrace(700,-1050);
+
+            startAngleMeasurement();
+            linetrace_->runCurve(-1050);
+            return bodyAngleMeasurement_.getResult() <= -165;
+
+            //return fixedDistanceCurveLineTrace(700,-1050);
 
         case Phase::LINETRACE2:
             linetrace_->setPid();
-            return fixedDistanceLineTrace(1250,80,LineTraceEdge::RIGHT);
+            return fixedDistanceLineTrace(1250 - LCOURSE_SHORTCUT_LENGTH,80,LineTraceEdge::RIGHT);
 
         case Phase::CURVE2:
             linetrace_->setPid(0.006,0,0.4);
@@ -102,6 +109,14 @@ namespace strategy{
         }
     }
 
+    void LCourseStandard::startAngleMeasurement(){
+        if(!hasExecutedPhase_){
+            bodyAngleMeasurement_.setBaseAngle();
+            hasExecutedPhase_ = true;
+        }
+    }
+
+
     bool LCourseStandard::fixedDistanceLineTrace(int distance,int speed,LineTraceEdge edge){
         startDistanceMeasurement(distance);
         linetrace_->run(speed,edge);
@@ -113,6 +128,7 @@ namespace strategy{
         linetrace_->runCurve(deltaRad);
         return distanceMeasurement_->getResult();
     }
+
 
     void LCourseStandard::lineTraceReset(){
         if(!isLineTraceReset_){
