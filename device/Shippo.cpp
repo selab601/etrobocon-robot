@@ -65,7 +65,7 @@ namespace device
             break;
 
             case GetPrizeState::SLOW:
-            if (setDegree(180 - 60, 10)){
+            if (setDegree(180 - 60, 15)){
                 state = GetPrizeState::FAST;
             }
             break;
