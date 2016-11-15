@@ -5,7 +5,10 @@
 #include "drive/LineTrace.h"
 #include "drive/CurveRunning.h"
 #include "measurement/DistanceMeasurement.h"
+#include "../measurement/BodyAngleMeasurement.h"
 #include <vector>
+
+#define LCOURSE_SHORTCUT_LENGTH 25     // ショートカットする長さ[mm]
 
 namespace strategy{
     class LCourseStandard : public IStrategy{
@@ -47,6 +50,7 @@ namespace strategy{
             drive::LineTrace* linetrace_;
             drive::CurveRunning* curveRunning_;
             measurement::DistanceMeasurement* distanceMeasurement_;
+            measurement::BodyAngleMeasurement bodyAngleMeasurement_;
 
             bool strategySuccess_;
             bool hasExecutedPhase_;
@@ -60,6 +64,7 @@ namespace strategy{
         private:
             bool executePhase(Phase phase);
             void startDistanceMeasurement(int distance);
+            void startAngleMeasurement();
             /**
              * @brief 一定距離ライントレース
              *
@@ -77,6 +82,7 @@ namespace strategy{
              * @return 一定距離走行:true,走行中:false
              */
             bool fixedDistanceCurveLineTrace(int distance,int deltaRad);
+
             /**
              * @brief LineTrace::reset()を一度だけ実行する
              */
