@@ -42,6 +42,7 @@ namespace strategy{
             TURN_TO_SIDE,
             BACK_TO_LINE,
             STRAIGHT_4_CM,
+            STRAIGHT_7_CM,
             TURN_TO_DOWN,
             SUMO,
             GET_OF,
@@ -115,10 +116,10 @@ namespace strategy{
             StrategyPhase::GET_OF,           //降段
             StrategyPhase::TURN_RIGHT_90,
             StrategyPhase::LEAVE_FROM_LINE,
-            StrategyPhase::WAIT_1_SEC,
+            //StrategyPhase::WAIT_1_SEC,
             StrategyPhase::APPROACH_TO_LINE,
             //StrategyPhase::APPROACH_TO_LINE2,
-            StrategyPhase::STRAIGHT_4_CM,
+            StrategyPhase::STRAIGHT_7_CM,
             StrategyPhase::TURN_LEFT_90,
             //StrategyPhase::LINE_DETECTION,
             StrategyPhase::LINE_RETURN       //ライン復帰

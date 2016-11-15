@@ -105,7 +105,7 @@ namespace strategy{
         //1秒間待つ,星取も読む
         case StrategyPhase::WAIT_1_SEC_H:
             static bool isTimeDetected = false;
-            startTimeMeasurement(1000);
+            startTimeMeasurement(500);
             straightRunning_->run(0);
             if(timeMeasurement_->getResult()){
                 isTimeDetected = true;
@@ -175,7 +175,6 @@ namespace strategy{
             startDistanceMeasurement(1350);
             lineTraceReset();
             linetrace_->setEdge(LineTraceEdge::RIGHT);
-            //試走で一回失敗
             linetrace_->setMaxPwm(60);
             linetrace_->setPid(0.006,0,0.6);
             linetrace_->setTarget(0.5);
@@ -190,18 +189,32 @@ namespace strategy{
             return turn(false,20);
 
         case StrategyPhase::LEAVE_FROM_LINE:
-            startDistanceMeasurement(80);
-            straightRunning_->run(20);
-            return distanceMeasurement_->getResult();
-
-        case StrategyPhase::APPROACH_TO_LINE:
             static bool initialized = false;
             if(!initialized){
+                straightRunning_->run(50);
                 straightRunning_->initialize();
                 initialized = true;
             }
-            straightRunning_->run(-8,50);
+            return straightRunning_->changeSpeed(0,70);
+            //startDistanceMeasurement(80);
+            //straightRunning_->run(20);
+            //return distanceMeasurement_->getResult();
+
+
+        case StrategyPhase::APPROACH_TO_LINE:
+            static bool initialized2 = false;
+            if(!initialized2){
+                straightRunning_->initialize();
+                initialized2 = true;
+            }
+            straightRunning_->run(-40,50);
             return lineDetection_->getResult();
+
+        //7cm進む
+        case StrategyPhase::STRAIGHT_7_CM:
+            startDistanceMeasurement(70);
+            straightRunning_->run(15);
+            return distanceMeasurement_->getResult();
 
         case StrategyPhase::APPROACH_TO_LINE2:
             straightRunning_->run(-15);

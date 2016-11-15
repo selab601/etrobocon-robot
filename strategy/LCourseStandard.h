@@ -3,6 +3,7 @@
 
 #include "IStrategy.h"
 #include "drive/LineTrace.h"
+#include "drive/CurveRunning.h"
 #include "measurement/DistanceMeasurement.h"
 #include <vector>
 
@@ -18,6 +19,8 @@ namespace strategy{
                 LINETRACE5,
                 LINETRACE6,
                 CHANGEEDGE,
+                CHANGEEDGE_R_L,
+                CHANGEEDGE_L_R,
                 CURVE1,
                 CURVE2,
                 CURVE3,
@@ -31,15 +34,18 @@ namespace strategy{
                 Phase::CURVE2,
                 Phase::LINETRACE3,
                 //Phase::CHANGEEDGE,
-                Phase::LINE_IGNORE,
-                //Phase::LINETRACE4,
+                Phase::CHANGEEDGE_R_L,
+                //Phase::LINE_IGNORE,
+                Phase::LINETRACE4,
                 Phase::CURVE3,
-                //Phase::LINETRACE5,
+                Phase::LINETRACE5,
                 //Phase::CHANGEEDGE,
+                Phase::CHANGEEDGE_L_R,
                 Phase::LINETRACE6,
             };
 
             drive::LineTrace* linetrace_;
+            drive::CurveRunning* curveRunning_;
             measurement::DistanceMeasurement* distanceMeasurement_;
 
             bool strategySuccess_;
