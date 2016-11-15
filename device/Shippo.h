@@ -4,7 +4,7 @@
 #include "ev3api.h"
 #include "/home/vagrant/hrp2/sdk/common/library/libcpp-ev3/include/Motor.h"
 
-#define SHIPPO_MAX_PWM 30
+#define SHIPPO_MAX_PWM 24
 
 namespace device
 {

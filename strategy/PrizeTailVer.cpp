@@ -202,9 +202,7 @@ namespace strategy{
 
         case Phase::FINISHED:
             straightRunning_->run(0);
-            //尻尾を振らなければ次のテスト時に尻尾を合わせなくて良くなる
-            //Shippo::getInstance()->furifuri();
-            return false;
+            return true;
 
         default: return false;
         }
