@@ -28,12 +28,16 @@ namespace strategy{
             TURN_LEFT,
             PUT_IN_LOWER_OF_PRIZE,
             LIFT_PRIZE,
+            LIFT_RETRY,
             BACK_14CM,
             DOWN_PRIZE,
             DOWN_SHIPPO,
             PUT_AFTER_BACK,
             CURVE_AFTER_BACK,
             LEFT_90_ROTATION,
+            LEFT_70_ROTATION,
+            LEFT_20_ROTATION_SLOWLY,
+            RIGHT_10_ROTATION,
             CURVE_UP_TO_PRIZE_SIDE,
             STRAIGHT_1_CM,
             GET_PRIZE,
@@ -46,20 +50,23 @@ namespace strategy{
         std::vector<Phase> phaseProcedure_{
             Phase::LINE_TRACE,
             Phase::LINE_TRACE2,
-            Phase::DOWN_ARM,                    //アームを下げる
             Phase::LINE_TRACE_UP_TO_PRIZE,      //懸賞前までライントレース
+            Phase::DOWN_ARM,                    //アームを下げる
             Phase::TURN_LEFT,                   //左側のアームで懸賞を押しちゃうことがあるので左に5度向ける
             Phase::PUT_IN_LOWER_OF_PRIZE,       //懸賞の下にアームを入れる
             Phase::LIFT_PRIZE,                  //懸賞を持ち上げる
             Phase::BACK_14CM,                   //懸賞を下ろす前に下がる
-            Phase::DOWN_PRIZE,                  //懸賞を下ろす
-            Phase::DOWN_SHIPPO,                 // しっぽをさげる
+            Phase::DOWN_PRIZE,                  //懸賞を下ろす・しっぽさげる
             Phase::PUT_AFTER_BACK,              //置いた後にバック
             Phase::LEFT_90_ROTATION,            //左90度旋回
             Phase::CURVE_UP_TO_PRIZE_SIDE,      //懸賞の横までカーブ
             Phase::CURVE_AFTER_BACK,            //カーブ後にバック
-            Phase::LEFT_90_ROTATION,            //左90度カーブ
+
+            Phase::LEFT_70_ROTATION,                   //左90度カーブ
+            Phase::LEFT_20_ROTATION_SLOWLY,
+
             Phase::GET_PRIZE,                   // しっぽで懸賞を取る
+            //Phase::RIGHT_10_ROTATION,           //ライン超えてもいいように旋回
             Phase::LINE_TRACE_UP_TO_GOOL,       //ゴールまでライントレース
             Phase::LINE_TRACE_UP_TO_GOOL2,
             Phase::FINISHED                     // とまってしっぽふりふり

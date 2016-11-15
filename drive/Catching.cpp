@@ -17,16 +17,29 @@ namespace drive{
         SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
         LineTrace* lineTrace = LineTrace::getInstance();
         static long baseLength = 0;
+        static PivotTurn pivotTurn = PivotTurn();
 
         switch(state_){
             case State::INIT:
-                lineTrace->setPid();
+                lineTrace->setPid(0.0168, 0, 0.924);
                 lineTrace->setMaxPwm(20);
                 lineTrace->setEdge(LineTraceEdge::RIGHT);
-                lineTrace->setTarget(0.42); // 黒寄り
+                lineTrace->setTarget(0.2); // 黒寄り
 
-                state_ = State::TO_BLOCK;
+                if (TurnDirection::STRAIGHT == direction){
+                    state_ = State::TURN_RIGHT;
+                }
+                else{
+                    state_ = State::TO_BLOCK;
+                }
                 break;
+
+            case State::TURN_RIGHT:
+                if (pivotTurn.turn(-20)){
+                    state_ = State::TO_BLOCK;
+                }
+                break;
+
 
             case State::TO_BLOCK:
                 lineTrace->run();
@@ -40,10 +53,10 @@ namespace drive{
                 if ( turn(direction) ){
                     baseLength = estimation->getMigrationLength();
 
-                    lineTrace->setPid();
+                    lineTrace->setPid(0.0168, 0, 0.924);
                     lineTrace->setMaxPwm(20);
                     lineTrace->setEdge(LineTraceEdge::RIGHT);
-                    lineTrace->setTarget(0.42); // 黒寄り
+                    lineTrace->setTarget(0.2); // 黒寄り
 
                     state_ = State::TO_LINE;
                 }
@@ -120,6 +133,8 @@ namespace drive{
         static CurveRunning curveRunning = CurveRunning();
         switch (state){
             case ChangeDirectionState::INIT:
+                directionKind = getAdvancableDirection();
+                turnDirection = DirectionKind::LEFT == directionKind? TurnDirection::RIGHT : TurnDirection::LEFT;
                 state = ChangeDirectionState::AVOIDANCE;
                 break;
 
@@ -139,7 +154,6 @@ namespace drive{
             case ChangeDirectionState::TURN_TO_LINE:
                 {
                     curveRunning.run(20, -20);
-                    int white = device::ColorSensor::getInstance()->getWhiteCalibratedValue();
                     int black = device::ColorSensor::getInstance()->getBlackCalibratedValue();
                     int mid = black + 10;
                     if (device::ColorSensor::getInstance()->getBrightness() < mid){
@@ -174,10 +188,10 @@ namespace drive{
 
         switch(state){
             case State::INIT:
-                lineTrace->setPid();
+                lineTrace->setPid(0.0168, 0, 0.924);
                 lineTrace->setMaxPwm(20);
                 lineTrace->setEdge(LineTraceEdge::RIGHT);
-                lineTrace->setTarget(0.42); // 黒寄り
+                lineTrace->setTarget(0.2); // 黒寄り
 
                 state = State::TO_BLOCK;
                 break;
@@ -210,6 +224,7 @@ namespace drive{
                 break;
 
             case State::TURN:   //使わない
+            case State::TURN_RIGHT:   //使わない
                 break;
         }
 
@@ -234,12 +249,14 @@ namespace drive{
                 // 右にまがるとき
                 if (0 > diffDegree ){
                     diffDegree *= -1;
-                    int pwm = diffDegree + 5;
+                    int pwm = diffDegree + 15;
+                    pwm = pwm > 60? 60: pwm;
                     curveRunning.run(0,  pwm);
                 }
                 // 左に曲がるとき
                 else {
-                    int pwm = diffDegree + 5;
+                    int pwm = diffDegree + 15;
+                    pwm = pwm > 60? 60: pwm;
                     curveRunning.run(pwm, pwm/10);
                 }
 
@@ -284,14 +301,17 @@ namespace drive{
         SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
         static long baseLength = 0;
         static bool initialized = false;
+        static PivotTurn pivotTurn = PivotTurn();
         long currentLength = estimation->getMigrationLength() - baseLength;
 
         if (!initialized ){
             baseLength = estimation->getMigrationLength();
-            initialized = true;
+            if (pivotTurn.turn(-4)){    // TODO: 実験して角度を調整
+                initialized = true;
+            }
         }
         else{
-            int pwm = (length - currentLength)/3 + 5;
+            int pwm = (length - currentLength)/3 + 20;
             curveRunning.run(pwm, pwm);
 
             if(currentLength >= length){
@@ -330,25 +350,25 @@ namespace drive{
         switch(destination_->EV3Position_){
             case Destination::Direction::RIGHT:
                 if (destination_->currentCoordinate_.getY() == 1){
-                    return DirectionKind::RIGHT;
+                    return DirectionKind::LEFT;
                 }
                 break;
 
             case Destination::Direction::LEFT:
                 if (destination_->currentCoordinate_.getY() == 4){
-                    return DirectionKind::RIGHT;
+                    return DirectionKind::LEFT;
                 }
                 break;
 
             case Destination::Direction::UP:
                 if (destination_->currentCoordinate_.getX() == 1){
-                    return DirectionKind::RIGHT;
+                    return DirectionKind::LEFT;
                 }
                 break;
 
             case Destination::Direction::DOWN:
                 if (destination_->currentCoordinate_.getX() == 4){
-                    return DirectionKind::RIGHT;
+                    return DirectionKind::LEFT;
                 }
                 break;
 

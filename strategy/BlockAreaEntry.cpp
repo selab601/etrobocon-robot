@@ -4,6 +4,7 @@
 
 namespace strategy{
     BlockAreaEntry::BlockAreaEntry(){
+        destination_ = drive::Destination::getInstance();
         linetrace_ = drive::LineTrace::getInstance();
         distanceMeasurement_ = measurement::DistanceMeasurement();
         motor_ = device::Motors::getInstance();
@@ -14,8 +15,17 @@ namespace strategy{
         bodyAngleMeasurement_ = measurement::BodyAngleMeasurement();
         colorDetection_ = detection::ColorDetection();
 
-        Status_ = Status::STANDBY;
+        selfPositionEstimation_ = measurement::SelfPositionEstimation::getInstance();
 
+        Status_ = Status::STANDBY;
+        /**
+         * 初期位置を以下から選んでください
+         * startDistance_ = 480 angle_ = -95 destination_->setCurrentLocation(1,3,drive::Destination::Direction::UP)
+         * startDistance_ = 580 angle_ = 85  destination_->setCurrentLocation(1,2,drive::Destination::Direction::DOWN)
+         **/
+        startDistance_ = 580;
+        angle_ = -80;
+        destination_->setCurrentLocation(1,4,drive::Destination::Direction::UP);
     }
 
     bool BlockAreaEntry::capture(){
@@ -38,7 +48,7 @@ namespace strategy{
                 break;
 
             case Status::TURN:
-                if(pivotTurn_.turn(80)){
+                if(pivotTurn_.turn(90)){
                     straightRunning_.initialize();
                     distanceMeasurement_.setTargetDistance(350);
                     distanceMeasurement_.startMeasurement();
@@ -71,21 +81,31 @@ namespace strategy{
 
             case Status::TURN2:
                 //90°信地旋回
-                if(bodyAngleMeasurement_.getResult() >= 85){
-                    Status_ = Status::INITIALIZE;
-                }else{
-                    curveRunning_.run(30, -2);
+                if(angle_ > 0){
+                    if(bodyAngleMeasurement_.getResult() >= angle_){
+                        Status_ = Status::INITIALIZE;
+                    }else{
+                        curveRunning_.run(30, -2);
+                    }
+                }
+                else{
+                    if(bodyAngleMeasurement_.getResult() <= angle_){
+                        Status_ = Status::INITIALIZE;
+                    }else{
+                        curveRunning_.run(-20, 30);
+                    }
                 }
                 break;
 
             case Status::INITIALIZE:
-                if (catching.putBlock()){
+                //if (catching.putBlock()){
                     Status_ = Status::DONE;
-                }
+                //}
                 break;
 
             case Status::DONE:
                 motor_->setWheelPWM(0,0);
+                selfPositionEstimation_->initMap();
                 return true;
         }
         return false;

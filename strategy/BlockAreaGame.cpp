@@ -14,44 +14,127 @@ namespace strategy{
     colorDetection_ = detection::ColorDetection();
 
     catching_ = drive::Catching();
+    sholdMoveBlock_ = true;
     destination_ = drive::Destination::getInstance();
     blockColorGetter_ = drive::BlockColorGetter();
 
-    block_x[0] = 2; block_y[0] = 2; //ブロック1
-    block_x[1] = 3; block_y[2] = 2; //ブロック3
-    block_x[2] = 3; block_y[1] = 1; //ブロック2
-    block_x[3] = 4; block_y[3] = 1; //ブロック4
+    block_x[0] = 1; block_y[0] = 4; //ブロック1
+    block_x[1] = 2; block_y[1] = 3; //ブロック3
+    block_x[2] = 3; block_y[2] = 2; //ブロック2
+    block_x[3] = 4; block_y[3] = 3; //ブロック4
 
-    block_exist[1][1]=1;
-    block_exist[2][1]=1;
-    block_exist[2][0]=1;
-    block_exist[3][0]=1;
+    block_exist[block_x[0]-1][block_y[0]-1]=1;
+    block_exist[block_x[1]-1][block_y[1]-1]=1;
+    block_exist[block_x[2]-1][block_y[2]-1]=1;
+    block_exist[block_x[3]-1][block_y[3]-1]=1;
+
+    priorInformation_ = std::vector<drive::BlockAreaCoordinate>();
+    priorInformation_.emplace_back(drive::BlockAreaCoordinate(block_x[0] , block_y[0]));
+    priorInformation_.emplace_back(drive::BlockAreaCoordinate(block_x[1] , block_y[1]));
+    priorInformation_.emplace_back(drive::BlockAreaCoordinate(block_x[2] , block_y[2]));
+    priorInformation_.emplace_back(drive::BlockAreaCoordinate(block_x[3] , block_y[3]));
+
+    redStage_ = std::vector<drive::BlockAreaCoordinate>();
+    redStage_.emplace_back(drive::BlockAreaCoordinate(1 ,3 ));
+    redStage_.emplace_back(drive::BlockAreaCoordinate(1 ,4 ));
+    redStage_.emplace_back(drive::BlockAreaCoordinate(2 ,3 ));
+    redStage_.emplace_back(drive::BlockAreaCoordinate(2 ,4 ));
+
+    yellowStage_ = std::vector<drive::BlockAreaCoordinate>();
+    yellowStage_.emplace_back(drive::BlockAreaCoordinate(1 ,1 ));
+    yellowStage_.emplace_back(drive::BlockAreaCoordinate(1 ,2 ));
+    yellowStage_.emplace_back(drive::BlockAreaCoordinate(2 ,1 ));
+    yellowStage_.emplace_back(drive::BlockAreaCoordinate(2 ,2 ));
+
+    greenStage_ = std::vector<drive::BlockAreaCoordinate>();
+    greenStage_.emplace_back(drive::BlockAreaCoordinate(3 ,1 ));
+    greenStage_.emplace_back(drive::BlockAreaCoordinate(3 ,2 ));
+    greenStage_.emplace_back(drive::BlockAreaCoordinate(4 ,1 ));
+    greenStage_.emplace_back(drive::BlockAreaCoordinate(4 ,2 ));
+
+    blueStage_ = std::vector<drive::BlockAreaCoordinate>();
+    blueStage_.emplace_back(drive::BlockAreaCoordinate(3 ,3 ));
+    blueStage_.emplace_back(drive::BlockAreaCoordinate(3 ,4 ));
+    blueStage_.emplace_back(drive::BlockAreaCoordinate(4 ,3 ));
+    blueStage_.emplace_back(drive::BlockAreaCoordinate(4 ,4 ));
 
     Status_ = Status::STANDBY;
     direction_ = drive::Destination::Direction::DOWN; //進入時の台座に対する相対位置
     result = new drive::colorset_t;
   }
+  bool BlockAreaGame::runTo(int x,int y){
+    drive::BlockAreaCoordinate currentCoordinate = destination_->currentCoordinate_;
+    drive::BlockAreaCoordinate destination = drive::BlockAreaCoordinate(x,y);
+    drive::BlockAreaCoordinate nextCoordinate = destination_->getNextStageCoordinate(destination);
+    drive::Destination::Direction direction = destination_->getDirection(currentCoordinate, nextCoordinate);
+    drive::Destination::Position position = destination_->getPosition(destination_->EV3Position_, direction);
+    if((position == drive::Destination::Position::REVERSE) && (block_exist[currentCoordinate.getX()-1][currentCoordinate.getY()-1] == 0)){
+        if(x == currentCoordinate.getX() && y == currentCoordinate.getY()){
+            return true;
+        }
+        catching_.catchBlock(x,y);
+        return false;
+    }
+    else{
+        return destination_->runTo(x,y);
+    }
+  }
+
+  bool BlockAreaGame::nearStage(std::vector<drive::BlockAreaCoordinate> coordinate , int method){
+    drive::BlockAreaCoordinate currentCoordinate = destination_->currentCoordinate_;
+    int tmp;
+    int diff = 100;
+    for(int i = 0 ; i < 4 ; i++){
+        if(block_exist[coordinate[i].getX() - 1][coordinate[i].getY() - 1] == method){
+            tmp = abs(currentCoordinate.getX()- (coordinate[i].getX())) + abs(currentCoordinate.getY() - coordinate[i].getY());
+            if(diff > tmp){
+                diff = tmp;
+                destination_x = coordinate[i].getX();
+                destination_y = coordinate[i].getY();
+            }
+        }
+    }
+    return true;
+  }
 
   bool BlockAreaGame::capture(){
     switch(Status_){
       case Status::STANDBY:
-        destination_->setCurrentLocation(1,2,direction_); // 侵入後ゲーム開始位置で更新
-        Status_ = Status::DECISION;
+        if(block_exist[destination_->currentCoordinate_.getX()-1][destination_->currentCoordinate_.getY()-1] == 0){
+            if(block_exist[0][0] == 1||block_exist[0][3] == 1){
+                if(catching_.catchBlock(drive::Catching::TurnDirection::STRAIGHT)){
+                Status_ = Status::DECISION;
+                }
+            }
+            else if(catching_.catchBlock(2,4)){
+                Status_ = Status::DECISION;
+            }
+        }
+        else{
+            Status_ = Status::DECISION;
+        }
         break;
 
       case Status::DECISION:
         //3個運び終わるまで
         if(carried == 3 || confirmed >= 4){
-          Status_ = Status::DONE;
+          Status_ = Status::TO_EXIT_COORDINATE;
         }else{
           Status_ = Status::TO_DESTINATION;
         }
         break;
 
       case Status::TO_DESTINATION:
-        //ブロックの確認した数に応じて目的地決定
-        if(destination_->runTo(block_x[confirmed],block_y[confirmed])){
-          Status_ = Status::BLOCK_COLOR_GET;
+        if(!isFinishedNearStage_){
+            isFinishedNearStage_ = nearStage(priorInformation_ , 1);
+        }
+        else{
+            if(runTo(destination_x,destination_y)){
+                drive::BlockAreaCoordinate currentCoordinate = destination_->currentCoordinate_;
+                block_exist[currentCoordinate.getX() - 1][currentCoordinate.getY() - 1] = 0;
+                isFinishedNearStage_ = false;
+                Status_ = Status::BLOCK_COLOR_GET;
+            }
         }
         break;
 
@@ -59,80 +142,68 @@ namespace strategy{
         //linetrace_->run(20,drive::LineTraceEdge::LEFT,0.6);
         if(blockColorGetter_.isExecuted(result)){
           //取得したブロックの色に応じて目的地決定
-          if(result->blockColor == COLOR_RED){                //赤ブロック
-            //目的地台座上にブロックがなければ，目的地とする
-            //(2,3)優先
-            if(block_exist[1][2] != 1){
-              destination_x=2;
-              destination_y=3;
-            }else if(block_exist[0][2] != 1){
-              destination_x=1;
-              destination_y=3;
-            }else if(block_exist[1][3] != 1){
-              destination_x=2;
-              destination_y=4;
-            }else if(block_exist[0][3] != 1){
-              destination_x=1;
-              destination_y=4;
-            }
-          }else if(result->blockColor == COLOR_YELLOW){       //黄色ブロック
-            //(2,2)優先
-            if(block_exist[1][1] != 1){
-              destination_x=2;
-              destination_y=2;
-            }else if(block_exist[0][1] != 1){
-              destination_x=1;
-              destination_y=2;
-            }else if(block_exist[1][0] != 1){
-              destination_x=2;
-              destination_y=1;
-            }else if(block_exist[0][0] != 1){
-              destination_x=1;
-              destination_y=1;
-            }
-          }else if(result->blockColor == COLOR_GREEN){         //緑ブロック
-            //(3,2)優先
-            if(block_exist[2][1] != 1){
-              destination_x=3;
-              destination_y=2;
-            }else if(block_exist[3][1] != 1){
-              destination_x=4;
-              destination_y=2;
-            }else if(block_exist[2][0] != 1){
-              destination_x=3;
-              destination_y=1;
-            }else if(block_exist[3][0] != 1){
-              destination_x=4;
-              destination_y=1;
-            }
-          }else if(result->blockColor == COLOR_BLUE){          //青ブロック
-            //(3,3)優先
-            if(block_exist[2][2] != 1){
-              destination_x=3;
-              destination_y=3;
-            }else if(block_exist[3][2] != 1){
-              destination_x=4;
-              destination_y=3;
-            }else if(block_exist[2][3] != 1){
-              destination_x=3;
-              destination_y=4;
-            }else if(block_exist[3][3] != 1){
-              destination_x=4;
-              destination_y=4;
-            }
-          }else if(result->blockColor == COLOR_BLACK){         //黒ブロック
+          if(result->blockColor == COLOR_BLACK) {           // 黒ブロック
+            block_exist[destination_x - 1][destination_y - 1] = 2;
             confirmed++;
             blockColorGetter_ = drive::BlockColorGetter();
-            Status_ = Status::DECISION;
-            break;
+            sholdMoveBlock_ = false;
+          } else if(getColorOfStage(drive::BlockAreaCoordinate(destination_x, destination_y)) == result->blockColor) {
+            //確認したブロック数，運んだブロック数，ブロックの有無の更新
+            block_exist[destination_x - 1][destination_y - 1] = 2;
+            confirmed++;
+            carried++;
+            blockColorGetter_ = drive::BlockColorGetter();
+            sholdMoveBlock_ = false;
+          } else if(result->blockColor == COLOR_RED){         //赤ブロック
+            //目的地台座上にブロックがなければ，目的地とする
+            nearStage(redStage_ , 0);
+            sholdMoveBlock_ = true;
+          }else if(result->blockColor == COLOR_YELLOW){       //黄色ブロック
+            nearStage(yellowStage_ , 0);
+            sholdMoveBlock_ = true;
+          }else if(result->blockColor == COLOR_GREEN){         //緑ブロック
+            nearStage(greenStage_ , 0);
+            sholdMoveBlock_ = true;
+          }else if(result->blockColor == COLOR_BLUE){          //青ブロック
+            nearStage(blueStage_ , 0);
+            sholdMoveBlock_ = true;
           }else{ //NONE とかの場合
             blockColorGetter_ = drive::BlockColorGetter();
             break;
           }
-          Status_ = Status::CATCH;
+
+          distanceMeasurement_.setTargetDistance(100);
+          distanceMeasurement_.startMeasurement();
+          Status_ = Status::BACK_TO_LINE;
         }
         break;
 
+    case Status::BACK_TO_LINE:
+    {
+        drive::BlockAreaCoordinate currentCoordinate = destination_->currentCoordinate_;
+        drive::BlockAreaCoordinate destination = drive::BlockAreaCoordinate(destination_x, destination_y);
+        drive::BlockAreaCoordinate nextCoordinate = destination_->getNextStageCoordinate(destination);
+        drive::Destination::Direction direction = destination_->getDirection(currentCoordinate, nextCoordinate);
+        drive::Destination::Position position = destination_->getPosition(destination_->EV3Position_, direction);
+        // 後ろに移動する場合(EQUAL)以外は戻る
+        // ブロックを動かさない場合も戻る
+        if(position == drive::Destination::Position::EQUAL
+           || sholdMoveBlock_ == false){
+          straightRunning_.run(-20);
+          if (!distanceMeasurement_.getResult()) {
+              break;
+          }
+        }
+
+        // 戻り終えたら/戻らなくて良い場合は
+        if (sholdMoveBlock_) {
+            Status_ = Status::CATCH;
+        } else {
+            Status_ = Status::DECISION;
+        }
+
+        break;
+    }
       case Status::CATCH:
         if(catching_.catchBlock(destination_x,destination_y)){
           Status_ = Status::TO_INSTALLATION;
@@ -140,7 +211,7 @@ namespace strategy{
         break;
 
       case Status::TO_INSTALLATION:
-        if(destination_->runTo(destination_x,destination_y)){
+        if(runTo(destination_x,destination_y)){
           Status_ = Status::INSTALLATION;
         }
         break;
@@ -148,12 +219,17 @@ namespace strategy{
       case Status::INSTALLATION:
         if(catching_.putBlock()){
           //確認したブロック数，運んだブロック数，ブロックの有無の更新
-          block_exist[block_x[confirmed] - 1][block_y[confirmed] - 1] = 0;
-          block_exist[destination_x - 1][destination_y - 1] = 1;
+          block_exist[destination_x - 1][destination_y - 1] = 2;
           confirmed++;
           carried++;
           blockColorGetter_ = drive::BlockColorGetter();
           Status_ = Status::DECISION;
+        }
+        break;
+
+      case Status::TO_EXIT_COORDINATE:
+        if (runTo(4,4)) {
+            Status_ = Status::DONE;
         }
         break;
 
@@ -163,4 +239,20 @@ namespace strategy{
     }
     return false;
   }
+
+    colorid_t BlockAreaGame::getColorOfStage(drive::BlockAreaCoordinate coordinate) {
+        for (auto cor : redStage_) {
+            if (coordinate == cor) { return COLOR_RED; }
+        }
+        for (auto cor : yellowStage_) {
+            if (coordinate == cor) { return COLOR_YELLOW; }
+        }
+        for (auto cor : blueStage_) {
+            if (coordinate == cor) { return COLOR_BLUE; }
+        }
+        for (auto cor : greenStage_) {
+            if (coordinate == cor) { return COLOR_GREEN; }
+        }
+        return COLOR_NONE;
+    }
 };

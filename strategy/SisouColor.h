@@ -1,5 +1,5 @@
-#ifndef ETSUMO_NEO_H
-#define ETSUMO_NEO_H
+#ifndef SISOU_H
+#define SISOU_H
 
 #include "IStrategy.h"
 #include "../drive/ExtrusionRunning.h"
@@ -21,7 +21,7 @@
 #define SUMO_EXTRUSION_SPEED     20  //押し出しスピード
 
 namespace strategy{
-    class ETSumoNeo : public IStrategy{
+    class SisouColor : public IStrategy{
     private:
         //ET相撲Neoの走行状態
         enum class StrategyPhase{
@@ -32,9 +32,12 @@ namespace strategy{
             TURN_LEFT,
             STRAIGHT,
             LINE_TRACE,
+            LINE_TRACE_C,
             LINE_TRACE_LITTLE,
             STOP,
             WAIT_1_SEC,
+            WAIT_40_SEC,
+            WAIT_20_SEC,
             WAIT_1_SEC_H,
             TURN_LITTLE,
             CLIMB,
@@ -42,7 +45,7 @@ namespace strategy{
             TURN_TO_SIDE,
             BACK_TO_LINE,
             STRAIGHT_4_CM,
-            STRAIGHT_7_CM,
+            STRAIGHT_11_CM,
             TURN_TO_DOWN,
             SUMO,
             GET_OF,
@@ -50,9 +53,11 @@ namespace strategy{
             LINE_RETURN,
             TURN_RIGHT_90,
             TURN_LEFT_90,
+            LEFT_90,
             LEAVE_FROM_LINE,
             APPROACH_TO_LINE,
             APPROACH_TO_LINE2,
+            RETURN,
         };
 
         //相撲全体の状態
@@ -93,6 +98,10 @@ namespace strategy{
         std::vector<StrategyPhase> strategyProcedure_{
             StrategyPhase::INIT,             //車体角度保存
             StrategyPhase::HOSHITORI,        //星取検知
+            StrategyPhase::WAIT_20_SEC,      //星取の色4色確認
+            StrategyPhase::WAIT_20_SEC,      //星取の色4色確認
+            StrategyPhase::WAIT_20_SEC,      //星取の色4色確認
+            StrategyPhase::WAIT_20_SEC,      //星取の色4色確認
             StrategyPhase::WAIT_1_SEC_H,     //星取取得
             StrategyPhase::SET_VALUE,        //星取が判明したので値を代入
             StrategyPhase::BACK,             //星取を踏まないようにバック
@@ -105,6 +114,7 @@ namespace strategy{
             StrategyPhase::TURN_LITTLE,      //すこし旋回
             StrategyPhase::CLIMB,            //登壇
             StrategyPhase::WAIT_1_SEC,       //登壇後に機体が落ち着くまで待つ
+            StrategyPhase::WAIT_40_SEC,      //木の色を読む（ロガーで）
             StrategyPhase::TURN_TO_SIDE,     //横を向く
             StrategyPhase::BACK_TO_LINE,     //中央線までバック
             StrategyPhase::STRAIGHT_4_CM,    //4cm直進
@@ -116,13 +126,28 @@ namespace strategy{
             StrategyPhase::GET_OF,           //降段
             StrategyPhase::TURN_RIGHT_90,
             StrategyPhase::LEAVE_FROM_LINE,
-            //StrategyPhase::WAIT_1_SEC,
+            StrategyPhase::WAIT_1_SEC,
             StrategyPhase::APPROACH_TO_LINE,
-            //StrategyPhase::APPROACH_TO_LINE2,
-            StrategyPhase::STRAIGHT_7_CM,
+            StrategyPhase::STRAIGHT_4_CM,
             StrategyPhase::TURN_LEFT_90,
-            //StrategyPhase::LINE_DETECTION,
             StrategyPhase::LINE_RETURN       //ライン復帰
+        };
+
+        std::vector<StrategyPhase> strategyProcedure2_{
+            StrategyPhase::LINE_TRACE_C,
+            StrategyPhase::WAIT_20_SEC,
+            StrategyPhase::STRAIGHT_11_CM,
+            StrategyPhase::LINE_TRACE_C,
+            StrategyPhase::WAIT_20_SEC,
+            StrategyPhase::STRAIGHT_11_CM,
+            StrategyPhase::LEFT_90,
+            StrategyPhase::LINE_TRACE_C,
+            StrategyPhase::WAIT_20_SEC,
+            StrategyPhase::STRAIGHT_11_CM,
+            StrategyPhase::LEFT_90,
+            StrategyPhase::LINE_TRACE_C,
+            StrategyPhase::WAIT_20_SEC,
+            StrategyPhase::RETURN,
         };
 
         //相撲攻略手順(星取り赤・青)
@@ -186,6 +211,8 @@ namespace strategy{
         //取得した星取
         Hoshitori hoshitori_;
 
+        bool RCourse_;
+
         //距離検知の設定などを一度だけ行うためのフラグ
         bool hasExecutedPhase_;
 
@@ -215,7 +242,7 @@ namespace strategy{
 
     public:
         //コンストラクタ
-        ETSumoNeo();
+        SisouColor();
 
         /**
          * @brief ET相撲Neoを攻略する

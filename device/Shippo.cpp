@@ -22,13 +22,13 @@ namespace device
         static bool isLeftFurifuri = true;
         switch(isLeftFurifuri){
             case true:
-            if (setDegree(45, maxPwm)){
+            if (setDegree(10, maxPwm)){
                 isLeftFurifuri = !isLeftFurifuri;
             }
             break;
 
             case false:
-            if (setDegree(-45, maxPwm)){
+            if (setDegree(-40, maxPwm)){
                 isLeftFurifuri = !isLeftFurifuri;
             }
             break;
@@ -65,7 +65,7 @@ namespace device
             break;
 
             case GetPrizeState::SLOW:
-            if (setDegree(180 - 60, 10)){
+            if (setDegree(180 - 60, 15)){
                 state = GetPrizeState::FAST;
             }
             break;

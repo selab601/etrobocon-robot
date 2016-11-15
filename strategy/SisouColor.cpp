@@ -1,11 +1,26 @@
-#include "ETSumoNeo.h"
+#include "SisouColor.h"
 
 using namespace drive;
 using namespace detection;
 using namespace measurement;
 
+/*
+使い方
+ロガーを起動しながら実行すればOK
+コンストラクタないのフラグを変更する(RCourse_);
+Course.cppに戦略として追加する
+Rコースの場合、赤の隣の黄色(2,1)から赤に向けて設置するだけ
+黄、赤、青、緑のHSV値をロガーで確認する
+Lコースの場合、スタート地点からスタート
+星取4色、木の色のHSV値をロガーで確認する
+本番前はコードのCourse.cppを確認してSisouColor戦略を使ってないか確認しよう!
+*/
 namespace strategy{
-    ETSumoNeo::ETSumoNeo(){
+    SisouColor::SisouColor(){
+
+        //RCourse_ = true;//右コース使う場合
+        RCourse_ = false;//左コース使う場合
+
         linetrace_              = LineTrace::getInstance();
         straightRunning_        = new StraightRunning();
         climbingRunning_        = new ClimbingRunning();
@@ -27,17 +42,27 @@ namespace strategy{
 
         hoshitori_              = Hoshitori::NONE;
         extrusionPhase_         = ExtrusionPhase::START_LINE_TRACE;
+
     }
 
-    bool ETSumoNeo::capture(){
+    bool SisouColor::capture(){
         static unsigned int procedureNumber = 0;
         if(!strategySuccess_){
             //難所攻略手順を1つずつ実行する
-            if(executeStrategy(strategyProcedure_[procedureNumber])){
-                lineTraceReset();
-                procedureNumber++;
-                hasExecutedPhase_ = false;//フラグを戻しておく
-                ev3_speaker_play_tone ( 500, 100);//音を出す
+            if(RCourse_){
+                if(executeStrategy(strategyProcedure2_[procedureNumber])){
+                    lineTraceReset();
+                    procedureNumber++;
+                    hasExecutedPhase_ = false;//フラグを戻しておく
+                    ev3_speaker_play_tone ( 500, 100);//音を出す
+                }
+            }else{
+                if(executeStrategy(strategyProcedure_[procedureNumber])){
+                    lineTraceReset();
+                    procedureNumber++;
+                    hasExecutedPhase_ = false;//フラグを戻しておく
+                    ev3_speaker_play_tone ( 500, 100);//音を出す
+                }
             }
         }
         if(procedureNumber == strategyProcedure_.size()){//最後まで終わったら
@@ -48,7 +73,7 @@ namespace strategy{
     }
 
     //戦略手順を実行する
-    bool ETSumoNeo::executeStrategy(StrategyPhase strategyPhase){
+    bool SisouColor::executeStrategy(StrategyPhase strategyPhase){
         switch(strategyPhase){
 
         //車体角度保存
@@ -105,7 +130,7 @@ namespace strategy{
         //1秒間待つ,星取も読む
         case StrategyPhase::WAIT_1_SEC_H:
             static bool isTimeDetected = false;
-            startTimeMeasurement(500);
+            startTimeMeasurement(1000);
             straightRunning_->run(0);
             if(timeMeasurement_->getResult()){
                 isTimeDetected = true;
@@ -189,42 +214,68 @@ namespace strategy{
             return turn(false,20);
 
         case StrategyPhase::LEAVE_FROM_LINE:
+            startDistanceMeasurement(80);
+            straightRunning_->run(20);
+            return distanceMeasurement_->getResult();
+
+        case StrategyPhase::APPROACH_TO_LINE:
             static bool initialized = false;
             if(!initialized){
-                straightRunning_->run(50);
                 straightRunning_->initialize();
                 initialized = true;
             }
-            return straightRunning_->changeSpeed(0,70);
-            //startDistanceMeasurement(80);
-            //straightRunning_->run(20);
+            //startDistanceMeasurement(30);
+            straightRunning_->run(-8,50);
+            //straightRunning_->run(-15,80);
             //return distanceMeasurement_->getResult();
-
-
-        case StrategyPhase::APPROACH_TO_LINE:
-            static bool initialized2 = false;
-            if(!initialized2){
-                straightRunning_->initialize();
-                initialized2 = true;
-            }
-            straightRunning_->run(-40,50);
             return lineDetection_->getResult();
-
-        //7cm進む
-        case StrategyPhase::STRAIGHT_7_CM:
-            startDistanceMeasurement(70);
-            straightRunning_->run(15);
-            return distanceMeasurement_->getResult();
 
         case StrategyPhase::APPROACH_TO_LINE2:
             straightRunning_->run(-15);
             return lineDetection_->getResult();
 
+        case StrategyPhase::WAIT_40_SEC:
+            startTimeMeasurement(40000);
+            straightRunning_->run(0);
+            return timeMeasurement_->getResult();
+
+        case StrategyPhase::WAIT_20_SEC:
+            startTimeMeasurement(10000);
+            straightRunning_->run(0);
+            return timeMeasurement_->getResult();
+
+        case StrategyPhase::STRAIGHT_11_CM:
+            startDistanceMeasurement(110);
+            straightRunning_->run(30);
+            return distanceMeasurement_->getResult();
+
+        case StrategyPhase::LEFT_90:
+            return pivotTurn_->turn(90,10);
+
+        case StrategyPhase::LINE_TRACE_C:
+            static bool flag = false;
+            startTimeMeasurement(1000);
+            linetrace_->setPid(0.0144,0.0,0.72);
+            linetrace_->run(15,LineTraceEdge::RIGHT);
+            if(timeMeasurement_->getResult()){
+                flag = true;
+            }
+            if(flag && hoshitoriDetection()){
+                flag = false;
+                return true;
+            }
+            return false;
+
+        case StrategyPhase::RETURN:
+            startDistanceMeasurement(1000);
+            straightRunning_->run(40);
+            return distanceMeasurement_->getResult();
+
         default: return false;
         }
     }
 
-    bool ETSumoNeo::captureSumo(){
+    bool SisouColor::captureSumo(){
         static unsigned int procedureNumber = 0;
         //星取が下段の場合
         if(hoshitori_ == Hoshitori::RED || hoshitori_ == Hoshitori::BLUE){
@@ -253,7 +304,7 @@ namespace strategy{
     }
 
     //相撲...登壇後から降壇前まで
-    bool ETSumoNeo::executeSumo(SumoPhase sumoPhase){
+    bool SisouColor::executeSumo(SumoPhase sumoPhase){
         switch(sumoPhase){
 
         //一人目の力士を押し出す
@@ -326,7 +377,7 @@ namespace strategy{
     }
 
     //中央線からブロックを押し出して戻って来る
-    bool ETSumoNeo::extrusion(Hoshitori blockColor){
+    bool SisouColor::extrusion(Hoshitori blockColor){
         static bool initialized = false;//初期化したかどうか
         static bool isRightCurve;       //右回転するかどうか
         static int turnAngle;           //戻るための旋回角度
@@ -428,7 +479,7 @@ namespace strategy{
     }
 
     //赤、青、黄、緑を検知したらtrue
-    bool ETSumoNeo::hoshitoriDetection(bool saveHoshitori){
+    bool SisouColor::hoshitoriDetection(bool saveHoshitori){
         static colorid_t nowColor = COLOR_NONE;
         nowColor = colorDetection_->getResult();
         if(nowColor == COLOR_BLUE || nowColor == COLOR_RED ||
@@ -454,7 +505,7 @@ namespace strategy{
     }
 
     //星取が判明してから決まる値
-    void ETSumoNeo::setValue(){
+    void SisouColor::setValue(){
         switch(hoshitori_){
         case Hoshitori::RED:
             climbBeforeLittleAngle_ = -7;
@@ -525,7 +576,7 @@ namespace strategy{
     }
 
     //ラインまで旋回
-    bool ETSumoNeo::turn(bool isRight, int speed){
+    bool SisouColor::turn(bool isRight, int speed){
         if(isRight){
             curveRunning_->run(-speed,speed);
         }else{
@@ -535,7 +586,7 @@ namespace strategy{
     }
 
     //上段に向けてカーブする
-    bool ETSumoNeo::curve(bool isRight, int speed){
+    bool SisouColor::curve(bool isRight, int speed){
         if(isRight){
             curveRunning_->run(0,speed);
             return bodyAngleMeasurement_->getResult() <= -90;
@@ -546,7 +597,7 @@ namespace strategy{
     }
 
     //ライン復帰しやすいように補正する
-    bool ETSumoNeo::correction(){
+    bool SisouColor::correction(){
         if(isCorrect_){
             startDistanceMeasurement(70);
             straightRunning_->run(15);
@@ -557,7 +608,7 @@ namespace strategy{
     }
 
     //距離検知をまとめたもの
-    void ETSumoNeo::startDistanceMeasurement(int distance,bool flagChange){
+    void SisouColor::startDistanceMeasurement(int distance,bool flagChange){
         if(!hasExecutedPhase_){
             distanceMeasurement_->setTargetDistance(distance);
             distanceMeasurement_->startMeasurement();
@@ -568,7 +619,7 @@ namespace strategy{
     }
 
     //時間検知をまとめたもの
-    void ETSumoNeo::startTimeMeasurement(int time,bool flagChange){
+    void SisouColor::startTimeMeasurement(int time,bool flagChange){
         if(!hasExecutedPhase_){
             timeMeasurement_->setBaseTime();
             timeMeasurement_->setTargetTime(time);
@@ -578,7 +629,7 @@ namespace strategy{
         }
     }
 
-    void ETSumoNeo::lineTraceReset(){
+    void SisouColor::lineTraceReset(){
         if(!isLineTraceReset_){
             linetrace_->reset();
             isLineTraceReset_ = true;

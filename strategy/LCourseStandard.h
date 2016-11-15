@@ -3,8 +3,12 @@
 
 #include "IStrategy.h"
 #include "drive/LineTrace.h"
+#include "drive/CurveRunning.h"
 #include "measurement/DistanceMeasurement.h"
+#include "../measurement/BodyAngleMeasurement.h"
 #include <vector>
+
+#define LCOURSE_SHORTCUT_LENGTH 25     // ショートカットする長さ[mm]
 
 namespace strategy{
     class LCourseStandard : public IStrategy{
@@ -18,9 +22,12 @@ namespace strategy{
                 LINETRACE5,
                 LINETRACE6,
                 CHANGEEDGE,
+                CHANGEEDGE_R_L,
+                CHANGEEDGE_L_R,
                 CURVE1,
                 CURVE2,
                 CURVE3,
+                LINE_IGNORE,
             };
 
             std::vector<Phase> phaseProcedure_{
@@ -29,16 +36,21 @@ namespace strategy{
                 Phase::LINETRACE2,
                 Phase::CURVE2,
                 Phase::LINETRACE3,
-                Phase::CHANGEEDGE,
+                //Phase::CHANGEEDGE,
+                Phase::CHANGEEDGE_R_L,
+                //Phase::LINE_IGNORE,
                 Phase::LINETRACE4,
                 Phase::CURVE3,
                 Phase::LINETRACE5,
-                Phase::CHANGEEDGE,
+                //Phase::CHANGEEDGE,
+                Phase::CHANGEEDGE_L_R,
                 Phase::LINETRACE6,
             };
 
             drive::LineTrace* linetrace_;
+            drive::CurveRunning* curveRunning_;
             measurement::DistanceMeasurement* distanceMeasurement_;
+            measurement::BodyAngleMeasurement bodyAngleMeasurement_;
 
             bool strategySuccess_;
             bool hasExecutedPhase_;
@@ -52,6 +64,7 @@ namespace strategy{
         private:
             bool executePhase(Phase phase);
             void startDistanceMeasurement(int distance);
+            void startAngleMeasurement();
             /**
              * @brief 一定距離ライントレース
              *
@@ -61,6 +74,15 @@ namespace strategy{
              * @return 一定距離走行:true,走行中:false
              */
             bool fixedDistanceLineTrace(int distance,int speed,drive::LineTraceEdge edge);
+            /**
+             * @brief 一定距離カーブライントレース
+             *
+             * @param distance 走行距離
+             * @param deltaRad 角度？
+             * @return 一定距離走行:true,走行中:false
+             */
+            bool fixedDistanceCurveLineTrace(int distance,int deltaRad);
+
             /**
              * @brief LineTrace::reset()を一度だけ実行する
              */

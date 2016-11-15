@@ -15,18 +15,11 @@ namespace strategy{
 
     destination_ = drive::Destination::getInstance();
 
-    Status_ = Status::TO_DESTINATION;
+    Status_ = Status::CONFIRM_EV3_POSITION;
   }
 
   bool BlockAreaExit::capture(){
     switch(Status_){
-      case Status::TO_DESTINATION:
-        //(4,4)へ移動
-        if(destination_->runTo(4,4)){
-          Status_ = Status::CONFIRM_EV3_POSITION;
-        }
-        break;
-
       case Status::CONFIRM_EV3_POSITION:
         //取りうる車体位置は二通り UP or LEFT
         if(!strcmp(destination_->getEV3Position(),"UP")){
@@ -38,7 +31,7 @@ namespace strategy{
 
       case Status::FROM_UP:
         //超信地旋回
-        if(pivotTurn_.turn(90)){
+        if(pivotTurn_.turn(110)){ //10°補正ver 本来90° (KOTORI 110) (HIYOKO 105)
           straightRunning_.initialize();
           distanceMeasurement_.setTargetDistance(200); //ライン間は30cm
           distanceMeasurement_.startMeasurement();
@@ -48,7 +41,7 @@ namespace strategy{
 
       case Status::FROM_LEFT1:
         //下から直接ラインへ
-        if(pivotTurn_.turn(-30)){
+        if(pivotTurn_.turn(70)){ //10°補正ver 本来-30° (KOTORI -10) (HIYOKO -20)
           distanceMeasurement_.setTargetDistance(200); //ライン間は30cm
           distanceMeasurement_.startMeasurement();
           Status_ = Status::FROM_LEFT2;
@@ -66,8 +59,8 @@ namespace strategy{
         break;
 
       case Status::FROM_LEFT3:
-        if(pivotTurn_.turn(30)){
-          distanceMeasurement_.setTargetDistance(200); //ラインまで38cm
+        if(pivotTurn_.turn(-40)){
+          distanceMeasurement_.setTargetDistance(230); //ラインまで38cm
           distanceMeasurement_.startMeasurement();
           Status_ = Status::STRAIGHT_SPEED_UP;
         }
@@ -85,7 +78,7 @@ namespace strategy{
 
       case Status::STRAIGHT_SPEED_DOWN:
         //ライン検知するまで
-        if(!lineDetection_.getResult()){
+        if(!lineDetection_.getResult(30)){
           straightRunning_.run(20, 100);
         }else{
           //信地旋回準備
@@ -96,16 +89,23 @@ namespace strategy{
 
       case Status::TURN:
         //90°信地旋回
-        if(bodyAngleMeasurement_.getResult() <= -85){
+        if(bodyAngleMeasurement_.getResult() <= -75){
           Status_ = Status::LINETRACE;
+          distanceMeasurement_.setTargetDistance(250);  // 25cm進んでラインの向きに合わせる
+          distanceMeasurement_.startMeasurement();
+          linetrace_->reset();
+          linetrace_->setPid(0.007, 0, 0.8);
         }else{
-          curveRunning_.run(0, 30);
+          curveRunning_.run(-5, 30);
         }
         break;
 
       case Status::LINETRACE:
-        linetrace_->run(20,drive::LineTraceEdge::LEFT,0.6);
-        return true;
+        linetrace_->run(20,drive::LineTraceEdge::LEFT,0.5);
+        if (distanceMeasurement_.getResult()){
+            return true;
+        }
+        break;
 
     }
     return false;

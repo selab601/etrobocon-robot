@@ -15,39 +15,47 @@
 #include "drive/CurveRunning.h"
 #include "measurement/BodyAngleMeasurement.h"
 #include "detection/ColorDetection.h"
+#include "../drive/Destination.h"
+
+#include "measurement/SelfPositionEstimation.h"
 
 namespace strategy{
-	class BlockAreaEntry : public IStrategy{
-		private:
-			enum class Status
-			{
-				STANDBY,
-				LINETRACE,
-				TURN,
+    class BlockAreaEntry : public IStrategy{
+        private:
+            enum class Status
+            {
+                STANDBY,
+                LINETRACE,
+                TURN,
                 STRAIGHT_SPEED_UP,
                 STRAIGHT_SPEED_DOWN,
-				TURN2,
-				INITIALIZE,
-				DONE
-				};
-			Status Status_;
+                TURN2,
+                INITIALIZE,
+                DONE
+                };
+            Status Status_;
 
-			drive::LineTrace* linetrace_;
-			measurement::DistanceMeasurement distanceMeasurement_;
-			device::Motors* motor_;
-			drive::PivotTurn pivotTurn_;
-			drive::StraightRunning straightRunning_;
-			detection::LineDetection lineDetection_;
-			drive::CurveRunning curveRunning_;
-			measurement::BodyAngleMeasurement bodyAngleMeasurement_;
-			detection::ColorDetection colorDetection_;
+            drive::Destination* destination_;
+            drive::LineTrace* linetrace_;
+            measurement::DistanceMeasurement distanceMeasurement_;
+            device::Motors* motor_;
+            drive::PivotTurn pivotTurn_;
+            drive::StraightRunning straightRunning_;
+            detection::LineDetection lineDetection_;
+            drive::CurveRunning curveRunning_;
+            measurement::BodyAngleMeasurement bodyAngleMeasurement_;
+            detection::ColorDetection colorDetection_;
 
-		public:
-			//コンストラクタ
-			BlockAreaEntry();
+            measurement::SelfPositionEstimation* selfPositionEstimation_;
+            int startDistance_;
+            int angle_;
 
-			bool capture();
-	};
+        public:
+            //コンストラクタ
+            BlockAreaEntry();
+
+            bool capture();
+    };
 }
 
 #endif

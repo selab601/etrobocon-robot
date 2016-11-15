@@ -6,6 +6,7 @@
 #include "Course.h"
 #include "../strategy/ETSumoNeo.h"
 #include "../strategy/PrizeTailVer.h"
+#include "../strategy/Shippofurifuri.h"
 
 using namespace strategy;
 using namespace measurement;
@@ -22,18 +23,26 @@ namespace contest_pkg{
         //それぞれのコースの戦略やライントレースを追加していく
         if(course == SelectedCourse::R_COURSE){
         //ブロック並べ
-        sections_.emplace_back(1000,new BlockAreaEntry());
-        sections_.emplace_back(1000,new BlockAreaGame());
-        sections_.emplace_back(0,new BlockAreaExit());
-        sections_.emplace_back(9100,new RCourseStandard());
+        sections_.emplace_back(new BlockAreaEntry());
+        sections_.emplace_back(new BlockAreaGame());
+        sections_.emplace_back(new BlockAreaExit());
+        sections_.emplace_back(new RCourseStandard());
+
+        // ゴール後にしっぽふりふり
+        // タッチセンサ押したら上向けて止める
+        sections_.emplace_back(new Shippofurifuri());
         }
 
         if(course == SelectedCourse::L_COURSE){
-        sections_.emplace_back(8000,new LCourseStandard());
+        sections_.emplace_back(new LCourseStandard());
         //相撲
-        sections_.emplace_back(200,new ETSumoNeo());
+        sections_.emplace_back(new ETSumoNeo());
         //懸賞
-        sections_.emplace_back(200,new PrizeTailVer());
+        sections_.emplace_back(new PrizeTailVer());
+
+        // ゴール後にしっぽふりふり
+        // タッチセンサ押したら上向けて止める
+        sections_.emplace_back(new Shippofurifuri());
         }
     }
 
