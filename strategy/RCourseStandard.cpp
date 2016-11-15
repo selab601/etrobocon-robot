@@ -1,6 +1,4 @@
 #include "RCourseStandard.h"
-#include "device/Shippo.h"
-
 
 namespace strategy{
   RCourseStandard::RCourseStandard(){
@@ -9,9 +7,19 @@ namespace strategy{
     motor_ = device::Motors::getInstance();
     Status_ = Status::DETECTION_STANDBY;
     bodyAngleMeasurement_ = measurement::BodyAngleMeasurement();
+    straightRunning_ = drive::StraightRunning();
+    lineDetection_ = detection::LineDetection();
+    pivotTurn_ = drive::PivotTurn();
   }
 
   bool RCourseStandard::capture(){
+      static long baseLength = 0;
+      static long targetLength = 0;
+      static int angleCounter = 0;
+      static int angle[5];
+      static int baseAngle = 0;
+      SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
+
     switch(Status_){
       case Status::DETECTION_STANDBY:
           ev3_speaker_set_volume(7);
@@ -19,6 +27,10 @@ namespace strategy{
         linetrace_->reset();
         linetrace_->setPid(0.018, 0, 1.2);
         bodyAngleMeasurement_.setBaseAngle();
+
+        baseLength = estimation->getMigrationLength();
+        targetLength = 0;
+        angleCounter = 0;
         Status_ = Status::DETECTION_CURVE;
         break;
 
@@ -29,15 +41,35 @@ namespace strategy{
         //SELAB  -82
         //KAKERUN -85
         if(bodyAngleMeasurement_.getResult() <= -80){ // -90 だと検知しないことがある
+            angleCounter = 0;
           Status_ = Status::STRAIGHT1_STANDBY;
         }else{
-          linetrace_->run(40,drive::LineTraceEdge::LEFT, 0.5);
+          linetrace_->run(50,drive::LineTraceEdge::LEFT, 0.5);
+        }
+
+        if (estimation->getMigrationLength() - baseLength >= targetLength){
+            // 角度を測る
+            if (angleCounter < 5 ){
+                ev3_speaker_play_tone(500, 100);
+                angle[angleCounter++] += estimation->getAngle();
+                targetLength += 70;
+            }
+            else{
+                // 5回計測した角度の平均をベースにセットする
+                baseAngle =
+                    (angle[0] + angle[1] + angle[2] + angle[3] + angle[4]) / 5;
+            }
         }
 
         break;
 
       case Status::STRAIGHT1_STANDBY:
         ev3_speaker_play_tone(500,200);
+
+        // ショートカット用
+        baseLength = estimation->getMigrationLength();
+        targetLength = 500;
+
       	// 直線(1300)，カーブ()　直径(480)，直線()
         linetrace_->reset();
         linetrace_->setPid(0.003F, 0.0, 0.3F);
@@ -52,15 +84,30 @@ namespace strategy{
 
       case Status::STRAIGHT1:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.5);
+          linetrace_->run(75,drive::LineTraceEdge::LEFT,0.5);
         }else{
           Status_ = Status::CURVE1_STANDBY;
+        }
+
+        // ショートカット用
+        if (estimation->getMigrationLength() - baseLength >= targetLength){
+            if (angleCounter < 5 ){
+                ev3_speaker_play_tone(500, 100);
+                angle[angleCounter++] += estimation->getAngle();
+                targetLength += 100;
+            }
         }
         break;
 
       //第一カーブ部分
       case Status::CURVE1_STANDBY:
         ev3_speaker_play_tone(500,200);
+
+        // ショートカット用
+        // 5回計測した角度の平均をベースにセットする
+        baseAngle =
+            (angle[0] + angle[1] + angle[2] + angle[3] + angle[4]) / 5;
+
         //HIYOKO(744)
         //KOTORI(744)
         //SELAB(730)
@@ -78,10 +125,19 @@ namespace strategy{
         break;
 
       case Status::CURVE1:
-        if(!distanceMeasurement_.getResult()){
-          linetrace_->runCurve(800);
-        }else{
-          Status_ = Status::STRAIGHT2_STANDBY;
+        linetrace_->runCurve(800);
+
+        // ショートカットするとき
+        if (RCOURSE_SHORTCUT_FLAG != 0){
+            if (estimation->getAngle() - baseAngle >= 60){
+                Status_ = Status::TO_NEAR_GATE_LINE_CURVE;
+            }
+        }
+        // ショートカットしないとき
+        else{
+            if(distanceMeasurement_.getResult()){
+                Status_ = Status::STRAIGHT2_STANDBY;
+            }
         }
         break;
 
@@ -171,6 +227,70 @@ namespace strategy{
         }
         break;
 
+        // ショートカットVer
+        // GATEのピンクのところあたりまでカーブで進む
+      case Status::TO_NEAR_GATE_LINE_CURVE:
+        curveRunning_.run(45, 58); // TODO: 調整必要かも
+        if (estimation->getAngle() - baseAngle <= 30){
+            Status_ = Status::TO_NEAR_GATE_LINE_STRAIGHT;
+
+            distanceMeasurement_.startMeasurement();
+            distanceMeasurement_.setTargetDistance(100);
+            ev3_speaker_play_tone(500,200);
+        }
+        break;
+
+        // ライン検知できるようにGATEのピンクのところ抜ける
+      case Status::TO_NEAR_GATE_LINE_STRAIGHT:
+        straightRunning_.run(45, 70);
+        if (distanceMeasurement_.getResult()){
+            Status_ = Status::LINE_DETECT;
+        }
+        break;
+
+        // ライン検知するまで進む
+      case Status::LINE_DETECT:
+        straightRunning_.run(40);
+        if(lineDetection_.getResult(30)){
+            Status_ = Status::TO_GATE_CURVE;
+            ev3_speaker_play_tone(500,200);
+
+            //distanceMeasurement_.startMeasurement();
+            //distanceMeasurement_.setTargetDistance(200);
+        }
+        break;
+
+
+      case Status::TO_GATE_CURVE:
+        //linetrace_->setPid(0.019, 0.0, 1.4);
+        //linetrace_->run(25, drive::LineTraceEdge::RIGHT ,0.5);
+        //curveRunning_.run(30, 5);
+        curveRunning_.run(60, 6);
+
+        if (estimation->getAngle() - baseAngle >= 64){
+            ev3_speaker_play_tone(500,200);
+
+            distanceMeasurement_.startMeasurement();
+            distanceMeasurement_.setTargetDistance(50);
+            Status_ = Status::TO_GATE_STRAIGHT;
+        }
+        break;
+
+      case Status::TO_GATE_STRAIGHT:
+        straightRunning_.run(50);
+        if (distanceMeasurement_.getResult()){
+            Status_ = Status::TURN;
+        }
+        break;
+
+      case Status::TURN:
+        if (pivotTurn_.turn(-170, 40)){
+            Status_ = Status::STRAIGHT4_STANDBY;
+        }
+        break;
+
+
+        // 最後の直線(ショートカット・普通のやつ共通)
       case Status::STRAIGHT4_STANDBY:
         ev3_speaker_play_tone(500,200);
         ev3_speaker_set_volume(1);
@@ -183,7 +303,7 @@ namespace strategy{
 
       case Status::STRAIGHT4:
         if(!distanceMeasurement_.getResult()){
-          linetrace_->run(70,drive::LineTraceEdge::LEFT,0.5);
+          linetrace_->run(80,drive::LineTraceEdge::LEFT,0.5);
         }else{
           Status_ = Status::DONE;
         }
@@ -191,7 +311,6 @@ namespace strategy{
 
       case Status::DONE:
         motor_->setWheelPWM(0,0);
-        device::Shippo::getInstance()->furifuri();  // 終わったらしっぽふりふり
         return true;
     }
     return false;
