@@ -1,10 +1,10 @@
-# ETロボコン2016
+# ETロボコン2017
 
-2016年度ETロボコンのためのリポジトリです．
+2017年度ETロボコンのためのリポジトリです．
 
 ## コンパイル方法
 
-[ET2016/Vagrant](http://selpm.cis.ibaraki.ac.jp/gitbucket/ET2016/Vagrant) を参考にして下さい．
+[ET2016/Vagrant](https://github.com/selab601/EtRoboconVagrant) を参考にして下さい．
 
 ## ポートの対応
 
