@@ -1,10 +1,10 @@
-#include "ExtrusionRunning.h"
+#include "PushingOutRunning.h"
 
 using namespace measurement;
 
 namespace drive{
 
-    ExtrusionRunning::ExtrusionRunning(){
+    PushingOutRunning::PushingOutRunning(){
         straightRunning_ = new StraightRunning();
         distanceMeasurement_ = new DistanceMeasurement();
         timeMeasurement_ = new TimeMeasurement();
@@ -12,7 +12,7 @@ namespace drive{
     }
 
 
-    bool ExtrusionRunning::run(int speed, int distance){
+    bool PushingOutRunning::run(int speed, int distance){
         switch(runningState_){
         //初期状態...目標距離セット
         case RunningState::INIT:
