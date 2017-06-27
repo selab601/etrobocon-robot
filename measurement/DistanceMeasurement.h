@@ -54,6 +54,11 @@ namespace measurement{
      * @param 目標距離
      */
     void setTargetDistance(int distance);
+
+    /**
+     * @brief 規定距離、目標距離、フラグをリセットする
+     */
+    void reset();
   };
 };
 

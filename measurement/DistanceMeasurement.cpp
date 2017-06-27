@@ -35,4 +35,10 @@ namespace measurement {
   void DistanceMeasurement::setTargetDistance(int distance) {
     targetDistance_ = distance;
   }
+
+  void DistanceMeasurement::reset(){
+    baseDistance_ = 0;
+    targetDistance_ = 0;
+    isStartMeasurement_ = false;
+  }
 };
