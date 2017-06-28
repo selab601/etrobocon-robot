@@ -9,14 +9,9 @@ namespace measurement {
   }
 
   bool DistanceMeasurement::getResult() {
-    long currentDistance = selfPositionEstimation_->getMigrationLength();
-    long def = currentDistance - baseDistance_;
-
-    if (def >= targetDistance_) {
+    if (getRelativeDistance() >= targetDistance_) {
       return true;
-
     }
-
     return false;
   }
 
