@@ -5,34 +5,34 @@
 #include "ev3api.h"
 
 namespace measurement{
-  /**
-   * 車体角度検知クラス
-   */
-  class BodyAngleMeasurement{
-  private:
-    //! 基底角度
-    int baseAngle_;
-
-    //! 自己位置推定
-    SelfPositionEstimation* selfPositionEstimation_;
-
-  public:
     /**
-     * @brief コンストラククタ
+     * 車体角度検知クラス
      */
-    BodyAngleMeasurement();
+    class BodyAngleMeasurement{
+    private:
+        //! 基底角度
+        int baseAngle_;
 
-    /**
-     * @brief 現在の角度を基底角度として設定する
-     */
-    void setBaseAngle();
+        //! 自己位置推定
+        SelfPositionEstimation* selfPositionEstimation_;
 
-    /**
-     * @brief 基底角度からの現在の角度を返す
-     */
-    int getResult();
+    public:
+        /**
+         * @brief コンストラククタ
+         */
+        BodyAngleMeasurement();
 
-  };
+        /**
+         * @brief 現在の角度を基底角度として設定する
+         */
+        void setBaseAngle();
+
+        /**
+         * @brief 基底角度からの現在の角度を返す
+         */
+        int getResult();
+
+    };
 };
 
 #endif
