@@ -11,16 +11,16 @@ namespace measurement{
     class DistanceMeasurement {
     private:
         //! 基底距離
-        long baseDistance_;
+        long base_;
 
         //! 目標距離
-        long targetDistance_;
+        long target_;
 
         //! 自己位置推定
         SelfPositionEstimation* selfPositionEstimation_;
 
         //距離検知を開始したかどうか
-        bool isStartMeasurement_;
+        bool isStart_;
 
     public:
         /**
@@ -38,22 +38,22 @@ namespace measurement{
         /**
          * @brief 現在までの走行距離を基底距離として設定します
          */
-        void startMeasurement();
+        void start();
 
         /**
          * @brief startMeasurement,setTargetDistanceを同時に実行する
          * @details フラグ管理をしているので使う場合はriset（）が必要
          *
-         * @param distance 目標距離
+         * @param target 目標距離
          */
-        void startMeasurement(int distance);
+        void start(int target);
 
         /**
          * @brief 目標距離を設定します
          * 目標距離は基底距離から進みたい長さを指します
-         * @param 目標距離(distance > 0)
+         * @param 目標距離(target > 0)
          */
-        void setTargetDistance(int distance);
+        void setTarget(int target);
 
         /**
          * @brief 規定距離、目標距離、フラグをリセットする
@@ -61,9 +61,9 @@ namespace measurement{
         void reset();
 
 
-        long getRemainingDistance();
+        long getRemaining();
 
-        long getRelativeDistance();
+        long getRelative();
     };
 };
 
