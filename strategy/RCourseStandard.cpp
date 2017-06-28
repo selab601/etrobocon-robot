@@ -77,8 +77,8 @@ namespace strategy{
         //KOTORI(1250)
         //SELAB(1230)
         //KAKERUN(1250)
-        distanceMeasurement_.setTargetDistance(1300);
-        distanceMeasurement_.startMeasurement();
+        distanceMeasurement_.setTarget(1300);
+        distanceMeasurement_.start();
         Status_ = Status::STRAIGHT1;
         break;
 
@@ -112,8 +112,8 @@ namespace strategy{
         //KOTORI(744)
         //SELAB(730)
         //KAKERUN(715)
-        distanceMeasurement_.setTargetDistance(650); //550
-        distanceMeasurement_.startMeasurement();
+        distanceMeasurement_.setTarget(650); //550
+        distanceMeasurement_.start();
 
         // カーブ用ライントレース
         linetrace_->reset();
@@ -148,8 +148,8 @@ namespace strategy{
         //HIYOKO 1350
         //KOTORI 1250
         //SELAB 1250
-        distanceMeasurement_.setTargetDistance(1350); //1350
-        distanceMeasurement_.startMeasurement();
+        distanceMeasurement_.setTarget(1350); //1350
+        distanceMeasurement_.start();
         linetrace_->setPid(0.003F, 0.0F, 0.3F);
         Status_ = Status::STRAIGHT2;
         break;
@@ -166,8 +166,8 @@ namespace strategy{
       case Status::CURVE2_STANDBY:
         ev3_speaker_play_tone(500,200);
         //840だったけど多いかも
-        distanceMeasurement_.setTargetDistance(820);
-        distanceMeasurement_.startMeasurement();
+        distanceMeasurement_.setTarget(820);
+        distanceMeasurement_.start();
         linetrace_->setPid(0.0144,0.0,0.72);
         Status_ = Status::CURVE2;
         break;
@@ -190,8 +190,8 @@ namespace strategy{
         linetrace_->reset();
         //直線2
         //KAKERUN(1550)
-        distanceMeasurement_.setTargetDistance(1700);//1600
-        distanceMeasurement_.startMeasurement();
+        distanceMeasurement_.setTarget(1700);//1600
+        distanceMeasurement_.start();
         linetrace_->setPid(0.003F, 0.0F, 0.3F);
         Status_ = Status::STRAIGHT3;
         break;
@@ -207,8 +207,8 @@ namespace strategy{
       //最後の直角カーブ部分
       case Status::CURVE3_STANDBY:
         ev3_speaker_play_tone(500,200);
-        distanceMeasurement_.setTargetDistance(430);
-        distanceMeasurement_.startMeasurement();
+        distanceMeasurement_.setTarget(430);
+        distanceMeasurement_.start();
 
         linetrace_->reset();
         linetrace_->setPid(0.005,0,0.6);
@@ -234,8 +234,8 @@ namespace strategy{
         if (estimation->getAngle() - baseAngle <= 30){
             Status_ = Status::TO_NEAR_GATE_LINE_STRAIGHT;
 
-            distanceMeasurement_.startMeasurement();
-            distanceMeasurement_.setTargetDistance(100);
+            distanceMeasurement_.start();
+            distanceMeasurement_.setTarget(100);
             ev3_speaker_play_tone(500,200);
         }
         break;
@@ -255,8 +255,8 @@ namespace strategy{
             Status_ = Status::TO_GATE_CURVE;
             ev3_speaker_play_tone(500,200);
 
-            //distanceMeasurement_.startMeasurement();
-            //distanceMeasurement_.setTargetDistance(200);
+            //distanceMeasurement_.start();
+            //distanceMeasurement_.setTarget(200);
         }
         break;
 
@@ -270,8 +270,8 @@ namespace strategy{
         if (estimation->getAngle() - baseAngle >= 64){
             ev3_speaker_play_tone(500,200);
 
-            distanceMeasurement_.startMeasurement();
-            distanceMeasurement_.setTargetDistance(50);
+            distanceMeasurement_.start();
+            distanceMeasurement_.setTarget(50);
             Status_ = Status::TO_GATE_STRAIGHT;
         }
         break;
@@ -295,8 +295,8 @@ namespace strategy{
         ev3_speaker_play_tone(500,200);
         ev3_speaker_set_volume(1);
         //ゴールまで
-        distanceMeasurement_.setTargetDistance(2700); //2770
-        distanceMeasurement_.startMeasurement();
+        distanceMeasurement_.setTarget(2700); //2770
+        distanceMeasurement_.start();
         linetrace_->setPid(0.003F, 0.0, 0.3F);
         Status_ = Status::STRAIGHT4;
         break;
