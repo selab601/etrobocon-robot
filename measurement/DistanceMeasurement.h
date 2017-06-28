@@ -19,6 +19,9 @@ namespace measurement{
     //! 自己位置推定
     SelfPositionEstimation* selfPositionEstimation_;
 
+    //距離検知を開始したかどうか
+    bool isStartMeasurement_;
+
   public:
     /**
      * @brief コンストラクタ
@@ -38,11 +41,29 @@ namespace measurement{
     void startMeasurement();
 
     /**
+     * @brief startMeasurement,setTargetDistanceを同時に実行する
+     * @details フラグ管理をしているので使う場合はriset（）が必要
+     *
+     * @param distance 目標距離
+     */
+    void startMeasurement(int distance);
+
+    /**
      * @brief 目標距離を設定します
      * 目標距離は基底距離から進みたい長さを指します
-     * @param 目標距離
+     * @param 目標距離(distance > 0)
      */
     void setTargetDistance(int distance);
+
+    /**
+     * @brief 規定距離、目標距離、フラグをリセットする
+     */
+    void reset();
+
+
+    long getRemainingDistance();
+
+    long getRelativeDistance();
   };
 };
 
