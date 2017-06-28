@@ -33,7 +33,9 @@ namespace measurement {
   }
 
   void DistanceMeasurement::setTargetDistance(int distance) {
-    targetDistance_ = distance;
+    if(distance > 0){
+        targetDistance_ = distance;
+    }
   }
 
   void DistanceMeasurement::reset(){

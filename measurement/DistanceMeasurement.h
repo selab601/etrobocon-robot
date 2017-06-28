@@ -51,7 +51,7 @@ namespace measurement{
     /**
      * @brief 目標距離を設定します
      * 目標距離は基底距離から進みたい長さを指します
-     * @param 目標距離
+     * @param 目標距離(distance > 0)
      */
     void setTargetDistance(int distance);
 
