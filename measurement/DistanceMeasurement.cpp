@@ -46,8 +46,7 @@ namespace measurement {
 
   long getRemainingDistance(){
     if(isStartMeasurement_){
-        long currentDistance = selfPositionEstimation_->getMigrationLength();
-        return currentDistance - baseDistance_;
+        return targetDistance_ + baseDistance_ - getRelativeDistance();
     }
     return -1;
   }
