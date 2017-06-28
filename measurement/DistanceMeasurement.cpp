@@ -47,5 +47,6 @@ namespace measurement {
         long currentDistance = selfPositionEstimation_->getMigrationLength();
         return currentDistance - baseDistance_;
     }
+    return -1;
   }
 };
