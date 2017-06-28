@@ -59,6 +59,13 @@ namespace measurement{
      * @brief 規定距離、目標距離、フラグをリセットする
      */
     void reset();
+
+    /**
+     * @brief 目標距離までの残りの距離を返す
+     * @details 測定を開始していることが条件
+     * @return 残りの距離
+     */
+    long getRemainingDistance();
   };
 };
 

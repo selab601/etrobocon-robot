@@ -41,4 +41,12 @@ namespace measurement {
     targetDistance_ = 0;
     isStartMeasurement_ = false;
   }
+
+  long getRemainingDistance(){
+    if(isStartMeasurement_){
+        long currentDistance = selfPositionEstimation_->getMigrationLength();
+        long def = currentDistance - baseDistance_;
+        return def;
+    }
+  }
 };
