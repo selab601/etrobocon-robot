@@ -45,9 +45,10 @@ namespace device
         if (strlen(str) > maxOutputChars_){
             ev3_lcd_draw_string("message to output is too long", 0, fontHeight_ * col);
         }
-
-        sprintf(outputStrBuffer_, "%s", str);
-        ev3_lcd_draw_string(outputStrBuffer_, 0, fontHeight_ * col);
+        else{
+            sprintf(outputStrBuffer_, "%s", str);
+            ev3_lcd_draw_string(outputStrBuffer_, 0, fontHeight_ * col);
+        }
     }
 
     void Display::updateDisplay(const char* str, int num, int col){
@@ -55,7 +56,32 @@ namespace device
             ev3_lcd_draw_string("message to output is too long", 0, fontHeight_ * col);
         }
 
-        sprintf(outputStrBuffer_, "%s : %6d", str, num);
-        ev3_lcd_draw_string(outputStrBuffer_, 0, fontHeight_ * col);
+        else{
+            sprintf(outputStrBuffer_, "%s : %6d", str, num);
+            ev3_lcd_draw_string(outputStrBuffer_, 0, fontHeight_ * col);
+        }
+    }
+
+
+    void Display::updateDisplay(const char* str, int num1, int num2, int col){
+        if (strlen(str) + 6*2 > maxOutputChars_){
+            ev3_lcd_draw_string("message to output is too long", 0, fontHeight_ * col);
+        }
+
+        else{
+            sprintf(outputStrBuffer_, "%s : %d, %d", str, num1, num2);
+            ev3_lcd_draw_string(outputStrBuffer_, 0, fontHeight_ * col);
+        }
+    }
+
+    void Display::updateDisplay(const char* str, int num1, int num2, int num3, int col){
+        if (strlen(str) + 6*3 > maxOutputChars_){
+            ev3_lcd_draw_string("message to output is too long", 0, fontHeight_ * col);
+        }
+
+        else{
+            sprintf(outputStrBuffer_, "%s : %d, %d, %d", str, num1, num2, num3);
+            ev3_lcd_draw_string(outputStrBuffer_, 0, fontHeight_ * col);
+        }
     }
 }
