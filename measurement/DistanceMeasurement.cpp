@@ -22,13 +22,13 @@ namespace measurement {
 
   void DistanceMeasurement::startMeasurement() {
     baseDistance_ = selfPositionEstimation_->getMigrationLength();
+    isStartMeasurement_ = true;
   }
 
   void DistanceMeasurement::startMeasurement(int distance){
     if(!isStartMeasurement_){
         startMeasurement();
         setTargetDistance(distance);
-        isStartMeasurement_ = true;
     }
   }
 
@@ -45,8 +45,7 @@ namespace measurement {
   long getRemainingDistance(){
     if(isStartMeasurement_){
         long currentDistance = selfPositionEstimation_->getMigrationLength();
-        long def = currentDistance - baseDistance_;
-        return def;
+        return currentDistance - baseDistance_;
     }
   }
 };
