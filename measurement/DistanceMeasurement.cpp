@@ -51,4 +51,11 @@ namespace measurement {
     }
     return -1;
   }
+
+  long getRelativeDistance(){
+    if(isStartMeasurement_){
+        return selfPositionEstimation_->getMigrationLength() - baseDistance_;
+    }
+    return -1;
+  }
 };
