@@ -60,17 +60,9 @@ namespace measurement{
      */
     void reset();
 
-    /**
-     * @brief 目標距離までの残りの距離を返す
-     * @details 測定を開始していることが条件
-     * @return 残りの距離,計測開始していなければ -1 を返す
-     */
+
     long getRemainingDistance();
 
-    /**
-     * @brief startMeasurement()からの相対距離を返す
-     * @return 相対距離,計測開始していなければ -1 を返す
-     */
     long getRelativeDistance();
   };
 };

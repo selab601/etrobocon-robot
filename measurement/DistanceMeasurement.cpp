@@ -39,14 +39,14 @@ namespace measurement {
     isStartMeasurement_ = false;
   }
 
-  long getRemainingDistance(){
+  long DistanceMeasurement::getRemainingDistance(){
     if(isStartMeasurement_){
         return targetDistance_ + baseDistance_ - getRelativeDistance();
     }
     return -1;
   }
 
-  long getRelativeDistance(){
+  long DistanceMeasurement::getRelativeDistance(){
     if(isStartMeasurement_){
         return selfPositionEstimation_->getMigrationLength() - baseDistance_;
     }
