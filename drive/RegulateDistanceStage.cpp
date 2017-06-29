@@ -45,8 +45,8 @@ namespace drive{
                 moveDistance_ = regulateDistance_ - position_;
                 straightRunning_->run(diff + 3);
             }
-                distanceMeasurement_->setTargetDistance(moveDistance_);
-                distanceMeasurement_->startMeasurement();
+                distanceMeasurement_->setTarget(moveDistance_);
+                distanceMeasurement_->start();
                 initialized_ = true;
         }
 

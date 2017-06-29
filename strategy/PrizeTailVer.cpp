@@ -220,8 +220,8 @@ namespace strategy{
     //距離検知の設定をまとめたもの
     void PrizeTailVer::startDistanceMeasurement(int distance){
         if(!hasExecutedPhase_){
-            distanceMeasurement_->setTargetDistance(distance);
-            distanceMeasurement_->startMeasurement();
+            distanceMeasurement_->setTarget(distance);
+            distanceMeasurement_->start();
             hasExecutedPhase_ = true;
         }
     }

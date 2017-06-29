@@ -2,53 +2,53 @@
 
 namespace measurement {
     DistanceMeasurement::DistanceMeasurement() {
-        baseDistance_ = 0;
-        targetDistance_ = 0;
+        base_ = 0;
+        target_ = 0;
         selfPositionEstimation_ = SelfPositionEstimation::getInstance();
-        isStartMeasurement_ = false;
+        isStart_ = false;
     }
 
     bool DistanceMeasurement::getResult() {
-        if (getRelativeDistance() >= targetDistance_) {
+        if (getRelative() >= target_) {
             return true;
         }
         return false;
     }
 
-    void DistanceMeasurement::startMeasurement() {
-        baseDistance_ = selfPositionEstimation_->getMigrationLength();
-        isStartMeasurement_ = true;
+    void DistanceMeasurement::start() {
+        base_ = selfPositionEstimation_->getMigrationLength();
+        isStart_ = true;
     }
 
-    void DistanceMeasurement::startMeasurement(int distance){
-        if(!isStartMeasurement_){
-            startMeasurement();
-            setTargetDistance(distance);
+    void DistanceMeasurement::start(int target){
+        if(!isStart_){
+            start();
+            setTarget(target);
         }
     }
 
-    void DistanceMeasurement::setTargetDistance(int distance) {
-        if(distance > 0){
-            targetDistance_ = distance;
+    void DistanceMeasurement::setTarget(int target) {
+        if(target > 0){
+            target_ = target;
         }
     }
 
     void DistanceMeasurement::reset(){
-        baseDistance_ = 0;
-        targetDistance_ = 0;
-        isStartMeasurement_ = false;
+        base_ = 0;
+        target_ = 0;
+        isStart_ = false;
     }
 
-    long DistanceMeasurement::getRemainingDistance(){
-        if(isStartMeasurement_){
-            return targetDistance_ + baseDistance_ - getRelativeDistance();
+    long DistanceMeasurement::getRemaining(){
+        if(isStart_){
+            return target_ + base_ - getRelative();
         }
         return -1;
     }
 
-    long DistanceMeasurement::getRelativeDistance(){
-        if(isStartMeasurement_){
-            return selfPositionEstimation_->getMigrationLength() - baseDistance_;
+    long DistanceMeasurement::getRelative(){
+        if(isStart_){
+            return selfPositionEstimation_->getMigrationLength() - base_;
         }
         return -1;
     }

@@ -16,8 +16,8 @@ namespace drive{
         switch(runningState_){
         //初期状態...目標距離セット
         case RunningState::INIT:
-                distanceMeasurement_->setTargetDistance(distance);
-                distanceMeasurement_->startMeasurement();
+                distanceMeasurement_->setTarget(distance);
+                distanceMeasurement_->start();
                 runningState_ = RunningState::FORWARD;
             break;
 
@@ -35,8 +35,8 @@ namespace drive{
         case RunningState::STOP:
             straightRunning_->run(0);
             if(timeMeasurement_->getResult()){
-                distanceMeasurement_->setTargetDistance(distance);
-                distanceMeasurement_->startMeasurement();
+                distanceMeasurement_->setTarget(distance);
+                distanceMeasurement_->start();
                 runningState_ = RunningState::BACKWARD;
             }
             break;

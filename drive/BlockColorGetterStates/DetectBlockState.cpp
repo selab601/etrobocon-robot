@@ -17,13 +17,13 @@ namespace drive {
 
     bool DetectBlockState::isExecuted(colorset_t* result) {
         if (initialized_ == false) {
-            distanceMeasure_->startMeasurement();
+            distanceMeasure_->start();
             initialized_ = true;
         }
 
         // 後ろに少し下がる
         // TODO: どのくらい下がればよいか実験
-        distanceMeasure_->setTargetDistance(47);
+        distanceMeasure_->setTarget(47);
         if (distanceMeasure_->getResult() == false) {
             straight_->run(-10);
             return false;

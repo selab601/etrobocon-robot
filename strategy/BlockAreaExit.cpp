@@ -33,8 +33,8 @@ namespace strategy{
         //超信地旋回
         if(pivotTurn_.turn(110)){ //10°補正ver 本来90° (KOTORI 110) (HIYOKO 105)
           straightRunning_.initialize();
-          distanceMeasurement_.setTargetDistance(200); //ライン間は30cm
-          distanceMeasurement_.startMeasurement();
+          distanceMeasurement_.setTarget(200); //ライン間は30cm
+          distanceMeasurement_.start();
           Status_ = Status::STRAIGHT_SPEED_UP;
         }
         break;
@@ -42,8 +42,8 @@ namespace strategy{
       case Status::FROM_LEFT1:
         //下から直接ラインへ
         if(pivotTurn_.turn(70)){ //10°補正ver 本来-30° (KOTORI -10) (HIYOKO -20)
-          distanceMeasurement_.setTargetDistance(200); //ライン間は30cm
-          distanceMeasurement_.startMeasurement();
+          distanceMeasurement_.setTarget(200); //ライン間は30cm
+          distanceMeasurement_.start();
           Status_ = Status::FROM_LEFT2;
         }
         //or上に行って，UP_TO_EXITLINEの戦略へ
@@ -60,8 +60,8 @@ namespace strategy{
 
       case Status::FROM_LEFT3:
         if(pivotTurn_.turn(-40)){
-          distanceMeasurement_.setTargetDistance(230); //ラインまで38cm
-          distanceMeasurement_.startMeasurement();
+          distanceMeasurement_.setTarget(230); //ラインまで38cm
+          distanceMeasurement_.start();
           Status_ = Status::STRAIGHT_SPEED_UP;
         }
         break;
@@ -91,8 +91,8 @@ namespace strategy{
         //90°信地旋回
         if(bodyAngleMeasurement_.getResult() <= -75){
           Status_ = Status::LINETRACE;
-          distanceMeasurement_.setTargetDistance(250);  // 25cm進んでラインの向きに合わせる
-          distanceMeasurement_.startMeasurement();
+          distanceMeasurement_.setTarget(250);  // 25cm進んでラインの向きに合わせる
+          distanceMeasurement_.start();
           linetrace_->reset();
           linetrace_->setPid(0.007, 0, 0.8);
         }else{

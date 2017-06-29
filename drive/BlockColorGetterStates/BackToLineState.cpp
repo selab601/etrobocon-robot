@@ -26,8 +26,8 @@ namespace drive {
         }
         case BACK_STATE::INIT_DISTANCE:
         {
-            distanceMeasurement_->startMeasurement();
-            distanceMeasurement_->setTargetDistance(100);
+            distanceMeasurement_->start();
+            distanceMeasurement_->setTarget(100);
             states_.pop();
             break;
         }
