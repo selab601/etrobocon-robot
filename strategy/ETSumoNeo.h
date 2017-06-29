@@ -2,7 +2,7 @@
 #define ETSUMO_NEO_H
 
 #include "IStrategy.h"
-#include "../drive/ExtrusionRunning.h"
+#include "../drive/PushingOutRunning.h"
 #include "../drive/ClimbingRunning.h"
 #include "../drive/StraightRunning.h"
 #include "../drive/PivotTurn.h"
@@ -162,7 +162,7 @@ namespace strategy{
 
 
         //走行
-        drive::ExtrusionRunning* extrusionRunning_;
+        drive::PushingOutRunning* extrusionRunning_;
         drive::ClimbingRunning* climbingRunning_;
         drive::StraightRunning* straightRunning_;
         drive::PivotTurn* pivotTurn_;

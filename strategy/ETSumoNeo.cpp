@@ -9,7 +9,7 @@ namespace strategy{
         linetrace_              = LineTrace::getInstance();
         straightRunning_        = new StraightRunning();
         climbingRunning_        = new ClimbingRunning();
-        extrusionRunning_       = new ExtrusionRunning();
+        extrusionRunning_       = new PushingOutRunning();
         pivotTurn_              = new PivotTurn();
         curveRunning_           = new CurveRunning();
         lineDetection_          = new LineDetection();

@@ -1,12 +1,12 @@
-#ifndef EXTRUSION_RUNNING_H_
-#define EXTRUSION_RUNNING_H_
+#ifndef PUSHING_OUT_RUNNING_H_
+#define PUSHING_OUT_RUNNING_H_
 
 #include "StraightRunning.h"
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/TimeMeasurement.h"
 
 namespace drive{
-    class ExtrusionRunning{
+    class PushingOutRunning{
 
         private:
             //直線走行
@@ -31,7 +31,7 @@ namespace drive{
 
         public:
             //コンストラクタ
-            ExtrusionRunning();
+            PushingOutRunning();
 
             /**
              * @brief 押し出し走行を行う
