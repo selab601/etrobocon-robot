@@ -51,6 +51,19 @@ namespace detection{
         return result;
     }
 
+    bool ColorDetection::isFourColors(){
+        colorid_t nowColor;
+        nowColor = getResult();
+        if(nowColor == COLOR_BLUE ||
+            nowColor == COLOR_RED ||
+            nowColor == COLOR_GREEN ||
+            nowColor == COLOR_YELLOW){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     hsv_raw_t ColorDetection::Rgb2Hsv(rgb_raw_t rgbValue) {
         vector<float> rgb {
             (float)rgbValue.r,
