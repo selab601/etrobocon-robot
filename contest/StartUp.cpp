@@ -138,8 +138,8 @@ namespace contest_pkg{
 
         switch(autoCalibrationState_){
             case AutoCalibrationState::INIT:
-                distanceMeasurement.setTargetDistance(100);
-                distanceMeasurement.startMeasurement();
+                distanceMeasurement.setTarget(100);
+                distanceMeasurement.start();
                 autoCalibrationState_ = AutoCalibrationState::WAIT;
                 break;
 
@@ -176,8 +176,8 @@ namespace contest_pkg{
                 display_-> updateDisplay("            STOP            ", 4);
                 if (timeMeasurement.getResult()){
                     autoCalibrationState_ = AutoCalibrationState::BACK;
-                    distanceMeasurement.setTargetDistance(100);
-                    distanceMeasurement.startMeasurement();
+                    distanceMeasurement.setTarget(100);
+                    distanceMeasurement.start();
                 }
                 break;
 

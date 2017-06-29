@@ -559,8 +559,8 @@ namespace strategy{
     //距離検知をまとめたもの
     void ETSumoNeo::startDistanceMeasurement(int distance,bool flagChange){
         if(!hasExecutedPhase_){
-            distanceMeasurement_->setTargetDistance(distance);
-            distanceMeasurement_->startMeasurement();
+            distanceMeasurement_->setTarget(distance);
+            distanceMeasurement_->start();
             if(flagChange){
                 hasExecutedPhase_ = true;
             }

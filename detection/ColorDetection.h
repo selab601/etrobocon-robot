@@ -28,6 +28,12 @@ namespace detection{
         colorid_t getResult();
 
         /**
+         * @brief 赤青黃緑の四色かどうかを判定する
+         * @return 赤青黃緑:true,それ以外:false
+         */
+        bool isFourColors();
+
+        /**
          * @brief RGB値をHSV値に変換する
          * @return HSV値
          */

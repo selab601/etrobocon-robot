@@ -20,8 +20,8 @@ namespace drive{
         //アームを上げる
         case RunningState::ARM_UP:
             if(arm_->up()){
-                distanceMeasurement_->setTargetDistance(distance);
-                distanceMeasurement_->startMeasurement();
+                distanceMeasurement_->setTarget(distance);
+                distanceMeasurement_->start();
                 runningState_ = RunningState::CLIMB;
             }
             break;

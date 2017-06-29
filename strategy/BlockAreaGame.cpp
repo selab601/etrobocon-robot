@@ -172,8 +172,8 @@ namespace strategy{
             break;
           }
 
-          distanceMeasurement_.setTargetDistance(100);
-          distanceMeasurement_.startMeasurement();
+          distanceMeasurement_.setTarget(100);
+          distanceMeasurement_.start();
           Status_ = Status::BACK_TO_LINE;
         }
         break;

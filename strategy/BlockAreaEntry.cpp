@@ -33,8 +33,8 @@ namespace strategy{
         switch(Status_){
             case Status::STANDBY:
                 //侵入場所の真横まで
-                distanceMeasurement_.setTargetDistance(580);
-                distanceMeasurement_.startMeasurement();
+                distanceMeasurement_.setTarget(580);
+                distanceMeasurement_.start();
                 Status_ = Status::LINETRACE;
                 break;
 
@@ -50,8 +50,8 @@ namespace strategy{
             case Status::TURN:
                 if(pivotTurn_.turn(90)){
                     straightRunning_.initialize();
-                    distanceMeasurement_.setTargetDistance(350);
-                    distanceMeasurement_.startMeasurement();
+                    distanceMeasurement_.setTarget(350);
+                    distanceMeasurement_.start();
                     Status_ = Status::STRAIGHT_SPEED_UP;
                 }
                 break;
