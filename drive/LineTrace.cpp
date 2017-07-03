@@ -211,20 +211,22 @@ namespace drive{
                 // 線の中心方向に移動する
             case ChangeEdgePhase::TO_MID_LINE:
                 distanceMeasurement.start(toMidLineLength);
-                setTarget(0.25);
+                setTarget(0.15);
                 if (distanceMeasurement.getResult()){
+                    distanceMeasurement.reset();
                     phase = ChangeEdgePhase::TO_OPPOSITE;
 
                     // エッジを逆にする
                     LineTraceEdge nextEdge = LineTraceEdge::LEFT == edge_? LineTraceEdge::RIGHT : LineTraceEdge::LEFT;
                     setEdge(nextEdge);
+                    reset();
                 }
                 break;
 
                 // 線の反対側に移動する
             case ChangeEdgePhase::TO_OPPOSITE:
                 distanceMeasurement.start(toOpposingLength);
-                setTarget(0.75);
+                setTarget(0.55);
                 if (distanceMeasurement.getResult()){
                     phase = ChangeEdgePhase::END;
                 }
