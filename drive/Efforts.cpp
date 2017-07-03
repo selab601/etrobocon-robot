@@ -45,15 +45,22 @@ namespace drive{
 
     bool Efforts::executePhase(Phase phase){
         switch(phase){
-
+        //取組位置に応じた初期化
         case Phase::INIT:
 
             switch(positionNumber_){
+            //登壇前の走行体の位置からみて
+            //左手前:1,右手前:2,左奥:3,右奥4
             case 1:
+                //寄り切り走行の向き
                 isRightForcingOut_  = true;
+                //旋回後のライン復帰の向き
                 isRightCurve_       = true;
+                //旋回角度
                 turnAngle_          = 200;
+                //台座までのライントレースのエッジ
                 startEdge_          = LineTraceEdge::RIGHT;
+                //帰るときのライントレースのエッジ
                 endEdge_            = LineTraceEdge::LEFT;
                 return true;
 
@@ -84,15 +91,18 @@ namespace drive{
             default: return false;
             }
 
+        //台座に向かうライントレース
         case Phase::LINETRACE_TO_DAIZA:
             // lineTraceReset();
             lineTrace_->setPid();
             lineTrace_->run(15,startEdge_,0.4);
             return colorDetection_->isFourColors();
 
+        //ブロック色取得
         case Phase::BLOCK_COLOR_GET:
             return blockColorGetter_->isExecuted(result_);
 
+        //取組
         case Phase::KIMARITE:
             if(result_->tableColor == result_->blockColor){
                 return forcingOutRunning_->run(20,isRightForcingOut_);
@@ -100,9 +110,11 @@ namespace drive{
                 pushingOutRunning_->run(20,100);
             }
 
+        //旋回
         case Phase::PIVORT_TURN:
             return pivotTurn_->turn(turnAngle_,40);
 
+        //ライン復帰
         case Phase::TURN_TO_LINE:
             if(isRightCurve_){
                 curveRunning_->run(-10,10);
@@ -111,6 +123,7 @@ namespace drive{
             }
             return lineDetection_->getResult();
 
+        //帰りのライントレース
         case Phase::LINETRACE_RIGHT_ANGLED:
             lineTrace_->run(15,endEdge_,0.4);
             return rightAngledDetection_->getResult();
