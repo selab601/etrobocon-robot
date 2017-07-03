@@ -196,4 +196,46 @@ namespace drive{
                 return false;
         }
     }
+
+    bool LineTrace::changeEdge2(int toMidLineLength, int toOpposingLength){
+        static ChangeEdgePhase phase = ChangeEdgePhase::INIT;
+        static int preTargetValue = 0;
+        static DistanceMeasurement distanceMeasurement = DistanceMeasurement();
+        switch(phase){
+            case ChangeEdgePhase::INIT:
+                preTargetValue = targetValue_;
+
+                phase = ChangeEdgePhase::TO_MID_LINE;
+                break;
+
+                // 線の中心方向に移動する
+            case ChangeEdgePhase::TO_MID_LINE:
+                distanceMeasurement.start(toMidLineLength);
+                setTarget(0.25);
+                if (distanceMeasurement.getResult()){
+                    phase = ChangeEdgePhase::TO_OPPOSITE;
+
+                    // エッジを逆にする
+                    LineTraceEdge nextEdge = LineTraceEdge::LEFT == edge_? LineTraceEdge::RIGHT : LineTraceEdge::LEFT;
+                    setEdge(nextEdge);
+                }
+                break;
+
+                // 線の反対側に移動する
+            case ChangeEdgePhase::TO_OPPOSITE:
+                distanceMeasurement.start(toOpposingLength);
+                setTarget(0.75);
+                if (distanceMeasurement.getResult()){
+                    phase = ChangeEdgePhase::END;
+                }
+                break;
+
+                // ターゲット値を戻して終了
+            case ChangeEdgePhase::END:
+                this->targetValue_ = preTargetValue; // ターゲット値を戻す
+                return true;
+        }
+        return false;
+    }
+
 };

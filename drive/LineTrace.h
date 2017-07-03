@@ -48,6 +48,13 @@ namespace drive{
             END
         };
 
+        enum class ChangeEdgePhase{
+            INIT,
+            TO_MID_LINE,
+            TO_OPPOSITE,
+            END
+        };
+
         // キャリブレーション値
         int whiteValue_;            //白のキャリブレーション値を10倍したもの
         int blackValue_;            //黒のキャリブレーション値を10倍したもの
@@ -165,6 +172,8 @@ namespace drive{
          * @author kuno
          **/
         bool changeEdge();
+
+        bool changeEdge2(int toMidLineLength, int toOpposingLength);
 
     private:
 
