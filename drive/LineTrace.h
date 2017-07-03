@@ -173,6 +173,16 @@ namespace drive{
          **/
         bool changeEdge();
 
+
+        /**
+         * @brief LineTrace::run(), runCurve()を呼びながらエッジ切り替えを行う
+         * @details このメソッドは状況に応じてターゲット値をエッジの情報を切り替えているだけなので、LineTrace::run() を呼びながらこのメソッドを呼ぶ
+         *
+         * @param toMidLineLength ラインの中心方向に移動する間の距離[mm] (300mm 程度推薦)
+         * @param toOpposingLength ラインの中心から反対側に移動する間の距離(100mm ~ 300mm 程度推薦)
+         *
+         * @return エッジ切り替えが終了したらtrue
+         */
         bool changeEdge2(int toMidLineLength, int toOpposingLength);
 
     private:
