@@ -48,7 +48,7 @@ namespace drive{
             END
         };
 
-        enum class ChangeEdgePhase{
+        enum class ChangeEdge2Phase{
             INIT,
             TO_MID_LINE,
             TO_OPPOSITE,
@@ -79,6 +79,9 @@ namespace drive{
 
         //エッジ切り替えメソッドでの状態
         LineTraceEdgeChangePhase edgeChangeStatus_ = LineTraceEdgeChangePhase::ACROSS;
+
+        // エッジ切り替え2での状態
+        ChangeEdge2Phase changeEdge2Phase_ = ChangeEdge2Phase::INIT;
 
         //距離検知
         measurement::DistanceMeasurement* distanceMeasurement_;
