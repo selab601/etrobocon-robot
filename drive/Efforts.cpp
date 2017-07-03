@@ -130,4 +130,15 @@ namespace drive{
         }
         return false;
     }
+
+    void Efforts::reset(){
+        procedureNumber_    = 0;
+        isSuccess_          = false;
+        positionNumber_     = 0;
+        isRightForcingOut_  = false;
+        isRightCurve_       = false;
+        turnAngle_          = 0;
+        startEdge_          = LineTraceEdge::RIGHT;
+        endEdge_            = LineTraceEdge::RIGHT;
+    }
 }

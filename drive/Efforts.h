@@ -83,6 +83,12 @@ namespace drive{
          */
         bool run(int positionNumber);
 
+        /**
+         * @brief 初期化
+         * @details 複数使う場合はreset()を挟んでください
+         */
+        void reset();
+
     private:
         /**
          * @brief 手順を実行
