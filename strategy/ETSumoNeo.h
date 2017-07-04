@@ -67,6 +67,7 @@ namespace strategy{
             StrategyPhase::FIRST_EFFORTS,
             StrategyPhase::ACROSS_LINE,
             StrategyPhase::SECOND_EFFORTS,
+            StrategyPhase::INIT,
             StrategyPhase::CURVE_TOP,
             StrategyPhase::UPPER_STAGE,
             StrategyPhase::ACROSS_LINE,
