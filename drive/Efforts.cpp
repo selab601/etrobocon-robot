@@ -144,5 +144,6 @@ namespace drive{
         startEdge_          = LineTraceEdge::RIGHT;
         endEdge_            = LineTraceEdge::RIGHT;
         blockColorGetter_   = BlockColorGetter();
+        forcingOutRunning_->reset();
     }
 }
