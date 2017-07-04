@@ -165,6 +165,11 @@ namespace strategy{
             straightRunning_->run(0);
             return timeMeasurement_->getResult();
 
+        case StrategyPhase::NEXT_STAGE:
+            distanceMeasurement_->start(300);
+            straightRunning_->run(60);
+            return distanceMeasurement_->getResult();
+
         default: return false;
         }
         return false;

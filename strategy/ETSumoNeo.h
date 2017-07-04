@@ -45,6 +45,7 @@ namespace strategy{
             FOURTH_EFFORTS,
             ACROSS_LINE,
             CURVE_TOP,
+            NEXT_STAGE,
         };
 
 
@@ -61,21 +62,49 @@ namespace strategy{
             StrategyPhase::BACK_TO_LINE,     //中央線までバック
             StrategyPhase::STRAIGHT_4_CM,    //4cm直進
             StrategyPhase::TURN_TO_DOWN,     //下を向くように旋回
-            StrategyPhase::DOWN_STAGE,
-            StrategyPhase::STRAIGHT_2_CM,
-            StrategyPhase::TURN_RIGHT_90,
-            StrategyPhase::FIRST_EFFORTS,
-            StrategyPhase::ACROSS_LINE,
-            StrategyPhase::SECOND_EFFORTS,
-            StrategyPhase::INIT,
-            StrategyPhase::CURVE_TOP,
-            StrategyPhase::UPPER_STAGE,
-            StrategyPhase::ACROSS_LINE,
-            StrategyPhase::TURN_RIGHT_90,
-            StrategyPhase::THIRD_EFFORTS,
-            StrategyPhase::ACROSS_LINE,
-            StrategyPhase::FOURTH_EFFORTS,
-            StrategyPhase::TURN_LEFT_90,
+            StrategyPhase::DOWN_STAGE,       //下段に移動
+            StrategyPhase::STRAIGHT_2_CM,    //すこし進む
+            StrategyPhase::TURN_RIGHT_90,    //右に旋回
+            StrategyPhase::FIRST_EFFORTS,    //一回目の取組
+            StrategyPhase::ACROSS_LINE,      //線を超える
+            StrategyPhase::SECOND_EFFORTS,   //二回目の取組
+            StrategyPhase::INIT,             //車体角度をリセット
+            StrategyPhase::CURVE_TOP,        //上を向く
+            StrategyPhase::UPPER_STAGE,      //上段に移動
+            StrategyPhase::ACROSS_LINE,      //線を超える
+            StrategyPhase::TURN_RIGHT_90,    //右に旋回
+            StrategyPhase::THIRD_EFFORTS,    //三回目の取組
+            StrategyPhase::ACROSS_LINE,      //線を超える
+            StrategyPhase::FOURTH_EFFORTS,   //四回目の取組
+            StrategyPhase::TURN_LEFT_90,     //左に旋回
+            StrategyPhase::BACK_TO_LINE,     //近すぎるのでバック
+            StrategyPhase::STOP,             //新幹線検知まで停止
+            StrategyPhase::WAIT_2_SEC,       //通過するまで待つ
+
+            StrategyPhase::NEXT_STAGE,       //次のステージへ
+
+            StrategyPhase::TURN_TO_SIDE,     //横を向く
+            StrategyPhase::BACK_TO_LINE,     //中央線までバック
+            StrategyPhase::STRAIGHT_4_CM,    //4cm直進
+            StrategyPhase::TURN_TO_DOWN,     //下を向くように旋回
+            StrategyPhase::DOWN_STAGE,       //下段に移動
+            StrategyPhase::STRAIGHT_2_CM,    //すこし進む
+            StrategyPhase::TURN_RIGHT_90,    //右に旋回
+            StrategyPhase::FIRST_EFFORTS,    //五回目の取組
+            StrategyPhase::ACROSS_LINE,      //線を超える
+            StrategyPhase::SECOND_EFFORTS,   //六回目の取組
+            StrategyPhase::INIT,             //車体角度をリセット
+            StrategyPhase::CURVE_TOP,        //上を向く
+            StrategyPhase::UPPER_STAGE,      //上段に移動
+            StrategyPhase::ACROSS_LINE,      //線を超える
+            StrategyPhase::TURN_RIGHT_90,    //右に旋回
+            StrategyPhase::THIRD_EFFORTS,    //七回目の取組
+            StrategyPhase::ACROSS_LINE,      //線を超える
+            StrategyPhase::FOURTH_EFFORTS,   //八回目の取組
+            StrategyPhase::TURN_LEFT_90,     //左に旋回
+            StrategyPhase::STOP,             //新幹線検知まで停止
+            StrategyPhase::WAIT_2_SEC,       //通過するまで待つ
+            StrategyPhase::NEXT_STAGE,//仮置き
         };
 
 
