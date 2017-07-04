@@ -35,6 +35,7 @@ namespace drive{
             //手順を1つずつ実行する
             if(executePhase(phaseProcedure_[procedureNumber_] ) ){
                 procedureNumber_++;
+                distanceMeasurement_->reset();
             }
         }
         //最後の手順まで
