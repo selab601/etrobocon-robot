@@ -107,7 +107,7 @@ namespace drive{
             if(result_->tableColor == result_->blockColor){
                 return forcingOutRunning_->run(20,isRightForcingOut_);
             }else{
-                pushingOutRunning_->run(20,100);
+                return pushingOutRunning_->run(20,100);
             }
 
         //旋回
