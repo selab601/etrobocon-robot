@@ -10,6 +10,7 @@
 #include "../detection/LineDetection.h"
 #include "../detection/ColorDetection.h"
 #include "../detection/RightAngledDetection.h"
+#include "../measurement/DistanceMeasurement.h"
 #include <vector>
 
 namespace drive{
@@ -46,6 +47,7 @@ namespace drive{
         detection::LineDetection* lineDetection_;
         detection::ColorDetection* colorDetection_;
         detection::RightAngledDetection* rightAngledDetection_;
+        measurement::DistanceMeasurement* distanceMeasurement_;
 
         //成功したかどうか
         bool isSuccess_;

@@ -2,6 +2,7 @@
 
 using namespace drive;
 using namespace detection;
+using namespace measurement;
 
 namespace drive{
     Efforts::Efforts(){
@@ -14,6 +15,7 @@ namespace drive{
         lineDetection_        = new LineDetection();
         colorDetection_       = new ColorDetection();
         rightAngledDetection_ = new RightAngledDetection();
+        distanceMeasurement_  = new DistanceMeasurement();
 
         result_  = new colorset_t;
 
@@ -57,7 +59,7 @@ namespace drive{
                 //旋回後のライン復帰の向き
                 isRightCurve_       = true;
                 //旋回角度
-                turnAngle_          = 200;
+                turnAngle_          = 210;
                 //台座までのライントレースのエッジ
                 startEdge_          = LineTraceEdge::RIGHT;
                 //帰るときのライントレースのエッジ
@@ -67,7 +69,7 @@ namespace drive{
             case 2:
                 isRightForcingOut_  = false;
                 isRightCurve_       = false;
-                turnAngle_          = -200;
+                turnAngle_          = -210;
                 startEdge_          = LineTraceEdge::LEFT;
                 endEdge_            = LineTraceEdge::RIGHT;
                 return true;
@@ -125,8 +127,9 @@ namespace drive{
 
         //帰りのライントレース
         case Phase::LINETRACE_RIGHT_ANGLED:
+            distanceMeasurement_->start(20);
             lineTrace_->run(15,endEdge_,0.4);
-            return rightAngledDetection_->getResult();
+            return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
         }
         return false;
     }
