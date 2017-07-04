@@ -109,6 +109,10 @@ namespace strategy{
         case StrategyPhase::TURN_RIGHT_90:
             return pivotTurn_->turn(-90);
 
+        //左に90度旋回
+        case StrategyPhase::TURN_LEFT_90:
+            return pivotTurn_->turn(90);
+
         //一回目の取組
         case StrategyPhase::FIRST_EFFORTS:
             return efforts_->run(1);
