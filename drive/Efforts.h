@@ -30,6 +30,7 @@ namespace drive{
             Phase::INIT,                    //取組位置に応じた初期化
             Phase::LINETRACE_TO_DAIZA,      //台座に向かう
             Phase::BLOCK_COLOR_GET,         //ブロック色取得
+            Phase::LINETRACE_TO_DAIZA,      //台座から離れてるので再調整
             Phase::KIMARITE,                //取組
             Phase::PIVORT_TURN,             //旋回
             Phase::TURN_TO_LINE,            //ライン復帰
