@@ -11,6 +11,7 @@ namespace strategy{
         climbingRunning_        = new ClimbingRunning();
         pivotTurn_              = new PivotTurn();
         curveRunning_           = new CurveRunning();
+        efforts_                = new Efforts();
         lineDetection_          = new LineDetection();
         objectDetection_        = new ObjectDetection();
         rightAngledDetection_   = new RightAngledDetection();
@@ -29,6 +30,8 @@ namespace strategy{
             //難所攻略手順を1つずつ実行する
             if(executeStrategy(strategyProcedure_[procedureNumber])){
                 lineTraceReset();
+                distanceMeasurement_->reset();
+                efforts_->reset();
                 procedureNumber++;
                 hasExecutedPhase_ = false;//フラグを戻しておく
                 ev3_speaker_play_tone ( 500, 100);//音を出す
@@ -52,7 +55,7 @@ namespace strategy{
 
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
-            startDistanceMeasurement(900);
+            distanceMeasurement_->start(1000);
             linetrace_->setPid(0.0144,0.0,0.72);
             linetrace_->run(40,LineTraceEdge::RIGHT);
             //距離検知or車体角度が土俵を向いたらtrue
@@ -63,7 +66,6 @@ namespace strategy{
             straightRunning_->run(0);
             return objectDetection_->getResult();
 
-
         //通り過ぎてから1秒間待つ
         case StrategyPhase::WAIT_1_SEC:
             startTimeMeasurement(1000);
@@ -72,7 +74,7 @@ namespace strategy{
 
         //登壇後の動作を安定させるため少し旋回
         case StrategyPhase::TURN_LITTLE:
-            return pivotTurn_->turn(climbBeforeLittleAngle_);
+            return pivotTurn_->turn(7);
 
         //登壇走行
         case StrategyPhase::CLIMB:
@@ -80,7 +82,7 @@ namespace strategy{
 
         //横を向くまで旋回
         case StrategyPhase::TURN_TO_SIDE:
-            return pivotTurn_->turn(climbAfterSideFaceAngle_);
+            return pivotTurn_->turn(85);
 
         //ラインまでバック
         case StrategyPhase::BACK_TO_LINE:
@@ -89,102 +91,75 @@ namespace strategy{
 
         //4cm進む
         case StrategyPhase::STRAIGHT_4_CM:
-            startDistanceMeasurement(45);
+            distanceMeasurement_->start(40);
             straightRunning_->run(15);
             return distanceMeasurement_->getResult();
 
         //下を向くように旋回
         case StrategyPhase::TURN_TO_DOWN:
-            return turn(isRightRotation_,10);
+            return turn(false,10);
 
-        //検知した後すこし待つ
-        case StrategyPhase::WAIT_2_SEC:
-            startTimeMeasurement(2000);
-            straightRunning_->run(0);
-            return timeMeasurement_->getResult();
-
-        //降壇
-        case StrategyPhase::GET_OF:
-            startDistanceMeasurement(450);
-            straightRunning_->run(50);
+        //3cm直進
+        case StrategyPhase::STRAIGHT_2_CM:
+            distanceMeasurement_->start(20);
+            straightRunning_->run(20);
             return distanceMeasurement_->getResult();
 
-        //ライン検知
-        case StrategyPhase::LINE_DETECTION:
-            curveRunning_->run(20,10);
-            return lineDetection_->getResult();
+        //右に90度旋回
+        case StrategyPhase::TURN_RIGHT_90:
+            return pivotTurn_->turn(-90);
 
-        //復帰後のライントレーストレース
-        case StrategyPhase::LINE_RETURN:
-            startDistanceMeasurement(1350);
-            lineTraceReset();
-            linetrace_->setEdge(LineTraceEdge::RIGHT);
-            linetrace_->setMaxPwm(60);
-            linetrace_->setPid(0.006,0,0.6);
-            linetrace_->setTarget(0.5);
-            linetrace_->runCurve(-380);
-            return distanceMeasurement_->getResult();
+        //一回目の取組
+        case StrategyPhase::FIRST_EFFORTS:
+            return efforts_->run(1);
 
-        //一人目の力士を押し出す
-        case SumoPhase::FIRST_EXTRUSION:
-            return extrusion(firstWrestlerColor_);
+        //二回目の取組
+        case StrategyPhase::SECOND_EFFORTS:
+            return efforts_->run(2);
 
-        //二人目の力士を押し出す
-        case SumoPhase::SECOND_EXTRUSION:
-            return extrusion(secondWrestlerColor_);
+        //三回目の取組
+        case StrategyPhase::THIRD_EFFORTS:
+            return efforts_->run(4);
 
-        //三人目の力士を押し出す
-        case SumoPhase::THIRD_EXTRUSION:
-            return extrusion(thirdWrestlerColor_);
+        //四回目の取組
+        case StrategyPhase::FOURTH_EFFORTS:
+            return efforts_->run(3);
 
         //直角をまたぐ走行
-        case SumoPhase::ACROSS_LINE:
-            startDistanceMeasurement(50);
+        case StrategyPhase::ACROSS_LINE:
+            distanceMeasurement_->start(50);
             straightRunning_->run(15);
             return distanceMeasurement_->getResult();
 
-        //一回目の旋回
-        case SumoPhase::FIRST_TURN:
-            return pivotTurn_->turn(firstTurnAngle_,30);
-
-        //二回目の旋回
-        case SumoPhase::SECOND_TURN:
-            return pivotTurn_->turn(secondTurnAngle_,30);
-
-        //三回目の旋回
-        case SumoPhase::THIRD_TURN:
-            return pivotTurn_->turn(thirdTurnAngle_);
-
         //旋回すると尻尾が新幹線にぶつかるのでカーブをして上を向く
-        case SumoPhase::CURVE_TOP:
-            return curve(isRightCurve_,30);
+        case StrategyPhase::CURVE_TOP:
+            return curve(true,30);
 
         //上段までライントレース
-        case SumoPhase::UPPER_STAGE:
+        case StrategyPhase::UPPER_STAGE:
             static bool isTimeDetected = false;
             startTimeMeasurement(800);
-            linetrace_->run(20,upperStageEdge_,0.4);
+            linetrace_->run(20,LineTraceEdge::LEFT,0.4);
             if(timeMeasurement_->getResult()){
                 isTimeDetected = true;
             }
             return isTimeDetected && rightAngledDetection_->getResult(4.0);
 
         //下段までライントレース
-        case SumoPhase::DOWN_STAGE:
+        case StrategyPhase::DOWN_STAGE:
             static bool isTimeDetected2 = false;
             startTimeMeasurement(400);
-            linetrace_->run(20,downStageEdge_,0.4);
+            linetrace_->run(20,LineTraceEdge::RIGHT,0.4);
             if(timeMeasurement_->getResult()){
                 isTimeDetected2 = true;
             }
             return isTimeDetected2 && rightAngledDetection_->getResult(4.0);
 
-        //3cm直進
-        case SumoPhase::STRAIGHT_3_CM:
-            startDistanceMeasurement(20);
-            straightRunning_->run(20);
-            return distanceMeasurement_->getResult();
-
+        //検知した後すこし待つ
+        case StrategyPhase::WAIT_2_SEC:
+            startTimeMeasurement(2000);
+            straightRunning_->run(0);
+            return timeMeasurement_->getResult();
 
         default: return false;
         }

@@ -8,6 +8,7 @@
 #include "../drive/PivotTurn.h"
 #include "../drive/LineTrace.h"
 #include "../drive/CurveRunning.h"
+#include "../drive/Efforts.h"
 #include "../detection/LineDetection.h"
 #include "../detection/ColorDetection.h"
 #include "../detection/ObjectDetection.h"
@@ -23,47 +24,34 @@ namespace strategy{
         //ET相撲Neoの走行状態
         enum class StrategyPhase{
             INIT,
-            HOSHITORI,
-            SET_VALUE,
-            BACK,
-            TURN_LEFT,
-            STRAIGHT,
             LINE_TRACE,
-            LINE_TRACE_LITTLE,
             STOP,
             WAIT_1_SEC,
-            WAIT_1_SEC_H,
+            WAIT_2_SEC,
             TURN_LITTLE,
             CLIMB,
-            WAIT_2_SEC,
             TURN_TO_SIDE,
             BACK_TO_LINE,
             STRAIGHT_4_CM,
-            STRAIGHT_7_CM,
+            STRAIGHT_2_CM,
             TURN_TO_DOWN,
-            SUMO,
-            GET_OF,
-            LINE_DETECTION,
-            LINE_RETURN,
             TURN_RIGHT_90,
             TURN_LEFT_90,
-            LEAVE_FROM_LINE,
-            APPROACH_TO_LINE,
-            APPROACH_TO_LINE2,
+            DOWN_STAGE,
+            UPPER_STAGE,
+            FIRST_EFFORTS,
+            SECOND_EFFORTS,
+            THIRD_EFFORTS,
+            FOURTH_EFFORTS,
+            ACROSS_LINE,
+            CURVE_TOP,
         };
 
 
         //難所攻略手順
         std::vector<StrategyPhase> strategyProcedure_{
             StrategyPhase::INIT,             //車体角度保存
-            StrategyPhase::HOSHITORI,        //星取検知
-            StrategyPhase::WAIT_1_SEC_H,     //星取取得
-            StrategyPhase::SET_VALUE,        //星取が判明したので値を代入
-            StrategyPhase::BACK,             //星取を踏まないようにバック
-            StrategyPhase::TURN_LEFT,        //左に旋回
-            StrategyPhase::STRAIGHT,         //ラインまで直進
             StrategyPhase::LINE_TRACE,       //土俵を向くまでライントレース
-            StrategyPhase::LINE_TRACE_LITTLE,//すこしライントレース
             StrategyPhase::STOP,             //新幹線検知するまで停止
             StrategyPhase::WAIT_1_SEC,       //検知後に待つ
             StrategyPhase::TURN_LITTLE,      //すこし旋回
@@ -73,20 +61,20 @@ namespace strategy{
             StrategyPhase::BACK_TO_LINE,     //中央線までバック
             StrategyPhase::STRAIGHT_4_CM,    //4cm直進
             StrategyPhase::TURN_TO_DOWN,     //下を向くように旋回
-            StrategyPhase::SUMO,             //相撲-SumoPhase-
-            StrategyPhase::BACK_TO_LINE,     //-SumoPhase終了(降段方向を向いている)-ラインまでバック
-            StrategyPhase::STOP,             //新幹線検知するまで停止
-            StrategyPhase::WAIT_1_SEC,       //検知後に待つ
-            StrategyPhase::GET_OF,           //降段
+            StrategyPhase::DOWN_STAGE,
+            StrategyPhase::STRAIGHT_2_CM,
             StrategyPhase::TURN_RIGHT_90,
-            StrategyPhase::LEAVE_FROM_LINE,
-            //StrategyPhase::WAIT_1_SEC,
-            StrategyPhase::APPROACH_TO_LINE,
-            //StrategyPhase::APPROACH_TO_LINE2,
-            StrategyPhase::STRAIGHT_7_CM,
+            StrategyPhase::FIRST_EFFORTS,
+            StrategyPhase::ACROSS_LINE,
+            StrategyPhase::SECOND_EFFORTS,
+            StrategyPhase::CURVE_TOP,
+            StrategyPhase::UPPER_STAGE,
+            StrategyPhase::ACROSS_LINE,
+            StrategyPhase::TURN_RIGHT_90,
+            StrategyPhase::THIRD_EFFORTS,
+            StrategyPhase::ACROSS_LINE,
+            StrategyPhase::FOURTH_EFFORTS,
             StrategyPhase::TURN_LEFT_90,
-            //StrategyPhase::LINE_DETECTION,
-            StrategyPhase::LINE_RETURN       //ライン復帰
         };
 
 
@@ -96,6 +84,7 @@ namespace strategy{
         drive::PivotTurn* pivotTurn_;
         drive::CurveRunning* curveRunning_;
         drive::LineTrace* linetrace_;
+        drive::Efforts* efforts_;
 
         //検知
         detection::LineDetection* lineDetection_;
