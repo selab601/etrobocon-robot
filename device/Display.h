@@ -60,6 +60,29 @@ namespace device
          * @param col 出力行
          */
         void updateDisplay(const char* str, int num, int col);
+
+        /**
+         * @brief 文字列及び数値の出力
+         * @details 「文字列：数値1, 数値2」の形式で，指定行に出力する
+         *
+         * @param str 出力文字列
+         * @param num1 出力数値1
+         * @param num2 出力数値2
+         * @param col 出力行
+         */
+        void updateDisplay(const char* str, int num1, int num2, int col);
+
+
+        /**
+         * @brief 文字列及び数値の出力
+         *
+         * @param str 出力文字列
+         * @param num1 出力数値1
+         * @param num2 出力数値2
+         * @param num3 出力数値3
+         * @param col 出力行
+         */
+        void updateDisplay(const char* str, int num1, int num2, int num3, int col);
     };
 }
 
