@@ -102,6 +102,7 @@ namespace strategy{
             StrategyPhase::ACROSS_LINE,      //線を超える
             StrategyPhase::FOURTH_EFFORTS,   //八回目の取組
             StrategyPhase::TURN_LEFT_90,     //左に旋回
+            StrategyPhase::BACK_TO_LINE,
             StrategyPhase::STOP,             //新幹線検知まで停止
             StrategyPhase::WAIT_2_SEC,       //通過するまで待つ
             StrategyPhase::NEXT_STAGE,//仮置き
