@@ -141,23 +141,15 @@ namespace strategy{
 
         //上段までライントレース
         case StrategyPhase::UPPER_STAGE:
-            static bool isTimeDetected = false;
-            startTimeMeasurement(800);
+            distanceMeasurement_->start(40);
             linetrace_->run(20,LineTraceEdge::LEFT,0.4);
-            if(timeMeasurement_->getResult()){
-                isTimeDetected = true;
-            }
-            return isTimeDetected && rightAngledDetection_->getResult(4.0);
+            return distanceMeasurement_->getResult() && rightAngledDetection_->getResult(4.0);
 
         //下段までライントレース
         case StrategyPhase::DOWN_STAGE:
-            static bool isTimeDetected2 = false;
-            startTimeMeasurement(400);
+            distanceMeasurement_->start(40);
             linetrace_->run(20,LineTraceEdge::RIGHT,0.4);
-            if(timeMeasurement_->getResult()){
-                isTimeDetected2 = true;
-            }
-            return isTimeDetected2 && rightAngledDetection_->getResult(4.0);
+            return distanceMeasurement_->getResult() && rightAngledDetection_->getResult(4.0);
 
         //検知した後すこし待つ
         case StrategyPhase::WAIT_2_SEC:
