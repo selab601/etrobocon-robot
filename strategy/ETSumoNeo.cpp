@@ -34,6 +34,7 @@ namespace strategy{
                 efforts_->reset();
                 procedureNumber++;
                 hasExecutedPhase_ = false;//フラグを戻しておく
+                isLineTraceReset_ = false;
                 ev3_speaker_play_tone ( 500, 100);//音を出す
             }
         }
@@ -55,7 +56,7 @@ namespace strategy{
 
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
-            distanceMeasurement_->start(1000);
+            distanceMeasurement_->start(1200);
             linetrace_->setPid(0.0144,0.0,0.72);
             linetrace_->run(40,LineTraceEdge::RIGHT);
             //距離検知or車体角度が土俵を向いたらtrue
@@ -115,18 +116,22 @@ namespace strategy{
 
         //一回目の取組
         case StrategyPhase::FIRST_EFFORTS:
+            lineTraceReset();
             return efforts_->run(1);
 
         //二回目の取組
         case StrategyPhase::SECOND_EFFORTS:
+            lineTraceReset();
             return efforts_->run(2);
 
         //三回目の取組
         case StrategyPhase::THIRD_EFFORTS:
+            lineTraceReset();
             return efforts_->run(4);
 
         //四回目の取組
         case StrategyPhase::FOURTH_EFFORTS:
+            lineTraceReset();
             return efforts_->run(3);
 
         //直角をまたぐ走行
@@ -141,12 +146,14 @@ namespace strategy{
 
         //上段までライントレース
         case StrategyPhase::UPPER_STAGE:
+            lineTraceReset();
             distanceMeasurement_->start(40);
             linetrace_->run(20,LineTraceEdge::LEFT,0.4);
             return distanceMeasurement_->getResult() && rightAngledDetection_->getResult(4.0);
 
         //下段までライントレース
         case StrategyPhase::DOWN_STAGE:
+            lineTraceReset();
             distanceMeasurement_->start(40);
             linetrace_->run(20,LineTraceEdge::RIGHT,0.4);
             return distanceMeasurement_->getResult() && rightAngledDetection_->getResult(4.0);
