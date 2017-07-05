@@ -166,7 +166,7 @@ namespace strategy{
             return timeMeasurement_->getResult();
 
         case StrategyPhase::NEXT_STAGE:
-            distanceMeasurement_->start(300);
+            distanceMeasurement_->start(500);
             straightRunning_->run(60);
             return distanceMeasurement_->getResult();
 
