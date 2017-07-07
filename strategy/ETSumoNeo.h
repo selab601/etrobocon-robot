@@ -25,6 +25,7 @@ namespace strategy{
         enum class StrategyPhase{
             INIT,
             LINE_TRACE,
+            LINE_TRACE_LITTLE,
             STOP,
             WAIT_1_SEC,
             WAIT_2_SEC,
@@ -53,6 +54,7 @@ namespace strategy{
         std::vector<StrategyPhase> strategyProcedure_{
             StrategyPhase::INIT,             //車体角度保存
             StrategyPhase::LINE_TRACE,       //土俵を向くまでライントレース
+            StrategyPhase::LINE_TRACE_LITTLE,//土俵まで距離が足りないので追加
             StrategyPhase::STOP,             //新幹線検知するまで停止
             StrategyPhase::WAIT_1_SEC,       //検知後に待つ
             StrategyPhase::TURN_LITTLE,      //すこし旋回

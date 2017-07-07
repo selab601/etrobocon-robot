@@ -60,7 +60,13 @@ namespace strategy{
             linetrace_->setPid(0.0144,0.0,0.72);
             linetrace_->run(40,LineTraceEdge::RIGHT);
             //距離検知or車体角度が土俵を向いたらtrue
-            return distanceMeasurement_->getResult() || bodyAngleMeasurement_->getResult() >= 180;
+            return /*distanceMeasurement_->getResult() ||*/ bodyAngleMeasurement_->getResult() >= 180;
+
+        //すこしライントレース
+        case StrategyPhase::LINE_TRACE_LITTLE:
+            distanceMeasurement_->start(100);
+            linetrace_->run(40,LineTraceEdge::RIGHT);
+            return distanceMeasurement_->getResult();
 
         //新幹線を検知するまで停止
         case StrategyPhase::STOP:
