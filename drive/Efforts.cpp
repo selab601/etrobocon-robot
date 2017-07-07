@@ -9,7 +9,7 @@ namespace drive{
         lineTrace_            = LineTrace::getInstance();
         pivotTurn_            = new PivotTurn();
         curveRunning_         = new CurveRunning();
-        blockColorGetter_     = new BlockColorGetter();
+        blockColorGetter_     = BlockColorGetter();
         pushingOutRunning_    = new PushingOutRunning();
         forcingOutRunning_    = new ForcingOutRunning();
         lineDetection_        = new LineDetection();
@@ -35,6 +35,7 @@ namespace drive{
             //手順を1つずつ実行する
             if(executePhase(phaseProcedure_[procedureNumber_] ) ){
                 procedureNumber_++;
+                distanceMeasurement_->reset();
             }
         }
         //最後の手順まで
@@ -102,7 +103,7 @@ namespace drive{
 
         //ブロック色取得
         case Phase::BLOCK_COLOR_GET:
-            return blockColorGetter_->isExecuted(result_);
+            return blockColorGetter_.isExecuted(result_);
 
         //取組
         case Phase::KIMARITE:
@@ -143,5 +144,7 @@ namespace drive{
         turnAngle_          = 0;
         startEdge_          = LineTraceEdge::RIGHT;
         endEdge_            = LineTraceEdge::RIGHT;
+        blockColorGetter_   = BlockColorGetter();
+        forcingOutRunning_->reset();
     }
 }

@@ -41,7 +41,7 @@ namespace drive{
         drive::LineTrace* lineTrace_;
         drive::PivotTurn* pivotTurn_;
         drive::CurveRunning* curveRunning_;
-        drive::BlockColorGetter* blockColorGetter_;
+        drive::BlockColorGetter blockColorGetter_;
         drive::PushingOutRunning* pushingOutRunning_;
         drive::ForcingOutRunning* forcingOutRunning_;
         detection::LineDetection* lineDetection_;
