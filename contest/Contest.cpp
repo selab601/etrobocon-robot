@@ -15,6 +15,11 @@ namespace contest_pkg {
 
     /* コンストラクタ */
     Contest::Contest() {
+        /***************************************
+        ここではキャリブレーションが終了してないので
+        テスト時にインスタンスは作らないでください!
+        作る場合はisFinished()後で作ってください!
+        ****************************************/
         startUp_ = StartUp::getInstance();
     }
 
@@ -38,6 +43,7 @@ namespace contest_pkg {
                 if (!initialized) {
                     courseL_ = new Course(SelectedCourse::L_COURSE);
                     initialized = true;
+                    //インスタンス作るならここ！！！！！！！！！
                 }
                 break;
 
