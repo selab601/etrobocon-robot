@@ -48,6 +48,13 @@ namespace drive{
             END
         };
 
+        enum class ChangeEdge2Phase{
+            INIT,
+            TO_MID_LINE,
+            TO_OPPOSITE,
+            END
+        };
+
         // キャリブレーション値
         int whiteValue_;            //白のキャリブレーション値を10倍したもの
         int blackValue_;            //黒のキャリブレーション値を10倍したもの
@@ -72,6 +79,9 @@ namespace drive{
 
         //エッジ切り替えメソッドでの状態
         LineTraceEdgeChangePhase edgeChangeStatus_ = LineTraceEdgeChangePhase::ACROSS;
+
+        // エッジ切り替え2での状態
+        ChangeEdge2Phase changeEdge2Phase_ = ChangeEdge2Phase::INIT;
 
         //距離検知
         measurement::DistanceMeasurement* distanceMeasurement_;
@@ -165,6 +175,18 @@ namespace drive{
          * @author kuno
          **/
         bool changeEdge();
+
+
+        /**
+         * @brief LineTrace::run(), runCurve()を呼びながらエッジ切り替えを行う
+         * @details このメソッドは状況に応じてターゲット値をエッジの情報を切り替えているだけなので、LineTrace::run() を呼びながらこのメソッドを呼ぶ
+         *
+         * @param toMidLineLength ラインの中心方向に移動する間の距離[mm] (300mm 程度推薦)
+         * @param toOpposingLength ラインの中心から反対側に移動する間の距離(100mm ~ 300mm 程度推薦)
+         *
+         * @return エッジ切り替えが終了したらtrue
+         */
+        bool changeEdge2(int toMidLineLength, int toOpposingLength);
 
     private:
 
