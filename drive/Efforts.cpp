@@ -56,7 +56,7 @@ namespace drive{
             //左手前:1,右手前:2,左奥:3,右奥4
             case 1:
                 //寄り切り走行の向き
-                isRightForcingOut_  = true;
+                isRightForcingOut_  = false;
                 //旋回後のライン復帰の向き
                 isRightCurve_       = true;
                 //旋回角度
@@ -68,7 +68,7 @@ namespace drive{
                 return true;
 
             case 2:
-                isRightForcingOut_  = false;
+                isRightForcingOut_  = true;
                 isRightCurve_       = false;
                 turnAngle_          = -210;
                 startEdge_          = LineTraceEdge::LEFT;
@@ -76,7 +76,7 @@ namespace drive{
                 return true;
 
             case 3:
-                isRightForcingOut_  = false;
+                isRightForcingOut_  = true;
                 isRightCurve_       = true;
                 turnAngle_          = -150;
                 startEdge_          = LineTraceEdge::RIGHT;
@@ -84,7 +84,7 @@ namespace drive{
                 return true;
 
             case 4:
-                isRightForcingOut_  = true;
+                isRightForcingOut_  = false;
                 isRightCurve_       = false;
                 turnAngle_          = 150;
                 startEdge_          = LineTraceEdge::LEFT;
