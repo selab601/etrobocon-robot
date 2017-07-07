@@ -12,6 +12,7 @@ namespace drive{
         blockColorGetter_     = BlockColorGetter();
         pushingOutRunning_    = new PushingOutRunning();
         forcingOutRunning_    = new ForcingOutRunning();
+        straightRunning_      = new StraightRunning();
         lineDetection_        = new LineDetection();
         colorDetection_       = new ColorDetection();
         rightAngledDetection_ = new RightAngledDetection();
@@ -113,6 +114,15 @@ namespace drive{
                 return pushingOutRunning_->run(20,100);
             }
 
+        //バック
+        case Phase::BACK:
+            if(positionNumber_ == 1 || positionNumber_ == 2){
+                distanceMeasurement_->start(10);
+                straightRunning_->run(-30);
+                return distanceMeasurement_->getResult();
+            }else{
+                return true;
+            }
         //旋回
         case Phase::PIVORT_TURN:
             return pivotTurn_->turn(turnAngle_,40);

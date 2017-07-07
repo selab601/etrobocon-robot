@@ -7,6 +7,7 @@
 #include "../drive/PushingOutRunning.h"
 #include "../drive/ForcingOutRunning.h"
 #include "../drive/BlockColorGetter.h"
+#include "../drive/StraightRunning.h"
 #include "../detection/LineDetection.h"
 #include "../detection/ColorDetection.h"
 #include "../detection/RightAngledDetection.h"
@@ -25,6 +26,7 @@ namespace drive{
             PIVORT_TURN,
             TURN_TO_LINE,
             LINETRACE_RIGHT_ANGLED,
+            BACK,
         };
         // 手順
         std::vector<Phase> phaseProcedure_{
@@ -33,6 +35,7 @@ namespace drive{
             Phase::BLOCK_COLOR_GET,         //ブロック色取得
             Phase::LINETRACE_TO_DAIZA,      //台座から離れてるので再調整
             Phase::KIMARITE,                //取組
+            Phase::BACK,                    //1と2のときだけバック
             Phase::PIVORT_TURN,             //旋回
             Phase::TURN_TO_LINE,            //ライン復帰
             Phase::LINETRACE_RIGHT_ANGLED   //中央線に帰る
@@ -44,6 +47,7 @@ namespace drive{
         drive::BlockColorGetter blockColorGetter_;
         drive::PushingOutRunning* pushingOutRunning_;
         drive::ForcingOutRunning* forcingOutRunning_;
+        drive::StraightRunning* straightRunning_;
         detection::LineDetection* lineDetection_;
         detection::ColorDetection* colorDetection_;
         detection::RightAngledDetection* rightAngledDetection_;
