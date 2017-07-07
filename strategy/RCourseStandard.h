@@ -1,70 +1,79 @@
 #ifndef _RCOURSE_STANDARD_H
 #define _RCOURSE_STANDARD_H
 
-// 1: ショートカットする, 0: しない
-#define RCOURSE_SHORTCUT_FLAG   1   // TODO: ショートカットするか選択
-
 #include "IStrategy.h"
 #include "drive/LineTrace.h"
-#include "measurement/DistanceMeasurement.h"
-#include "device/Motors.h"
-#include "measurement/BodyAngleMeasurement.h"
-#include "../measurement/SelfPositionEstimation.h"
 #include "drive/CurveRunning.h"
-#include "drive/StraightRunning.h"
-#include "detection/LineDetection.h"
-#include "drive/PivotTurn.h"
+#include "measurement/DistanceMeasurement.h"
+#include "../measurement/BodyAngleMeasurement.h"
+#include <vector>
+
+#define RCOURSE_SHORTCUT_LENGTH 0     // ショートカットする長さ[mm]
 
 namespace strategy{
     class RCourseStandard : public IStrategy{
         private:
-            enum class Status
+            enum class Phase
             {
-                DETECTION_STANDBY,
-                DETECTION_CURVE,
-                STRAIGHT1_STANDBY,
                 STRAIGHT1,
-                CURVE1_STANDBY,
-                CURVE1,
-                STRAIGHT2_STANDBY,
                 STRAIGHT2,
-                CURVE2_STANDBY,
-                CURVE2,
-                STRAIGHT3_STANDBY,
-                STRAIGHT3,
-                CURVE3_STANDBY,
-                CURVE3,
-
-                // ショートカットVer
-                TO_NEAR_GATE_LINE_CURVE,
-                TO_NEAR_GATE_LINE_STRAIGHT,
-                LINE_DETECT,
-
-                TO_GATE_CURVE,
-                TO_GATE_STRAIGHT,
-                TURN,
-
-                STRAIGHT4_STANDBY,
-                STRAIGHT4,
-                DONE
+                BEND1,
+                BEND2,
+                BEND3,
+                BEND4,
+                LINE_IGNORE,
             };
-            Status Status_;
+
+            std::vector<Phase> phaseProcedure_{
+                Phase::STRAIGHT1,
+                Phase::BEND1,
+                Phase::BEND2,
+                Phase::BEND3,
+                Phase::BEND4,
+                Phase::STRAIGHT2,
+            };
 
             drive::LineTrace* linetrace_;
-            measurement::DistanceMeasurement distanceMeasurement_;
-            device::Motors* motor_;
+            drive::CurveRunning* curveRunning_;
+            measurement::DistanceMeasurement* distanceMeasurement_;
             measurement::BodyAngleMeasurement bodyAngleMeasurement_;
-            drive::CurveRunning curveRunning_;
-            drive::StraightRunning straightRunning_;
-            detection::LineDetection lineDetection_;
-            drive::PivotTurn pivotTurn_;
+
+            bool strategySuccess_;
+            bool hasExecutedPhase_;
+            bool isLineTraceReset_;
 
         public:
             //コンストラクタ
             RCourseStandard();
 
             bool capture();
-    };
+        private:
+            bool executePhase(Phase phase);
+            void startDistanceMeasurement(int distance);
+            void startAngleMeasurement();
+            /**
+             * @brief 一定距離ライントレース
+             *
+             * @param distance 走行距離
+             * @param speed 走行スピード
+             * @param edge ライントレースのエッジ
+             * @return 一定距離走行:true,走行中:false
+             */
+            bool fixedDistanceLineTrace(int distance,int speed,drive::LineTraceEdge edge);
+            /**
+             * @brief 一定距離カーブライントレース
+             *
+             * @param distance 走行距離
+             * @param deltaRad 角度？
+             * @return 一定距離走行:true,走行中:false
+             */
+            bool fixedDistanceCurveLineTrace(int distance,int deltaRad);
+
+            /**
+             * @brief LineTrace::reset()を一度だけ実行する
+             */
+            void lineTraceReset();
+        };
 }
 
 #endif
