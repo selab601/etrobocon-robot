@@ -149,7 +149,7 @@ namespace drive{
 
         //帰りのライントレース
         case Phase::LINETRACE_RIGHT_ANGLED:
-            distanceMeasurement_->start(20);
+            distanceMeasurement_->start(30);
             lineTrace_->run(15,endEdge_,0.6);
             return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
         }

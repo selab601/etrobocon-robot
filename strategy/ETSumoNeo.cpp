@@ -60,11 +60,11 @@ namespace strategy{
             linetrace_->setPid(0.0144,0.0,0.72);
             linetrace_->run(40,LineTraceEdge::RIGHT);
             //距離検知or車体角度が土俵を向いたらtrue
-            return /*distanceMeasurement_->getResult() ||*/ bodyAngleMeasurement_->getResult() >= 180;
+            return distanceMeasurement_->getResult() || bodyAngleMeasurement_->getResult() >= 180;
 
         //すこしライントレース
         case StrategyPhase::LINE_TRACE_LITTLE:
-            distanceMeasurement_->start(100);
+            distanceMeasurement_->start(50);
             linetrace_->run(40,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
@@ -153,15 +153,15 @@ namespace strategy{
         //上段までライントレース
         case StrategyPhase::UPPER_STAGE:
             lineTraceReset();
-            distanceMeasurement_->start(40);
-            linetrace_->run(20,LineTraceEdge::LEFT,0.4);
+            distanceMeasurement_->start(50);
+            linetrace_->run(20,LineTraceEdge::LEFT,0.6);
             return distanceMeasurement_->getResult() && rightAngledDetection_->getResult(4.0);
 
         //下段までライントレース
         case StrategyPhase::DOWN_STAGE:
             lineTraceReset();
             distanceMeasurement_->start(40);
-            linetrace_->run(20,LineTraceEdge::RIGHT,0.4);
+            linetrace_->run(20,LineTraceEdge::RIGHT,0.6);
             return distanceMeasurement_->getResult() && rightAngledDetection_->getResult(4.0);
 
         //検知した後すこし待つ
