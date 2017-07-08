@@ -30,6 +30,22 @@ namespace measurement{
           */
         bool getResult();
 
+
+        /**
+         * @brief 基底時間からの経過時間を計測する
+         *
+         * @return 経過時間
+         */
+        uint32_t getRelative();
+
+
+        /**
+         * @brief 目標時間までの残り時間を返す
+         *
+         * @return 目標時間までの残り時間
+         */
+        uint32_t getRemaining();
+
         /**
          * @brief 基底時間をセットする
           */

@@ -8,12 +8,19 @@ namespace measurement{
     }
 
     bool TimeMeasurement::getResult(){
-        uint32_t nowTime_ = clock.now();
-        uint32_t def = nowTime_ - baseTime_;
-
-        if(def >= targetTime_){
+        if(getRelative() >= targetTime_){
             return true;
         }return false;
+    }
+
+    uint32_t TimeMeasurement::getRelative(){
+        uint32_t nowTime = clock.now();
+        uint32_t def = nowTime - baseTime_;
+        return def;
+    }
+
+    uint32_t TimeMeasurement::getRemaining(){
+        return targetTime_ - getRelative();
     }
 
     void TimeMeasurement::setBaseTime (){
