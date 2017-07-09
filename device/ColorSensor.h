@@ -42,6 +42,13 @@ namespace device
         int8_t getBlackCalibratedValue();
 
         /**
+         * @brief (Override) RGB Raw値を測定する
+         *
+         * @param rgb 取得した値を格納する変数のポインタ
+         */
+        void getRawColor(rgb_raw_t& rgb);
+
+        /**
          * @brief RBGのR値を取得する
          * @details updateColor()で更新した時の値を取得する(これを呼ぶ前にupdateColor() を呼んでおく)
          *

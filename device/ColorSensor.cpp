@@ -37,6 +37,12 @@ namespace device
         return blackCalibratedValue_;
     }
 
+    void ColorSensor::getRawColor(rgb_raw_t& rgb){
+        ev3api::ColorSensor::getRawColor(rgb);
+        rgb_ = rgb;
+        hsv_ = rgb2Hsv(rgb_);
+    }
+
     const char* ColorSensor::getColorName(colorid_t id) {
         switch (id) {
         case COLOR_NONE:
