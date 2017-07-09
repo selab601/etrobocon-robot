@@ -48,8 +48,11 @@ namespace drive {
             // ライントレースしながらの色判定ではないので，黒白の判定を緩めに変更
             // ここに書かないで色検知に持って行ったほうが綺麗かも？
             rgb_raw_t rgb;
-            colorSensor_->getRawColor(rgb);
-            detection::hsv_raw_t hsv = detection::ColorDetection::Rgb2Hsv(rgb);
+            device::hsv_raw_t hsv;
+            colorSensor_->updateColor(); // RGB, HSVの更新
+            hsv.h = colorSensor_->getH();
+            hsv.s = colorSensor_->getS();
+            hsv.v = colorSensor_->getV();
             int hueValue = hsv.h;
             if (hsv.v <= 30) {
                 ev3_speaker_play_tone(200, 1000);
