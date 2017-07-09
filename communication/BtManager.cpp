@@ -101,12 +101,12 @@ namespace communication {
                     touch_->isPressed() ? 1 : 0,
                     sonar_ != 0? sonar_->getDistance(): 0,
                     color_->getBrightness(),
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
+                    color_->getR(), // color r
+                    color_->getG(), // color g
+                    color_->getB(), // color b
+                    color_->getH(), // color h
+                    color_->getS(), // color s
+                    color_->getV(), // color v
                     motors_->getCount(device::MOTOR_ARM),
                     motors_->getCount(device::MOTOR_LEFT),
                     motors_->getCount(device::MOTOR_RIGHT),
