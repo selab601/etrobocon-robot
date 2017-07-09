@@ -20,7 +20,7 @@ namespace device
         whiteCalibratedValue_(0),
         blackCalibratedValue_(0)
     {
-        rgb_.r = rgb.g = rgb.b = 0;
+        rgb_.r = rgb_.g = rgb_.b = 0;
         hsv_.h = hsv_.s = hsv_.v = 0;
     }
 
