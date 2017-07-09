@@ -47,7 +47,6 @@ namespace drive {
             // ブロック専用の判定
             // ライントレースしながらの色判定ではないので，黒白の判定を緩めに変更
             // ここに書かないで色検知に持って行ったほうが綺麗かも？
-            rgb_raw_t rgb;
             device::hsv_raw_t hsv;
             colorSensor_->updateColor(); // RGB, HSVの更新
             hsv.h = colorSensor_->getH();
