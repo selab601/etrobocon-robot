@@ -39,7 +39,7 @@ namespace contest_pkg{
         static int index = 0;
         static bool courseSelected = false;
         static bool confirmed = false;
-        static Button* btn = Button::getInstance();
+        static Buttons* btn = Buttons::getInstance();
 
 
         // ↑ ボタンが押されたとき

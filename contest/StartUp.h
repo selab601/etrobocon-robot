@@ -9,7 +9,7 @@
 #include "../measurement/TimeMeasurement.h"
 #include "../device/Arm.h"
 #include "../device/Shippo.h"
-#include "../device/Button.h"
+#include "../device/Buttons.h"
 
 namespace contest_pkg{
     class StartUp{

@@ -43,7 +43,7 @@ namespace communication {
 
             /* 接続待機 */
             while(!ev3_bluetooth_is_connected()) {
-                if (device::Button::getInstance()->enterClicked()) {
+                if (device::Buttons::getInstance()->enterClicked()) {
                     close();
                     return false;
                 }
