@@ -41,7 +41,8 @@ namespace measurement
     }
 
     int32_t Train::getCycleTime(){
-        int32_t cycleTime = timeMeasurement_.getRelative() % (IN_CYCLE_TIME + OUT_CYCLE_TIME);
+        int32_t cycleTime = ADJUST_LENGTH + timeMeasurement_.getRelative();
+        cycleTime = cycleTime % (IN_CYCLE_TIME + OUT_CYCLE_TIME);
         if (cycleTime <= OUT_CYCLE_TIME){
             isOut_ = true; // 最初は外側を走る
         }

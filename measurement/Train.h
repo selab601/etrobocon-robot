@@ -8,7 +8,11 @@ namespace measurement{
 
 #define IN_CYCLE_TIME   9048    // 新幹線が内側を1周するときの時間[msec]
 #define OUT_CYCLE_TIME  12613   // 新幹線が外側を1周するときの時間[msec]
-#define TRAIN_LENGTH    5000    // 電車の長さ(時間)[msec]
+#define TRAIN_LENGTH    5000    // 新幹線の長さ(時間)[msec]
+// 新幹線の位置をもっと先にいることにする時: +
+// 新幹線のいちをもっと後ろに居ることにする時: -
+// ex. 1秒分先に居ることにする時: 1000[msec]
+#define ADJUST_LENGTH   0       // 新幹線位置の調整(時間)[msec]
 
     class Train {
 
@@ -34,7 +38,17 @@ namespace measurement{
          * @return 新幹線がいるときtrue
          */
         bool atEntrance();
+        /**
+         * @brief 真ん中の線路に新幹線がいるとき true (falseのときに行く)
+         *
+         * @return 新幹線がいるときtrue
+         */
         bool atCenter();
+        /**
+         * @brief 出口に新幹線がいるとき true (falseのときに行く)
+         *
+         * @return 新幹線がいるときtrue
+         */
         bool atExit();
 
     private:
