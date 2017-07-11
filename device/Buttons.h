@@ -5,19 +5,19 @@
 
 namespace device
 {
-    class Button
+    class Buttons
     {
     private:
         //! 共有インスタンス
-        static Button* instance_;
+        static Buttons* instance_;
         bool hasPressed_[6] = { false, false, false,
                                 false, false, false};
 
     private:
-        Button();
+        Buttons();
 
     public:
-        static Button* getInstance();
+        static Buttons* getInstance();
 
         /**
          * @brief クリックされたときtrueを返す
