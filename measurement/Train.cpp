@@ -20,6 +20,16 @@ namespace measurement
         timeMeasurement_.setBaseTime();
     }
 
+    void Train::setEntrance(){
+        if (OUT_CYCLE_TIME * 1/4 <= getCycleTime() &&
+                OUT_CYCLE_TIME + IN_CYCLE_TIME * 3/16 > getCycleTime()){
+            timeMeasurement_.setBaseTime(-OUT_CYCLE_TIME * 3/4);
+        }
+        else{
+            timeMeasurement_.setBaseTime(-OUT_CYCLE_TIME - IN_CYCLE_TIME * 11/16);
+        }
+    }
+
     bool Train::atEntrance(){
         int32_t trainStart = OUT_CYCLE_TIME * 4 / 8;
         int32_t trainStart2 = OUT_CYCLE_TIME + IN_CYCLE_TIME * 2 / 8;

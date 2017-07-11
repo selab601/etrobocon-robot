@@ -51,6 +51,14 @@ namespace measurement{
           */
         void setBaseTime();
 
+
+        /**
+         * @brief 現在時刻以外の基底時間をセットする
+         *
+         * @param relativeMs 現在時刻を基準とした基底時間[msec] ex. 1秒前: -1000[ms]
+         */
+        void setBaseTime(uint32_t relativeMs);
+
         /**
          * @brief 目標時間をセットする
          * 単位はミリ秒なので10秒を目標時間にしたかったら「10000」を引数に指定してください

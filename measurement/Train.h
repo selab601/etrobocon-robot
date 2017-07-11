@@ -31,6 +31,13 @@ namespace measurement{
          */
         void start();
 
+        /**
+         * @brief 入り口に新幹線がいることを知らせる(誤差を修正する)
+         * @details 入り口でソナーセンサで検知した時にこのメソッドを呼ぶと位置を修正する
+         *          新幹線が外側と内側どちらを走っているかは、近い方を選択する
+         */
+        void setEntrance();
+
 
         /**
          * @brief 入り口に新幹線がいるとき true (falseのときに行く)

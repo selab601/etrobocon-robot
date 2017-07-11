@@ -26,6 +26,9 @@ namespace measurement{
     void TimeMeasurement::setBaseTime (){
         baseTime_ = clock.now();
     }
+    void TimeMeasurement::setBaseTime(uint32_t relativeMs){
+        baseTime_ -= clock.now() + relativeMs;
+    }
 
     void TimeMeasurement::setTargetTime(uint32_t targetTime){
         targetTime_ = targetTime;
