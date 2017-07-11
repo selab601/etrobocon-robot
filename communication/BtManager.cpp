@@ -42,16 +42,10 @@ namespace communication {
             ev3_lcd_draw_string("Push enter to exit", 0, 10);
 
             /* 接続待機 */
-            bool pressState = false;
             while(!ev3_bluetooth_is_connected()) {
-                if (ev3_button_is_pressed(ENTER_BUTTON)) {
-                    pressState = true;
-                } else {
-                    // ボタンが離されていて，且つ過去に押されていたら
-                    if (pressState == true) {
-                        close();
-                        return false;
-                    }
+                if (device::Button::getInstance()->enterClicked()) {
+                    close();
+                    return false;
                 }
             }
 
