@@ -7,7 +7,9 @@
 
     namespace contest_pkg {
         /**
-         * 
+         * 2017年のブロック並べエリアでは初期位置コードによって
+         * 赤、青、黄、黒のブロックの位置がわかるものだったのでそれを計算し、保存するクラス
+         * 緑ブロックの位置は当日の朝に発表されて日中固定なので、.h に埋め込んで使う
          */
         class BlockCode{
         private:
@@ -18,7 +20,7 @@
             int red_;
             int blue_;
             int yellow_;
-            int green_;
+            int green_ = 0;
             int black_;
             
             //それぞれの色の配置が黒ブロックでのどこに相当するかのリスト

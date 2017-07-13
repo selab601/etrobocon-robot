@@ -4,10 +4,10 @@ namespace contest_pkg {
 
     BlockCode* BlockCode::instance_ = 0;
     BlockCode::BlockCode(){
+        //green_ は.h で定義
         red_    = 0;
         blue_   = 0;
         yellow_ = 0;
-        green_  = 0;
         black_  = 0;
     }
 
