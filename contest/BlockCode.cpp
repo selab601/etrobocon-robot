@@ -19,11 +19,13 @@ namespace contest_pkg {
     }
 
     void BlockCode::setCode(int initPositionCode){
+        //競技規約での変換方法
         black_  =  initPositionCode / 1331 + 1;
         red_    =( initPositionCode - 1331*(black_-1) ) / 121 + 1;
         yellow_ =( initPositionCode - 1331*(black_-1) - 121*(red_-1) ) / 11 + 1;
         blue_   =  initPositionCode - 1331*(black_-1) - 121*(red_-1) - 11*(yellow_-1) + 1;
 
+        //黒ブロックでの位置番号に統一
         red_ = encodeRed(red_-1);
         blue_ = encodeBlue(blue_-1);
         yellow_ = encodeYellow(yellow_-1);
