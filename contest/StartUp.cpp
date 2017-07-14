@@ -75,6 +75,16 @@ namespace contest_pkg{
             index = COURSES_NUM - 1;
         }
 
+        // 選択されたコースでLEDの色を変える
+        switch( index ){
+            case 0:
+                ev3_led_set_color (LED_RED); // Lのとき赤
+                break;
+            case 1:
+                ev3_led_set_color (LED_ORANGE); // Rのときオレンジ
+                break;
+        }
+
         char courseNames[COURSES_NUM][30] = {"   Course L                ","   Course R                "};
         courseNames[index][1] = '>';
 
