@@ -11,6 +11,7 @@
 #include "../device/SonarSensor.h"
 #include "../device/TouchSensor.h"
 #include "../measurement/SelfPositionEstimation.h"
+#include "../device/Buttons.h"
 
 /* メッセージの長さ */
 #define MESSAGE_LEN  500

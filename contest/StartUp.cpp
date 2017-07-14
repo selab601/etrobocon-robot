@@ -38,35 +38,20 @@ namespace contest_pkg{
     bool StartUp::selectCourse(){
         static int index = 0;
         static bool courseSelected = false;
-        static bool confirmed = false;
-
-        // タッチセンサの押下状態を保持する静的変数,押下されたらtrue,離れたらfalseにする
-        static bool hasPressed = true;
-
-        // タッチセンサの押下状態の更新(長押し中に処理が進まないようにするため)
-        if ( hasPressed &&
-                (touch_->isPressed() || ev3_button_is_pressed (UP_BUTTON)
-                 || ev3_button_is_pressed (DOWN_BUTTON) || ev3_button_is_pressed (ENTER_BUTTON)) ){
-            return courseSelected && confirmed;
-        }
-        else // タッチセンサが離されたとき
-        {
-            hasPressed = false;
-        }
+        static Buttons* btn = Buttons::getInstance();
+        if (courseSelected) // 選択が終わったら何もしない
+            return true;
 
         // ↑ ボタンが押されたとき
-        if ( ev3_button_is_pressed (UP_BUTTON) ){
-            hasPressed = true;
+        if (btn->upClicked()){
             index--;
         }
         // ↓ ボタンが押されたとき
-        else if ( ev3_button_is_pressed (DOWN_BUTTON)){
-            hasPressed = true;
+        else if (btn->downClicked()){
             index++;
         }
         // エンターボタンが押されたとき
-        else if ( ev3_button_is_pressed (ENTER_BUTTON)){
-            hasPressed = true;
+        else if (btn->enterClicked()){
             courseSelected = true;
             switch( index ){
                 case 0:
@@ -76,6 +61,8 @@ namespace contest_pkg{
                     selectedCourse_ = 'R';
                     break;
             }
+            // ディスプレイを消す
+            display_->clearDisplay();
             // 音を出す
             ev3_speaker_play_tone ( 500, 100);
         }
@@ -88,6 +75,16 @@ namespace contest_pkg{
             index = COURSES_NUM - 1;
         }
 
+        // 選択されたコースでLEDの色を変える
+        switch( index ){
+            case 0:
+                ev3_led_set_color (LED_RED); // Lのとき赤
+                break;
+            case 1:
+                ev3_led_set_color (LED_ORANGE); // Rのときオレンジ
+                break;
+        }
+
         char courseNames[COURSES_NUM][30] = {"   Course L                ","   Course R                "};
         courseNames[index][1] = '>';
 
@@ -98,24 +95,13 @@ namespace contest_pkg{
             display_-> updateDisplay(courseNames[0], 2);
             display_-> updateDisplay(courseNames[1], 3);
         }
-        //コースが選択された時
-        else if ( courseSelected && !confirmed ){
-            if (ev3_button_is_pressed (ENTER_BUTTON) || touch_->isPressed() ){
-                display_-> updateDisplay("                            ", 1);
-                display_-> updateDisplay("                            ", 2);
-                display_-> updateDisplay("                            ", 3);
-                hasPressed = true;
-                confirmed = true;
-            }
-        }
-
-        return courseSelected && confirmed;
+        return false;
     }
 
     //スタートを受け入れる
     bool StartUp::acceptStart(){
         static bool started = false;
-        if ( !started && isClicked()){
+        if ( !started && touch_->isClicked()){
             started = true;
 
             display_-> updateDisplay ("                            ", 0);
@@ -146,7 +132,7 @@ namespace contest_pkg{
             case AutoCalibrationState::WAIT:
                 display_-> updateDisplay("    - AUTO CALIBRATION -   ", 2);
                 display_-> updateDisplay("      PUSH TO START         ", 4);
-                if (isClicked()){
+                if (touch_->isClicked()){
                     autoCalibrationState_ = AutoCalibrationState::ADJUST_ARM;
                 }
                 break;
@@ -202,7 +188,7 @@ namespace contest_pkg{
                             brightnessInfo_->getBlackCalibratedValue(),
                             brightnessInfo_->getBrightness() );
                     display_-> updateDisplay(message, 4);
-                    if (isClicked()){
+                    if (touch_->isClicked()){
                         autoCalibrationState_ = AutoCalibrationState::STOP_FURIFURI;
                     display_-> updateDisplay("                           ", 2);
                     display_-> updateDisplay("                           ", 4);
@@ -218,20 +204,6 @@ namespace contest_pkg{
 
             case AutoCalibrationState:: FINISHED:
                 return true;
-        }
-        return false;
-    }
-
-    bool StartUp::isClicked(){
-        static bool hasPressed = false;
-        if (touch_->isPressed()){
-            hasPressed = true;
-        }
-        else if (hasPressed){
-            hasPressed = false;
-            // クリックされたら音を出す
-            ev3_speaker_play_tone ( 500, 100);
-            return true;
         }
         return false;
     }

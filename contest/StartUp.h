@@ -9,6 +9,7 @@
 #include "../measurement/TimeMeasurement.h"
 #include "../device/Arm.h"
 #include "../device/Shippo.h"
+#include "../device/Buttons.h"
 
 namespace contest_pkg{
     class StartUp{
@@ -85,13 +86,6 @@ namespace contest_pkg{
              * @return キャリブレーションが終了したらtrue
              */
             bool calibrateAutomatically();
-
-            /**
-             * @brief タッチセンサがクリックされた
-             *
-             * @return タッチセンサがクリックされた時true
-             */
-            bool isClicked();
 
 
             /**
