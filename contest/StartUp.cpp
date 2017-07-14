@@ -38,9 +38,8 @@ namespace contest_pkg{
     bool StartUp::selectCourse(){
         static int index = 0;
         static bool courseSelected = false;
-        static bool confirmed = false;
         static Buttons* btn = Buttons::getInstance();
-        if (courseSelected)
+        if (courseSelected) // 選択が終わったら何もしない
             return true;
 
         // ↑ ボタンが押されたとき
@@ -62,6 +61,8 @@ namespace contest_pkg{
                     selectedCourse_ = 'R';
                     break;
             }
+            // ディスプレイを消す
+            display_->clearDisplay();
             // 音を出す
             ev3_speaker_play_tone ( 500, 100);
         }
@@ -84,17 +85,7 @@ namespace contest_pkg{
             display_-> updateDisplay(courseNames[0], 2);
             display_-> updateDisplay(courseNames[1], 3);
         }
-        //コースが選択された時
-        else if ( courseSelected && !confirmed ){
-            if (btn->enterClicked() || touch_->isClicked()){
-                display_-> updateDisplay("                            ", 1);
-                display_-> updateDisplay("                            ", 2);
-                display_-> updateDisplay("                            ", 3);
-                confirmed = true;
-            }
-        }
-
-        return courseSelected && confirmed;
+        return false;
     }
 
     //スタートを受け入れる
