@@ -20,6 +20,7 @@ namespace strategy{
         if(!strategySuccess_){
             if(executePhase(phaseProcedure_[procedureNumber])){
                 procedureNumber++;
+                distanceMeasurement_->reset();
                 ev3_speaker_set_volume(6);
                 ev3_speaker_play_tone(500,100);
             }
@@ -33,8 +34,9 @@ namespace strategy{
     bool ParkingR::executePhase(Phase phase){
         switch(phase){
             case Phase::LINE_TRACE1:
-                //線に入射したときも直角検知するため、距離の条件追加
-                distanceMeasurement_->start(100);
+                //線に入射したとき直角検知するため、距離の条件追加
+                //開始後30cmは直角検知しないため，開始位置によっては調整してください
+                distanceMeasurement_->start(300);
                 lineTrace_->run(40,LineTraceEdge::RIGHT);
                 return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
 
@@ -56,6 +58,9 @@ namespace strategy{
                 */
                 return false;
                 //現状無限にfalse返して停止してます,改良するかも
+            
+            default:
+                return false;
         }
     }
 }
