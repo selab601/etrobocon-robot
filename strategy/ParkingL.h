@@ -33,7 +33,7 @@ namespace strategy{
                 Phase::WAIT,
             };
 
-            devive::Arm* arm_;
+            //device::Arm* arm_;
             drive::CurveRunning* curveRunning_;
             drive::PivotTurn* pivotTurn_;
             drive::StraightRunning* straightRunning_;

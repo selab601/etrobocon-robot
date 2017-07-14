@@ -5,7 +5,7 @@ using namespace measurement;
 
 namespace strategy{
     ParkingL::ParkingL(){
-        arm_                   = new Arm();
+        //arm_                   = new Arm();
         curveRunning_          = new CurveRunning();
         pivotTurn_             = new PivotTurn();
         straightRunning_       = new StraightRunning();
@@ -45,7 +45,8 @@ namespace strategy{
             case Phase::APPROACH:
                 distanceMeasurement_->start(650); //要調整
                 straightRunning_->run(50);
-                return arm_->up() && distanceMeasurement_->getResult();
+                //return arm_->up() && distanceMeasurement_->getResult();
+                return distanceMeasurement_->getResult();
 
             case Phase::PIVOT_TURN2:
                 return pivotTurn_->turn(90);
@@ -60,7 +61,7 @@ namespace strategy{
 
             case Phase::WAIT:
                 straightRunning_->run(0);
-                arm->down();
+                //arm->down();
                 /*
                 //x秒経つまでfalse,経ったらtrueでphase終了,にしたい
                 timeMeasurement_->setBaseTime();
