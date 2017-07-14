@@ -30,10 +30,34 @@ namespace measurement{
           */
         bool getResult();
 
+
+        /**
+         * @brief 基底時間からの経過時間を計測する
+         *
+         * @return 経過時間
+         */
+        uint32_t getRelative();
+
+
+        /**
+         * @brief 目標時間までの残り時間を返す
+         *
+         * @return 目標時間までの残り時間
+         */
+        uint32_t getRemaining();
+
         /**
          * @brief 基底時間をセットする
           */
         void setBaseTime();
+
+
+        /**
+         * @brief 現在時刻以外の基底時間をセットする
+         *
+         * @param relativeMs 現在時刻を基準とした基底時間[msec] ex. 1秒前: -1000[ms]
+         */
+        void setBaseTime(uint32_t relativeMs);
 
         /**
          * @brief 目標時間をセットする
