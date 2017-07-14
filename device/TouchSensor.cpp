@@ -27,6 +27,7 @@ namespace device
         // クリックしたときで、前回のクリックから0.5秒経過したとき
         if (hasPressed_ && !isPressed && sinceLastClicked_.getResult()){
             hasPressed_ = isPressed;
+            sinceLastClicked_.setBaseTime();
             return true;
         }
         hasPressed_ = isPressed;
