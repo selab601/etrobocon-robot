@@ -40,7 +40,8 @@ namespace contest_pkg{
         static bool courseSelected = false;
         static bool confirmed = false;
         static Buttons* btn = Buttons::getInstance();
-
+        if (courseSelected)
+            return true;
 
         // ↑ ボタンが押されたとき
         if (btn->upClicked()){
