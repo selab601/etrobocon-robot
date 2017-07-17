@@ -24,8 +24,8 @@ namespace drive{
         std::vector<Phase> phaseProcedure_{
             Phase::SET_ANGLE,//車体角度保存
             Phase::CURVE,    //信地旋回
-            Phase::ARM_UP,   //アーム上げる
-            Phase::ARM_DOWN, //アーム戻す
+            //Phase::ARM_UP,   //アーム上げる
+            //Phase::ARM_DOWN, //アーム戻す
             Phase::SET_ANGLE,//車体角度保存
             Phase::BACK      //開始地点に戻る
         };

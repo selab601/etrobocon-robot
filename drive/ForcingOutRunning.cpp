@@ -46,16 +46,16 @@ namespace drive{
         case Phase::CURVE:
             if(isRight_){
                 curveRunning_->run(0,speed_);
-                return bodyAngleMeasurement_->getResult() <= -60;
+                return bodyAngleMeasurement_->getResult() <= -50;
             }else{
                 curveRunning_->run(speed_,0);
-                return bodyAngleMeasurement_->getResult() >= 60;
+                return bodyAngleMeasurement_->getResult() >= 50;
             }
 
         //アームを上げる
         case Phase::ARM_UP:
             curveRunning_->run(0,0);
-            return arm_->setDegree(70);
+            return arm_->setDegree(30);
 
         //アームを戻す
         case Phase::ARM_DOWN:
@@ -65,10 +65,10 @@ namespace drive{
         case Phase::BACK:
             if(isRight_){
                 curveRunning_->run(0,-speed_);
-                return bodyAngleMeasurement_->getResult() >= 60;
+                return bodyAngleMeasurement_->getResult() >= 50;
             }else{
                 curveRunning_->run(-speed_,0);
-                return bodyAngleMeasurement_->getResult() <= -60;
+                return bodyAngleMeasurement_->getResult() <= -50;
             }
 
         default: return false;

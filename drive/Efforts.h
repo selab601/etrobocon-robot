@@ -7,6 +7,7 @@
 #include "../drive/PushingOutRunning.h"
 #include "../drive/ForcingOutRunning.h"
 #include "../drive/BlockColorGetter.h"
+#include "../drive/StraightRunning.h"
 #include "../detection/LineDetection.h"
 #include "../detection/ColorDetection.h"
 #include "../detection/RightAngledDetection.h"
@@ -23,8 +24,10 @@ namespace drive{
             BLOCK_COLOR_GET,
             KIMARITE,
             PIVORT_TURN,
+            PIVORT_TURN_LITTLE,
             TURN_TO_LINE,
             LINETRACE_RIGHT_ANGLED,
+            BACK,
         };
         // 手順
         std::vector<Phase> phaseProcedure_{
@@ -33,8 +36,10 @@ namespace drive{
             Phase::BLOCK_COLOR_GET,         //ブロック色取得
             Phase::LINETRACE_TO_DAIZA,      //台座から離れてるので再調整
             Phase::KIMARITE,                //取組
+            Phase::BACK,                    //1と2のときだけバック
             Phase::PIVORT_TURN,             //旋回
             Phase::TURN_TO_LINE,            //ライン復帰
+            Phase::PIVORT_TURN_LITTLE,      //すこし旋回
             Phase::LINETRACE_RIGHT_ANGLED   //中央線に帰る
         };
 
@@ -44,6 +49,7 @@ namespace drive{
         drive::BlockColorGetter blockColorGetter_;
         drive::PushingOutRunning* pushingOutRunning_;
         drive::ForcingOutRunning* forcingOutRunning_;
+        drive::StraightRunning* straightRunning_;
         detection::LineDetection* lineDetection_;
         detection::ColorDetection* colorDetection_;
         detection::RightAngledDetection* rightAngledDetection_;
@@ -69,8 +75,11 @@ namespace drive{
         bool isRightForcingOut_;
         //決まり手後に旋回する角度
         int turnAngle_;
+        //直角検知しやすいように旋回する角度
+        int turnAngleLittle_;
         //ライン復帰のカーブ方向
         bool isRightCurve_;
+
 
     public:
         //コンストラクタ
