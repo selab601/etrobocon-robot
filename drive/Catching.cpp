@@ -49,6 +49,7 @@ namespace drive{
             }
             break;
 
+        //カーブ後のライントレース
         case Phase::END_LINE_TRACE:
             distanceMeasurement_->start(100);
             lineTrace_->run(20,LineTraceEdge::RIGHT);

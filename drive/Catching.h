@@ -12,13 +12,13 @@ namespace drive
 {
     class Catching{
         private:
-
+            //走行状態
             enum class Phase
             {
-                START_LINE_TRACE,
-                CURVE,
-                STRAIGHT,
-                END_LINE_TRACE
+                START_LINE_TRACE,//色検知までライントレース
+                CURVE,           //台座の上でカーブ走行
+                STRAIGHT,        //直進走行(角度が大きい場合)
+                END_LINE_TRACE   //カーブ後のライントレース
             };
 
             Phase phase_ = Phase::START_LINE_TRACE;
@@ -34,8 +34,15 @@ namespace drive
 
 
         public:
+            //コンストラクタ
             Catching();
 
+            /**
+             * @brief 台座上走行
+             *
+             * @param digree カーブする角度(0<=digree<=360)
+             * @return true:走行終了,false:走行中
+             */
             bool run(int digree);
 
         private:
