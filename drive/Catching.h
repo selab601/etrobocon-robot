@@ -7,6 +7,10 @@
 #include "./LineTrace.h"
 #include "./StraightRunning.h"
 #include "../detection/ColorDetection.h"
+#include <stdlib.h>
+
+#define CATCHING_PWM 20
+#define LINETRACE_PWM 20
 
 namespace drive
 {
