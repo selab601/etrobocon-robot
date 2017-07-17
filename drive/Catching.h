@@ -2,8 +2,10 @@
 #define CATCHING_H
 
 #include "../measurement/BodyAngleMeasurement.h"
+#include "../measurement/DistanceMeasurement.h"
 #include "./CurveRunning.h"
 #include "./LineTrace.h"
+#include "./StraightRunning.h"
 #include "../detection/ColorDetection.h"
 
 namespace drive
@@ -11,21 +13,30 @@ namespace drive
     class Catching{
         private:
 
-            enum class State
+            enum class Phase
             {
-                INIT,
-                TURN_RIGHT,
-                TO_BLOCK,
-                TURN,
-                TO_LINE,
-                FINISHED,
+                START_LINE_TRACE,
+                CURVE,
+                STRAIGHT,
+                END_LINE_TRACE
             };
 
-            State state_ = State::INIT;
+            Phase phase_ = Phase::START_LINE_TRACE;
+
+            measurement::BodyAngleMeasurement* bodyAngleMeasurement_;
+            measurement::DistanceMeasurement* distanceMeasurement_;
+
+            detection::ColorDetection* colorDetection_;
+
+            CurveRunning* curveRunning_;
+            LineTrace* lineTrace_;
+            StraightRunning* straightRunning_;
 
 
         public:
             Catching();
+
+            bool run(int digree);
 
         private:
 
