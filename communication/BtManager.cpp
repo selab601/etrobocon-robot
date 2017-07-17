@@ -89,7 +89,8 @@ namespace communication {
                     "\"hsv_h\":%d,\"hsv_s\":%d,\"hsv_v\":%d,"
                     "\"arm_count\":%ld,\"left_count\":%ld,\"right_count\":%ld,"
                     "\"length\":%ld,\"angle\":%d,"
-                    "\"coordinate_x\":%ld,\"coordinate_y\":%ld}\n",
+                    "\"coordinate_x\":%ld,\"coordinate_y\":%ld,"
+                    "\"battery_ma\":%d,\"battery_mv\":%d}\n",
                     clock_->now(),
                     gyro_->getAnglerVelocity(),
                     touch_->isPressed() ? 1 : 0,
@@ -107,7 +108,9 @@ namespace communication {
                     selfPositionEstimation_->getMigrationLength(),
                     selfPositionEstimation_->getAngle(),
                     selfPositionEstimation_->getLocationX(),
-                    selfPositionEstimation_->getLocationY()
+                    selfPositionEstimation_->getLocationY(),
+                    ev3_battery_current_mA(),   // バッテリ電流
+                    ev3_battery_voltage_mV()    // バッテリ電圧
                 );
         }
 
