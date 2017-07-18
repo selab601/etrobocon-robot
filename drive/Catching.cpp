@@ -36,9 +36,9 @@ namespace drive{
         //直進走行
         case Phase::STRAIGHT:
             if(diffDigree < 90){//90<digree<270
-                distanceMeasurement_->start(100);
+                distanceMeasurement_->start(50);
                 straightRunning_->run(CATCHING_PWM);
-            }else{
+            }else{//スキップ
                 phase_ = Phase::CURVE;
             }
             if(distanceMeasurement_->getResult()){
