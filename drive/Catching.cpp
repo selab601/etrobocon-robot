@@ -17,11 +17,20 @@ namespace drive{
     bool Catching::run(int digree){
         int absDigree = abs(digree);//曲がる角度(正の値)
 
+        startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
+
+        if(absDigree == 180){//180度の場合エッジによって適切な方向へ旋回するように
+            if(startEdge_ == LineTraceEdge::LEFT && digree > 0){
+                digree = -180;
+            }else if(startEdge_ == LineTraceEdge::RIGHT && digree < 0){
+                digree = 180;
+            }
+        }
+
         switch(phase_){
 
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
-            startEdge_ = lineTrace_->getEdge();
             lineTrace_->setPid();
             lineTrace_->setTarget();
             lineTrace_->run(LINETRACE_PWM,startEdge_);
@@ -50,7 +59,11 @@ namespace drive{
         //カーブ走行（信地旋回）
         case Phase::CURVE:
             if(absDigree >= 120){
-                correction_ = -1 * int(CATCHING_PWM/3);
+                if(absDigree == 180){
+                    correction_ = -1 * int(CATCHING_PWM/2);//180度の場合はより旋回する
+                }else{
+                    correction_ = -1 * int(CATCHING_PWM/3);
+                }
             }else{
                 correction_ = 0;
             }
@@ -82,6 +95,7 @@ namespace drive{
                 }else{//右に曲がる場合は右エッジ
                     endEdge_ = LineTraceEdge::RIGHT;
                 }
+            }
             distanceMeasurement_->start(100);
             lineTrace_->run(LINETRACE_PWM,endEdge_);
             if(distanceMeasurement_->getResult()){
