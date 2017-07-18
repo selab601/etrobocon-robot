@@ -26,23 +26,11 @@ namespace drive{
             lineTrace_->run(LINETRACE_PWM,LineTraceEdge::RIGHT);
             if(colorDetection_->isFourColors()){
                 bodyAngleMeasurement_->setBaseAngle();//検知した時の角度保存
-                phase_ = Phase::CURVE;
+                phase_ = Phase::STRAIGHT;
             }
             break;
 
-        //カーブ走行（信地旋回）
-        case Phase::CURVE:
-            if(digree == 180){//このフェーズをスキップ
-                phase_ = Phase::STRAIGHT;
-            }else if(digree < 180){
-                curveRunning_->run(0,CATCHING_PWM);//右に新地旋回
-            }else{
-                curveRunning_->run(CATCHING_PWM,0);//左に信地旋回
-            }
-            if(abs(bodyAngleMeasurement_->getResult()) >= diffDigree){
-                phase_ = Phase::STRAIGHT;
-            }
-            break;
+
 
         //直進走行
         case Phase::STRAIGHT:
@@ -50,9 +38,23 @@ namespace drive{
                 distanceMeasurement_->start(100);
                 straightRunning_->run(CATCHING_PWM);
             }else{
-                phase_ = Phase::END_LINE_TRACE;
+                phase_ = Phase::CURVE;
             }
             if(distanceMeasurement_->getResult()){
+                phase_ = Phase::CURVE;
+            }
+            break;
+
+        //カーブ走行（信地旋回）
+        case Phase::CURVE:
+            if(digree == 180){//このフェーズをスキップ
+                phase_ = Phase::END_LINE_TRACE;
+            }else if(digree < 180){
+                curveRunning_->run(0,CATCHING_PWM);//右に新地旋回
+            }else{
+                curveRunning_->run(CATCHING_PWM,0);//左に信地旋回
+            }
+            if(abs(bodyAngleMeasurement_->getResult()) >= diffDigree){
                 phase_ = Phase::END_LINE_TRACE;
             }
             break;

@@ -20,8 +20,8 @@ namespace drive
             enum class Phase
             {
                 START_LINE_TRACE,//色検知までライントレース
-                CURVE,           //台座の上でカーブ走行
                 STRAIGHT,        //直進走行(角度が大きい場合)
+                CURVE,           //台座の上でカーブ走行
                 END_LINE_TRACE   //カーブ後のライントレース
             };
 
