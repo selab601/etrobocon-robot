@@ -16,6 +16,7 @@ namespace measurement
     SelfPositionEstimation::SelfPositionEstimation(){
     location_ = Coordinates();
     measurePoint_ = Coordinates();
+    measurePointAngle_ = 0;
     clock_ = Clock();
     angle_  = 0;
     deltaTime_ = 0;
@@ -94,13 +95,15 @@ namespace measurement
         // 元のユークリッド座標系での、X軸からの角度[Rad]
         double angle  = atan2(y, x);
         // 計測開始時の角度からの差分にする
-        angle = angle - measurePointAngle_;
-        // 0 <= angle < 2Pi に丸める
-        angle = getWithin2Pi(angle);
-        // -Pi <= angle < Pi にする
-        angle -= M_PI;
+        angle -= measurePointAngle_;
+
+        // -Pi <= angle < Pi に丸める
+        angle += M_PI; // Pi 足しておく
+        angle = getWithin2Pi(angle); // 0 <= angle < 2Pi にする
+        angle -= M_PI; // 足したPi引いて戻す
+
         // Degree に変換する
-        return (int)(angle_*180/M_PI);
+        return (int)(angle*180/M_PI);
     }
 
     //location_からの距離を返す
