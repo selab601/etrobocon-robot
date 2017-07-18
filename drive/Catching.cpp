@@ -21,11 +21,10 @@ namespace drive{
 
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
-            static LineTraceEdge startEdge;
-            startEdge = lineTrace_->getEdge();
+            startEdge_ = lineTrace_->getEdge();
             lineTrace_->setPid();
             lineTrace_->setTarget();
-            lineTrace_->run(LINETRACE_PWM,startEdge);
+            lineTrace_->run(LINETRACE_PWM,startEdge_);
             if(colorDetection_->isFourColors()){
                 bodyAngleMeasurement_->setBaseAngle();//検知した時の角度保存
                 phase_ = Phase::STRAIGHT;
@@ -36,8 +35,8 @@ namespace drive{
 
         //直進走行
         case Phase::STRAIGHT:
-            if(diffDigree < 90){//90<digree<270
-                distanceMeasurement_->start(50);
+            if(diffDigree <= 90){//90<digree<270
+                distanceMeasurement_->start(40);
                 straightRunning_->run(CATCHING_PWM);
             }else{//スキップ
                 phase_ = Phase::CURVE;
@@ -50,12 +49,17 @@ namespace drive{
 
         //カーブ走行（信地旋回）
         case Phase::CURVE:
+            if(diffDigree >= 120){
+                correction_ = -1 * int(CATCHING_PWM/3);
+            }else{
+                correction_ = 0;
+            }
             if(digree == 180){//このフェーズをスキップ
                 phase_ = Phase::END_LINE_TRACE;
             }else if(digree < 180){
-                curveRunning_->run(0,CATCHING_PWM);//右に新地旋回
+                curveRunning_->run(correction_,CATCHING_PWM);//右に新地旋回
             }else{
-                curveRunning_->run(CATCHING_PWM,0);//左に信地旋回
+                curveRunning_->run(CATCHING_PWM,correction_);//左に信地旋回
             }
             if(abs(bodyAngleMeasurement_->getResult()) >= diffDigree){
                 phase_ = Phase::END_LINE_TRACE;
@@ -64,16 +68,23 @@ namespace drive{
 
         //カーブ後のライントレース
         case Phase::END_LINE_TRACE:
-            static LineTraceEdge endEdge;
             if(diffDigree <= 60){
-                endEdge = startEdge;
-            }else if(diffDigree == 90){
-                endEdge = LineTraceEdge::RIGHT;
+                endEdge_ = startEdge_;
+            }else if(diffDigree <= 105){
+                if(digree >= 90){
+                    endEdge_ = LineTraceEdge::RIGHT;
+                }else{
+                    endEdge_ = LineTraceEdge::LEFT;
+                }
             }else{
-                endEdge = LineTraceEdge::LEFT;
+                if(digree >= 90){
+                    endEdge_ = LineTraceEdge::LEFT;
+                }else{
+                    endEdge_ = LineTraceEdge::RIGHT;
+                }
             }
             distanceMeasurement_->start(100);
-            lineTrace_->run(LINETRACE_PWM,endEdge);//エッジ要調整
+            lineTrace_->run(LINETRACE_PWM,endEdge_);
             if(distanceMeasurement_->getResult()){
                 phase_ = Phase::START_LINE_TRACE;
                 distanceMeasurement_->reset();

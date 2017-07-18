@@ -36,6 +36,11 @@ namespace drive
             LineTrace* lineTrace_;
             StraightRunning* straightRunning_;
 
+            LineTraceEdge startEdge_;
+            LineTraceEdge endEdge_;
+
+            int correction_;
+
 
         public:
             //コンストラクタ
