@@ -21,9 +21,10 @@ namespace drive{
 
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
+            static LineTraceEdge startEdge = LineTraceEdge::RIGHT;
             lineTrace_->setPid();
             lineTrace_->setTarget();
-            lineTrace_->run(LINETRACE_PWM,LineTraceEdge::RIGHT);
+            lineTrace_->run(LINETRACE_PWM,startEdge);
             if(colorDetection_->isFourColors()){
                 bodyAngleMeasurement_->setBaseAngle();//検知した時の角度保存
                 phase_ = Phase::STRAIGHT;
@@ -61,8 +62,16 @@ namespace drive{
 
         //カーブ後のライントレース
         case Phase::END_LINE_TRACE:
+            static endEdge;
+            if(diffDigree <= 45){
+                endEdge = startEdge;
+            }else if(diffDigree == 90){
+                endEdge = LineTraceEdge::RIGHT;
+            }else{
+                endEdge = LineTraceEdge::LEFT;
+            }
             distanceMeasurement_->start(100);
-            lineTrace_->run(LINETRACE_PWM,LineTraceEdge::RIGHT);//エッジ要調整
+            lineTrace_->run(LINETRACE_PWM,endEdge);//エッジ要調整
             if(distanceMeasurement_->getResult()){
                 phase_ = Phase::START_LINE_TRACE;
                 return true;
