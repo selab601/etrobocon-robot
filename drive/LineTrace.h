@@ -188,6 +188,12 @@ namespace drive{
          */
         bool changeEdge2(int toMidLineLength, int toOpposingLength);
 
+        /**
+         * @brief edgeGetter 1:RIGHT 2:LEFT
+         * @return edge
+         */
+        LineTraceEdge getEdge();
+
     private:
 
         /**
