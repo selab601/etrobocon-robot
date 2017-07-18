@@ -49,7 +49,7 @@ namespace drive
             /**
              * @brief 台座上走行
              *
-             * @param digree カーブする角度(0<=digree<=360)
+             * @param digree カーブする角度(-180<=digree<=180)
              * @return true:走行終了,false:走行中
              */
             bool run(int digree);

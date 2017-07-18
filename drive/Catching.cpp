@@ -15,7 +15,7 @@ namespace drive{
     }
 
     bool Catching::run(int digree){
-        int diffDigree = abs(180 - digree);//機体から見た角度(正の値)
+        int absDigree = abs(digree);//曲がる角度(正の値)
 
         switch(phase_){
 
@@ -35,7 +35,7 @@ namespace drive{
 
         //直進走行
         case Phase::STRAIGHT:
-            if(diffDigree <= 90){//90<digree<270
+            if(absDigree <= 90){//90度より曲がらない場合
                 distanceMeasurement_->start(40);
                 straightRunning_->run(CATCHING_PWM);
             }else{//スキップ
@@ -49,40 +49,39 @@ namespace drive{
 
         //カーブ走行（信地旋回）
         case Phase::CURVE:
-            if(diffDigree >= 120){
+            if(absDigree >= 120){
                 correction_ = -1 * int(CATCHING_PWM/3);
             }else{
                 correction_ = 0;
             }
-            if(digree == 180){//このフェーズをスキップ
+            if(digree == 0){//このフェーズをスキップ
                 phase_ = Phase::END_LINE_TRACE;
-            }else if(digree < 180){
+            }else if(digree < 0){
                 curveRunning_->run(correction_,CATCHING_PWM);//右に新地旋回
             }else{
                 curveRunning_->run(CATCHING_PWM,correction_);//左に信地旋回
             }
-            if(abs(bodyAngleMeasurement_->getResult()) >= diffDigree){
+            if(abs(bodyAngleMeasurement_->getResult()) >= absDigree){
                 phase_ = Phase::END_LINE_TRACE;
             }
             break;
 
         //カーブ後のライントレース
         case Phase::END_LINE_TRACE:
-            if(diffDigree <= 60){
+            if(absDigree <= 60){//60度より曲がらない場合
                 endEdge_ = startEdge_;
-            }else if(diffDigree <= 105){
-                if(digree >= 90){
+            }else if(absDigree <= 105 || absDigree >=150){//60〜105,150〜180度曲がる場合
+                if(digree > 0){//左に曲がる場合は右エッジ
                     endEdge_ = LineTraceEdge::RIGHT;
-                }else{
+                }else{//右に曲がる場合は左エッジ
                     endEdge_ = LineTraceEdge::LEFT;
                 }
-            }else{
-                if(digree >= 90){
+            }else if(absDigree <= 135){//135度以上曲がる場合
+                if(digree > 0){//左に曲がる場合は左エッジ
                     endEdge_ = LineTraceEdge::LEFT;
-                }else{
+                }else{//右に曲がる場合は右エッジ
                     endEdge_ = LineTraceEdge::RIGHT;
                 }
-            }
             distanceMeasurement_->start(100);
             lineTrace_->run(LINETRACE_PWM,endEdge_);
             if(distanceMeasurement_->getResult()){
