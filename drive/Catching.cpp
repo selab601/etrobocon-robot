@@ -33,7 +33,7 @@ namespace drive{
         case Phase::START_LINE_TRACE:
             lineTrace_->setPid();
             lineTrace_->setTarget();
-            lineTrace_->run(LINETRACE_PWM,startEdge_);
+            lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
             if(colorDetection_->isFourColors()){
                 bodyAngleMeasurement_->setBaseAngle();//検知した時の角度保存
                 phase_ = Phase::STRAIGHT;
@@ -97,7 +97,7 @@ namespace drive{
                 }
             }
             distanceMeasurement_->start(100);
-            lineTrace_->run(LINETRACE_PWM,endEdge_);
+            lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
             if(distanceMeasurement_->getResult()){
                 phase_ = Phase::START_LINE_TRACE;
                 distanceMeasurement_->reset();

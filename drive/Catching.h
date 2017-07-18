@@ -10,7 +10,7 @@
 #include <stdlib.h>
 
 #define CATCHING_PWM 20
-#define LINETRACE_PWM 20
+#define CATCHING_LINETRACE_PWM 20
 
 namespace drive
 {
