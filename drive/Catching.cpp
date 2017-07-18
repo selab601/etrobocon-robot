@@ -21,7 +21,8 @@ namespace drive{
 
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
-            static LineTraceEdge startEdge = LineTraceEdge::RIGHT;
+            static LineTraceEdge startEdge;
+            startEdge = lineTrace_->getEdge();
             lineTrace_->setPid();
             lineTrace_->setTarget();
             lineTrace_->run(LINETRACE_PWM,startEdge);
