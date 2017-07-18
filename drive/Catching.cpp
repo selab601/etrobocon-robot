@@ -15,7 +15,7 @@ namespace drive{
     }
 
     bool Catching::run(int digree){
-        static int diffDigree = abs(180 - digree);//機体から見た角度(正の値)
+        int diffDigree = abs(180 - digree);//機体から見た角度(正の値)
 
         switch(phase_){
 
@@ -42,6 +42,7 @@ namespace drive{
                 phase_ = Phase::CURVE;
             }
             if(distanceMeasurement_->getResult()){
+                distanceMeasurement_->reset();
                 phase_ = Phase::CURVE;
             }
             break;
@@ -74,6 +75,7 @@ namespace drive{
             lineTrace_->run(LINETRACE_PWM,endEdge);//エッジ要調整
             if(distanceMeasurement_->getResult()){
                 phase_ = Phase::START_LINE_TRACE;
+                distanceMeasurement_->reset();
                 return true;
             }
             break;
