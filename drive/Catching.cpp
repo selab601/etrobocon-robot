@@ -62,8 +62,8 @@ namespace drive{
 
         //カーブ後のライントレース
         case Phase::END_LINE_TRACE:
-            static endEdge;
-            if(diffDigree <= 45){
+            static LineTraceEdge endEdge;
+            if(diffDigree <= 60){
                 endEdge = startEdge;
             }else if(diffDigree == 90){
                 endEdge = LineTraceEdge::RIGHT;
