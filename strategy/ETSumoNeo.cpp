@@ -34,6 +34,7 @@ namespace strategy{
                 efforts_->reset();
                 procedureNumber++;
                 hasExecutedPhase_ = false;//フラグを戻しておく
+                isLineTraceReset_ = false;
                 ev3_speaker_play_tone ( 500, 100);//音を出す
             }
         }
@@ -55,11 +56,17 @@ namespace strategy{
 
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
-            distanceMeasurement_->start(1000);
+            distanceMeasurement_->start(1200);
             linetrace_->setPid(0.0144,0.0,0.72);
             linetrace_->run(40,LineTraceEdge::RIGHT);
             //距離検知or車体角度が土俵を向いたらtrue
             return distanceMeasurement_->getResult() || bodyAngleMeasurement_->getResult() >= 180;
+
+        //すこしライントレース
+        case StrategyPhase::LINE_TRACE_LITTLE:
+            distanceMeasurement_->start(50);
+            linetrace_->run(40,LineTraceEdge::RIGHT);
+            return distanceMeasurement_->getResult();
 
         //新幹線を検知するまで停止
         case StrategyPhase::STOP:
@@ -115,18 +122,22 @@ namespace strategy{
 
         //一回目の取組
         case StrategyPhase::FIRST_EFFORTS:
+            lineTraceReset();
             return efforts_->run(1);
 
         //二回目の取組
         case StrategyPhase::SECOND_EFFORTS:
+            lineTraceReset();
             return efforts_->run(2);
 
         //三回目の取組
         case StrategyPhase::THIRD_EFFORTS:
+            lineTraceReset();
             return efforts_->run(4);
 
         //四回目の取組
         case StrategyPhase::FOURTH_EFFORTS:
+            lineTraceReset();
             return efforts_->run(3);
 
         //直角をまたぐ走行
@@ -141,29 +152,28 @@ namespace strategy{
 
         //上段までライントレース
         case StrategyPhase::UPPER_STAGE:
-            static bool isTimeDetected = false;
-            startTimeMeasurement(800);
-            linetrace_->run(20,LineTraceEdge::LEFT,0.4);
-            if(timeMeasurement_->getResult()){
-                isTimeDetected = true;
-            }
-            return isTimeDetected && rightAngledDetection_->getResult(4.0);
+            lineTraceReset();
+            distanceMeasurement_->start(50);
+            linetrace_->run(20,LineTraceEdge::LEFT,0.6);
+            return distanceMeasurement_->getResult() && rightAngledDetection_->getResult(4.0);
 
         //下段までライントレース
         case StrategyPhase::DOWN_STAGE:
-            static bool isTimeDetected2 = false;
-            startTimeMeasurement(400);
-            linetrace_->run(20,LineTraceEdge::RIGHT,0.4);
-            if(timeMeasurement_->getResult()){
-                isTimeDetected2 = true;
-            }
-            return isTimeDetected2 && rightAngledDetection_->getResult(4.0);
+            lineTraceReset();
+            distanceMeasurement_->start(40);
+            linetrace_->run(20,LineTraceEdge::RIGHT,0.6);
+            return distanceMeasurement_->getResult() && rightAngledDetection_->getResult(4.0);
 
         //検知した後すこし待つ
         case StrategyPhase::WAIT_2_SEC:
             startTimeMeasurement(2000);
             straightRunning_->run(0);
             return timeMeasurement_->getResult();
+
+        case StrategyPhase::NEXT_STAGE:
+            distanceMeasurement_->start(500);
+            straightRunning_->run(60);
+            return distanceMeasurement_->getResult();
 
         default: return false;
         }
