@@ -45,7 +45,13 @@ namespace drive{
         //直進走行
         case Phase::STRAIGHT:
             if(absDigree <= 90){//90度より曲がらない場合
-                distanceMeasurement_->start(40);
+                if(digree == 0){//0度の場合は多めに直進
+                    distanceMeasurement_->start(110);
+                }else if(absDigree == 90){//90度の場合は少なめに直進
+                    distanceMeasurement_->start(30);
+                }else{
+                    distanceMeasurement_->start(40);
+                }
                 straightRunning_->run(CATCHING_PWM);
             }else{//スキップ
                 phase_ = Phase::CURVE;
