@@ -9,7 +9,7 @@
 #include "../detection/ColorDetection.h"
 #include <stdlib.h>
 
-#define CATCHING_PWM 20
+#define CATCHING_PWM 30
 #define CATCHING_LINETRACE_PWM 20
 
 namespace drive
