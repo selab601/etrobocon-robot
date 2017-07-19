@@ -89,6 +89,10 @@ namespace measurement
     }
 
     int SelfPositionEstimation::getPolarTheta(){
+        return getPolarTheta10() / 10;
+    }
+
+    int SelfPositionEstimation::getPolarTheta10(){
         long x = location_.get_x() - measurePoint_.get_x();
         long y = location_.get_y() - measurePoint_.get_y();
 
@@ -103,7 +107,7 @@ namespace measurement
         angle -= M_PI; // 足したPi引いて戻す
 
         // Degree に変換する
-        return (int)(angle*180/M_PI);
+        return (int)(angle*1800/M_PI);
     }
 
     //location_からの距離を返す

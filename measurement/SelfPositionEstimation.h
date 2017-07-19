@@ -77,9 +77,16 @@ namespace measurement
         /**
          * @brief 計測地点からの座標を、極座標で取得する
          *
-         * @return 極座標表現の角度θ[Deg] ( ←-180°<= θ < 180°→ )
+         * @return 極座標表現の角度θ[Deg] ( ← -180 <= θ < 180 → )
          */
         int getPolarTheta();
+
+        /**
+         * @brief 計測地点からの座標を、極座標で取得する(10倍)
+         *
+         * @return 極座標表現の角度θ[0.1Deg] ( ← -1800 <= θ < 1800 → )
+         */
+        int getPolarTheta10();
 
 
         /*!
