@@ -35,8 +35,8 @@ namespace strategy{
         switch(phase){
             case Phase::LINE_TRACE1:
                 //線に入射したとき直角検知するため、距離の条件追加
-                //開始後30cmは直角検知しないため，開始位置によっては調整してください
-                distanceMeasurement_->start(300);
+                //開始後20cmは直角検知しないため，開始位置によっては調整してください
+                distanceMeasurement_->start(250);
                 lineTrace_->run(40,LineTraceEdge::RIGHT);
                 return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
 
