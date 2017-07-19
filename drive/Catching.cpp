@@ -45,11 +45,14 @@ namespace drive{
 
         //直進走行
         case Phase::STRAIGHT:
-            if(absDigree <= 90){//90度より曲がらない場合
-                if(digree == 0){//0度の場合は多めに直進
+            if(absDigree <= 90){//0,30,45,60,90の場合
+                if(absDigree == 0){//0度の場合は多めに直進
                     distanceMeasurement_->start(110);
                 }else if(absDigree == 90){//90度の場合は少なめに直進
                     distanceMeasurement_->start(30);
+                }else if( ( (digree == -30 || digree == -45)  && startEdge_ == LineTraceEdge::LEFT)
+                       || ( (digree == 30  || digree == 45)  && startEdge_ == LineTraceEdge::RIGHT)){//外側で30,45角度の場合
+                    distanceMeasurement_->start(60);
                 }else{
                     distanceMeasurement_->start(40);
                 }
