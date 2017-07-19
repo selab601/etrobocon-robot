@@ -2,9 +2,10 @@
 #define PARKING_L
 
 #include "IStrategy.h"
+#include "../detection/LineDetection.h"
 #include "../device/Arm.h"
-#include "../drive/CurveRunning.h"
 #include "../drive/PivotTurn.h"
+#include "../drive/LineTrace.h"
 #include "../drive/StraightRunning.h"
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/TimeMeasurement.h"
@@ -18,8 +19,11 @@ namespace strategy{
                 PIVOT_TURN1,
                 APPROACH,
                 PIVOT_TURN2,
-                ENTRY,
+                LINETRACE,
                 PIVOT_TURN3,
+                ENTRY,
+                PIVOT_TURN4,
+                FINISH,
                 WAIT,
             };
 
@@ -28,14 +32,18 @@ namespace strategy{
                 Phase::PIVOT_TURN1,
                 Phase::APPROACH,
                 Phase::PIVOT_TURN2,
-                Phase::ENTRY,
+                Phase::LINETRACE,
                 Phase::PIVOT_TURN3,
+                Phase::ENTRY,
+                Phase::PIVOT_TURN4,
+                Phase::FINISH,
                 Phase::WAIT,
             };
 
-            //device::Arm* arm_;
-            drive::CurveRunning* curveRunning_;
+            detection::LineDetection* lineDetection_;
+            device::Arm* arm_;
             drive::PivotTurn* pivotTurn_;
+            drive::LineTrace* lineTrace_;
             drive::StraightRunning* straightRunning_;
             measurement::DistanceMeasurement* distanceMeasurement_;
             measurement::TimeMeasurement* timeMeasurement_;
