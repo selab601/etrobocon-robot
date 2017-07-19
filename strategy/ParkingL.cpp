@@ -5,6 +5,8 @@ using namespace measurement;
 
 namespace strategy{
     ParkingL::ParkingL(){
+        //arm_                   = new Arm();
+        curveRunning_          = new CurveRunning();
         pivotTurn_             = new PivotTurn();
         straightRunning_       = new StraightRunning();
         distanceMeasurement_   = new DistanceMeasurement();
@@ -32,7 +34,7 @@ namespace strategy{
     bool ParkingL::executePhase(Phase phase){
         switch(phase){
             case Phase::ADJUST:
-                //ブロック並べ終点から
+                //ブロック並べ終点から,後退して位置調整
                 distanceMeasurement_->start(185);
                 straightRunning_->run(-25);
                 return distanceMeasurement_->getResult();
@@ -43,6 +45,7 @@ namespace strategy{
             case Phase::APPROACH:
                 distanceMeasurement_->start(650); //要調整
                 straightRunning_->run(50);
+                //return arm_->up() && distanceMeasurement_->getResult();
                 return distanceMeasurement_->getResult();
 
             case Phase::PIVOT_TURN2:
@@ -58,6 +61,7 @@ namespace strategy{
 
             case Phase::WAIT:
                 straightRunning_->run(0);
+                //arm->down();
                 /*
                 //x秒経つまでfalse,経ったらtrueでphase終了,にしたい
                 timeMeasurement_->setBaseTime();

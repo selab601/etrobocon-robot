@@ -2,6 +2,8 @@
 #define PARKING_L
 
 #include "IStrategy.h"
+#include "../device/Arm.h"
+#include "../drive/CurveRunning.h"
 #include "../drive/PivotTurn.h"
 #include "../drive/StraightRunning.h"
 #include "../measurement/DistanceMeasurement.h"
@@ -31,6 +33,8 @@ namespace strategy{
                 Phase::WAIT,
             };
 
+            //device::Arm* arm_;
+            drive::CurveRunning* curveRunning_;
             drive::PivotTurn* pivotTurn_;
             drive::StraightRunning* straightRunning_;
             measurement::DistanceMeasurement* distanceMeasurement_;
@@ -39,6 +43,8 @@ namespace strategy{
             bool strategySuccess_;
         
         public:
+            //ブロック並べ終了→ピボット→前進→ピボット→前進→ピボットで駐車
+            //ピボットからカーブに変更するかもしれません
             ParkingL();
 
             bool capture();

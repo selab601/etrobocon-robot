@@ -2,8 +2,8 @@
 #define PARKING_R
 
 #include "IStrategy.h"
-#include "../drive/PivotTurn.h"
 #include "../drive/LineTrace.h"
+#include "../drive/PivotTurn.h"
 #include "../detection/RightAngledDetection.h"
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/TimeMeasurement.h"
@@ -27,10 +27,10 @@ namespace strategy{
             };
 
             drive::LineTrace* lineTrace_;
+            drive::PivotTurn* pivotTurn_;
+            detection::RightAngledDetection* rightAngledDetection_;
             measurement::DistanceMeasurement* distanceMeasurement_;
             measurement::TimeMeasurement* timeMeasurement_;
-            detection::RightAngledDetection* rightAngledDetection_;
-            drive::PivotTurn* pivotTurn_;
 
             bool strategySuccess_;
 
