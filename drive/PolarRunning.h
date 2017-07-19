@@ -5,6 +5,7 @@
 #include "measurement/SelfPositionEstimation.h"
 #include "device/Motors.h"
 #include "PidController.h"
+#include <stdlib.h> // abs()
 
 namespace drive{
 
@@ -29,7 +30,7 @@ namespace drive{
         State state_;
         bool isCenterPivot_ = true;
         int traceMaxPwm_;
-        int maxPwm_;
+        int maxPwm_ = 40;
 
 
     public:

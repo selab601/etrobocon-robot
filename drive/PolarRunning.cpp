@@ -55,17 +55,36 @@ namespace drive{
     }
 
     bool PolarRunning::turn(int degree, int speed){
+        int target = 0;
+        if (isCenterPivot_){
+            target = bodyAngle_.getResult() * 10;
+        }
+        else{
+            // 超信地でないときは極座標の角度をターゲットにする
+            target = selfPositioin_->getPolarTheta10();
+        }
+
+        int diff = degree * 10 - target;
+        diff =  150 < diff ?  150 : diff;
+        diff = -150 > diff ? -150 : diff;
+
+        degreeController_.setPd();
+        int resultspeed = 200 * degreeController_.calculatePid( abs(diff) );
+        resultspeed = resultspeed * speed / 90;
+        resultspeed += 10;
+        resultspeed = speed < resultspeed ? speed : resultspeed;
+
         int lPwm = 0;
         int rPwm = 0;
         if (0 <= degree){  // 左に回る
-            rPwm = speed;
+            rPwm = resultspeed;
             // 軸が真ん中でないとき、内側を0にする
-            lPwm = isCenterPivot_ ? -speed : 0;
+            lPwm = isCenterPivot_ ? -resultspeed : 0;
         }
         else{   // 右に回る
-            lPwm = speed;
+            lPwm = resultspeed;
             // 軸が真ん中でないとき、内側を0にする
-            rPwm = isCenterPivot_ ? -speed : 0;
+            rPwm = isCenterPivot_ ? -resultspeed : 0;
 
             degree *= -1;   // 角度を絶対値にしておく
         }
@@ -80,14 +99,14 @@ namespace drive{
 
     void PolarRunning::traceDegree(int degree){
         int diff = degree*10 - selfPositioin_->getPolarTheta10();
-        diff *= 2;
-        // 40で足切り
-        diff =  40 < diff ?  40 : diff;
-        diff = -40 > diff ? -40 : diff;
+        // 遠いところほど角度のズレに対する実際の位置のズレが激しくなる
+        diff = diff * selfPositioin_->getPolarR();
+        diff /= 2;
 
-        degreeController_.setPid();
+        // かなり精度良くなった
+        degreeController_.setPd(0.0000006, 0.000977);
         degreeController_.setMaxPwm(traceMaxPwm_);
-        degreeController_.run(diff*10);
+        degreeController_.run(diff);
     }
 
     void PolarRunning::calculateMaxPwm(int distance){
@@ -105,6 +124,7 @@ namespace drive{
 
         traceMaxPwm_ = 600 * distanceController_.calculatePid(diff);
         traceMaxPwm_ = traceMaxPwm_ * maxPwm_ / 90;
+        traceMaxPwm_ += 10;
         // maxPwm_で足切り
         traceMaxPwm_ = maxPwm_ < traceMaxPwm_ ? maxPwm_ : traceMaxPwm_;
     }
