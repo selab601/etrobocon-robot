@@ -18,6 +18,7 @@ namespace drive{
             INIT,
             TURN,
             TRACE,
+            RUNTO,
             FINISHED
         };
 
@@ -28,9 +29,11 @@ namespace drive{
 
         device::Motors* motors_;
         State state_;
+        State xyState_;
         bool isCenterPivot_ = true;
         int traceMaxPwm_;
         int maxPwm_ = 40;
+        int isTurnInit_ = true;
 
 
     public:
@@ -41,11 +44,23 @@ namespace drive{
          * @brief 指定した極座標に移動する
          *
          * @param distance 行きたい場所までの距離[mm]
-         * @param degree 行きたい場所までの角度[Degree]
+         * @param polarDegree 行きたい場所までの角度[Degree]
+         * @param turnDegree 最初に旋回する時の角度[Degree] (省略可)
          *
          * @return 終了したらtrue
          */
-        bool runTo(int distance, int degree);
+        bool runTo(int distance, int polarDegree, int turnDegree);
+        bool runTo(int distance, int polarDegree);
+
+        /**
+         * @brief 指定した座標に移動する
+         *
+         * @param xMm 行きたい場所の相対的なX座標[mm]
+         * @param yMm 行きたい場所の相対的なY座標[mm]
+         *
+         * @return 終了したらtrue
+         */
+        bool runToXY(int xMm, int yMm);
 
         /**
          * @brief PWM値をセットする

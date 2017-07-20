@@ -12,7 +12,7 @@ namespace drive{
         distanceController_ = PidController();
     }
 
-    bool PolarRunning::runTo(int distance, int degree){
+    bool PolarRunning::runTo(int distance, int polarDegree, int turnDegree){
         switch (state_){
             case State::INIT:
                 selfPositioin_->startMeasure();
@@ -23,14 +23,14 @@ namespace drive{
                 break;
 
             case State::TURN:
-                if ( turn(degree, 40) ){
+                if ( turn(turnDegree, 40) ){
                     state_ = State::TRACE;
                 }
                 break;
 
             case State::TRACE:
                 calculateMaxPwm(distance);
-                traceDegree(degree);
+                traceDegree(polarDegree);
                 if (selfPositioin_->getPolarR() >= distance){
                     state_ = State::FINISHED;
                 }
@@ -40,6 +40,36 @@ namespace drive{
                 state_ = State::INIT;
                 motors_->setWheelPWM(0, 0);
                 return true;
+
+            default:
+                return false;
+        }
+        return false;
+    }
+
+    bool PolarRunning::runTo(int distance, int degree){
+        return runTo(distance, degree, degree);
+    }
+
+    bool PolarRunning::runToXY(int xMm, int yMm){
+        int distance = 0;
+        int degree = 0;
+        switch (xyState_){
+            case State::INIT:
+                distance = sqrt( xMm*xMm + yMm*yMm );
+                degree = atan2(yMm, xMm);
+                xyState_ = State::RUNTO;
+                break;
+
+            case State::RUNTO:
+                if ( runTo(distance, degree) ){
+                    xyState_ = State::INIT;
+                    return true;
+                }
+                break;
+
+            default:
+                return false;
         }
         return false;
     }
@@ -52,23 +82,20 @@ namespace drive{
     }
     void PolarRunning::reset(){
         state_ = State::INIT;
+        xyState_ = State::INIT;
     }
 
     bool PolarRunning::turn(int degree, int speed){
-        int target = 0;
-        if (isCenterPivot_){
-            target = bodyAngle_.getResult() * 10;
-        }
-        else{
-            // 超信地でないときは極座標の角度をターゲットにする
-            target = selfPositioin_->getPolarTheta10();
+        if (isTurnInit_){
+            bodyAngle_.setBaseAngle();
+            degreeController_.setPd();
+            isTurnInit_ = false;
         }
 
-        int diff = degree * 10 - target;
+        int diff = degree * 10 - bodyAngle_.getResult() * 10;
         diff =  150 < diff ?  150 : diff;
         diff = -150 > diff ? -150 : diff;
 
-        degreeController_.setPd();
         int resultspeed = 200 * degreeController_.calculatePid( abs(diff) );
         resultspeed = resultspeed * speed / 90;
         resultspeed += 10;
@@ -85,13 +112,12 @@ namespace drive{
             lPwm = resultspeed;
             // 軸が真ん中でないとき、内側を0にする
             rPwm = isCenterPivot_ ? -resultspeed : 0;
-
-            degree *= -1;   // 角度を絶対値にしておく
         }
         motors_->setWheelPWM(lPwm, rPwm);
 
-        if (bodyAngle_.getResult() >= degree){
+        if ( abs(bodyAngle_.getResult()) >= abs(degree) ){
             motors_->setWheelPWM(0, 0);
+            isTurnInit_ = true;
             return true;
         }
         return false;
