@@ -82,8 +82,6 @@ namespace drive{
          */
         void reset();
 
-    private:
-
         /**
          * @brief 超信地旋回・信地旋回を行う
          *
@@ -93,6 +91,8 @@ namespace drive{
          * @return 終了したらtrue
          */
         bool turn(int degree, int speed);
+
+    private:
 
         /**
          * @brief 極座標の角度が指定した角度になるように移動する
