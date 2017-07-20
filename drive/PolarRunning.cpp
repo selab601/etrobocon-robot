@@ -83,6 +83,7 @@ namespace drive{
     void PolarRunning::reset(){
         state_ = State::INIT;
         xyState_ = State::INIT;
+        isTurnInit_ = true;
     }
 
     bool PolarRunning::turn(int degree, int speed){
@@ -125,6 +126,10 @@ namespace drive{
 
     void PolarRunning::traceDegree(int degree){
         int diff = degree*10 - selfPositioin_->getPolarTheta10();
+        // 差分が0付近のところでいきなり変わらないようにする(359->0とか)
+        diff += 1800;
+        diff %= 3600;
+        diff -= 1800;
         // 遠いところほど角度のズレに対する実際の位置のズレが激しくなる
         diff = diff * selfPositioin_->getPolarR();
         diff /= 2;
