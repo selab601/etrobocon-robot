@@ -1,15 +1,12 @@
 #include "BlockPlace.h"
 
 namespace strategy{
-    BlockPlace::BlockPlace(int id,BlockAreaColor color){
-        id_ = id;
+    BlockPlace::BlockPlace(int id,BlockAreaColor color,int x,int y){
+        id_    = id;
         color_ = color;
+        x_     = x;
+        y_     = y;
     }
 
-    void BlockPlace::connectPlace(int id){
-        nextBlockPlace.emplace_back(id);
-    }
-
-    //vector<int> BlockPlace::getNextPlace(){}
 
 }
