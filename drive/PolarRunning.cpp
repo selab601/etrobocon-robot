@@ -8,6 +8,7 @@ namespace drive{
         motors_ = device::Motors::getInstance();
 
         state_ = State::INIT;
+        xyState_ = State::INIT;
         degreeController_ = PidController();
         distanceController_ = PidController();
     }
@@ -20,11 +21,13 @@ namespace drive{
                 degreeController_.reset();
                 distanceController_.reset();
                 state_ = State::TURN;
+                ev3_speaker_play_tone(200, 100);
                 break;
 
             case State::TURN:
                 if ( turn(turnDegree, 40) ){
                     state_ = State::TRACE;
+                    ev3_speaker_play_tone(550, 100);
                 }
                 break;
 
@@ -33,6 +36,7 @@ namespace drive{
                 traceDegree(polarDegree);
                 if (selfPositioin_->getPolarR() >= distance){
                     state_ = State::FINISHED;
+                    ev3_speaker_play_tone(800, 100);
                 }
                 break;
 
@@ -52,18 +56,20 @@ namespace drive{
     }
 
     bool PolarRunning::runToXY(int xMm, int yMm){
-        int distance = 0;
-        int degree = 0;
+        static int distance = 0;
+        static int degree = 0;
         switch (xyState_){
             case State::INIT:
                 distance = sqrt( xMm*xMm + yMm*yMm );
-                degree = atan2(yMm, xMm);
+                degree = atan2(yMm, xMm) * 180 / M_PI;
                 xyState_ = State::RUNTO;
+                ev3_speaker_play_tone(200, 100);
                 break;
 
             case State::RUNTO:
                 if ( runTo(distance, degree) ){
                     xyState_ = State::INIT;
+                    ev3_speaker_play_tone(1000, 100);
                     return true;
                 }
                 break;
