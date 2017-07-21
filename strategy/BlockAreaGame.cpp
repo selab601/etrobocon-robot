@@ -1,12 +1,10 @@
 #include "BlockAreaGame.h"
-#include "BlockArea/BlockPlace.h"
 
 namespace strategy{
   BlockAreaGame::BlockAreaGame(){
-    //itertor_ = map.iterator();
     map_ = new Map();
-    //map_->addBlockPlace(new BlockPlace(1,BlockPlace::RED));
-    //map_->addBlockPlace(new BlockPlace(2,BlockPlace::BLUE));
+    map_->addBlockPlace(BlockPlace(1,BlockAreaColor::RED));
+    map_->addBlockPlace(BlockPlace(2,BlockAreaColor::BLUE));
   }
 
   bool BlockAreaGame::capture(){

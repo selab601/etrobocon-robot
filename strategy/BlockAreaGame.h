@@ -6,14 +6,14 @@
 #define _BLOCK_AREA_GAME_H
 
 #include "IStrategy.h"
+#include "BlockArea/BlockPlace.h"
 #include "BlockArea/Map.h"
-#include "BlockArea/IIterator.h"
 
 namespace strategy{
 	class BlockAreaGame : public IStrategy{
+
 		private:
             strategy::Map* map_;//ブロック並べのmap
-            //strategy::IIterator* itertor_;
 
 		public:
 			//コンストラクタ

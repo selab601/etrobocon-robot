@@ -5,27 +5,32 @@
 
 namespace strategy{
 
-    enum color
-    {
+    enum class BlockAreaColor{
         RED,
         BLUE,
         YELLOW,
         GREEN,
         BLACK
     };
-
     class BlockPlace{
     private:
         //ToDo 必要な情報変えてく
         int id_;//置き場のID
-        color color_;//台座の色
-        bool hasBlock_;//ブロックの有無
+        BlockAreaColor color_;//台座の色
+        //int x_;//x座標
+        //int y_;//y座標
+        //bool hasBlock_;//ブロックの有無
+        //color hasBlockColor;//台座上のブロックの色
         std::vector<int> nextBlockPlace;//[接続してる置き場]-------２次元にしたい[その角度]
 
 
     public:
+            //ブロック並べに使用する色の種類
+
+
+
         //コンストラクタ
-        BlockPlace(int id);
+        BlockPlace(int id,BlockAreaColor color);
 
         //void setId(int id);///?
         //void setcolor(int color);//?
@@ -36,6 +41,12 @@ namespace strategy{
          * @param angle ラインの角度
          */
         void connectPlace(int id);
+
+        /**
+         * @brief 繋がっている次のブロック置き場を取得
+         * @return ブロック置き場ID
+         */
+        //vector<int> getNextPlace();
 
     };
 
