@@ -1,6 +1,8 @@
 #ifndef IAGGREGATE_H_
 #define IAGGREGATE_H_
 
+#include "IIterator.h"
+
 namespace strategy{
 
 /**
@@ -8,8 +10,7 @@ namespace strategy{
  */
  class IAggregate{
     public:
-        virtual IIterator* Iterator(void) = 0;
-
+        virtual IIterator* iterator(void) = 0;
  };
 
 }
