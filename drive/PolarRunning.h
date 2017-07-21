@@ -35,6 +35,8 @@ namespace drive{
         int maxPwm_ = 40;
         int isTurnInit_ = true;
 
+        int currentDegree10_ = 0;
+
 
     public:
         //コンストラクタ
@@ -83,14 +85,24 @@ namespace drive{
         void reset();
 
         /**
-         * @brief 超信地旋回・信地旋回を行う
+         * @brief 車体角度を監視して超信地旋回・信地旋回を行う
          *
          * @param degree 回転する角度[Degree]
          * @param speed 回転する早さ(PWM)
          *
          * @return 終了したらtrue
          */
-        bool turn(int degree, int speed);
+        bool bodyTurn(int degree, int speed);
+
+        /**
+         * @brief 極座標の角度を監視して信地旋回を行う
+         *
+         * @param degree 回転する角度[Degree]
+         * @param speed 回転する早さ(PWM)
+         *
+         * @return 終了したらtrue
+         */
+        bool polarTurn(int degree, int speed);
 
     private:
 
@@ -100,6 +112,15 @@ namespace drive{
          */
         void traceDegree(int degree);
 
+        /**
+         * @brief 超信地旋回・信地旋回を行う
+         * @details 監視する角度はcurrentDegree10_ に指定する
+         * @param degree 回転する角度[Degree]
+         * @param speed 回転する早さ(PWM)
+         *
+         * @return 終了したらtrue
+         */
+        bool turn(int degree, int speed);
         /**
          * @brief PID制御で早さを計算する
          *
