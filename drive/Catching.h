@@ -54,6 +54,14 @@ namespace drive
              */
             bool run(int digree);
 
+            /**
+             * @brief 現在運んでるブロックを台座の上に置く
+             *
+             * @param backDistance 置いた後戻る距離（デフォルトが22.5-円の半径5cmカラーセンサとタイヤの距離4cmカラーセンサが行き過ぎる距離1.5cm）
+             * @return true:設置完了,false:設置中
+             */
+            bool putBlock(int backDistance = 225-50-40+15);
+
         private:
 
     };
