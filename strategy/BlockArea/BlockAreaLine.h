@@ -6,15 +6,13 @@ namespace strategy{
     class BlockAreaLine{
     private:
         int id_;
-        int connectA_;
-        int connectB_;
+        int connectRight_;
+        int connectLeft_;
         int length_;
-        int angle_;
     public:
-        BlockAreaLine(int id,int connectA,int connectB,int length,int angle);
+        BlockAreaLine(int id,int connectRight,int connectLeft,int length);
         int connectTo(int blockPlaceId);
         int getLenght();
-        int getAngle();
 
     };
 

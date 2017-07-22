@@ -2,23 +2,18 @@
 
 namespace strategy{
 
-    BlockAreaLine::BlockAreaLine(int id,int connectA,int connectB,int length,int angle){
+    BlockAreaLine::BlockAreaLine(int id,int connectRight,int connectLeft,int length){
         id_       = id;
-        connectA_ = connectA;
-        connectB_ = connectB;
+        connectRight_ = connectRight;
+        connectLeft_ = connectLeft;
         length_   = length;
-        angle_    = angle;
     }
 
     int BlockAreaLine::connectTo(int blockPlaceId){
-        return blockPlaceId == connectA_ ? connectB_ : connectA_;
+        return blockPlaceId == connectRight_ ? connectLeft_ : connectRight_;
     }
     int BlockAreaLine::getLenght(){
         return length_;
-    }
-
-    int BlockAreaLine::getAngle(){
-        return angle_;
     }
 
 

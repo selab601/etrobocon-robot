@@ -19,12 +19,24 @@ namespace strategy{
         BlockAreaColor color_;//台座の色
         int x_;//x座標
         int y_;//y座標
-        //bool hasBlock_;//ブロックの有無
-        //color hasBlockColor;//台座上のブロックの色
-
 
     public:
             //ブロック並べに使用する色の種類
+        BlockPlace* leftAngle0_;
+        BlockPlace* leftAngle30_;
+        BlockPlace* leftAngle60_;
+        BlockPlace* leftAngle75_;
+        BlockPlace* leftAngle105_;
+        BlockPlace* leftAngle120_;
+        BlockPlace* leftAngle150_;
+        BlockPlace* leftAngle180_;
+
+        BlockPlace* rightAngle30_;
+        BlockPlace* rightAngle60_;
+        BlockPlace* rightAngle75_;
+        BlockPlace* rightAngle105_;
+        BlockPlace* rightAngle120_;
+        BlockPlace* rightAngle150_;
 
 
 

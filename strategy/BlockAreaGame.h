@@ -13,7 +13,7 @@ namespace strategy{
 	class BlockAreaGame : public IStrategy{
 
 		private:
-            strategy::Map* map_;//ブロック並べのmap
+            strategy::Map* map_;//ブロック並べのmap_
 
 		public:
 			//コンストラクタ
