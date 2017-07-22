@@ -17,26 +17,26 @@ namespace strategy{
         //ToDo 必要な情報変えてく
         int id_;//置き場のID
         BlockAreaColor color_;//台座の色
-        int x_;//x座標
-        int y_;//y座標
+        int x_;//x座標 mm
+        int y_;//y座標 mm
 
     public:
             //ブロック並べに使用する色の種類
-        BlockPlace* leftAngle0_;
-        BlockPlace* leftAngle30_;
-        BlockPlace* leftAngle60_;
-        BlockPlace* leftAngle75_;
-        BlockPlace* leftAngle105_;
-        BlockPlace* leftAngle120_;
-        BlockPlace* leftAngle150_;
-        BlockPlace* leftAngle180_;
+        BlockPlace* leftAngle0_    = NULL;
+        BlockPlace* leftAngle30_   = NULL;
+        BlockPlace* leftAngle60_   = NULL;
+        BlockPlace* leftAngle75_   = NULL;
+        BlockPlace* leftAngle105_  = NULL;
+        BlockPlace* leftAngle120_  = NULL;
+        BlockPlace* leftAngle150_  = NULL;
+        BlockPlace* leftAngle180_  = NULL;
 
-        BlockPlace* rightAngle30_;
-        BlockPlace* rightAngle60_;
-        BlockPlace* rightAngle75_;
-        BlockPlace* rightAngle105_;
-        BlockPlace* rightAngle120_;
-        BlockPlace* rightAngle150_;
+        BlockPlace* rightAngle30_  = NULL;
+        BlockPlace* rightAngle60_  = NULL;
+        BlockPlace* rightAngle75_  = NULL;
+        BlockPlace* rightAngle105_ = NULL;
+        BlockPlace* rightAngle120_ = NULL;
+        BlockPlace* rightAngle150_ = NULL;
 
 
 

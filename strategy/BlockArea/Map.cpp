@@ -1,32 +1,33 @@
 #include "Map.h"
+#include "Math.h"
 
 namespace strategy{
 
     Map::Map(){
-        BlockPlace* daiza1  = new BlockPlace(1,BlockAreaColor::RED,0,0);
-        BlockPlace* daiza2  = new BlockPlace(2,BlockAreaColor::BLUE,0,0);
-        BlockPlace* daiza3  = new BlockPlace(3,BlockAreaColor::YELLOW,0,0);
+        BlockPlace* daiza1  = new BlockPlace(1,BlockAreaColor::RED,-1350*sqrt(3),0);
+        BlockPlace* daiza2  = new BlockPlace(2,BlockAreaColor::BLUE,-900*sqrt(3),0);
+        BlockPlace* daiza3  = new BlockPlace(3,BlockAreaColor::YELLOW,-450*sqrt(3),0);
         BlockPlace* daiza4  = new BlockPlace(4,BlockAreaColor::BLUE,0,0);
-        BlockPlace* daiza5  = new BlockPlace(5,BlockAreaColor::YELLOW,0,0);
-        BlockPlace* daiza6  = new BlockPlace(6,BlockAreaColor::GREEN,0,0);
-        BlockPlace* daiza7  = new BlockPlace(7,BlockAreaColor::RED,0,0);
-        BlockPlace* daiza8  = new BlockPlace(8,BlockAreaColor::RED,0,0);
-        BlockPlace* daiza9  = new BlockPlace(9,BlockAreaColor::BLUE,0,0);
-        BlockPlace* daiza10 = new BlockPlace(10,BlockAreaColor::GREEN,0,0);
-        BlockPlace* daiza11 = new BlockPlace(11,BlockAreaColor::GREEN,0,0);
-        BlockPlace* daiza12 = new BlockPlace(12,BlockAreaColor::BLUE,0,0);
-        BlockPlace* daiza13 = new BlockPlace(13,BlockAreaColor::YELLOW,0,0);
-        BlockPlace* daiza14 = new BlockPlace(14,BlockAreaColor::RED,0,0);
-        BlockPlace* daiza15 = new BlockPlace(15,BlockAreaColor::YELLOW,0,0);
+        BlockPlace* daiza5  = new BlockPlace(5,BlockAreaColor::YELLOW,-2250*sqrt(3)/2,-450*sqrt(3)/2);
+        BlockPlace* daiza6  = new BlockPlace(6,BlockAreaColor::GREEN,-1350*sqrt(3)/2,-450/2);
+        BlockPlace* daiza7  = new BlockPlace(7,BlockAreaColor::RED,-450s*sqrt(3)/2,-450/2);
+        BlockPlace* daiza8  = new BlockPlace(8,BlockAreaColor::RED,-900*sqrt(3),-450);
+        BlockPlace* daiza9  = new BlockPlace(9,BlockAreaColor::BLUE,-450*sqrt(3),-450);
+        BlockPlace* daiza10 = new BlockPlace(10,BlockAreaColor::GREEN,-450(5*sqrt(3)-1)/2,-450(sqrt(3)+1)/2);
+        BlockPlace* daiza11 = new BlockPlace(11,BlockAreaColor::GREEN,-450(sqrt(3)-1)/2,-450(sqrt(3)+1)/2);
+        BlockPlace* daiza12 = new BlockPlace(12,BlockAreaColor::BLUE,-450(4*sqrt(3)+1)/2,-450(sqrt(3)+2)/2);
+        BlockPlace* daiza13 = new BlockPlace(13,BlockAreaColor::YELLOW,-450(4*sqrt(3)-1)/2,-450(sqrt(3)+2)/2);
+        BlockPlace* daiza14 = new BlockPlace(14,BlockAreaColor::RED,-450(2*sqrt(3)+1)/2,-450(sqrt(3)+2)/2);
+        BlockPlace* daiza15 = new BlockPlace(15,BlockAreaColor::YELLOW,-450(2*sqrt(3)-1)/2,-450(sqrt(3)+2)/2);
 
-        daiza1.leftAngle0_     = daiza2;
-        daiza1.rightAngle30_   = daiza5;
-        daiza1.rightAngle75_   = daiza10;
+        daiza1.leftAngle0_    = daiza2;
+        daiza1.rightAngle30_  = daiza5;
+        daiza1.rightAngle75_  = daiza10;
 
-        daiza2.leftAngle180_   = daiza1;
-        daiza2.leftAngle0_     = daiza3;
-        daiza2 .rightAngle30_  = daiza6;
-        daiza2 .rightAngle150_ = daiza5;
+        daiza2.leftAngle180_  = daiza1;
+        daiza2.leftAngle0_    = daiza3;
+        daiza2.rightAngle30_  = daiza6;
+        daiza2.rightAngle150_ = daiza5;
 
         daiza3.leftAngle180_   = daiza2;
         daiza3.leftAngle0_     = daiza4;
@@ -86,18 +87,18 @@ namespace strategy{
         daiza15.leftAngle120_  = daiza9;
         daiza15.leftAngle30_   = daiza11;
 
-        }
+    }
 
-        void Map::addBlockPlace(BlockPlace blockPlace){
+    void Map::addBlockPlace(BlockPlace blockPlace){
         places_.emplace_back(blockPlace);
-        }
+    }
 
-        void Map::addLine(BlockAreaLine line){
+    void Map::addLine(BlockAreaLine line){
         lines_.emplace_back(line);
-        }
+    }
 
-        BlockPlace Map::getBlockPlaceAt(int blockPlaceId){
+    BlockPlace Map::getBlockPlaceAt(int blockPlaceId){
         return places_[blockPlaceId];
-        }
+    }
 
-        }
+}
