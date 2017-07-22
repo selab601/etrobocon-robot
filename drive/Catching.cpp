@@ -14,7 +14,7 @@ namespace drive{
         distanceMeasurement_ = new DistanceMeasurement();
     }
 
-    bool Catching::run(int digree){
+    bool Catching::run(int currentMm, int dstMm, int digree){
         int absDigree = abs(digree);//曲がる角度(正の値)
 
         startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう

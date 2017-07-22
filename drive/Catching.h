@@ -49,10 +49,12 @@ namespace drive
             /**
              * @brief 台座上走行
              *
+             * @param currentMm 現在のラインの長さ[mm]
+             * @param dstMm 目的地ラインの長さ[mm]
              * @param digree カーブする角度(-180<=digree<=180)
              * @return true:走行終了,false:走行中
              */
-            bool run(int digree);
+            bool run(int currentMm, int dstMm, int digree);
 
             /**
              * @brief 現在運んでるブロックを台座の上に置く
