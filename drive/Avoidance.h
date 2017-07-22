@@ -1,8 +1,10 @@
 #ifndef _AVOIDANCE_
 #define _AVOIDANCE_
 
+#include "device/ColorSensor.h"
 #include "measurement/BodyAngleMeasurement.h"
 #include "PolarRunning.h"
+#include "LineTrace.h"
 #include "ev3api.h"
 
 namespace drive{
@@ -13,19 +15,24 @@ namespace drive{
     private:
         enum class RunToState{
             INIT,
-            POLAR,
+            AVOID,
+            AVOID_TURN,
+            TO_DST,
             TURN,
             FINISHED
         };
 
         // runTo
         RunToState runToState_ = RunToState::INIT;
-        int startDegree_;
-        int polarMm_;
-        int polarDegree_;
+        int startDegree_ = 0;
         PolarRunning polar_;
         measurement::BodyAngleMeasurement* bodyAngle_;
+        device::ColorSensor* colorSensor_;
+        LineTrace* lineTrace_;
         bool hasBlock_ = false;
+
+        int edgeCount_ = 0;
+        bool atWhite_ = true;
 
     public:
 
@@ -55,6 +62,11 @@ namespace drive{
          *
          */
         void hasBlock(bool hasBlock);
+
+    private:
+        bool isWhite();
+        void incrementEdge();
+        void decrementEdge();
 
     };
 

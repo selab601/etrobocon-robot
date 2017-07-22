@@ -28,14 +28,19 @@ namespace drive{
         PidController distanceController_;
 
         device::Motors* motors_;
-        State state_;
-        State xyState_;
+        State state_ = State::INIT;
+        State xyState_ = State::INIT;
         bool isCenterPivot_ = true;
+        bool isInitialize_ = true;   // 最初に初期化するか(前回からの位置を指定したい場合false)
         int traceMaxPwm_;
         int maxPwm_ = 40;
         int isTurnInit_ = true;
 
         int currentDegree10_ = 0;
+        int turnSpeed_ = 0;
+
+        int targetMm_ = 0;
+        int targetDegree10_ = 0;
 
 
     public:
@@ -46,13 +51,13 @@ namespace drive{
          * @brief 指定した極座標に移動する
          *
          * @param distance 行きたい場所までの距離[mm]
-         * @param polarDegree 行きたい場所までの角度[Degree]
-         * @param turnDegree 最初に旋回する時の角度[Degree] (省略可)
+         * @param polarDegree10 行きたい場所までの角度の10倍[0.1Degree]
+         * @param turnDegree10 最初に旋回する時の角度の10倍[0.1Degree] (省略可)
          *
          * @return 終了したらtrue
          */
-        bool runTo(int distance, int polarDegree, int turnDegree);
-        bool runTo(int distance, int polarDegree);
+        bool runTo(int distance, int polarDegree10, int turnDegree10);
+        bool runTo(int distance, int polarDegree10);
 
         /**
          * @brief 指定した座標に移動する
@@ -87,46 +92,60 @@ namespace drive{
         /**
          * @brief 車体角度を監視して超信地旋回・信地旋回を行う
          *
-         * @param degree 回転する角度[Degree]
+         * @param degree10 回転する角度の10倍[0.1Degree]
          * @param speed 回転する早さ(PWM)
          *
          * @return 終了したらtrue
          */
-        bool bodyTurn(int degree, int speed);
+        bool bodyTurn(int degree10, int speed);
 
         /**
          * @brief 極座標の角度を監視して信地旋回を行う
          *
-         * @param degree 回転する角度[Degree]
+         * @param degree10 回転する角度の10倍0.1[Degree]
          * @param speed 回転する早さ(PWM)
          *
          * @return 終了したらtrue
          */
-        bool polarTurn(int degree, int speed);
+        bool polarTurn(int degree10, int speed);
+
+        void initialize(bool isInitialize = true);
+
+        /**
+         * @brief 残りの距離を返す
+         *
+         * @return  残りの距離[mm]
+         */
+        int getLeftMm();
+
+        /**
+         * @brief 残りの角度の10倍を返す
+         *
+         * @return 残りの角度の10倍[0.1Deg]
+         */
+        int getLeftDeg10();
 
     private:
 
         /**
          * @brief 極座標の角度が指定した角度になるように移動する
-         * @param degree 極座標の角度[degree]
          */
-        void traceDegree(int degree);
+        void traceDegree();
 
         /**
          * @brief 超信地旋回・信地旋回を行う
          * @details 監視する角度はcurrentDegree10_ に指定する
-         * @param degree 回転する角度[Degree]
+         * @param degree10 回転する角度の10倍[0.1Degree]
          * @param speed 回転する早さ(PWM)
          *
          * @return 終了したらtrue
          */
-        bool turn(int degree, int speed);
+        bool turn(int degree10, int speed);
         /**
          * @brief PID制御で早さを計算する
          *
-         * @param distance 極座標の距離[mm]
          */
-        void calculateMaxPwm(int distance);
+        void calculateMaxPwm();
     };
 
 }
