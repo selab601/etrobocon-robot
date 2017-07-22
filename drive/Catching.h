@@ -19,6 +19,7 @@ namespace drive
             //走行状態
             enum class Phase
             {
+                INIT,            //目的地を計算しておく
                 START_LINE_TRACE,//色検知までライントレース
                 STRAIGHT,        //直進走行(角度が大きい場合)
                 CURVE,           //台座の上でカーブ走行
@@ -51,10 +52,10 @@ namespace drive
              *
              * @param currentMm 現在のラインの長さ[mm]
              * @param dstMm 目的地ラインの長さ[mm]
-             * @param digree カーブする角度(-180<=digree<=180)
+             * @param degree カーブする角度(-180<=degree<=180)
              * @return true:走行終了,false:走行中
              */
-            bool run(int currentMm, int dstMm, int digree);
+            bool run(int currentMm, int dstMm, int degree);
 
             /**
              * @brief 現在運んでるブロックを台座の上に置く

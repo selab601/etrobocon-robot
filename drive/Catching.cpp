@@ -14,16 +14,16 @@ namespace drive{
         distanceMeasurement_ = new DistanceMeasurement();
     }
 
-    bool Catching::run(int currentMm, int dstMm, int digree){
-        int absDigree = abs(digree);//曲がる角度(正の値)
+    bool Catching::run(int currentMm, int dstMm, int degree){
+        int absDegree = abs(degree);//曲がる角度(正の値)
 
         startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
 
-        if(absDigree == 180){//180度の場合エッジによって適切な方向へ旋回するように
-            if(startEdge_ == LineTraceEdge::LEFT && digree > 0){
-                digree = -180;
-            }else if(startEdge_ == LineTraceEdge::RIGHT && digree < 0){
-                digree = 180;
+        if(absDegree == 180){//180度の場合エッジによって適切な方向へ旋回するように
+            if(startEdge_ == LineTraceEdge::LEFT && degree > 0){
+                degree = -180;
+            }else if(startEdge_ == LineTraceEdge::RIGHT && degree < 0){
+                degree = 180;
             }
         }
 
@@ -45,13 +45,13 @@ namespace drive{
 
         //直進走行
         case Phase::STRAIGHT:
-            if(absDigree <= 90){//0,30,45,60,90の場合
-                if(absDigree == 0){//0度の場合は多めに直進
+            if(absDegree <= 90){//0,30,45,60,90の場合
+                if(absDegree == 0){//0度の場合は多めに直進
                     distanceMeasurement_->start(110);
-                }else if(absDigree == 90){//90度の場合は少なめに直進
+                }else if(absDegree == 90){//90度の場合は少なめに直進
                     distanceMeasurement_->start(30);
-                }else if( ( (digree == -30 || digree == -45)  && startEdge_ == LineTraceEdge::LEFT)
-                       || ( (digree == 30  || digree == 45)  && startEdge_ == LineTraceEdge::RIGHT)){//外側で30,45角度の場合
+                }else if( ( (degree == -30 || degree == -45)  && startEdge_ == LineTraceEdge::LEFT)
+                       || ( (degree == 30  || degree == 45)  && startEdge_ == LineTraceEdge::RIGHT)){//外側で30,45角度の場合
                     distanceMeasurement_->start(60);
                 }else{
                     distanceMeasurement_->start(40);
@@ -68,8 +68,8 @@ namespace drive{
 
         //カーブ走行（信地旋回）
         case Phase::CURVE:
-            if(absDigree >= 120){
-                if(absDigree == 180){
+            if(absDegree >= 120){
+                if(absDegree == 180){
                     correction_ = -1 * int(CATCHING_PWM/2);//180度の場合はより旋回する
                 }else{
                     correction_ = -1 * int(CATCHING_PWM/3);
@@ -77,30 +77,30 @@ namespace drive{
             }else{
                 correction_ = 0;
             }
-            if(digree == 0){//このフェーズをスキップ
+            if(degree == 0){//このフェーズをスキップ
                 phase_ = Phase::END_LINE_TRACE;
-            }else if(digree < 0){
+            }else if(degree < 0){
                 curveRunning_->run(correction_,CATCHING_PWM);//右に新地旋回
             }else{
                 curveRunning_->run(CATCHING_PWM,correction_);//左に信地旋回
             }
-            if(abs(bodyAngleMeasurement_->getResult()) >= absDigree){
+            if(abs(bodyAngleMeasurement_->getResult()) >= absDegree){
                 phase_ = Phase::END_LINE_TRACE;
             }
             break;
 
         //カーブ後のライントレース
         case Phase::END_LINE_TRACE:
-            if(absDigree <= 60){//60度より曲がらない場合
+            if(absDegree <= 60){//60度より曲がらない場合
                 endEdge_ = startEdge_;
-            }else if(absDigree <= 105 || absDigree >=150){//60〜105,150〜180度曲がる場合
-                if(digree > 0){//左に曲がる場合は右エッジ
+            }else if(absDegree <= 105 || absDegree >=150){//60〜105,150〜180度曲がる場合
+                if(degree > 0){//左に曲がる場合は右エッジ
                     endEdge_ = LineTraceEdge::RIGHT;
                 }else{//右に曲がる場合は左エッジ
                     endEdge_ = LineTraceEdge::LEFT;
                 }
-            }else if(absDigree <= 135){//135度以上曲がる場合
-                if(digree > 0){//左に曲がる場合は左エッジ
+            }else if(absDegree <= 135){//135度以上曲がる場合
+                if(degree > 0){//左に曲がる場合は左エッジ
                     endEdge_ = LineTraceEdge::LEFT;
                 }else{//右に曲がる場合は右エッジ
                     endEdge_ = LineTraceEdge::RIGHT;
