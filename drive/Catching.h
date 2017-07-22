@@ -54,6 +54,14 @@ namespace drive
              */
             bool run(int digree);
 
+            /**
+             * @brief 現在運んでるブロックを台座の上に置く
+             *
+             * @param lineDistance 走行しているラインの距離
+             * @return true:設置完了,false:設置中
+             */
+            bool putBlock(int lineDistance = 450);
+
         private:
 
     };

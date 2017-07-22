@@ -119,5 +119,28 @@ namespace drive{
         return false;
     }
 
+    bool Catching::putBlock(int lineDistance){
+        static bool isDaizaDetected = false;
+        if(!isDaizaDetected){
+            startEdge_ = lineTrace_->getEdge();
+            lineTrace_->setPid();
+            lineTrace_->setEdge(startEdge_);
+            lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
+            if(colorDetection_->isFourColors()){
+                isDaizaDetected = true;
+            }
+        }else{
+            //円の半径5cm,カラーセンサの中心からタイヤの中心までの距離4cm,色検知中に走ってしまう距離1.5cm(pwm20)
+            distanceMeasurement_->start(int(lineDistance/2)-50-40+15);//ラインの中心にタイヤの中心がくるように
+            straightRunning_->run(-CATCHING_LINETRACE_PWM);
+            if(distanceMeasurement_->getResult()){
+                isDaizaDetected =false;//フラグを戻しておく
+                distanceMeasurement_->reset();
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }
