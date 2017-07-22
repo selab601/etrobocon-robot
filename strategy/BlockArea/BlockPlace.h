@@ -1,7 +1,10 @@
 #ifndef BLOCKPLACE_H_
 #define BLOCKPLACE_H_
 
+#include <math.h>
+#include <cstdlib>
 #include <vector>
+#include <unordered_map>
 
 namespace strategy{
 
@@ -17,28 +20,13 @@ namespace strategy{
         //ToDo 必要な情報変えてく
         int id_;//置き場のID
         BlockAreaColor color_;//台座の色
-        int x_;//x座標 mm
-        int y_;//y座標 mm
 
     public:
-            //ブロック並べに使用する色の種類
-        BlockPlace* leftAngle0_    = NULL;
-        BlockPlace* leftAngle30_   = NULL;
-        BlockPlace* leftAngle60_   = NULL;
-        BlockPlace* leftAngle75_   = NULL;
-        BlockPlace* leftAngle105_  = NULL;
-        BlockPlace* leftAngle120_  = NULL;
-        BlockPlace* leftAngle150_  = NULL;
-        BlockPlace* leftAngle180_  = NULL;
-
-        BlockPlace* rightAngle30_  = NULL;
-        BlockPlace* rightAngle60_  = NULL;
-        BlockPlace* rightAngle75_  = NULL;
-        BlockPlace* rightAngle105_ = NULL;
-        BlockPlace* rightAngle120_ = NULL;
-        BlockPlace* rightAngle150_ = NULL;
-
-
+        int x_;//x座標 mm
+        int y_;//y座標 mm
+        //繋がってる台座があればhashで管理
+        //(next[30] = daiza4 30度の方向に方向に４番の台座が繋がってる)
+        std::unordered_map<int,BlockPlace*> next;
 
         //コンストラクタ
         BlockPlace(int id,BlockAreaColor color,int x,int y);
@@ -46,7 +34,26 @@ namespace strategy{
         //void setId(int id);///?
         //void setcolor(int color);//?
 
+        /**
+         * @brief 今いる置き場から次の置き場までの距離を計算する
+         * @param  blockPlace 次に進む台座
+         * @return            ラインの長さ
+         */
+        int getDistance(BlockPlace* blockPlace);
 
+        /**
+         * @brief 目的地までの角度を計算する
+         * @param  blockPlace 目的地の置き場
+         * @return            現在地から目的地の置き場までの角度
+         */
+        int getDigree(BlockPlace* blockPlace);
+
+        /**
+         * @brief 次に進む置き場を返す
+         * @param  angle 目的地への角度
+         * @return       目的地に近づける台座
+         */
+        BlockPlace* getNextPlace(int angle);
     };
 
 }

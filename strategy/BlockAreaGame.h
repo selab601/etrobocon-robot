@@ -17,7 +17,7 @@ namespace strategy{
 
 		public:
 			//コンストラクタ
-            //ここでMapの内容を定義する
+            //ここでMapの定義はMap.hで
 			BlockAreaGame();
 
 			bool capture();

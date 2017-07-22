@@ -2,11 +2,7 @@
 
 namespace strategy{
   BlockAreaGame::BlockAreaGame(){
-    map_ = new Map(
-
-
-
-        );
+    map_ = new Map();
 
 
 
