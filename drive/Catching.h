@@ -3,6 +3,7 @@
 
 #include "../measurement/BodyAngleMeasurement.h"
 #include "../measurement/DistanceMeasurement.h"
+#include "../measurement/SelfPositionEstimation.h"
 #include "./CurveRunning.h"
 #include "./LineTrace.h"
 #include "./StraightRunning.h"
@@ -26,10 +27,11 @@ namespace drive
                 END_LINE_TRACE   //カーブ後のライントレース
             };
 
-            Phase phase_ = Phase::START_LINE_TRACE;
+            Phase phase_ = Phase::INIT;
 
             measurement::BodyAngleMeasurement* bodyAngleMeasurement_;
             measurement::DistanceMeasurement* distanceMeasurement_;
+            measurement::SelfPositionEstimation* selfPositionEstimation_;
 
             detection::ColorDetection* colorDetection_;
 
@@ -41,6 +43,7 @@ namespace drive
             LineTraceEdge endEdge_;
 
             int correction_;
+            int dstDegree_;//現在地から目的地までの角度
 
 
         public:

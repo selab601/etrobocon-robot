@@ -12,9 +12,14 @@ namespace drive{
         colorDetection_ = new ColorDetection();
         bodyAngleMeasurement_ = new BodyAngleMeasurement();
         distanceMeasurement_ = new DistanceMeasurement();
+        selfPositionEstimation_ = SelfPositionEstimation::getInstance();
     }
 
     bool Catching::run(int currentMm, int dstMm, int degree){
+        static int x;//目的地の座標
+        static int y;
+        static double rad;
+
         int absDegree = abs(degree);//曲がる角度(正の値)
 
         startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
@@ -28,6 +33,20 @@ namespace drive{
         }
 
         switch(phase_){
+
+        case Phase::INIT:
+            selfPositionEstimation_->startMeasure();
+            if(absDegree == 180){
+                x = selfPositionEstimation_->getLocationX();
+            }else{
+                rad  = degree * M_PI / 180;
+                x = dstMm * cos(rad) / 2;
+                y = dstMm * sin(rad) / 2;
+                x += currentMm /2 ;
+                dstDegree_ = atan2(y,x) * 1800 / M_PI;
+            }
+            phase_ = Phase::START_LINE_TRACE;
+            break;
 
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
@@ -106,13 +125,18 @@ namespace drive{
                     endEdge_ = LineTraceEdge::RIGHT;
                 }
             }
-            distanceMeasurement_->start(100);
             lineTrace_->setEdge(endEdge_);
             lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
-            if(distanceMeasurement_->getResult()){
-                phase_ = Phase::START_LINE_TRACE;
-                distanceMeasurement_->reset();
-                return true;
+            if(absDegree == 180){
+                if( x >= selfPositionEstimation_->getLocationX()){
+                    phase_ = Phase::INIT;
+                    return true;
+                }
+            }else{
+                if(abs(dstDegree_) <= abs(selfPositionEstimation_->getPolarTheta10())){
+                    phase_ = Phase::INIT;
+                    return true;
+                }
             }
             break;
         }
