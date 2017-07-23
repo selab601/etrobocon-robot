@@ -37,7 +37,7 @@ namespace strategy{
         /**
          * @brief 今いる置き場から次の置き場までの距離を計算する
          * @param  blockPlace 次に進む台座
-         * @return            ラインの長さ
+         * @return            ラインの長さ(距離の長さ)
          */
         int getDistance(BlockPlace* blockPlace);
 

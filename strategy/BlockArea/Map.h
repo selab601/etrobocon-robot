@@ -3,6 +3,7 @@
 
 #include "BlockPlace.h"
 #include "BlockAreaLine.h"
+#include "BlockCode.h"
 #include <vector>
 #include <unordered_map>
 
@@ -12,16 +13,48 @@ namespace strategy{
 
     class Map{
     private:
-        std::vector<int> route_;//ルート
-        std::unordered_map<std::string,int> blocks_;//ブロックの現在地
+        strategy::BlockCode* blockCode_; //ブロックの初期位置
+        std::unordered_map<int,BlockPlace*> blockPlaces_;//置き場の集合
+
+        std::vector<BlockPlace*> routeBlockPlace_;//ルート(台座の羅列)
+        std::vector<int> routeDigree_;//ルート(角度の羅列)
+        std::vector<int> routeHasBlock_;//ブロック持ってるかどうかのフラグ0:持ってない 1:持ってる
+
+
+        std::unordered_map<std::string,BlockPlace*> blockIs_;//ブロックの現在地
+        std::unordered_map<std::string,BlockPlace*> blockDestination_;//ブロックの目的地
+
+        BlockPlace* currentLocation_;        //EV3の現在地
+
+        //運べるブロック
+        bool flag_red;
+        bool flag_blue;
+        bool flag_green;
+        bool flag_yellow;
+        bool flag_black;
+
+        /**
+         * @brief どのブロックが運べるか確認する
+         * @return  全部運べなくなったらfalse
+         *          なんか運べたらtrue
+         */
+        bool setBlockOrder();
+
+        /**
+         * @brief ５つのブロックを運び終えたか確認
+         * @return true:終了
+         *         false:まだ終わってない
+         */
+        bool checkFinish();
+
 
     public:
 
         //コンストラクタ
         Map();
 
-        /*ルート作る*/
-
+        //ルート作る(5角形に何にもない時用)
+        void makeRoute1();
     };
 
 }
