@@ -46,7 +46,7 @@ namespace strategy{
          * @param  blockPlace 目的地の置き場
          * @return            現在地から目的地の置き場までの角度
          */
-        int getDigree(BlockPlace* blockPlace);
+        int getDegree(BlockPlace* blockPlace);
 
         /**
          * @brief 次に進む置き場を返す

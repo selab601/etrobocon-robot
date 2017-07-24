@@ -103,7 +103,7 @@ namespace strategy{
         //EV3の初期位置は10番置き場
         ev3Is_ = blockPlaces_[10];
         routeBlockPlace_.push_back(ev3Is_);
-        routeDigree_.push_back(-120);
+        routeDegree_.push_back(-120);
         routeHasBlock_.push_back(0);
     }
 
@@ -155,28 +155,29 @@ namespace strategy{
         //目的地に運び済みのブロックは運ばない
         for(auto itr = blockIs_.begin(); itr !=blockIs_.end();++itr ){
                 if(minDistance > ev3Is_->getDistance(itr->second) && itr->second != blockDestination_[itr->first]){
-                    nextCarryBlockIs_ = itr->second;
-                    nextCarryDestination_ = blockDestination_[itr->first];
+                    minDistance = ev3Is_->getDistance(itr->second);         //一番近いブロックの距離に更新
+                    nextCarryBlockIs_ = itr->second;                        //次に運ぶブロックの場所
+                    nextCarryDestination_ = blockDestination_[itr->first];  //次に運ぶブロックの目的地
                 }
         }
 
     }
 
     void Map::makePath(BlockPlace* goal){
-        int goalDigree = ev3Is_->getDigree(goal);//ev3の現在地(ブロック置き場)からゴール(ブロック置き場)までの角度
+        int goalDegree = ev3Is_->getDegree(goal);//ev3の現在地(ブロック置き場)からゴール(ブロック置き場)までの角度
 
-        BlockPlace* candidatePlace = ev3Is_->getNextPlace(goalDigree);//次の置き場候補
+        BlockPlace* candidatePlace = ev3Is_->getNextPlace(goalDegree);//次の置き場候補
         while(candidatePlace != goal){
             routeBlockPlace_.push_back(candidatePlace);//pathに追加
             ev3Is_ = candidatePlace;//位置更新
-            candidatePlace = ev3Is_->getNextPlace(goalDigree);//次の置き場を聞く
+            candidatePlace = ev3Is_->getNextPlace(goalDegree);//次の置き場を聞く
         }
         routeBlockPlace_.push_back(candidatePlace);//pathに追加 ゴール
     }
 
 
     std::vector<BlockPlace*> Map::getrouteBlockPlace(){return routeBlockPlace_;}
-    std::vector<int> Map::getRouteDigree(){return routeDigree_;}
+    std::vector<int> Map::getRouteDegree(){return routeDegree_;}
     std::vector<int> Map::getRouteHasBlock_(){return routeHasBlock_;}
 
 

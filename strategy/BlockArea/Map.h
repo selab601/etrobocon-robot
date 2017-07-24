@@ -17,7 +17,7 @@ namespace strategy{
         std::unordered_map<int,BlockPlace*> blockPlaces_;//置き場の集合
 
         std::vector<BlockPlace*> routeBlockPlace_;//ルート(台座の羅列)
-        std::vector<int> routeDigree_;//ルート(角度の羅列)
+        std::vector<int> routeDegree_;//ルート(角度の羅列)
         std::vector<int> routeHasBlock_;//ブロック持ってるかどうかのフラグ0:持ってない 1:持ってる
 
 
@@ -67,7 +67,7 @@ namespace strategy{
 
 
         std::vector<BlockPlace*> getrouteBlockPlace();
-        std::vector<int> getRouteDigree();
+        std::vector<int> getRouteDegree();
         std::vector<int> getRouteHasBlock_();
     };
 

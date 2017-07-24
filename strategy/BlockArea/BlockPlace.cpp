@@ -14,7 +14,7 @@ namespace strategy{
         return sqrt(pow(dx,2)+pow(dy,2));
     }
 
-    int BlockPlace::getDigree(BlockPlace* blockPlace){
+    int BlockPlace::getDegree(BlockPlace* blockPlace){
         int dx = blockPlace->x_ - this->x_;
         int dy = blockPlace->y_ - this->y_;
         return atan2(dy,dx)*180/M_PI;
