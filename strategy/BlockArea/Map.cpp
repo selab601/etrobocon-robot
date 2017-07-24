@@ -128,11 +128,13 @@ namespace strategy{
             selectCarryBlock();
 
             //ブロックの位置まで移動()
-            makePath(nextCarryBlockIs_);
+            makePath(blockIs_[nextCarryBlockColor_]);
 
             //目的地まで移動()
-            makePath(nextCarryDestination_);
+            makePath(blockDestination_[nextCarryBlockColor_]);
 
+            //運んだのでブロックの位置を更新
+            blockIs_[nextCarryBlockColor_] =  blockDestination_[nextCarryBlockColor_];
 
         }
     }
@@ -153,13 +155,13 @@ namespace strategy{
         //マシンの位置から一番近いブロックを１つ選んで
         //ブロックの位置と目的地を確認
         //目的地に運び済みのブロックは運ばない
-        for(auto itr = blockIs_.begin(); itr !=blockIs_.end();++itr ){
+        for(auto itr = blockIs_.begin(); itr != blockIs_.end();++itr ){
                 if(minDistance > ev3Is_->getDistance(itr->second) && itr->second != blockDestination_[itr->first]){
-                    minDistance = ev3Is_->getDistance(itr->second);         //一番近いブロックの距離に更新
-                    nextCarryBlockIs_ = itr->second;                        //次に運ぶブロックの場所
-                    nextCarryDestination_ = blockDestination_[itr->first];  //次に運ぶブロックの目的地
+                    minDistance           = ev3Is_->getDistance(itr->second);  //一番近いブロックの距離に更新
+                    nextCarryBlockColor_  = itr->first; //次に運ぶブロックの色
                 }
         }
+
 
     }
 
@@ -173,6 +175,7 @@ namespace strategy{
             candidatePlace = ev3Is_->getNextPlace(goalDegree);//次の置き場を聞く
         }
         routeBlockPlace_.push_back(candidatePlace);//pathに追加 ゴール
+        ev3Is_ = candidatePlace;//位置更新
     }
 
 

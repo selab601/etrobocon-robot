@@ -4,6 +4,7 @@
 #include "BlockPlace.h"
 #include "BlockAreaLine.h"
 #include "BlockCode.h"
+#include <string>
 #include <vector>
 #include <unordered_map>
 
@@ -26,8 +27,9 @@ namespace strategy{
 
         BlockPlace* ev3Is_;        //EV3の現在地
 
-        BlockPlace* nextCarryBlockIs_ = NULL; //次に運ぶブロックの場所
-        BlockPlace* nextCarryDestination_ = NULL; //次に運ぶブロックの目的地
+        // BlockPlace* nextCarryBlockIs_ = NULL; //次に運ぶブロックの場所
+        // BlockPlace* nextCarryDestination_ = NULL; //次に運ぶブロックの目的地
+        std::string nextCarryBlockColor_;//次に運ぶブロックの色
 
         //運べるブロック
         bool flag_red;
