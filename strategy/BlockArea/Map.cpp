@@ -156,7 +156,7 @@ namespace strategy{
         //ブロックの位置と目的地を確認
         //目的地に運び済みのブロックは運ばない
         for(auto itr = blockIs_.begin(); itr != blockIs_.end();++itr ){
-                if(minDistance > ev3Is_->getDistance(itr->second) && itr->second != blockDestination_[itr->first]){
+                if( (minDistance > ev3Is_->getDistance(itr->second) ) && (itr->second != blockDestination_[itr->first]) ){
                     minDistance           = ev3Is_->getDistance(itr->second);  //一番近いブロックの距離に更新
                     nextCarryBlockColor_  = itr->first; //次に運ぶブロックの色
                 }
