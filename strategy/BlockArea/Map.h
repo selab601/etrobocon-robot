@@ -24,7 +24,10 @@ namespace strategy{
         std::unordered_map<std::string,BlockPlace*> blockIs_;//ブロックの現在地
         std::unordered_map<std::string,BlockPlace*> blockDestination_;//ブロックの目的地
 
-        BlockPlace* currentLocation_;        //EV3の現在地
+        BlockPlace* ev3Is_;        //EV3の現在地
+
+        BlockPlace* nextCarryBlockIs_ = NULL; //次に運ぶブロックの場所
+        BlockPlace* nextCarryDestination_ = NULL; //次に運ぶブロックの目的地
 
         //運べるブロック
         bool flag_red;
@@ -34,19 +37,25 @@ namespace strategy{
         bool flag_black;
 
         /**
-         * @brief どのブロックが運べるか確認する
-         * @return  全部運べなくなったらfalse
-         *          なんか運べたらtrue
-         */
-        bool setBlockOrder();
-
-        /**
          * @brief ５つのブロックを運び終えたか確認
          * @return true:終了
          *         false:まだ終わってない
          */
         bool checkFinish();
 
+        /**
+         * @brief makePath 現在のブロック置き場からgoal位置のブロック置き場までの1本のpathを計算して、routeBlockPlace_に継ぎ足してく
+         * @param goal  移動先のブロック置き場
+         */
+        void makePath(BlockPlace* goal);
+
+        /**
+         * @brief 次に運ぶブロックを選択して、値をsetする
+         *        nextCarryBlockIs 次運ぶブロックの場所
+         *        nextCarryDestination 次運ぶブロックの目的地
+         * @return 次に運ぶブロックの場所
+         */
+        void selectCarryBlock();
 
     public:
 
@@ -55,6 +64,11 @@ namespace strategy{
 
         //ルート作る(5角形に何にもない時用)
         void makeRoute1();
+
+
+        std::vector<BlockPlace*> getrouteBlockPlace();
+        std::vector<int> getRouteDigree();
+        std::vector<int> getRouteHasBlock_();
     };
 
 }

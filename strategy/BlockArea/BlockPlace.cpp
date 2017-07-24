@@ -31,4 +31,5 @@ namespace strategy{
         return diff[min];
     }
 
+    int BlockPlace::getId(){return id_;}
 }

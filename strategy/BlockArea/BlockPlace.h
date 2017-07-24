@@ -54,6 +54,8 @@ namespace strategy{
          * @return       目的地に近づける台座
          */
         BlockPlace* getNextPlace(int angle);
+
+        int getId();
     };
 
 }

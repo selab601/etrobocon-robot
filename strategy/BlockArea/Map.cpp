@@ -100,31 +100,20 @@ namespace strategy{
 
 
 
-        //EV3の初期位置は8番置き場
-        currentLocation_ = blockPlaces_[10];
-        routeBlockPlace_.push_back(currentLocation_);
+        //EV3の初期位置は10番置き場
+        ev3Is_ = blockPlaces_[10];
+        routeBlockPlace_.push_back(ev3Is_);
         routeDigree_.push_back(-120);
         routeHasBlock_.push_back(0);
     }
 
-    bool Map::setBlockOrder(){
-        return true;
-        //
-
-
-        // //全部運べなくなったらfalse
-        // //なんか運べたらtrue
-        // if(flag_red    == false &&
-        //    flag_blue   == false &&
-        //    flag_green  == false &&
-        //    flag_yellow == false &&
-        //    flag_black  == false){return false;}
-        // else{return true;}
-    }
 
 
 
     void Map::makeRoute1(){
+
+        //とりあえず通るブロック置き場の羅列ができるようにする
+        //getrouteBlockPlace() で確認
 
         //ブロックの目的地設定
         blockDestination_["RED"]    = blockPlaces_[14];
@@ -133,63 +122,19 @@ namespace strategy{
         blockDestination_["YELLOW"] = blockPlaces_[13];
         blockDestination_["BLACK"]  = blockPlaces_[8];
 
-
-        BlockPlace* nextCarryBlockIs = NULL; //次に運ぶブロックの場所
-        BlockPlace* nextCarryDestination = NULL; //次に運ぶブロックの目的地？
-        int minDistance = 100000;//10000は適当　　次に運ぶブロックまでの距離
-
-        int nextDigree;//目的地までの角度
-
-
         while(!checkFinish()){
 
-        //マシンの位置から一番近いブロックを１つ選んで
-        //ブロックの位置と目的地を確認
-        //目的地に運び済みのブロックは運ばない
-        for(auto itr = blockIs_.begin(); itr !=blockIs_.end();++itr ){
-                if(minDistance > currentLocation_->getDistance(itr->second) && itr->second != blockDestination_[itr->first]){
+            //次に運ぶブロックを選択
+            selectCarryBlock();
 
-                    nextCarryBlockIs = itr->second;
-                    nextCarryDestination = blockDestination_[itr->first];
-                }
+            //ブロックの位置まで移動()
+            makePath(nextCarryBlockIs_);
+
+            //目的地まで移動()
+            makePath(nextCarryDestination_);
+
+
         }
-
-        //ブロックの位置まで移動()
-        //ブロックの位置までの角度を求める
-        nextDigree = currentLocation_->getDigree(nextCarryBlockIs);
-
-        //ブロックの場所に到達するまで
-        while(currentLocation_->getNextPlace(nextDigree) != nextCarryBlockIs){
-            routeBlockPlace_.push_back(currentLocation_->getNextPlace(nextDigree));//ルートとして登録
-            routeDigree_.push_back(currentLocation_->getDigree(currentLocation_->getNextPlace(nextDigree)) );
-            routeHasBlock_.push_back(0);
-            currentLocation_ = currentLocation_->getNextPlace(nextDigree);//現在地を更新
-        }
-        //到達したらそこを登録
-        routeBlockPlace_.push_back(currentLocation_->getNextPlace(nextDigree));//ルートとして登録
-        routeDigree_.push_back(currentLocation_->getDigree(currentLocation_->getNextPlace(nextDigree)) );
-        routeHasBlock_.push_back(1);
-        currentLocation_ = currentLocation_->getNextPlace(nextDigree);//現在地を更新
-
-
-       //目的地まで移動()
-       //目的地までの角度
-        nextDigree = currentLocation_->getDigree(nextCarryDestination);
-
-        //ブロックの目的地に到達するまで
-        while(currentLocation_->getNextPlace(nextDigree) != nextCarryDestination){
-            routeBlockPlace_.push_back(currentLocation_->getNextPlace(nextDigree));//ルートとして登録
-            routeDigree_.push_back(currentLocation_->getDigree(currentLocation_->getNextPlace(nextDigree)) );
-            routeHasBlock_.push_back(1);
-            currentLocation_ = currentLocation_->getNextPlace(nextDigree);//現在地を更新
-        }
-        //到達したらそこを登録
-        routeBlockPlace_.push_back(currentLocation_->getNextPlace(nextDigree));//ルートとして登録
-        routeDigree_.push_back(currentLocation_->getDigree(currentLocation_->getNextPlace(nextDigree)) );
-        routeHasBlock_.push_back(0);
-        currentLocation_ = currentLocation_->getNextPlace(nextDigree);//現在地を更新
-
-    }
     }
 
 
@@ -202,8 +147,37 @@ namespace strategy{
         return true;
     }
 
+    void Map::selectCarryBlock(){
+
+        int minDistance = 100000;//10000は適当　　次に運ぶブロックまでの距離
+        //マシンの位置から一番近いブロックを１つ選んで
+        //ブロックの位置と目的地を確認
+        //目的地に運び済みのブロックは運ばない
+        for(auto itr = blockIs_.begin(); itr !=blockIs_.end();++itr ){
+                if(minDistance > ev3Is_->getDistance(itr->second) && itr->second != blockDestination_[itr->first]){
+                    nextCarryBlockIs_ = itr->second;
+                    nextCarryDestination_ = blockDestination_[itr->first];
+                }
+        }
+
+    }
+
+    void Map::makePath(BlockPlace* goal){
+        int goalDigree = ev3Is_->getDigree(goal);//ev3の現在地(ブロック置き場)からゴール(ブロック置き場)までの角度
+
+        BlockPlace* candidatePlace = ev3Is_->getNextPlace(goalDigree);//次の置き場候補
+        while(candidatePlace != goal){
+            routeBlockPlace_.push_back(candidatePlace);//pathに追加
+            ev3Is_ = candidatePlace;//位置更新
+            candidatePlace = ev3Is_->getNextPlace(goalDigree);//次の置き場を聞く
+        }
+        routeBlockPlace_.push_back(candidatePlace);//pathに追加 ゴール
+    }
 
 
+    std::vector<BlockPlace*> Map::getrouteBlockPlace(){return routeBlockPlace_;}
+    std::vector<int> Map::getRouteDigree(){return routeDigree_;}
+    std::vector<int> Map::getRouteHasBlock_(){return routeHasBlock_;}
 
 
 }
