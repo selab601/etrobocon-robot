@@ -1,6 +1,6 @@
 #include "Map.h"
 #include "math.h"
-
+//#include "../../communication/BtManager.h" //デバック用
 namespace strategy{
 
     Map::Map(){
@@ -105,6 +105,12 @@ namespace strategy{
         routeBlockPlace_.push_back(ev3Is_);
         routeDegree_.push_back(-120);
         routeHasBlock_.push_back(0);
+
+        //デバック用
+        // char message[50];
+        // sprintf(message, "%d",blockIs_["RED"]->getId());
+        // communication::BtManager::getInstance()->setMessage(message);
+        // communication::BtManager::getInstance()->send();
     }
 
 
@@ -166,12 +172,13 @@ namespace strategy{
     }
 
     void Map::makePath(BlockPlace* goal){
-        int goalDegree = ev3Is_->getDegree(goal);//ev3の現在地(ブロック置き場)からゴール(ブロック置き場)までの角度
+        int goalDegree;//ev3の現在地(ブロック置き場)からゴール(ブロック置き場)までの角度
+        BlockPlace* candidatePlace = ev3Is_;//次の置き場候補
 
-        BlockPlace* candidatePlace = ev3Is_->getNextPlace(goalDegree);//次の置き場候補
-        while(candidatePlace != goal){
+        while(candidatePlace->getId() != goal->getId()){
             routeBlockPlace_.push_back(candidatePlace);//pathに追加
             ev3Is_ = candidatePlace;//位置更新
+            goalDegree = ev3Is_->getDegree(goal);//角度更新
             candidatePlace = ev3Is_->getNextPlace(goalDegree);//次の置き場を聞く
         }
         routeBlockPlace_.push_back(candidatePlace);//pathに追加 ゴール
