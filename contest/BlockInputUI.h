@@ -26,7 +26,7 @@ namespace contest_pkg{
             bool input();
 
             /**
-             * @brief 入力されtコードを取得する
+             * @brief 入力されたコードを取得する
              *
              * @return 入力されたコードの値
              */
