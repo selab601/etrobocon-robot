@@ -144,7 +144,7 @@ namespace strategy{
 
     bool Map::checkFinish(){
         for(auto itr = blockIs_.begin(); itr !=blockIs_.end();++itr ){
-             if(itr->second != blockDestination_[itr->first]){return false;}
+             if(blockIs_[itr->first] != blockDestination_[itr->first]){return false;}
         }
         return true;
     }
@@ -156,8 +156,8 @@ namespace strategy{
         //ブロックの位置と目的地を確認
         //目的地に運び済みのブロックは運ばない
         for(auto itr = blockIs_.begin(); itr != blockIs_.end();++itr ){
-                if( (minDistance > ev3Is_->getDistance(itr->second) ) && (itr->second != blockDestination_[itr->first]) ){
-                    minDistance           = ev3Is_->getDistance(itr->second);  //一番近いブロックの距離に更新
+                if( (minDistance > ev3Is_->getDistance(blockIs_[itr->first]) ) && (blockIs_[itr->first] != blockDestination_[itr->first]) ){
+                    minDistance           = ev3Is_->getDistance(blockIs_[itr->first]);  //一番近いブロックの距離に更新
                     nextCarryBlockColor_  = itr->first; //次に運ぶブロックの色
                 }
         }

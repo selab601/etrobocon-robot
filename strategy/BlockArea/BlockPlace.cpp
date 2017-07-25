@@ -25,7 +25,7 @@ namespace strategy{
         int min = 180;
 
         for(auto itr = next.begin();itr != next.end();++itr){
-            diff[abs(angle-itr->first)] = itr->second;
+            diff[abs(angle-itr->first)] = next[itr->first];
             if(min > abs(angle-itr->first) ){min = abs(angle-itr->first); }
         }
         return diff[min];
