@@ -2,7 +2,6 @@
 #define MAP_H_
 
 #include "BlockPlace.h"
-#include "BlockAreaLine.h"
 #include "BlockCode.h"
 #include <string>
 #include <vector>
