@@ -55,14 +55,14 @@ namespace drive{
 
         //最初の旋回
         case Phase::PIVOT_FIRST:
-             if(pivotTurn_->turn(degree / 2,10)){
+            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){
                 phase_ = Phase::STRAIGHT;
              }
              break;
 
         //二回目の旋回
         case Phase::PIVOT_SECOND:
-            if(pivotTurn_->turn(degree / 2,10)){
+            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){
                 phase_ = Phase::CALC_DISTANCE;
             }
             break;
@@ -84,19 +84,19 @@ namespace drive{
         case Phase::CALC_DISTANCE:
             //目的ラインの半分　ー　円の半径　進む
             runningDistance_ = dstMm/2 - DAIZA_DIAMETER/2;
-            if(startEdge_ == LineTraceEdge::RIGHT){//右エッジスタートの場合
-                if(degree > 0){//左カーブの場合
+            if(degree < 0){//左カーブの場合
+                if(startEdge_ == LineTraceEdge::RIGHT){
                     runningDistance_ += 10;
-                }else{//右カーブの場合
+                }else{
                     runningDistance_ -= 10;
                 }
-            }else{//左エッジスタートの場合
-                if(degree > 0){//左カーブの場合
+            }else if(degree > 0){//右カーブの場合
+                if(startEdge_ == LineTraceEdge::RIGHT){
                     runningDistance_ -= 10;
-                }else{//右カーブの場合
+                }else{
                     runningDistance_ += 10;
                 }
-            }
+            }//degree == 0の場合は変動なし
             phase_ = Phase::END_LINE_TRACE;
             break;
 
