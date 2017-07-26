@@ -31,6 +31,7 @@ namespace drive
                 PIVOT_FIRST,
                 STRAIGHT,        //直進走行(角度が大きい場合)
                 PIVOT_SECOND,
+                CALC_DISTANCE,
                 CURVE,           //台座の上でカーブ走行
                 END_LINE_TRACE   //カーブ後のライントレース
             };
@@ -53,7 +54,7 @@ namespace drive
 
             int correction_;
             int dstDegree_;//現在地から目的地までの角度
-
+            int runningDistance_;//カーブ後に走る距離
 
         public:
             //コンストラクタ

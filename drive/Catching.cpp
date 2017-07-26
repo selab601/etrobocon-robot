@@ -63,7 +63,7 @@ namespace drive{
 
         //タイヤの中心を円周上に
         case Phase::STRAIGHT_LITTLE:
-            distanceMeasurement_->start(WHEEL_TO_COLOR_SENSOR);
+            distanceMeasurement_->start(WHEEL_TO_COLOR_SENSOR-COLOR_DETECTION_DISTANCE);
             straightRunning_->run(10);
             if(distanceMeasurement_->getResult()){
                 phase_ = Phase::PIVOT_FIRST;
@@ -81,7 +81,7 @@ namespace drive{
         //二回目の旋回
         case Phase::PIVOT_SECOND:
             if(pivotTurn_->turn(degree / 2,10)){
-                phase_ = Phase::END_LINE_TRACE;
+                phase_ = Phase::CALC_DISTANCE;
             }
             break;
 
@@ -140,6 +140,27 @@ namespace drive{
             }
             break;
 
+
+        case Phase::CALC_DISTANCE:
+            //目的ラインの半分　ー　円の半径　＋　タイヤとカラーセンサの距離　進む
+            runningDistance_ = dstMm/2 - DAIZA_DIAMETER/2 + WHEEL_TO_COLOR_SENSOR;
+            if(startEdge_ == LineTraceEdge::RIGHT){//右エッジスタートの場合
+                if(degree > 0){//左カーブの場合
+                    runningDistance_ += 10;
+                }else{//右カーブの場合
+                    runningDistance_ -= 10;
+                }
+            }else{//左エッジスタートの場合
+                if(degree > 0){//左カーブの場合
+                    runningDistance_ -= 10;
+                }else{//右カーブの場合
+                    runningDistance_ += 10;
+                }
+            }
+            phase_ = Phase::END_LINE_TRACE;
+            break;
+
+
         //カーブ後のライントレース
         case Phase::END_LINE_TRACE:
             // if(absDegree <= 60){//60度より曲がらない場合
@@ -171,12 +192,7 @@ namespace drive{
             //     }
             // }
 
-            //目的ラインの半分　ー　円の半径　＋　タイヤとカラーセンサの距離　進む
-            // int runningDistance = dstMm/2 - DAIZA_DIAMETER/2 + WHEEL_TO_COLOR_SENSOR;
-            // if(startEdge_ == LineTraceEdge::RIGHT){
-
-            // }
-            distanceMeasurement_->start((dstMm / 2) - (DAIZA_DIAMETER / 2) + WHEEL_TO_COLOR_SENSOR);
+            distanceMeasurement_->start(runningDistance_);
             endEdge_ = startEdge_;
             lineTrace_->setEdge(endEdge_);
             lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
