@@ -17,17 +17,7 @@ namespace drive{
     }
 
     bool Catching::run(int dstMm, int degree){
-        int absDegree = abs(degree);//曲がる角度(正の値)
-
         startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
-
-        if(absDegree == 180){//180度の場合エッジによって適切な方向へ旋回するように
-            if(startEdge_ == LineTraceEdge::LEFT && degree > 0){
-                degree = -180;
-            }else if(startEdge_ == LineTraceEdge::RIGHT && degree < 0){
-                degree = 180;
-            }
-        }
 
         switch(phase_){
 
@@ -38,7 +28,6 @@ namespace drive{
             lineTrace_->setEdge(startEdge_);//セットしないとLineTrace._edgeが更新されない
             lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
             if(colorDetection_->isFourColors()){
-                bodyAngleMeasurement_->setBaseAngle();//検知した時の角度保存
                 phase_ = Phase::STRAIGHT_LITTLE;
             }
             break;
@@ -48,8 +37,13 @@ namespace drive{
             distanceMeasurement_->start(WHEEL_TO_COLOR_SENSOR - COLOR_DETECTION_DISTANCE);
             straightRunning_->run(10);
             if(distanceMeasurement_->getResult()){
-                phase_ = Phase::PIVOT_FIRST;
                 distanceMeasurement_->reset();
+                if(abs(degree) == 180){
+                    bodyAngleMeasurement_->setBaseAngle();//角度保存
+                    phase_ = Phase::TURN_90;
+                }else{
+                    phase_ = Phase::PIVOT_FIRST;
+                }
             }
             break;
 
@@ -67,7 +61,32 @@ namespace drive{
             }
             break;
 
+        //180度専用処理 90度右に信地旋回
+        case Phase::TURN_90:
+            curveRunning_->run(0,CATCHING_PWM);
+            if(bodyAngleMeasurement_->getResult() <= -90){
+                bodyAngleMeasurement_->setBaseAngle();
+                phase_ = Phase::TURN_270;
+            }
+            break;
 
+        //180度専用処理 270度左に信地旋回
+        case Phase::TURN_270:
+            curveRunning_->run(CATCHING_PWM,0);
+            if(bodyAngleMeasurement_->getResult() >= 270){
+                phase_ = Phase::STRAIGHT_TREAD_DISTANCE;
+            }
+            break;
+
+        //180度専用処理 走行体のトレッドの距離進む
+        case Phase::STRAIGHT_TREAD_DISTANCE:
+            distanceMeasurement_->start(TREAD);
+            straightRunning_->run(CATCHING_PWM);
+            if(distanceMeasurement_->getResult()){
+                distanceMeasurement_->reset();
+                phase_ = Phase::END_LINE_TRACE;
+            }
+            break;
 
 
         //直進走行

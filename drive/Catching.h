@@ -31,7 +31,10 @@ namespace drive
                 STRAIGHT,        //直進走行(角度が大きい場合)
                 PIVOT_SECOND,
                 CALC_DISTANCE,
-                END_LINE_TRACE   //カーブ後のライントレース
+                END_LINE_TRACE,   //カーブ後のライントレース
+                TURN_90,
+                TURN_270,
+                STRAIGHT_TREAD_DISTANCE,
             };
 
             Phase phase_ = Phase::START_LINE_TRACE;
