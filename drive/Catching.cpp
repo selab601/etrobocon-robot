@@ -34,11 +34,12 @@ namespace drive{
 
         //タイヤの中心を円周上に
         case Phase::STRAIGHT_LITTLE:
+            //タイヤの中心からカラーセンサまでの距離から色検知中に走行した距離を引いた距離走行する
             distanceMeasurement_->start(WHEEL_TO_COLOR_SENSOR - COLOR_DETECTION_DISTANCE);
             straightRunning_->run(10);
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
-                if(abs(degree) == 180){
+                if(abs(degree) == 180){//後ろに持ち帰る場合は別フェーズへ
                     bodyAngleMeasurement_->setBaseAngle();//角度保存
                     phase_ = Phase::TURN_90;
                 }else{
@@ -49,14 +50,14 @@ namespace drive{
 
         //最初の旋回
         case Phase::PIVOT_FIRST:
-            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){
+            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){//0度の場合は旋回しない
                 phase_ = Phase::STRAIGHT;
              }
              break;
 
         //二回目の旋回
         case Phase::PIVOT_SECOND:
-            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){
+            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){//0度の場合は旋回しない
                 phase_ = Phase::CALC_DISTANCE;
             }
             break;
@@ -80,7 +81,7 @@ namespace drive{
 
         //180度専用処理 走行体のトレッドの距離進む
         case Phase::STRAIGHT_TREAD_DISTANCE:
-            distanceMeasurement_->start(TREAD);
+            distanceMeasurement_->start(TREAD);//measurement::SelfPositionMeasurement::TREAD
             straightRunning_->run(CATCHING_PWM);
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
@@ -91,6 +92,7 @@ namespace drive{
 
         //直進走行
         case Phase::STRAIGHT:
+            //円周角の定理から距離を算出
             distanceMeasurement_->start(cos((degree / 2) * M_PI / 180) * DAIZA_DIAMETER);
             straightRunning_->run(CATCHING_PWM);
             if(distanceMeasurement_->getResult()){
@@ -104,15 +106,15 @@ namespace drive{
             //目的ラインの半分　ー　円の半径　進む
             runningDistance_ = dstMm/2 - DAIZA_DIAMETER/2;
             if(degree < 0){//左カーブの場合
-                if(startEdge_ == LineTraceEdge::RIGHT){
+                if(startEdge_ == LineTraceEdge::RIGHT){//右エッジの場合
                     runningDistance_ += 10;
-                }else{
+                }else{//左エッジの場合
                     runningDistance_ -= 10;
                 }
             }else if(degree > 0){//右カーブの場合
-                if(startEdge_ == LineTraceEdge::RIGHT){
+                if(startEdge_ == LineTraceEdge::RIGHT){//右エッジの場合
                     runningDistance_ -= 10;
-                }else{
+                }else{//左エッジの場合
                     runningDistance_ += 10;
                 }
             }//degree == 0の場合は変動なし
@@ -122,7 +124,8 @@ namespace drive{
 
         //カーブ後のライントレース
         case Phase::END_LINE_TRACE:
-            distanceMeasurement_->start(runningDistance_);
+            //ブロック取得後のラインの半分の距離にタイヤの中心がくるように
+            distanceMeasurement_->start(runningDistance_);//エッジの応じた距離走行
             endEdge_ = startEdge_;
             lineTrace_->setEdge(endEdge_);
             lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
@@ -136,9 +139,10 @@ namespace drive{
         return false;
     }
 
+    //ブロックを置いてバックする
     bool Catching::putBlock(int lineDistance){
         static bool isDaizaDetected = false;
-        if(!isDaizaDetected){
+        if(!isDaizaDetected){//台座を検知するまでライントレース
             startEdge_ = lineTrace_->getEdge();
             lineTrace_->setPid();
             lineTrace_->setEdge(startEdge_);
@@ -146,8 +150,8 @@ namespace drive{
             if(colorDetection_->isFourColors()){
                 isDaizaDetected = true;
             }
-        }else{
-            distanceMeasurement_->start(int(lineDistance / 2) - DAIZA_DIAMETER / 2 - WHEEL_TO_COLOR_SENSOR + COLOR_DETECTION_DISTANCE);//ラインの中心にタイヤの中心がくるように
+        }else{//直前に走行していたラインの中心にタイヤの中心がくるようにバック走行
+            distanceMeasurement_->start(int(lineDistance / 2) - DAIZA_DIAMETER / 2 - WHEEL_TO_COLOR_SENSOR + COLOR_DETECTION_DISTANCE);
             straightRunning_->run(-CATCHING_LINETRACE_PWM);
             if(distanceMeasurement_->getResult()){
                 isDaizaDetected =false;//フラグを戻しておく

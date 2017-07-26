@@ -25,16 +25,16 @@ namespace drive
             //走行状態
             enum class Phase
             {
-                START_LINE_TRACE,//色検知までライントレース
-                STRAIGHT_LITTLE,
-                PIVOT_FIRST,
-                STRAIGHT,        //直進走行(角度が大きい場合)
-                PIVOT_SECOND,
-                CALC_DISTANCE,
-                END_LINE_TRACE,   //カーブ後のライントレース
-                TURN_90,
-                TURN_270,
-                STRAIGHT_TREAD_DISTANCE,
+                START_LINE_TRACE,       //色検知までライントレース
+                STRAIGHT_LITTLE,        //タイヤの中心を円周上まで移動させる
+                PIVOT_FIRST,            //引数の半分の角度旋回する（１回目）
+                STRAIGHT,               //直進走行(角度が大きい場合)
+                PIVOT_SECOND,           //引数の半分の角度旋回する（２回目）
+                CALC_DISTANCE,          //エッジに応じた距離を計算する
+                END_LINE_TRACE,         //カーブ後のライントレース
+                TURN_90,                //９０度カーブ
+                TURN_270,               //２７０度カーブ
+                STRAIGHT_TREAD_DISTANCE,//走行体のトレッドの距離走行
             };
 
             Phase phase_ = Phase::START_LINE_TRACE;
@@ -53,7 +53,6 @@ namespace drive
             LineTraceEdge startEdge_;
             LineTraceEdge endEdge_;
 
-            int correction_;
             int dstDegree_;//現在地から目的地までの角度
             int runningDistance_;//カーブ後に走る距離
 
