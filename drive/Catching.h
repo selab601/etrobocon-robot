@@ -7,11 +7,16 @@
 #include "./CurveRunning.h"
 #include "./LineTrace.h"
 #include "./StraightRunning.h"
+#include "./PivotTurn.h"
 #include "../detection/ColorDetection.h"
 #include <stdlib.h>
 
-#define CATCHING_PWM 30
+#define CATCHING_PWM 20
 #define CATCHING_LINETRACE_PWM 20
+#define DAIZA_DIAMETER 100//円の直径[mm]
+#define WHEEL_TO_COLOR_SENSOR 45//タイヤの中心からカラーセンサの中心までの距離[mm]
+#define COLOR_DETECTION_DISTANCE 15//色検知中に動いてしまう距離(pwm20)[mm]
+#define LINE_THICKNESS 20//ラインの太さ[mm]
 
 namespace drive
 {
@@ -22,7 +27,10 @@ namespace drive
             {
                 INIT,            //目的地を計算しておく
                 START_LINE_TRACE,//色検知までライントレース
+                STRAIGHT_LITTLE,
+                PIVOT_FIRST,
                 STRAIGHT,        //直進走行(角度が大きい場合)
+                PIVOT_SECOND,
                 CURVE,           //台座の上でカーブ走行
                 END_LINE_TRACE   //カーブ後のライントレース
             };
@@ -38,6 +46,7 @@ namespace drive
             CurveRunning* curveRunning_;
             LineTrace* lineTrace_;
             StraightRunning* straightRunning_;
+            PivotTurn* pivotTurn_;
 
             LineTraceEdge startEdge_;
             LineTraceEdge endEdge_;
