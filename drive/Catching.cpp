@@ -82,8 +82,8 @@ namespace drive{
 
 
         case Phase::CALC_DISTANCE:
-            //目的ラインの半分　ー　円の半径　＋　タイヤとカラーセンサの距離　進む
-            runningDistance_ = dstMm/2 - DAIZA_DIAMETER/2 + WHEEL_TO_COLOR_SENSOR;
+            //目的ラインの半分　ー　円の半径　進む
+            runningDistance_ = dstMm/2 - DAIZA_DIAMETER/2;
             if(startEdge_ == LineTraceEdge::RIGHT){//右エッジスタートの場合
                 if(degree > 0){//左カーブの場合
                     runningDistance_ += 10;
