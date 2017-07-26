@@ -17,10 +17,6 @@ namespace drive{
     }
 
     bool Catching::run(int currentMm, int dstMm, int degree){
-        static int x;//目的地の座標
-        static int y;
-        static double rad;
-
         int absDegree = abs(degree);//曲がる角度(正の値)
 
         startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
@@ -34,20 +30,6 @@ namespace drive{
         }
 
         switch(phase_){
-
-        case Phase::INIT:
-            selfPositionEstimation_->startMeasure();
-            if(absDegree == 180){
-                x = selfPositionEstimation_->getLocationX();
-            }else{
-                rad  = degree * M_PI / 180;
-                x = dstMm * cos(rad) / 2;
-                y = dstMm * sin(rad) / 2;
-                x += currentMm /2 ;
-                dstDegree_ = atan2(y,x) * 1800 / M_PI;
-            }
-            phase_ = Phase::START_LINE_TRACE;
-            break;
 
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
@@ -90,53 +72,11 @@ namespace drive{
 
         //直進走行
         case Phase::STRAIGHT:
-            // if(absDegree <= 90){//0,30,45,60,90の場合
-            //     if(absDegree == 0){//0度の場合は多めに直進
-            //         distanceMeasurement_->start(110);
-            //     }else if(absDegree == 90){//90度の場合は少なめに直進
-            //         distanceMeasurement_->start(30);
-            //     }else if( ( (degree == -30 || degree == -45)  && startEdge_ == LineTraceEdge::LEFT)
-            //            || ( (degree == 30  || degree == 45)  && startEdge_ == LineTraceEdge::RIGHT)){//外側で30,45角度の場合
-            //         distanceMeasurement_->start(60);
-            //     }else{
-            //         distanceMeasurement_->start(40);
-            //     }
-            //     straightRunning_->run(CATCHING_PWM);
-            // }else{//スキップ
-            //     phase_ = Phase::CURVE;
-            // }
-            // if(distanceMeasurement_->getResult()){
-            //     distanceMeasurement_->reset();
-            //     phase_ = Phase::CURVE;
-            // }
             distanceMeasurement_->start(cos((degree / 2) * M_PI / 180) * DAIZA_DIAMETER);
             straightRunning_->run(CATCHING_PWM);
             if(distanceMeasurement_->getResult()){
                 phase_ = Phase::PIVOT_SECOND;
                 distanceMeasurement_->reset();
-            }
-            break;
-
-        //カーブ走行（信地旋回）
-        case Phase::CURVE:
-            if(absDegree >= 120){
-                if(absDegree == 180){
-                    correction_ = -1 * int(CATCHING_PWM/2);//180度の場合はより旋回する
-                }else{
-                    correction_ = -1 * int(CATCHING_PWM/3);
-                }
-            }else{
-                correction_ = 0;
-            }
-            if(degree == 0){//このフェーズをスキップ
-                phase_ = Phase::END_LINE_TRACE;
-            }else if(degree < 0){
-                curveRunning_->run(correction_,CATCHING_PWM);//右に新地旋回
-            }else{
-                curveRunning_->run(CATCHING_PWM,correction_);//左に信地旋回
-            }
-            if(abs(bodyAngleMeasurement_->getResult()) >= absDegree){
-                phase_ = Phase::END_LINE_TRACE;
             }
             break;
 
@@ -163,42 +103,13 @@ namespace drive{
 
         //カーブ後のライントレース
         case Phase::END_LINE_TRACE:
-            // if(absDegree <= 60){//60度より曲がらない場合
-            //     endEdge_ = startEdge_;
-            // }else if(absDegree <= 105 || absDegree >=150){//60〜105,150〜180度曲がる場合
-            //     if(degree > 0){//左に曲がる場合は右エッジ
-            //         endEdge_ = LineTraceEdge::RIGHT;
-            //     }else{//右に曲がる場合は左エッジ
-            //         endEdge_ = LineTraceEdge::LEFT;
-            //     }
-            // }else if(absDegree <= 135){//135度以上曲がる場合
-            //     if(degree > 0){//左に曲がる場合は左エッジ
-            //         endEdge_ = LineTraceEdge::LEFT;
-            //     }else{//右に曲がる場合は右エッジ
-            //         endEdge_ = LineTraceEdge::RIGHT;
-            //     }
-            // }
-            // lineTrace_->setEdge(endEdge_);
-            // lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
-            // if(absDegree == 180){
-            //     if( x >= selfPositionEstimation_->getLocationX()){
-            //         phase_ = Phase::INIT;
-            //         return true;
-            //     }
-            // }else{
-            //     if(abs(dstDegree_) <= abs(selfPositionEstimation_->getPolarTheta10())){
-            //         phase_ = Phase::INIT;
-            //         return true;
-            //     }
-            // }
-
             distanceMeasurement_->start(runningDistance_);
             endEdge_ = startEdge_;
             lineTrace_->setEdge(endEdge_);
             lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
-                phase_ = Phase::INIT;
+                phase_ = Phase::START_LINE_TRACE;
                 return true;
             }
             break;

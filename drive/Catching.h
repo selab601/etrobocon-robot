@@ -25,18 +25,16 @@ namespace drive
             //走行状態
             enum class Phase
             {
-                INIT,            //目的地を計算しておく
                 START_LINE_TRACE,//色検知までライントレース
                 STRAIGHT_LITTLE,
                 PIVOT_FIRST,
                 STRAIGHT,        //直進走行(角度が大きい場合)
                 PIVOT_SECOND,
                 CALC_DISTANCE,
-                CURVE,           //台座の上でカーブ走行
                 END_LINE_TRACE   //カーブ後のライントレース
             };
 
-            Phase phase_ = Phase::INIT;
+            Phase phase_ = Phase::START_LINE_TRACE;
 
             measurement::BodyAngleMeasurement* bodyAngleMeasurement_;
             measurement::DistanceMeasurement* distanceMeasurement_;
