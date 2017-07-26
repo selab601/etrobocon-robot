@@ -45,7 +45,7 @@ namespace drive{
 
         //タイヤの中心を円周上に
         case Phase::STRAIGHT_LITTLE:
-            distanceMeasurement_->start(WHEEL_TO_COLOR_SENSOR-COLOR_DETECTION_DISTANCE);
+            distanceMeasurement_->start(WHEEL_TO_COLOR_SENSOR - COLOR_DETECTION_DISTANCE);
             straightRunning_->run(10);
             if(distanceMeasurement_->getResult()){
                 phase_ = Phase::PIVOT_FIRST;
@@ -128,8 +128,7 @@ namespace drive{
                 isDaizaDetected = true;
             }
         }else{
-            //円の半径5cm,カラーセンサの中心からタイヤの中心までの距離4cm,色検知中に走ってしまう距離1.5cm(pwm20)
-            distanceMeasurement_->start(int(lineDistance/2)-50-40+15);//ラインの中心にタイヤの中心がくるように
+            distanceMeasurement_->start(int(lineDistance / 2) - DAIZA_DIAMETER / 2 - WHEEL_TO_COLOR_SENSOR + COLOR_DETECTION_DISTANCE);//ラインの中心にタイヤの中心がくるように
             straightRunning_->run(-CATCHING_LINETRACE_PWM);
             if(distanceMeasurement_->getResult()){
                 isDaizaDetected =false;//フラグを戻しておく
