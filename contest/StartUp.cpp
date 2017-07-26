@@ -1,8 +1,4 @@
 #include "StartUp.h"
-#include "stdio.h"
-#include "../measurement/DistanceMeasurement.h"
-#include "../device/Motors.h"
-#include <Clock.h>
 
 #define COURSES_NUM 	2 // コースの数
 
@@ -28,8 +24,49 @@ namespace contest_pkg{
         return instance_;
     }
 
+    bool StartUp::start(){
+        switch (state_){
+            case State::INIT:
+                display_->clearDisplay();
+                state_ = State::SELECT_COURCE;
+                break;
+            case State::SELECT_COURCE:
+                if (selectCourse()){
+                    if ('L' == getSelectedCourse()){
+                        state_ = State::INPUT_BLOCK_CODE;
+                    }
+                    else{
+                        state_ = State::CALIBRATE;
+                    }
+                }
+                break;
+
+            case State::INPUT_BLOCK_CODE:
+                if (BlockInputUI::getInstance()->input()){
+                    state_ = State::CALIBRATE;
+                }
+                break;
+
+            case State::CALIBRATE:
+                if (calibrateAutomatically()){
+                    display_->clearDisplay();
+                    state_ = State::ACCEPT_START;
+                }
+                break;
+
+            case State::ACCEPT_START:
+                if (acceptStart()){
+                    state_ = State::FINISHED;
+                }
+                break;
+
+            case State::FINISHED:
+                return true;
+        }
+        return false;
+    }
     bool StartUp::isFinished(){
-        return selectCourse() && calibrateAutomatically();
+        return start();
     }
 
     char StartUp::getSelectedCourse(){
@@ -85,7 +122,7 @@ namespace contest_pkg{
                 break;
         }
 
-        char courseNames[COURSES_NUM][30] = {"   Course L                ","   Course R                "};
+        char courseNames[COURSES_NUM][15] = {"   Course L","   Course R"};
         courseNames[index][1] = '>';
 
         //コースが選択されていないとき
@@ -100,22 +137,26 @@ namespace contest_pkg{
 
     //スタートを受け入れる
     bool StartUp::acceptStart(){
-        static bool started = false;
-        if ( !started && touch_->isClicked()){
-            started = true;
-
-            display_-> updateDisplay ("                            ", 0);
-            display_-> updateDisplay ("                            ", 1);
-            display_-> updateDisplay ("                            ", 2);
+        static bool accepted = false;
+        if (!accepted && touch_->isClicked()){
+            display_->clearDisplay();
             display_-> updateDisplay ("         S T A R T          ", 3);
+            accepted = true;
         }
-        else if ( !started ){
-            display_-> updateDisplay ("                            ", 0);
-            display_-> updateDisplay ("                            ", 1);
-            display_-> updateDisplay ("                            ", 2);
+        else if (!accepted){
             display_-> updateDisplay ("         R E A D Y          ", 3);
+            sprintf(message_, "   Selected Cource :%c       ", getSelectedCourse());
+            display_->updateDisplay(message_, 5);
+            display_->updateDisplay("Color W,B,C",
+                    brightnessInfo_->getWhiteCalibratedValue(),
+                    brightnessInfo_->getBlackCalibratedValue(),
+                    brightnessInfo_->getBrightness(), 6);
+            if ('L' == getSelectedCourse()){
+                display_->updateDisplay("Block Code",
+                        BlockInputUI::getInstance()->getCode(), 7);
+            }
         }
-        return started;
+        return accepted;
     }
 
     bool StartUp::calibrateAutomatically(){
@@ -182,12 +223,11 @@ namespace contest_pkg{
                     Shippo::getInstance()->furifuri();
                     display_-> updateDisplay("  CALIBRATION FINISHED  ", 2);
 
-                    char message[30];
-                    sprintf( message, "Color (W,B),C: (%d, %d), %d ",
+                    display_->updateDisplay("Color W,B,C",
                             brightnessInfo_->getWhiteCalibratedValue(),
                             brightnessInfo_->getBlackCalibratedValue(),
-                            brightnessInfo_->getBrightness() );
-                    display_-> updateDisplay(message, 4);
+                            brightnessInfo_->getBrightness(), 4);
+
                     if (touch_->isClicked()){
                         autoCalibrationState_ = AutoCalibrationState::STOP_FURIFURI;
                     display_-> updateDisplay("                           ", 2);
