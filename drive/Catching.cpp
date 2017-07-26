@@ -16,7 +16,7 @@ namespace drive{
         selfPositionEstimation_ = SelfPositionEstimation::getInstance();
     }
 
-    bool Catching::run(int currentMm, int dstMm, int degree){
+    bool Catching::run(int dstMm, int degree){
         int absDegree = abs(degree);//曲がる角度(正の値)
 
         startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
