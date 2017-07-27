@@ -37,8 +37,8 @@ namespace strategy{
         std::vector<MovePattern> routeMovePattern_;//ルートを通る時の行動パターン 上のMovePatternが入る
 
 
-        drive::Catching catching_;
-        drive::Avoidance avoidance_;
+        drive::Catching* catching_;
+        drive::Avoidance* avoidance_;
 
         //運べるブロック  使ってない
         bool flag_red;

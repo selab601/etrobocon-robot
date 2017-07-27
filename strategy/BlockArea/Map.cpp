@@ -1,6 +1,9 @@
 #include "Map.h"
 #include "math.h"
 //#include "../../communication/BtManager.h" //デバック用
+
+using namespace drive;
+
 namespace strategy{
 
     Map::Map(){
@@ -105,8 +108,8 @@ namespace strategy{
         //routeBlockPlace_.push_back(ev3Is_);
         ev3HasBlock_ = false;
 
-        catching_ = new catching();
-        avoidance_ = new avoidance();
+        catching_ = new Catching();
+        avoidance_ = new Avoidance();
 
         //デバック用
         // char message[50];
@@ -204,42 +207,23 @@ namespace strategy{
 
 
     bool Map::runPath(){
-
-        // ＠避けるやつ
-        // 今いるラインの長さ        前の台座    今の台座　
-        // 曲がった後のラインの長さ　            今の台座 次の台座
-        // 曲がる角度            　            今の台座 次の台座
-        // ブロック持ってるかどうか
-
-        // ＠よけないやつ(ブロック持つやつ)
-        // 曲がる角度
-        // 曲がった後の長さ
-
-        //ブロックの位置まで移動
-        //目的地まで移動
-        //ブロックを置く動作
-
-        //通る台座番号
-        //1->2->3->4->5->6->7
-        //0:避けない 1:避ける 2:置く
-        //
-        //ブロック持ってる 0:1
-        //目的地　0:1
-        //
-        //0->0->1->0->1->1->1
-
+        static int patternNumber = 0;
         //pathを順に見てく
-        for(auto itr = routeBlockPlace_.begin(); itr != routeBlockPlace_.end();++itr ){
+        // for(int i = 0; i < routeMovePattern_.size() ; i++ ){
+        if(patternNumber < routeMovePattern_.size()){
 
-            swich(routeMovePattern_[itr->first]){
-                case CATCH:
-                            catching_->
+            //その置き場での行動パターンを確認
+            switch(routeMovePattern_[patternNumber]){
+                case MovePattern::CATCH:
+                            if(catching_->run(routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]), routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]))){
+                                patternNumber++;
+                            }
                             break;
-                case AVOID:
-                            avoidance_->
+                case MovePattern::AVOID:
+                            //avoidance_->runTo(int currentMm, int dstMMm, int degree);
                             break;
-                case PUT:
-                            catching_->putBlock();
+                case MovePattern::PUT:
+                            //catching_->putBlock();
                             break;
 
             }
@@ -247,6 +231,7 @@ namespace strategy{
 
 
         }
+        // avoidance_->hasBlock(bool hasBlock);
 
         return true;
     }
