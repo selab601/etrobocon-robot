@@ -104,18 +104,18 @@ namespace drive{
 
         case Phase::CALC_DISTANCE:
             //目的ラインの半分　ー　円の半径　進む
-            runningDistance_ = dstMm/2 - DAIZA_DIAMETER/2;
+            runningDistance_ = dstMm / 2 - DAIZA_DIAMETER / 2;
             if(degree < 0){//左カーブの場合
                 if(startEdge_ == LineTraceEdge::RIGHT){//右エッジの場合
-                    runningDistance_ += 10;
+                    runningDistance_ += LINE_THICKNESS / 2;
                 }else{//左エッジの場合
-                    runningDistance_ -= 10;
+                    runningDistance_ -= LINE_THICKNESS / 2;
                 }
             }else if(degree > 0){//右カーブの場合
                 if(startEdge_ == LineTraceEdge::RIGHT){//右エッジの場合
-                    runningDistance_ -= 10;
+                    runningDistance_ -= LINE_THICKNESS / 2;
                 }else{//左エッジの場合
-                    runningDistance_ += 10;
+                    runningDistance_ += LINE_THICKNESS / 2;
                 }
             }//degree == 0の場合は変動なし
             phase_ = Phase::END_LINE_TRACE;
