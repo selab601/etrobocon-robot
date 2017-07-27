@@ -9,109 +9,140 @@ namespace drive{
         lineTrace_ = LineTrace::getInstance();
         straightRunning_ = new StraightRunning();
         curveRunning_ = new CurveRunning();
+        pivotTurn_ = new PivotTurn();
         colorDetection_ = new ColorDetection();
         bodyAngleMeasurement_ = new BodyAngleMeasurement();
         distanceMeasurement_ = new DistanceMeasurement();
+        selfPositionEstimation_ = SelfPositionEstimation::getInstance();
     }
 
-    bool Catching::run(int digree){
-        int absDigree = abs(digree);//曲がる角度(正の値)
+    bool Catching::run(int dstMm, int degree){
 
-        startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
-
-        if(absDigree == 180){//180度の場合エッジによって適切な方向へ旋回するように
-            if(startEdge_ == LineTraceEdge::LEFT && digree > 0){
-                digree = -180;
-            }else if(startEdge_ == LineTraceEdge::RIGHT && digree < 0){
-                digree = 180;
-            }
-        }
 
         switch(phase_){
 
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
+            startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
             lineTrace_->setPid();
             lineTrace_->setTarget();
             lineTrace_->setEdge(startEdge_);//セットしないとLineTrace._edgeが更新されない
             lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
             if(colorDetection_->isFourColors()){
-                bodyAngleMeasurement_->setBaseAngle();//検知した時の角度保存
-                phase_ = Phase::STRAIGHT;
+                phase_ = Phase::STRAIGHT_LITTLE;
             }
             break;
 
+        //タイヤの中心を円周上に
+        case Phase::STRAIGHT_LITTLE:
+            //タイヤの中心からカラーセンサまでの距離から色検知中に走行した距離を引いた距離走行する
+            distanceMeasurement_->start(WHEEL_TO_COLOR_SENSOR - COLOR_DETECTION_DISTANCE);
+            straightRunning_->run(10);
+            if(distanceMeasurement_->getResult()){
+                distanceMeasurement_->reset();
+                if(abs(degree) == 180){//後ろに持ち帰る場合は別フェーズへ
+                    bodyAngleMeasurement_->setBaseAngle();//角度保存
+                    phase_ = Phase::TURN_90;
+                }else{
+                    phase_ = Phase::PIVOT_FIRST;
+                }
+            }
+            break;
+
+        //最初の旋回
+        case Phase::PIVOT_FIRST:
+            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){//0度の場合は旋回しない
+                phase_ = Phase::STRAIGHT;
+             }
+             break;
+
+        //二回目の旋回
+        case Phase::PIVOT_SECOND:
+            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){//0度の場合は旋回しない
+                phase_ = Phase::CALC_DISTANCE;
+            }
+            break;
+
+        //180度専用処理 90度右に信地旋回
+        case Phase::TURN_90:
+            curveRunning_->run(0,CATCHING_PWM);
+            if(bodyAngleMeasurement_->getResult() <= -90){
+                bodyAngleMeasurement_->setBaseAngle();
+                phase_ = Phase::TURN_270;
+            }
+            break;
+
+        //180度専用処理 270度左に信地旋回
+        case Phase::TURN_270:
+            curveRunning_->run(CATCHING_PWM,0);
+            if(bodyAngleMeasurement_->getResult() >= 270){
+                phase_ = Phase::STRAIGHT_TREAD_DISTANCE;
+            }
+            break;
+
+        //180度専用処理 走行体のトレッドの距離進む
+        case Phase::STRAIGHT_TREAD_DISTANCE:
+            distanceMeasurement_->start(TREAD);//measurement::SelfPositionMeasurement::TREAD
+            straightRunning_->run(CATCHING_PWM);
+            if(distanceMeasurement_->getResult()){
+                distanceMeasurement_->reset();
+                phase_ = Phase::CALC_DISTANCE;
+            }
+            break;
 
 
         //直進走行
         case Phase::STRAIGHT:
-            if(absDigree <= 90){//0,30,45,60,90の場合
-                if(absDigree == 0){//0度の場合は多めに直進
-                    distanceMeasurement_->start(110);
-                }else if(absDigree == 90){//90度の場合は少なめに直進
-                    distanceMeasurement_->start(30);
-                }else if( ( (digree == -30 || digree == -45)  && startEdge_ == LineTraceEdge::LEFT)
-                       || ( (digree == 30  || digree == 45)  && startEdge_ == LineTraceEdge::RIGHT)){//外側で30,45角度の場合
-                    distanceMeasurement_->start(60);
-                }else{
-                    distanceMeasurement_->start(40);
-                }
-                straightRunning_->run(CATCHING_PWM);
-            }else{//スキップ
-                phase_ = Phase::CURVE;
-            }
+            //円周角の定理から距離を算出
+            distanceMeasurement_->start(cos((degree / 2) * M_PI / 180) * DAIZA_DIAMETER);
+            straightRunning_->run(CATCHING_PWM);
             if(distanceMeasurement_->getResult()){
+                phase_ = Phase::PIVOT_SECOND;
                 distanceMeasurement_->reset();
-                phase_ = Phase::CURVE;
             }
             break;
 
-        //カーブ走行（信地旋回）
-        case Phase::CURVE:
-            if(absDigree >= 120){
-                if(absDigree == 180){
-                    correction_ = -1 * int(CATCHING_PWM/2);//180度の場合はより旋回する
-                }else{
-                    correction_ = -1 * int(CATCHING_PWM/3);
+
+        case Phase::CALC_DISTANCE:
+            //目的ラインの半分　ー　円の半径　進む
+            runningDistance_ = dstMm / 2 - DAIZA_DIAMETER / 2;
+            if(degree == 0 || abs(degree) == 180){//degree=0,180,-180は補正なし
+                phase_ = Phase::END_LINE_TRACE;
+            }else if(degree < 0){//左カーブの場合
+                if(startEdge_ == LineTraceEdge::RIGHT){//右エッジの場合
+                    runningDistance_ += LINE_THICKNESS / 2;
+                }else{//左エッジの場合
+                    runningDistance_ -= LINE_THICKNESS / 2;
                 }
-            }else{
-                correction_ = 0;
+            }else if(degree > 0){//右カーブの場合
+                if(startEdge_ == LineTraceEdge::RIGHT){//右エッジの場合
+                    runningDistance_ -= LINE_THICKNESS / 2;
+                }else{//左エッジの場合
+                    runningDistance_ += LINE_THICKNESS / 2;
+                }
             }
-            if(digree == 0){//このフェーズをスキップ
-                phase_ = Phase::END_LINE_TRACE;
-            }else if(digree < 0){
-                curveRunning_->run(correction_,CATCHING_PWM);//右に新地旋回
-            }else{
-                curveRunning_->run(CATCHING_PWM,correction_);//左に信地旋回
-            }
-            if(abs(bodyAngleMeasurement_->getResult()) >= absDigree){
-                phase_ = Phase::END_LINE_TRACE;
-            }
+            phase_ = Phase::END_LINE_TRACE;
             break;
+
 
         //カーブ後のライントレース
         case Phase::END_LINE_TRACE:
-            if(absDigree <= 60){//60度より曲がらない場合
+            //ブロック取得後のラインの半分の距離にタイヤの中心がくるように
+            distanceMeasurement_->start(runningDistance_);//エッジの応じた距離走行
+            if(abs(degree) == 180){//エッジが逆転する
+                if(startEdge_ == LineTraceEdge::RIGHT){
+                    endEdge_ = LineTraceEdge::LEFT;
+                }else{
+                    endEdge_ = LineTraceEdge::RIGHT;
+                }
+            }else{
                 endEdge_ = startEdge_;
-            }else if(absDigree <= 105 || absDigree >=150){//60〜105,150〜180度曲がる場合
-                if(digree > 0){//左に曲がる場合は右エッジ
-                    endEdge_ = LineTraceEdge::RIGHT;
-                }else{//右に曲がる場合は左エッジ
-                    endEdge_ = LineTraceEdge::LEFT;
-                }
-            }else if(absDigree <= 135){//135度以上曲がる場合
-                if(digree > 0){//左に曲がる場合は左エッジ
-                    endEdge_ = LineTraceEdge::LEFT;
-                }else{//右に曲がる場合は右エッジ
-                    endEdge_ = LineTraceEdge::RIGHT;
-                }
             }
-            distanceMeasurement_->start(100);
             lineTrace_->setEdge(endEdge_);
             lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
             if(distanceMeasurement_->getResult()){
-                phase_ = Phase::START_LINE_TRACE;
                 distanceMeasurement_->reset();
+                phase_ = Phase::START_LINE_TRACE;
                 return true;
             }
             break;
@@ -119,9 +150,10 @@ namespace drive{
         return false;
     }
 
+    //ブロックを置いてバックする
     bool Catching::putBlock(int lineDistance){
         static bool isDaizaDetected = false;
-        if(!isDaizaDetected){
+        if(!isDaizaDetected){//台座を検知するまでライントレース
             startEdge_ = lineTrace_->getEdge();
             lineTrace_->setPid();
             lineTrace_->setEdge(startEdge_);
@@ -129,9 +161,8 @@ namespace drive{
             if(colorDetection_->isFourColors()){
                 isDaizaDetected = true;
             }
-        }else{
-            //円の半径5cm,カラーセンサの中心からタイヤの中心までの距離4cm,色検知中に走ってしまう距離1.5cm(pwm20)
-            distanceMeasurement_->start(int(lineDistance/2)-50-40+15);//ラインの中心にタイヤの中心がくるように
+        }else{//直前に走行していたラインの中心にタイヤの中心がくるようにバック走行
+            distanceMeasurement_->start(int(lineDistance / 2) - DAIZA_DIAMETER / 2 - WHEEL_TO_COLOR_SENSOR + COLOR_DETECTION_DISTANCE);
             straightRunning_->run(-CATCHING_LINETRACE_PWM);
             if(distanceMeasurement_->getResult()){
                 isDaizaDetected =false;//フラグを戻しておく
