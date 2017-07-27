@@ -102,9 +102,11 @@ namespace strategy{
 
         //EV3の初期位置は10番置き場
         ev3Is_ = blockPlaces_[10];
-        routeBlockPlace_.push_back(ev3Is_);
-        routeDegree_.push_back(-120);
-        routeHasBlock_.push_back(0);
+        //routeBlockPlace_.push_back(ev3Is_);
+        ev3HasBlock_ = false;
+
+        catching_ = new catching();
+        avoidance_ = new avoidance();
 
         //デバック用
         // char message[50];
@@ -135,9 +137,11 @@ namespace strategy{
 
             //ブロックの位置まで移動()
             makePath(blockIs_[nextCarryBlockColor_]);
+            ev3HasBlock_ = true;
 
             //目的地まで移動()
             makePath(blockDestination_[nextCarryBlockColor_]);
+            ev3HasBlock_ = false;
 
             //運んだのでブロックの位置を更新
             blockIs_[nextCarryBlockColor_] =  blockDestination_[nextCarryBlockColor_];
@@ -153,6 +157,13 @@ namespace strategy{
              if(blockIs_[itr->first] != blockDestination_[itr->first]){return false;}
         }
         return true;
+    }
+
+    bool Map::checkBlock(BlockPlace* checkPlace){
+        for(auto itr = blockIs_.begin(); itr !=blockIs_.end();++itr ){
+           if(checkPlace->getId() == blockIs_[itr->first]->getId()){return true;}
+        }
+        return false;
     }
 
     void Map::selectCarryBlock(){
@@ -171,24 +182,76 @@ namespace strategy{
 
     }
 
+
+
     void Map::makePath(BlockPlace* goal){
         int goalDegree;//ev3の現在地(ブロック置き場)からゴール(ブロック置き場)までの角度
         BlockPlace* candidatePlace = ev3Is_;//次の置き場候補
-
         while(candidatePlace->getId() != goal->getId()){
             routeBlockPlace_.push_back(candidatePlace);//pathに追加
+            if(checkBlock(candidatePlace)){routeMovePattern_.push_back(MovePattern::AVOID);}//ブロックがあったら避ける
+            else{routeMovePattern_.push_back(MovePattern::CATCH);}//ブロックがなかったら避けない
             ev3Is_ = candidatePlace;//位置更新
             goalDegree = ev3Is_->getDegree(goal);//角度更新
             candidatePlace = ev3Is_->getNextPlace(goalDegree);//次の置き場を聞く
         }
         routeBlockPlace_.push_back(candidatePlace);//pathに追加 ゴール
+        if(ev3HasBlock_){routeMovePattern_.push_back(MovePattern::PUT);}//目的地に着いたのでブロックを置く
+        else{routeMovePattern_.push_back(MovePattern::CATCH);}//目的地に着いたのでブロックを置く
         ev3Is_ = candidatePlace;//位置更新
+
     }
 
 
+    bool Map::runPath(){
+
+        // ＠避けるやつ
+        // 今いるラインの長さ        前の台座    今の台座　
+        // 曲がった後のラインの長さ　            今の台座 次の台座
+        // 曲がる角度            　            今の台座 次の台座
+        // ブロック持ってるかどうか
+
+        // ＠よけないやつ(ブロック持つやつ)
+        // 曲がる角度
+        // 曲がった後の長さ
+
+        //ブロックの位置まで移動
+        //目的地まで移動
+        //ブロックを置く動作
+
+        //通る台座番号
+        //1->2->3->4->5->6->7
+        //0:避けない 1:避ける 2:置く
+        //
+        //ブロック持ってる 0:1
+        //目的地　0:1
+        //
+        //0->0->1->0->1->1->1
+
+        //pathを順に見てく
+        for(auto itr = routeBlockPlace_.begin(); itr != routeBlockPlace_.end();++itr ){
+
+            swich(routeMovePattern_[itr->first]){
+                case CATCH:
+                            catching_->
+                            break;
+                case AVOID:
+                            avoidance_->
+                            break;
+                case PUT:
+                            catching_->putBlock();
+                            break;
+
+            }
+
+
+
+        }
+
+        return true;
+    }
+
     std::vector<BlockPlace*> Map::getrouteBlockPlace(){return routeBlockPlace_;}
-    std::vector<int> Map::getRouteDegree(){return routeDegree_;}
-    std::vector<int> Map::getRouteHasBlock_(){return routeHasBlock_;}
 
 
 }

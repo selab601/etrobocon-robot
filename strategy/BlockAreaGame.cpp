@@ -3,7 +3,8 @@
 namespace strategy{
   BlockAreaGame::BlockAreaGame(){
     map_ = new Map();
-
+    map_->makeRoute1();//ルート計算した
+    map_->getrouteBlockPlace();//ルート取得
 
 
  }
@@ -12,8 +13,6 @@ namespace strategy{
     //工事中
 
     //Todo
-    //初期配置もらう
-    //ルート計算する(ここでIIteratorでmap_を渡す
     //ルート通りにmoveする
     //全部おわったら↓true
     return true;

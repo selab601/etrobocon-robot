@@ -7,6 +7,9 @@
 #include <vector>
 #include <unordered_map>
 
+#include "../../drive/Catching.h"
+#include "../../drive/Avoidance.h"
+
 class TestIterator;
 
 namespace strategy{
@@ -16,21 +19,28 @@ namespace strategy{
         strategy::BlockCode* blockCode_; //ブロックの初期位置
         std::unordered_map<int,BlockPlace*> blockPlaces_;//置き場の集合
 
-        std::vector<BlockPlace*> routeBlockPlace_;//ルート(台座の羅列)
-        std::vector<int> routeDegree_;//ルート(角度の羅列)
-        std::vector<int> routeHasBlock_;//ブロック持ってるかどうかのフラグ0:持ってない 1:持ってる
-
+        BlockPlace* ev3Is_;        //EV3の現在地
+        bool ev3HasBlock_;//ブロック持ってるかどうかのフラグ false:持ってない true:持ってる
 
         std::unordered_map<std::string,BlockPlace*> blockIs_;//ブロックの現在地
         std::unordered_map<std::string,BlockPlace*> blockDestination_;//ブロックの目的地
-
-        BlockPlace* ev3Is_;        //EV3の現在地
-
         // BlockPlace* nextCarryBlockIs_ = NULL; //次に運ぶブロックの場所
         // BlockPlace* nextCarryDestination_ = NULL; //次に運ぶブロックの目的地
         std::string nextCarryBlockColor_;//次に運ぶブロックの色
 
-        //運べるブロック
+        enum class MovePattern{
+            CATCH,
+            AVOID,
+            PUT
+        };
+        std::vector<BlockPlace*> routeBlockPlace_;//ルート(台座の羅列)
+        std::vector<MovePattern> routeMovePattern_;//ルートを通る時の行動パターン 上のMovePatternが入る
+
+
+        drive::Catching catching_;
+        drive::Avoidance avoidance_;
+
+        //運べるブロック  使ってない
         bool flag_red;
         bool flag_blue;
         bool flag_green;
@@ -43,6 +53,14 @@ namespace strategy{
          *         false:まだ終わってない
          */
         bool checkFinish();
+
+        /**
+         * @brief ブロックがその置き場に置かれているか確認
+         * @param  checkPlace 確認する置き場
+         * @return true  : ある
+         *         false : ない
+         */
+        bool checkBlock(BlockPlace* checkPlace);
 
         /**
          * @brief makePath 現在のブロック置き場からgoal位置のブロック置き場までの1本のpathを計算して、routeBlockPlace_に継ぎ足してく
@@ -63,13 +81,19 @@ namespace strategy{
         //コンストラクタ
         Map();
 
-        //ルート作る(5角形に何にもない時用)
+        /**
+         * @brief ルートを作る(5角形に何にもない時用)
+         */
         void makeRoute1();
 
+        /**
+         * @brief pathをもとにdrive::Catching とdrive::Avoidanceを実行する
+         * @return true  : 完了
+         *         false : 未完了
+         */
+        bool runPath();
 
         std::vector<BlockPlace*> getrouteBlockPlace();
-        std::vector<int> getRouteDegree();
-        std::vector<int> getRouteHasBlock_();
     };
 
 }
