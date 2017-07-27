@@ -17,12 +17,13 @@ namespace drive{
     }
 
     bool Catching::run(int dstMm, int degree){
-        startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
+
 
         switch(phase_){
 
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
+            startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
             lineTrace_->setPid();
             lineTrace_->setTarget();
             lineTrace_->setEdge(startEdge_);//セットしないとLineTrace._edgeが更新されない
@@ -105,7 +106,7 @@ namespace drive{
         case Phase::CALC_DISTANCE:
             //目的ラインの半分　ー　円の半径　進む
             runningDistance_ = dstMm / 2 - DAIZA_DIAMETER / 2;
-            if(degree == 0 || abd(degree) == 180){//degree=0,180,-180は補正なし
+            if(degree == 0 || abs(degree) == 180){//degree=0,180,-180は補正なし
                 phase_ = Phase::END_LINE_TRACE;
             }else if(degree < 0){//左カーブの場合
                 if(startEdge_ == LineTraceEdge::RIGHT){//右エッジの場合
