@@ -15,7 +15,7 @@ namespace strategy{
     class ParkingL : public IStrategy{
         private:
             enum class Phase{
-                ADJUST,
+                ADJUST1,
                 PIVOT_TURN1,
                 APPROACH,
                 PIVOT_TURN2,
@@ -28,7 +28,7 @@ namespace strategy{
             };
 
             std::vector<Phase> phaseProcedure_{
-                Phase::ADJUST,
+                Phase::ADJUST1,
                 Phase::PIVOT_TURN1,
                 Phase::APPROACH,
                 Phase::PIVOT_TURN2,
@@ -52,7 +52,7 @@ namespace strategy{
         
         public:
             //ブロック並べ終了→ピボット→前進→ピボット→前進→ピボットで駐車
-            //ピボットからカーブに変更するかもしれません
+            //超信地旋回から信地旋回に変更するかもしれません
             ParkingL();
 
             bool capture();
