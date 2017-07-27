@@ -85,7 +85,7 @@ namespace drive{
             straightRunning_->run(CATCHING_PWM);
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
-                phase_ = Phase::END_LINE_TRACE;
+                phase_ = Phase::CALC_DISTANCE;
             }
             break;
 
@@ -105,7 +105,9 @@ namespace drive{
         case Phase::CALC_DISTANCE:
             //目的ラインの半分　ー　円の半径　進む
             runningDistance_ = dstMm / 2 - DAIZA_DIAMETER / 2;
-            if(degree < 0){//左カーブの場合
+            if(degree == 0 || abd(degree) == 180){//degree=0,180,-180は補正なし
+                phase_ = Phase::END_LINE_TRACE;
+            }else if(degree < 0){//左カーブの場合
                 if(startEdge_ == LineTraceEdge::RIGHT){//右エッジの場合
                     runningDistance_ += LINE_THICKNESS / 2;
                 }else{//左エッジの場合
@@ -117,7 +119,7 @@ namespace drive{
                 }else{//左エッジの場合
                     runningDistance_ += LINE_THICKNESS / 2;
                 }
-            }//degree == 0の場合は変動なし
+            }
             phase_ = Phase::END_LINE_TRACE;
             break;
 
