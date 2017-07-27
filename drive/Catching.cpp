@@ -137,7 +137,6 @@ namespace drive{
             }else{
                 endEdge_ = startEdge_;
             }
-            endEdge_ = startEdge_;
             lineTrace_->setEdge(endEdge_);
             lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
             if(distanceMeasurement_->getResult()){
