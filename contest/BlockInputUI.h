@@ -4,9 +4,11 @@
 #define LEFT_MARGIN     10  // 表示するときの左側の余白
 #define TOP_MARGIN      3   // 表示するときの上の余白
 
-#include "BlockCode.h"
+#include "../strategy/BlockArea/BlockCode.h"
 #include "device/Display.h"
 #include "device/Buttons.h"
+
+using namespace strategy;
 
 namespace contest_pkg{
     class BlockInputUI{
