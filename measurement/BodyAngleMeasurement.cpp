@@ -9,12 +9,16 @@ namespace measurement {
     }
 
     void BodyAngleMeasurement::setBaseAngle() {
-        baseAngle_ = selfPositionEstimation_->getAngle();
+        baseAngle_ = selfPositionEstimation_->getAngle10();
     }
 
     int BodyAngleMeasurement::getResult() {
-        int currentAngle = selfPositionEstimation_->getAngle();
-        return (currentAngle - baseAngle_);
+        int currentAngle = selfPositionEstimation_->getAngle10();
+        return (currentAngle - baseAngle_)/10;
     }
 
+    int BodyAngleMeasurement::getRelative10() {
+        int currentAngle = selfPositionEstimation_->getAngle10();
+        return (currentAngle - baseAngle_);
+    }
 }

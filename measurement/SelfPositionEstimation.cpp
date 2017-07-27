@@ -140,6 +140,9 @@ namespace measurement
     int SelfPositionEstimation::getAngle(){
         return (int)(angle_*180/M_PI);
     }
+    int SelfPositionEstimation::getAngle10(){
+        return (int)(angle_*1800/M_PI);
+    }
     //自己位置初期化
     void SelfPositionEstimation::initMap(){
         location_.init();
