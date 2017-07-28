@@ -34,10 +34,10 @@ namespace drive
              * @brief 信地旋回 degree度回転させる 左が正，右が負
              * @details 左方向に90度回転させるとき:turn(90)
              * @param degree 回転させる角度
-             * @param speed  回転させる速さ(0~100, デフォルト:40)
+             * @param speed  回転させる速さ(0~100, デフォルト:20)
              * @return 終了した場合true
              */
-            bool turn2(int degree, int speed = DEFAULT_TURN_SPEED * 2);
+            bool circleTurn(int degree, int speed = DEFAULT_TURN_SPEED);
 
     private:
         device::Motors* motor_;

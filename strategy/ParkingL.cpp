@@ -39,7 +39,7 @@ namespace strategy{
                 return true;
             
             case Phase::PIVOT_TURN1:
-                return pivotTurn_->turn2(-90);
+                return pivotTurn_->circleTurn(-90);
 
             case Phase::APPROACH:
                 distanceMeasurement_->start(100);
@@ -55,7 +55,7 @@ namespace strategy{
                 return distanceMeasurement_->getResult();
 
             case Phase::PIVOT_TURN3:
-                return pivotTurn_->turn2(90);
+                return pivotTurn_->circleTurn(90);
 
             case Phase::ENTRY:
                 distanceMeasurement_->start(50); //要調整
@@ -63,7 +63,7 @@ namespace strategy{
                 return distanceMeasurement_->getResult();
 
             case Phase::PIVOT_TURN4:
-                return pivotTurn_->turn2(-90);
+                return pivotTurn_->circleTurn(-90);
 
             case Phase::FINISH:
                 straightRunning_->run(0);

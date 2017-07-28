@@ -42,7 +42,7 @@ namespace drive{
         return false;
     }
 
-    bool PivotTurn::turn2(int degree, int speed){
+    bool PivotTurn::circleTurn(int degree, int speed){
         switch(phase_){
             //準備
             case Phase::STANDBY:
