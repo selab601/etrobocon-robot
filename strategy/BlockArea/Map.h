@@ -49,7 +49,8 @@ namespace strategy{
         };
         PutProcess putProcess_ = PutProcess::PUT;//上のMovePattern でのPUT動作 の処理内容
 
-
+        //デバック用
+        char message[100];
 
 
         //運べるブロック  使ってない
