@@ -40,7 +40,7 @@ namespace drive{
             straightRunning_->run(10);
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
-                if(abs(degree) == 180){//後ろに持ち帰る場合は別フェーズへ
+                if(abs(degree) == 175){//後ろに持ち帰る場合は別フェーズへ(本来180が理想だが179が来るらしい)
                     bodyAngleMeasurement_->setBaseAngle();//角度保存
                     phase_ = Phase::TURN_90;
                 }else{
