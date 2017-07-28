@@ -7,6 +7,8 @@ using namespace drive;
 namespace strategy{
 
     Map::Map(){
+
+        //ブロック置き場のデータを登録
         blockPlaces_[1]  = new BlockPlace(1,BlockAreaColor::RED,-1350*sqrt(3),0);
         blockPlaces_[2]  = new BlockPlace(2,BlockAreaColor::BLUE,-900*sqrt(3),0);
         blockPlaces_[3]  = new BlockPlace(3,BlockAreaColor::YELLOW,-450*sqrt(3),0);
@@ -84,7 +86,7 @@ namespace strategy{
         blockPlaces_[13]->next[180]  = blockPlaces_[12];
         blockPlaces_[13]->next[120]  = blockPlaces_[8];
         //blockPlaces_[13]->next[0]    = blockPlaces_[14];
-        //上下のラインは狭いので機体がとおらない　-> ラインの存在を消す
+        //上下のラインは幅が狭いので機体が通らないので、対処としてラインの存在を消した
         //blockPlaces_[14]->next[180]  = blockPlaces_[13];
         blockPlaces_[14]->next[60]   = blockPlaces_[9];
         blockPlaces_[14]->next[0]    = blockPlaces_[15];
@@ -309,17 +311,10 @@ namespace strategy{
 
                             }
                             break;
-
             }//end switch
-
-
             return false;
         }//end if
         else{return true;}
 
     }
-
-
-
-
 }

@@ -25,14 +25,13 @@ namespace strategy{
 
         std::unordered_map<std::string,BlockPlace*> blockIs_;//ブロックの現在地
         std::unordered_map<std::string,BlockPlace*> blockDestination_;//ブロックの目的地
-        // BlockPlace* nextCarryBlockIs_ = NULL; //次に運ぶブロックの場所
-        // BlockPlace* nextCarryDestination_ = NULL; //次に運ぶブロックの目的地
         std::string nextCarryBlockColor_;//次に運ぶブロックの色
 
+        //ブロック並べエリアで行う動作の種類
         enum class MovePattern{
-            CATCH,
-            AVOID,
-            PUT
+            CATCH,              //ブロックを掴んで移動 ブロックがない台座を移動 (兼用)
+            AVOID,              //ブロック置き場を避けて移動する
+            PUT                 //ブロックを置く
         };
         std::vector<BlockPlace*> routeBlockPlace_;//ルート(台座の羅列)
         std::vector<MovePattern> routeMovePattern_;//ルートを通る時の行動パターン 下のMovePatternが入る
@@ -42,9 +41,10 @@ namespace strategy{
         drive::Catching* catching_;
         drive::Avoidance* avoidance_;
 
+        //ブロックを置く動作(MovePattern::PUT)の実処理手順
         enum class PutProcess{
-            PUT,
-            AVOID,
+            PUT,                //ブロックを置く
+            AVOID,              //置いた場所を避けて移動
             END
         };
         PutProcess putProcess_ = PutProcess::PUT;//上のMovePattern でのPUT動作 の処理内容
@@ -100,7 +100,7 @@ namespace strategy{
         void makeRoute1();
 
         /**
-         * @brief pathをもとにdrive::Catching とdrive::Avoidanceを実行する
+         * @brief 作ったルートをもとにdrive::Catching とdrive::Avoidanceを実行する
          * @return true  : 完了
          *         false : 未完了
          */
