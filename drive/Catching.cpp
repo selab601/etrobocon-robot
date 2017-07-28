@@ -6,377 +6,172 @@ using namespace detection;
 namespace drive{
 
     Catching::Catching(){
-        this->destination_ = Destination::getInstance();
+        lineTrace_ = LineTrace::getInstance();
+        straightRunning_ = new StraightRunning();
+        curveRunning_ = new CurveRunning();
+        pivotTurn_ = new PivotTurn();
+        colorDetection_ = new ColorDetection();
+        bodyAngleMeasurement_ = new BodyAngleMeasurement();
+        distanceMeasurement_ = new DistanceMeasurement();
+        selfPositionEstimation_ = SelfPositionEstimation::getInstance();
     }
 
-    bool Catching::catchBlock(TurnDirection direction){
-        if (TurnDirection::BACK == direction){
-            return catchBackBlock();
-        }
-
-        SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
-        LineTrace* lineTrace = LineTrace::getInstance();
-        static long baseLength = 0;
-        static PivotTurn pivotTurn = PivotTurn();
-
-        switch(state_){
-            case State::INIT:
-                lineTrace->setPid(0.0168, 0, 0.924);
-                lineTrace->setMaxPwm(20);
-                lineTrace->setEdge(LineTraceEdge::RIGHT);
-                lineTrace->setTarget(0.2); // 黒寄り
-
-                if (TurnDirection::STRAIGHT == direction){
-                    state_ = State::TURN_RIGHT;
-                }
-                else{
-                    state_ = State::TO_BLOCK;
-                }
-                break;
-
-            case State::TURN_RIGHT:
-                if (pivotTurn.turn(-20)){
-                    state_ = State::TO_BLOCK;
-                }
-                break;
+    bool Catching::run(int dstMm, int degree){
 
 
-            case State::TO_BLOCK:
-                lineTrace->run();
+        switch(phase_){
 
-                if (daizaDetected()){
-                    state_ = State::TURN;
-                }
-                break;
-
-            case State::TURN:
-                if ( turn(direction) ){
-                    baseLength = estimation->getMigrationLength();
-
-                    lineTrace->setPid(0.0168, 0, 0.924);
-                    lineTrace->setMaxPwm(20);
-                    lineTrace->setEdge(LineTraceEdge::RIGHT);
-                    lineTrace->setTarget(0.2); // 黒寄り
-
-                    state_ = State::TO_LINE;
-                }
-                break;
-
-            case State::TO_LINE:
-                {
-                    long length = estimation->getMigrationLength() - baseLength;
-
-                    lineTrace->run();
-                    if(TO_LINE_LENGTH <= length){
-                        ev3_speaker_play_tone(500,100);     // TODO: delete
-                        state_ = State::FINISHED;
-                    }
-                }
-                break;
-
-            case State::FINISHED:
-                stop();
-                state_ = State::INIT;
-                return true;
-                break;
-        }
-
-        return false;
-    }
-
-    bool Catching::catchBlock(int x, int y){
-        return catchBlock(BlockAreaCoordinate(x, y));
-    }
-
-    bool Catching::catchBlock(BlockAreaCoordinate destination){
-        BlockAreaCoordinate nextCoordinate = destination_->getNextStageCoordinate(destination);
-        Destination::Direction direction = destination_->getDirection(destination_->currentCoordinate_, nextCoordinate);
-        Destination::Position position = destination_->getPosition(destination_->EV3Position_, direction);
-        TurnDirection turnDirection = TurnDirection::LEFT;
-
-        switch (position){
-            case Destination::Position::EQUAL:
-                turnDirection = TurnDirection::BACK;
-                break;
-
-            case Destination::Position::REVERSE:
-                turnDirection = TurnDirection::STRAIGHT;
-                break;
-
-            case Destination::Position::RIGHT:
-                turnDirection = TurnDirection::RIGHT;
-                break;
-
-            case Destination::Position::LEFT:
-                turnDirection = TurnDirection::LEFT;
-                break;
-
-            case Destination::Position::NONE:
-                return false;       // エラー
-        }
-
-        if (catchBlock(turnDirection)){
-            destination_->update(nextCoordinate, position); // 情報の更新
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
-    bool Catching::catchBackBlock(){
-        static ChangeDirectionState state = ChangeDirectionState::INIT;
-        static Avoidance avoidance = Avoidance();
-        static PivotTurn pivotTurn = PivotTurn();
-        static DirectionKind directionKind = getAdvancableDirection();
-        static TurnDirection turnDirection = DirectionKind::LEFT == directionKind? TurnDirection::RIGHT : TurnDirection::LEFT;
-        static CurveRunning curveRunning = CurveRunning();
-        switch (state){
-            case ChangeDirectionState::INIT:
-                directionKind = getAdvancableDirection();
-                turnDirection = DirectionKind::LEFT == directionKind? TurnDirection::RIGHT : TurnDirection::LEFT;
-                state = ChangeDirectionState::AVOIDANCE;
-                break;
-
-            case ChangeDirectionState::AVOIDANCE:
-
-                if (avoidance.startAvoidance(directionKind)){
-                    state = ChangeDirectionState::TURN;
-                }
-                break;
-
-            case ChangeDirectionState::TURN:
-                if (pivotTurn.turn(90)){
-                    state = ChangeDirectionState::TURN_TO_LINE;
-                }
-                break;
-
-            case ChangeDirectionState::TURN_TO_LINE:
-                {
-                    curveRunning.run(20, -20);
-                    int black = device::ColorSensor::getInstance()->getBlackCalibratedValue();
-                    int mid = black + 10;
-                    if (device::ColorSensor::getInstance()->getBrightness() < mid){
-                        curveRunning.run(0, 0);
-                        state = ChangeDirectionState::CATCHING;
-                    }
-                }
-                break;
-
-            case ChangeDirectionState::CATCHING:
-                if (catchBlock(turnDirection)){
-                    state = ChangeDirectionState::FINISHED;
-                }
-                break;
-
-            case ChangeDirectionState::FINISHED:
-                stop();
-                state = ChangeDirectionState::INIT;
-
-                return true;
-        }
-
-        return false;
-    }
-
-    bool Catching::putBlock() {
-        SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
-        LineTrace* lineTrace = LineTrace::getInstance();
-        static long baseLength = 0;
-        static State state = State::INIT;
-        static CurveRunning curveRunning = CurveRunning();
-
-        switch(state){
-            case State::INIT:
-                lineTrace->setPid(0.0168, 0, 0.924);
-                lineTrace->setMaxPwm(20);
-                lineTrace->setEdge(LineTraceEdge::RIGHT);
-                lineTrace->setTarget(0.2); // 黒寄り
-
-                state = State::TO_BLOCK;
-                break;
-
-            case State::TO_BLOCK:
-                lineTrace->run();
-
-                if (daizaDetected()){
-                    state = State::TO_LINE;
-                    baseLength = estimation->getMigrationLength();
-                }
-                break;
-
-            case State::TO_LINE:
-                {
-                    long length = estimation->getMigrationLength() - baseLength;
-
-                    curveRunning.run(-20, -20);
-                    if(140 <= length){
-                        ev3_speaker_play_tone(500,100);     // TODO: delete
-                        state = State::FINISHED;
-                    }
-                }
-                break;
-
-            case State::FINISHED:
-                stop();
-                state = State::INIT;
-                return true;
-                break;
-
-            case State::TURN:   //使わない
-            case State::TURN_RIGHT:   //使わない
-                break;
-        }
-
-        return false;
-    }
-
-    bool Catching::turn(int degree){
-        static CurveRunning curveRunning = CurveRunning();
-        static BodyAngleMeasurement bodyAngleMeasurement = BodyAngleMeasurement();
-        int diffDegree = degree - bodyAngleMeasurement.getResult();
-        if (diffDegree >= 100){
-            diffDegree = 100;
-        }
-
-        switch(turnState_){
-                case TurnState::INIT:
-                    bodyAngleMeasurement.setBaseAngle();
-                    turnState_ = TurnState::TURN;
-                break;
-
-            case TurnState::TURN:
-                // 右にまがるとき
-                if (0 > diffDegree ){
-                    diffDegree *= -1;
-                    int pwm = diffDegree + 15;
-                    pwm = pwm > 60? 60: pwm;
-                    curveRunning.run(0,  pwm);
-                }
-                // 左に曲がるとき
-                else {
-                    int pwm = diffDegree + 15;
-                    pwm = pwm > 60? 60: pwm;
-                    curveRunning.run(pwm, pwm/10);
-                }
-
-                if (diffDegree <= 1){
-                    turnState_ = TurnState::FINISHED;
-                }
-                break;
-
-            case TurnState::FINISHED:
-                stop();
-                turnState_ = TurnState::INIT;
-
-                return true;
-        }
-        return false;
-    }
-
-    bool Catching::turn(TurnDirection direction){
-        switch(direction){
-            case TurnDirection::RIGHT:
-                return turn(-90);
-
-            case TurnDirection::LEFT:
-                return turn(80);
-
-            case TurnDirection::STRAIGHT:
-                return straight(145);
-
-            case TurnDirection::BACK:   // 使わない
-                break;
-        }
-        return false;
-    }
-
-    void Catching::stop(){
-        static CurveRunning curveRunning = CurveRunning();
-        curveRunning.run(0, 0);
-    }
-
-    bool Catching::straight(int length){
-        static CurveRunning curveRunning = CurveRunning();
-        SelfPositionEstimation* estimation = SelfPositionEstimation::getInstance();
-        static long baseLength = 0;
-        static bool initialized = false;
-        static PivotTurn pivotTurn = PivotTurn();
-        long currentLength = estimation->getMigrationLength() - baseLength;
-
-        if (!initialized ){
-            baseLength = estimation->getMigrationLength();
-            if (pivotTurn.turn(-4)){    // TODO: 実験して角度を調整
-                initialized = true;
+        //色検知するまでライントレース
+        case Phase::START_LINE_TRACE:
+            startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
+            lineTrace_->setPid();
+            lineTrace_->setTarget();
+            lineTrace_->setEdge(startEdge_);//セットしないとLineTrace._edgeが更新されない
+            lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
+            if(colorDetection_->isFourColors()){
+                phase_ = Phase::STRAIGHT_LITTLE;
             }
-        }
-        else{
-            int pwm = (length - currentLength)/3 + 20;
-            curveRunning.run(pwm, pwm);
+            break;
 
-            if(currentLength >= length){
-                stop();
-                initialized = false;
+        //タイヤの中心を円周上に
+        case Phase::STRAIGHT_LITTLE:
+            //タイヤの中心からカラーセンサまでの距離から色検知中に走行した距離を引いた距離走行する
+            distanceMeasurement_->start(WHEEL_TO_COLOR_SENSOR - COLOR_DETECTION_DISTANCE);
+            straightRunning_->run(10);
+            if(distanceMeasurement_->getResult()){
+                distanceMeasurement_->reset();
+                if(abs(degree) == 180){//後ろに持ち帰る場合は別フェーズへ
+                    bodyAngleMeasurement_->setBaseAngle();//角度保存
+                    phase_ = Phase::TURN_90;
+                }else{
+                    phase_ = Phase::PIVOT_FIRST;
+                }
+            }
+            break;
+
+        //最初の旋回
+        case Phase::PIVOT_FIRST:
+            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){//0度の場合は旋回しない
+                phase_ = Phase::STRAIGHT;
+             }
+             break;
+
+        //二回目の旋回
+        case Phase::PIVOT_SECOND:
+            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){//0度の場合は旋回しない
+                phase_ = Phase::CALC_DISTANCE;
+            }
+            break;
+
+        //180度専用処理 90度右に信地旋回
+        case Phase::TURN_90:
+            curveRunning_->run(0,CATCHING_PWM);
+            if(bodyAngleMeasurement_->getResult() <= -90){
+                bodyAngleMeasurement_->setBaseAngle();
+                phase_ = Phase::TURN_270;
+            }
+            break;
+
+        //180度専用処理 270度左に信地旋回
+        case Phase::TURN_270:
+            curveRunning_->run(CATCHING_PWM,0);
+            if(bodyAngleMeasurement_->getResult() >= 270){
+                phase_ = Phase::STRAIGHT_TREAD_DISTANCE;
+            }
+            break;
+
+        //180度専用処理 走行体のトレッドの距離進む
+        case Phase::STRAIGHT_TREAD_DISTANCE:
+            distanceMeasurement_->start(TREAD);//measurement::SelfPositionMeasurement::TREAD
+            straightRunning_->run(CATCHING_PWM);
+            if(distanceMeasurement_->getResult()){
+                distanceMeasurement_->reset();
+                phase_ = Phase::CALC_DISTANCE;
+            }
+            break;
+
+
+        //直進走行
+        case Phase::STRAIGHT:
+            //円周角の定理から距離を算出
+            distanceMeasurement_->start(cos((degree / 2) * M_PI / 180) * DAIZA_DIAMETER);
+            straightRunning_->run(CATCHING_PWM);
+            if(distanceMeasurement_->getResult()){
+                phase_ = Phase::PIVOT_SECOND;
+                distanceMeasurement_->reset();
+            }
+            break;
+
+
+        case Phase::CALC_DISTANCE:
+            //目的ラインの半分　ー　円の半径　進む
+            runningDistance_ = dstMm / 2 - DAIZA_DIAMETER / 2;
+            if(degree == 0 || abs(degree) == 180){//degree=0,180,-180は補正なし
+                phase_ = Phase::END_LINE_TRACE;
+            }else if(degree < 0){//左カーブの場合
+                if(startEdge_ == LineTraceEdge::RIGHT){//右エッジの場合
+                    runningDistance_ += LINE_THICKNESS / 2;
+                }else{//左エッジの場合
+                    runningDistance_ -= LINE_THICKNESS / 2;
+                }
+            }else if(degree > 0){//右カーブの場合
+                if(startEdge_ == LineTraceEdge::RIGHT){//右エッジの場合
+                    runningDistance_ -= LINE_THICKNESS / 2;
+                }else{//左エッジの場合
+                    runningDistance_ += LINE_THICKNESS / 2;
+                }
+            }
+            phase_ = Phase::END_LINE_TRACE;
+            break;
+
+
+        //カーブ後のライントレース
+        case Phase::END_LINE_TRACE:
+            //ブロック取得後のラインの半分の距離にタイヤの中心がくるように
+            distanceMeasurement_->start(runningDistance_);//エッジの応じた距離走行
+            if(abs(degree) == 180){//エッジが逆転する
+                if(startEdge_ == LineTraceEdge::RIGHT){
+                    endEdge_ = LineTraceEdge::LEFT;
+                }else{
+                    endEdge_ = LineTraceEdge::RIGHT;
+                }
+            }else{
+                endEdge_ = startEdge_;
+            }
+            lineTrace_->setEdge(endEdge_);
+            lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
+            if(distanceMeasurement_->getResult()){
+                distanceMeasurement_->reset();
+                phase_ = Phase::START_LINE_TRACE;
+                return true;
+            }
+            break;
+        }
+        return false;
+    }
+
+    //ブロックを置いてバックする
+    bool Catching::putBlock(int lineDistance){
+        static bool isDaizaDetected = false;
+        if(!isDaizaDetected){//台座を検知するまでライントレース
+            startEdge_ = lineTrace_->getEdge();
+            lineTrace_->setPid();
+            lineTrace_->setEdge(startEdge_);
+            lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
+            if(colorDetection_->isFourColors()){
+                isDaizaDetected = true;
+            }
+        }else{//直前に走行していたラインの中心にタイヤの中心がくるようにバック走行
+            distanceMeasurement_->start(int(lineDistance / 2) - DAIZA_DIAMETER / 2 - WHEEL_TO_COLOR_SENSOR + COLOR_DETECTION_DISTANCE);
+            straightRunning_->run(-CATCHING_LINETRACE_PWM);
+            if(distanceMeasurement_->getResult()){
+                isDaizaDetected =false;//フラグを戻しておく
+                distanceMeasurement_->reset();
                 return true;
             }
         }
         return false;
     }
 
-    bool Catching::daizaDetected(){
-        static ColorDetection colorDetection = ColorDetection();
-        colorid_t colorId = colorDetection.getResult();
 
-        switch(colorId){
-            case COLOR_NONE:
-            case COLOR_BLACK:
-            case COLOR_WHITE:
-
-            case COLOR_BROWN:
-            case TNUM_COLOR:
-                return false;
-
-            case COLOR_RED:
-            case COLOR_YELLOW:
-            case COLOR_GREEN:
-            case COLOR_BLUE:
-                return true;
-        }
-
-        return false;
-    }
-
-    DirectionKind Catching::getAdvancableDirection(){
-        switch(destination_->EV3Position_){
-            case Destination::Direction::RIGHT:
-                if (destination_->currentCoordinate_.getY() == 1){
-                    return DirectionKind::LEFT;
-                }
-                break;
-
-            case Destination::Direction::LEFT:
-                if (destination_->currentCoordinate_.getY() == 4){
-                    return DirectionKind::LEFT;
-                }
-                break;
-
-            case Destination::Direction::UP:
-                if (destination_->currentCoordinate_.getX() == 1){
-                    return DirectionKind::LEFT;
-                }
-                break;
-
-            case Destination::Direction::DOWN:
-                if (destination_->currentCoordinate_.getX() == 4){
-                    return DirectionKind::LEFT;
-                }
-                break;
-
-            case Destination::Direction::NONE:
-                // ここに来ることはないはずなのでデバッグ用
-                ev3_speaker_play_tone(700, 3000);
-                break;
-        }
-        return DirectionKind::RIGHT;
-    }
 }

@@ -1,14 +1,18 @@
 #ifndef START_UP_
 #define START_UP_
 
-#include "../device/ColorSensor.h"
-#include "../device/TouchSensor.h"
-#include "../device/Display.h"
-#include "../device/GyroSensor.h"
-#include "../drive/StraightRunning.h"
-#include "../measurement/TimeMeasurement.h"
-#include "../device/Arm.h"
-#include "../device/Shippo.h"
+#include <Clock.h>
+#include "BlockInputUI.h"
+#include "device/Display.h"
+#include "device/Buttons.h"
+#include "device/ColorSensor.h"
+#include "device/GyroSensor.h"
+#include "device/TouchSensor.h"
+#include "device/Motors.h"
+#include "device/Arm.h"
+#include "device/Shippo.h"
+#include "drive/StraightRunning.h"
+#include "measurement/DistanceMeasurement.h"
 
 namespace contest_pkg{
     class StartUp{
@@ -42,17 +46,30 @@ namespace contest_pkg{
              */
             bool acceptStart();
 
-        private:
+            bool start();
 
-            static StartUp* instance_;	// インスタンス
+        private:
+            enum class State{
+                INIT,
+                SELECT_COURCE,
+                INPUT_BLOCK_CODE,
+                CALIBRATE,
+                ACCEPT_START,
+                FINISHED,
+            };
 
             //コンストラクタ
             StartUp();
 
+            static StartUp* instance_;	// インスタンス
+            State state_ = State::INIT;
             char selectedCourse_ = 0;	// 選択されたコース (Lコース； 'L', Rコース：'R')
 
             double currentPwm_= 0;        // 現在のPWM値（加速度つける時に使う）
             int currentTimeMs_ = 0;        // 現在の時刻（加速度つける時に使う）
+
+            // ディスプレイの文字列操作用
+            char message_[30];
 
             // 走行体情報
             device::ColorSensor* brightnessInfo_;
@@ -85,13 +102,6 @@ namespace contest_pkg{
              * @return キャリブレーションが終了したらtrue
              */
             bool calibrateAutomatically();
-
-            /**
-             * @brief タッチセンサがクリックされた
-             *
-             * @return タッチセンサがクリックされた時true
-             */
-            bool isClicked();
 
 
             /**

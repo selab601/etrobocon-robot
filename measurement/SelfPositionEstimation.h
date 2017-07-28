@@ -67,6 +67,28 @@ namespace measurement
         * @author 塩畑
         */
         long getMeasureY();
+
+        /**
+         * @brief 計測地点からの座標を、極座標で取得する
+         *
+         * @return 極座標表現のR(開始地点からの距離[mm])
+         */
+        long getPolarR();
+        /**
+         * @brief 計測地点からの座標を、極座標で取得する
+         *
+         * @return 極座標表現の角度θ[Deg] ( ← -180 <= θ < 180 → )
+         */
+        int getPolarTheta();
+
+        /**
+         * @brief 計測地点からの座標を、極座標で取得する(10倍)
+         *
+         * @return 極座標表現の角度θ[0.1Deg] ( ← -1800 <= θ < 1800 → )
+         */
+        int getPolarTheta10();
+
+
         /*!
         * @brief locationからの距離を返す
         * @return 距離
@@ -74,6 +96,26 @@ namespace measurement
         * @author 塩畑
         */
         int getDistance();
+
+        /**
+         * @brief 2点間の距離を求める
+         *
+         * @param coor1 座標1
+         * @param coor2 座標2
+         *
+         * @return  座標1と座標2の距離[mm]
+         */
+        static int getDistance(Coordinates coor1, Coordinates coor2);
+
+        /**
+         * @brief 0 <= θ < 2Pi に変換する
+         *
+         * @param radian θ
+         *
+         * @return θ  (0 <= θ < 2Pi)
+         */
+        static double getWithin2Pi(double radian);
+
         /*!
         * @brief 移動距離を返す
         * @return 移動距離
@@ -87,6 +129,12 @@ namespace measurement
         * @author 塩畑
         */
         int getAngle();
+
+        /*!
+        * @brief 走行体の向いている方向を角度で返す
+        * @return 角度を10倍したもの[0.1Deg]
+        */
+        int getAngle10();
         /*!
         * @brief mapクラス初期化
         * Mapクラスの使用 に 必須の関数 ではない
@@ -110,6 +158,8 @@ namespace measurement
         Coordinates location_;
         //測定点
         Coordinates measurePoint_;
+        //測定点での角度
+        double measurePointAngle_;
         //EV3本体向き 小数点部分
         double angle_;
         //増分時間

@@ -16,6 +16,7 @@ namespace measurement
     SelfPositionEstimation::SelfPositionEstimation(){
     location_ = Coordinates();
     measurePoint_ = Coordinates();
+    measurePointAngle_ = 0;
     clock_ = Clock();
     angle_  = 0;
     deltaTime_ = 0;
@@ -72,6 +73,7 @@ namespace measurement
     void SelfPositionEstimation::startMeasure(){
         measurePoint_.set_x(location_.get_x());
         measurePoint_.set_y(location_.get_y());
+        measurePointAngle_ = angle_;
     }
     //計測地点を原点としたx座標を返す
     long SelfPositionEstimation::getMeasureX(){
@@ -81,10 +83,55 @@ namespace measurement
     long SelfPositionEstimation::getMeasureY(){
         return location_.get_y() - measurePoint_.get_y();
     }
+
+    long SelfPositionEstimation::getPolarR(){
+        return getDistance(measurePoint_, location_);
+    }
+
+    int SelfPositionEstimation::getPolarTheta(){
+        return getPolarTheta10() / 10;
+    }
+
+    int SelfPositionEstimation::getPolarTheta10(){
+        long x = location_.get_x() - measurePoint_.get_x();
+        long y = location_.get_y() - measurePoint_.get_y();
+
+        // 元のユークリッド座標系での、X軸からの角度[Rad]
+        double angle  = atan2(y, x);
+        // 計測開始時の角度からの差分にする
+        angle -= measurePointAngle_;
+
+        // -Pi <= angle < Pi に丸める
+        angle += M_PI; // Pi 足しておく
+        angle = getWithin2Pi(angle); // 0 <= angle < 2Pi にする
+        angle -= M_PI; // 足したPi引いて戻す
+
+        // Degree に変換する
+        return (int)(angle*1800/M_PI);
+    }
+
     //location_からの距離を返す
     int SelfPositionEstimation::getDistance(){
         return (int)(sqrt(location_.get_x()*location_.get_x() + location_.get_y()*location_.get_y()));
     }
+
+    int SelfPositionEstimation::getDistance(Coordinates coor1, Coordinates coor2){
+        long x = coor2.get_x() - coor1.get_x();
+        long y = coor2.get_y() - coor1.get_y();
+        return (int)(sqrt(x*x + y*y));
+    }
+
+
+    double SelfPositionEstimation::getWithin2Pi(double radian){
+        // 2PI の倍数にする(小数点以下切り捨て)
+        int cycle = (int)( (radian / (2*M_PI)) );
+        // 負の数の時、キャストすると -0.8 -> 0 となるから
+        if (0 > radian) cycle--;
+        // 0 <= radian < 2Pi にする
+        return radian - ( (double)cycle * 2*M_PI);
+    }
+
+
     //移動距離を返す
     long SelfPositionEstimation::getMigrationLength(){
         return migrationLength_;
@@ -92,6 +139,9 @@ namespace measurement
     //走行体の向いている方向を角度で返す
     int SelfPositionEstimation::getAngle(){
         return (int)(angle_*180/M_PI);
+    }
+    int SelfPositionEstimation::getAngle10(){
+        return (int)(angle_*1800/M_PI);
     }
     //自己位置初期化
     void SelfPositionEstimation::initMap(){

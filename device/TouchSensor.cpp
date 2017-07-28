@@ -15,6 +15,22 @@ namespace device
 
     TouchSensor::TouchSensor() :
         // ポートの指定
-        ev3api::TouchSensor(PORT_4)
-    {}
+        ev3api::TouchSensor(PORT_4),
+        sinceLastClicked_()
+    {
+        sinceLastClicked_.setBaseTime();
+        sinceLastClicked_.setTargetTime(500);
+    }
+
+    bool TouchSensor::isClicked(){
+        bool isPressed = ev3api::TouchSensor::isPressed();
+        // クリックしたときで、前回のクリックから0.5秒経過したとき
+        if (hasPressed_ && !isPressed && sinceLastClicked_.getResult()){
+            hasPressed_ = isPressed;
+            sinceLastClicked_.setBaseTime();
+            return true;
+        }
+        hasPressed_ = isPressed;
+        return false;
+    }
 }

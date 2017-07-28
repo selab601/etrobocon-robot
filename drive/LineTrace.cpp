@@ -66,6 +66,10 @@ namespace drive{
         return 1000.0 / (double)(LINETRACE_TREAD * deltaRad + 1000);
     }
 
+    LineTraceEdge LineTrace::getEdge(){
+        return edge_;
+    }
+
     void LineTrace::calculatePwm(int maxPwm, int deltaRad ,LineTraceEdge edge){
 
         int lPwm;
@@ -142,6 +146,10 @@ namespace drive{
         integrated_ = 0;
         diff_[1] = diff_[0] = 0;
         timeMs_[1] = timeMs_[0] = clock_.now();
+
+        // エッジ切り替えの状態のリセット
+        edgeChangeStatus_ = LineTraceEdgeChangePhase::ACROSS;
+        changeEdge2Phase_ = ChangeEdge2Phase::INIT;
     }
 
     bool LineTrace::changeEdge(){
@@ -196,4 +204,51 @@ namespace drive{
                 return false;
         }
     }
+
+    bool LineTrace::changeEdge2(int toMidLineLength, int toOpposingLength){
+        static int preTargetValue = 0;
+        static DistanceMeasurement distanceMeasurement = DistanceMeasurement();
+        switch(changeEdge2Phase_){
+            case ChangeEdge2Phase::INIT:
+                preTargetValue = targetValue_;
+
+                changeEdge2Phase_ = ChangeEdge2Phase::TO_MID_LINE;
+                break;
+
+                // 線の中心方向に移動する
+            case ChangeEdge2Phase::TO_MID_LINE:
+                distanceMeasurement.start(toMidLineLength);
+                setTarget(0.15);
+                if (distanceMeasurement.getResult()){
+                    distanceMeasurement.reset();
+                    changeEdge2Phase_ = ChangeEdge2Phase::TO_OPPOSITE;
+
+                    // エッジを逆にする
+                    LineTraceEdge nextEdge = LineTraceEdge::LEFT == edge_? LineTraceEdge::RIGHT : LineTraceEdge::LEFT;
+                    setEdge(nextEdge);
+
+                    // ライントレース情報の初期化(reset())
+                    integrated_ = 0;
+                    diff_[1] = diff_[0] = 0;
+                }
+                break;
+
+                // 線の反対側に移動する
+            case ChangeEdge2Phase::TO_OPPOSITE:
+                distanceMeasurement.start(toOpposingLength);
+                setTarget(0.55);
+                if (distanceMeasurement.getResult()){
+                    changeEdge2Phase_ = ChangeEdge2Phase::END;
+                }
+                break;
+
+                // ターゲット値を戻して終了
+            case ChangeEdge2Phase::END:
+                this->targetValue_ = preTargetValue; // ターゲット値を戻す
+                changeEdge2Phase_ = ChangeEdge2Phase::INIT; // 初期状態に戻す
+                return true;
+        }
+        return false;
+    }
+
 };
