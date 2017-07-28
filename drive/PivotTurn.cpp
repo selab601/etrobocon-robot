@@ -58,10 +58,10 @@ namespace drive{
                     motor_->setWheelPWM(0, 0);
                 }else{
                     if(degree < 0){
-                        motor_->setWheelPWM(0, speed);
+                        motor_->setWheelPWM(speed, 0);
                     }
                     else{
-                        motor_->setWheelPWM(speed, 0);
+                        motor_->setWheelPWM(0, speed);
                     }
                 }
                 break;

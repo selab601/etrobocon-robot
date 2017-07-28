@@ -41,8 +41,8 @@ namespace strategy{
                 return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
 
             case Phase::ADJUST1:
-                distanceMeasurement_->start(45);
-                straightRunning_->run(50);
+                distanceMeasurement_->start(20);
+                straightRunning_->run(30);
                 return distanceMeasurement_->getResult();
 
             case Phase::TURN_RIGHT:

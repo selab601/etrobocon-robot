@@ -3,7 +3,6 @@
 
 #include "IStrategy.h"
 #include "../detection/LineDetection.h"
-#include "../device/Arm.h"
 #include "../drive/PivotTurn.h"
 #include "../drive/LineTrace.h"
 #include "../drive/StraightRunning.h"
@@ -41,7 +40,6 @@ namespace strategy{
             };
 
             detection::LineDetection* lineDetection_;
-            device::Arm* arm_;
             drive::PivotTurn* pivotTurn_;
             drive::LineTrace* lineTrace_;
             drive::StraightRunning* straightRunning_;

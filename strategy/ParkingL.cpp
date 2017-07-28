@@ -1,13 +1,11 @@
 #include "ParkingL.h"
 
 using namespace detection;
-using namespace device;
 using namespace drive;
 using namespace measurement;
 
 namespace strategy{
     ParkingL::ParkingL(){
-        arm_                   = Arm::getInstance();
         lineTrace_             = LineTrace::getInstance();
         pivotTurn_             = new PivotTurn();
         straightRunning_       = new StraightRunning();
@@ -37,41 +35,39 @@ namespace strategy{
     bool ParkingL::executePhase(Phase phase){
         switch(phase){
             case Phase::ADJUST1:
-                //ブロック並べ終点から位置調整
-                distanceMeasurement_->start(185);
-                straightRunning_->run(-25);
-                return distanceMeasurement_->getResult();
+                //ブロック並べ終点から位置調整用
+                return true;
             
             case Phase::PIVOT_TURN1:
-                return pivotTurn_->turn(-90);
+                return pivotTurn_->turn2(-90);
 
             case Phase::APPROACH:
-                distanceMeasurement_->start(50);
+                distanceMeasurement_->start(100);
                 straightRunning_->run(40);
                 return lineDetection_->getResult() && distanceMeasurement_->getResult();
 
             case Phase::PIVOT_TURN2:
-                return pivotTurn_->turn(90);
+                return pivotTurn_->turn(75);
 
             case Phase::LINETRACE:
-                distanceMeasurement_->start(500); //you
+                distanceMeasurement_->start(380); //要調整
                 lineTrace_->run(40,LineTraceEdge::LEFT);
                 return distanceMeasurement_->getResult();
 
             case Phase::PIVOT_TURN3:
-                return pivotTurn_->turn(85);
+                return pivotTurn_->turn2(90);
 
             case Phase::ENTRY:
-                distanceMeasurement_->start(190); //要調整
+                distanceMeasurement_->start(50); //要調整
                 straightRunning_->run(30);
-                return arm_->up() && distanceMeasurement_->getResult();
+                return distanceMeasurement_->getResult();
 
             case Phase::PIVOT_TURN4:
-                return pivotTurn_->turn(-90);
+                return pivotTurn_->turn2(-90);
 
             case Phase::FINISH:
                 straightRunning_->run(0);
-                return arm_->normal();
+                return false;
 
             case Phase::WAIT:
                 /*
