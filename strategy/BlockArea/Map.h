@@ -21,6 +21,7 @@ namespace strategy{
 
         BlockPlace* ev3Is_;        //EV3の現在地
         bool ev3HasBlock_;//ブロック持ってるかどうかのフラグ false:持ってない true:持ってる
+        const int ev3DegreeAtEntry_ = 60;//ブロックエリアに入る時の車体角度
 
         std::unordered_map<std::string,BlockPlace*> blockIs_;//ブロックの現在地
         std::unordered_map<std::string,BlockPlace*> blockDestination_;//ブロックの目的地
@@ -34,11 +35,22 @@ namespace strategy{
             PUT
         };
         std::vector<BlockPlace*> routeBlockPlace_;//ルート(台座の羅列)
-        std::vector<MovePattern> routeMovePattern_;//ルートを通る時の行動パターン 上のMovePatternが入る
+        std::vector<MovePattern> routeMovePattern_;//ルートを通る時の行動パターン 下のMovePatternが入る
+
 
 
         drive::Catching* catching_;
         drive::Avoidance* avoidance_;
+
+        enum class PutProcess{
+            PUT,
+            AVOID,
+            END
+        };
+        PutProcess putProcess_ = PutProcess::PUT;//上のMovePattern でのPUT動作 の処理内容
+
+
+
 
         //運べるブロック  使ってない
         bool flag_red;
@@ -93,7 +105,6 @@ namespace strategy{
          */
         bool runPath();
 
-        std::vector<BlockPlace*> getrouteBlockPlace();
     };
 
 }

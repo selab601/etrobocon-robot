@@ -207,36 +207,67 @@ namespace strategy{
 
 
     bool Map::runPath(){
-        static int patternNumber = 0;
+        static unsigned int patternNumber = 0;//実行中のpathのNo. routeBlockPlace_ と routeMovePattern_ は対応してるのでこれで一括管理
+        int degreeForCatching;
         //pathを順に見てく
-        // for(int i = 0; i < routeMovePattern_.size() ; i++ ){
         if(patternNumber < routeMovePattern_.size()){
 
             //その置き場での行動パターンを確認
             switch(routeMovePattern_[patternNumber]){
                 case MovePattern::CATCH:
-                            if(catching_->run(routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]), routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]))){
+                            //patternNumber = 0 のときはCATCH　エリア進入時には前の台座は存在しないので定数で角度を計算
+                            if(patternNumber == 0){degreeForCatching = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - ev3DegreeAtEntry_;}
+                            else{degreeForCatching = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]);}
+
+                            if(catching_->run(routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),degreeForCatching)){
                                 patternNumber++;
                             }
                             break;
                 case MovePattern::AVOID:
-                            //avoidance_->runTo(int currentMm, int dstMMm, int degree);
+                            if(avoidance_->runTo( routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]),
+                                                 routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),
+                                                 routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]) ))
+                            {
+                                patternNumber++;
+                            }
                             break;
                 case MovePattern::PUT:
-                            //catching_->putBlock();
+                            //PUTの時はAVOIDもしないと次の置き場に移動できてない　のでputProcess_でPUT動作を管理
+                            switch(putProcess_){
+                                case PutProcess::PUT:
+                                        if(catching_->putBlock() ){
+                                            putProcess_ = PutProcess::AVOID; //次のputProcess_へ
+                                        }
+                                        break;
+                                case PutProcess::AVOID:
+                                        if(avoidance_->runTo(routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]),
+                                                             routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),
+                                                             routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]) ))
+                                        {
+                                             putProcess_ = PutProcess::END; //次のputProcessへ
+                                        }
+                                     break;
+                                case PutProcess::END:
+                                     break;
+                            }
+
+                            if(putProcess_ == PutProcess::END){
+                                putProcess_ = PutProcess::PUT;
+                                patternNumber++;
+
+                            }
                             break;
 
-            }
+            }//end switch
 
 
+            return false;
+        }//end if
+        else{return true;}
 
-        }
-        // avoidance_->hasBlock(bool hasBlock);
-
-        return true;
     }
 
-    std::vector<BlockPlace*> Map::getrouteBlockPlace(){return routeBlockPlace_;}
+
 
 
 }

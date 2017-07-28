@@ -32,10 +32,8 @@ namespace contest_pkg{
 
         if(course == SelectedCourse::L_COURSE){
         sections_.emplace_back(new LCourseStandard());
-        //相撲
-        sections_.emplace_back(new ETSumoNeo());
-        //懸賞
-        sections_.emplace_back(new PrizeTailVer());
+        //ブロックエリア
+        sections_.emplace_back(new BlockAreaGame());
 
         // ゴール後にしっぽふりふり
         // タッチセンサ押したら上向けて止める
