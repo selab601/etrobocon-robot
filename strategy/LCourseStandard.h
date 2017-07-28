@@ -1,3 +1,4 @@
+
 #ifndef _LCOURSE_STANDARD_H
 #define _LCOURSE_STANDARD_H
 
@@ -8,7 +9,7 @@
 #include "../measurement/BodyAngleMeasurement.h"
 #include <vector>
 
-#define LCOURSE_SHORTCUT_LENGTH 25     // ショートカットする長さ[mm]
+#define LCOURSE_SHORTCUT_LENGTH 0     // ショートカットする長さ[mm]
 
 namespace strategy{
     class LCourseStandard : public IStrategy{
@@ -27,24 +28,22 @@ namespace strategy{
                 CURVE1,
                 CURVE2,
                 CURVE3,
+                CURVE4,
+                CURVE5,
                 LINE_IGNORE,
             };
 
             std::vector<Phase> phaseProcedure_{
                 Phase::LINETRACE1,
                 Phase::CURVE1,
-                Phase::LINETRACE2,
                 Phase::CURVE2,
-                Phase::LINETRACE3,
-                //Phase::CHANGEEDGE,
-                Phase::CHANGEEDGE_R_L,
-                //Phase::LINE_IGNORE,
-                Phase::LINETRACE4,
+                Phase::LINETRACE2,
                 Phase::CURVE3,
-                Phase::LINETRACE5,
-                //Phase::CHANGEEDGE,
-                Phase::CHANGEEDGE_L_R,
-                Phase::LINETRACE6,
+                Phase::LINETRACE3,
+                Phase::CURVE4,
+                Phase::CURVE5,
+                Phase::LINETRACE4,
+                //Phase::LINE_IGNORE,
             };
 
             drive::LineTrace* linetrace_;
