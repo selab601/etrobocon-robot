@@ -29,7 +29,6 @@ namespace strategy{
     }
 
     bool BlockAreaEntry::capture(){
-        static drive::Catching catching = drive::Catching();
         switch(Status_){
             case Status::STANDBY:
                 //侵入場所の真横まで

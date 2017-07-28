@@ -38,7 +38,6 @@ namespace device
                           EV3_LCD_WIDTH,
                           EV3_LCD_HEIGHT,
                           EV3_LCD_WHITE);
-        free(outputStrBuffer_);
     }
 
     void Display::updateDisplay(const char* str, int col){

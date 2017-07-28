@@ -1,102 +1,69 @@
 #ifndef CATCHING_H
 #define CATCHING_H
 
-#include "./PivotTurn.h"
-#include "./Destination.h"
-#include "./Avoidance.h"
 #include "../measurement/BodyAngleMeasurement.h"
+#include "../measurement/DistanceMeasurement.h"
 #include "./CurveRunning.h"
 #include "./LineTrace.h"
+#include "./StraightRunning.h"
 #include "../detection/ColorDetection.h"
-#include "../device/ColorSensor.h"
 #include <stdlib.h>
 
-#define TO_LINE_LENGTH 165  // 6センチになる！
+#define CATCHING_PWM 30
+#define CATCHING_LINETRACE_PWM 20
+
 namespace drive
 {
     class Catching{
         private:
-
-            enum class State
+            //走行状態
+            enum class Phase
             {
-                INIT,
-                TURN_RIGHT,
-                TO_BLOCK,
-                TURN,
-                TO_LINE,
-                FINISHED,
+                START_LINE_TRACE,//色検知までライントレース
+                STRAIGHT,        //直進走行(角度が大きい場合)
+                CURVE,           //台座の上でカーブ走行
+                END_LINE_TRACE   //カーブ後のライントレース
             };
 
-            // 方向を変えてから取得するときの状態
-            enum class ChangeDirectionState{
-                INIT,
-                AVOIDANCE,
-                TURN,
-                TURN_TO_LINE,
-                CATCHING,
-                FINISHED,
-            };
+            Phase phase_ = Phase::START_LINE_TRACE;
 
-            enum class TurnState{
-                INIT,
-                TURN,
-                FINISHED,
-            };
-            State state_ = State::INIT;
-            TurnState turnState_ = TurnState::INIT;
+            measurement::BodyAngleMeasurement* bodyAngleMeasurement_;
+            measurement::DistanceMeasurement* distanceMeasurement_;
 
-            Destination* destination_;
+            detection::ColorDetection* colorDetection_;
+
+            CurveRunning* curveRunning_;
+            LineTrace* lineTrace_;
+            StraightRunning* straightRunning_;
+
+            LineTraceEdge startEdge_;
+            LineTraceEdge endEdge_;
+
+            int correction_;
+
 
         public:
+            //コンストラクタ
             Catching();
 
-            enum class TurnDirection{
-                RIGHT,
-                LEFT,
-                STRAIGHT,
-                BACK,
-            };
+            /**
+             * @brief 台座上走行
+             *
+             * @param digree カーブする角度(-180<=digree<=180)
+             * @return true:走行終了,false:走行中
+             */
+            bool run(int digree);
 
             /**
-             * @brief ブロックを取得する
+             * @brief 現在運んでるブロックを台座の上に置く
              *
-             * @param x 目的地のx座標
-             * @param y 目的地のy座標
-             *
-             * @return 終了したらtrue
+             * @param lineDistance 走行しているラインの距離
+             * @return true:設置完了,false:設置中
              */
-            bool catchBlock(int x, int y);
-
-
-            /**
-             * @brief ブロックを取得する
-             *
-             * @param destination 目的地の座標
-             *
-             * @return 終了したらtrue
-             */
-            bool catchBlock(BlockAreaCoordinate destination);
-
-            /**
-             * @brief ブロックを取得する
-             *
-             * @param direction 取得してから進む方向
-             *
-             * @return 終了したらtrue
-             */
-            bool catchBlock(TurnDirection direction );
-
-            bool putBlock();
+            bool putBlock(int lineDistance = 450);
 
         private:
-            bool catchBackBlock();
-            bool turn(int degree);
-            bool turn(TurnDirection direction);
-            bool straight(int length);
-            DirectionKind getAdvancableDirection();
 
-            bool daizaDetected();
-            void stop();
     };
 }
 #endif

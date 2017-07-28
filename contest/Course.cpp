@@ -22,8 +22,8 @@ namespace contest_pkg{
 
         //それぞれのコースの戦略やライントレースを追加していく
         if(course == SelectedCourse::R_COURSE){
-        //ブロック並べ
         sections_.emplace_back(new RCourseStandard());
+        sections_.emplace_back(new ETSumoNeo());
 
         // ゴール後にしっぽふりふり
         // タッチセンサ押したら上向けて止める

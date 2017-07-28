@@ -12,6 +12,7 @@ namespace drive{
         blockColorGetter_     = BlockColorGetter();
         pushingOutRunning_    = new PushingOutRunning();
         forcingOutRunning_    = new ForcingOutRunning();
+        straightRunning_      = new StraightRunning();
         lineDetection_        = new LineDetection();
         colorDetection_       = new ColorDetection();
         rightAngledDetection_ = new RightAngledDetection();
@@ -27,6 +28,7 @@ namespace drive{
         isRightCurve_       = false;
         isRightForcingOut_  = false;
         turnAngle_          = 0;
+        turnAngleLittle_    = 0;
     }
 
     bool Efforts::run(int positionNumber){
@@ -56,11 +58,12 @@ namespace drive{
             //左手前:1,右手前:2,左奥:3,右奥4
             case 1:
                 //寄り切り走行の向き
-                isRightForcingOut_  = true;
+                isRightForcingOut_  = false;
                 //旋回後のライン復帰の向き
                 isRightCurve_       = true;
                 //旋回角度
                 turnAngle_          = 210;
+                turnAngleLittle_    = 10;
                 //台座までのライントレースのエッジ
                 startEdge_          = LineTraceEdge::RIGHT;
                 //帰るときのライントレースのエッジ
@@ -68,15 +71,16 @@ namespace drive{
                 return true;
 
             case 2:
-                isRightForcingOut_  = false;
+                isRightForcingOut_  = true;
                 isRightCurve_       = false;
                 turnAngle_          = -210;
+                turnAngleLittle_    = 10;
                 startEdge_          = LineTraceEdge::LEFT;
                 endEdge_            = LineTraceEdge::RIGHT;
                 return true;
 
             case 3:
-                isRightForcingOut_  = false;
+                isRightForcingOut_  = true;
                 isRightCurve_       = true;
                 turnAngle_          = -150;
                 startEdge_          = LineTraceEdge::RIGHT;
@@ -84,7 +88,7 @@ namespace drive{
                 return true;
 
             case 4:
-                isRightForcingOut_  = true;
+                isRightForcingOut_  = false;
                 isRightCurve_       = false;
                 turnAngle_          = 150;
                 startEdge_          = LineTraceEdge::LEFT;
@@ -113,9 +117,26 @@ namespace drive{
                 return pushingOutRunning_->run(20,100);
             }
 
+        //バック
+        case Phase::BACK:
+            if(positionNumber_ == 1 || positionNumber_ == 2){
+                distanceMeasurement_->start(10);
+                straightRunning_->run(-30);
+                return distanceMeasurement_->getResult();
+            }else{
+                return true;
+            }
         //旋回
         case Phase::PIVORT_TURN:
             return pivotTurn_->turn(turnAngle_,40);
+
+        //すこし旋回
+        case Phase::PIVORT_TURN_LITTLE:
+            if(positionNumber_ == 1 || positionNumber_ == 2){
+                return pivotTurn_->turn(turnAngleLittle_,20);
+            }else{
+                return true;
+            }
 
         //ライン復帰
         case Phase::TURN_TO_LINE:
@@ -128,8 +149,8 @@ namespace drive{
 
         //帰りのライントレース
         case Phase::LINETRACE_RIGHT_ANGLED:
-            distanceMeasurement_->start(20);
-            lineTrace_->run(15,endEdge_,0.4);
+            distanceMeasurement_->start(30);
+            lineTrace_->run(15,endEdge_,0.6);
             return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
         }
         return false;

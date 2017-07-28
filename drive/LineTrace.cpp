@@ -66,6 +66,10 @@ namespace drive{
         return 1000.0 / (double)(LINETRACE_TREAD * deltaRad + 1000);
     }
 
+    LineTraceEdge LineTrace::getEdge(){
+        return edge_;
+    }
+
     void LineTrace::calculatePwm(int maxPwm, int deltaRad ,LineTraceEdge edge){
 
         int lPwm;

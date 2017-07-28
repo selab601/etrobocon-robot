@@ -42,16 +42,10 @@ namespace communication {
             ev3_lcd_draw_string("Push enter to exit", 0, 10);
 
             /* 接続待機 */
-            bool pressState = false;
             while(!ev3_bluetooth_is_connected()) {
-                if (ev3_button_is_pressed(ENTER_BUTTON)) {
-                    pressState = true;
-                } else {
-                    // ボタンが離されていて，且つ過去に押されていたら
-                    if (pressState == true) {
-                        close();
-                        return false;
-                    }
+                if (device::Buttons::getInstance()->enterClicked()) {
+                    close();
+                    return false;
                 }
             }
 
@@ -95,25 +89,28 @@ namespace communication {
                     "\"hsv_h\":%d,\"hsv_s\":%d,\"hsv_v\":%d,"
                     "\"arm_count\":%ld,\"left_count\":%ld,\"right_count\":%ld,"
                     "\"length\":%ld,\"angle\":%d,"
-                    "\"coordinate_x\":%ld,\"coordinate_y\":%ld}\n",
+                    "\"coordinate_x\":%ld,\"coordinate_y\":%ld,"
+                    "\"battery_ma\":%d,\"battery_mv\":%d}\n",
                     clock_->now(),
                     gyro_->getAnglerVelocity(),
                     touch_->isPressed() ? 1 : 0,
                     sonar_ != 0? sonar_->getDistance(): 0,
                     color_->getBrightness(),
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
+                    color_->getR(), // color r
+                    color_->getG(), // color g
+                    color_->getB(), // color b
+                    color_->getH(), // color h
+                    color_->getS(), // color s
+                    color_->getV(), // color v
                     motors_->getCount(device::MOTOR_ARM),
                     motors_->getCount(device::MOTOR_LEFT),
                     motors_->getCount(device::MOTOR_RIGHT),
                     selfPositionEstimation_->getMigrationLength(),
                     selfPositionEstimation_->getAngle(),
                     selfPositionEstimation_->getLocationX(),
-                    selfPositionEstimation_->getLocationY()
+                    selfPositionEstimation_->getLocationY(),
+                    ev3_battery_current_mA(),   // バッテリ電流
+                    ev3_battery_voltage_mV()    // バッテリ電圧
                 );
         }
 
