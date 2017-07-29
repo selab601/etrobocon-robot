@@ -1,6 +1,5 @@
 #include "Map.h"
 #include "math.h"
-#include "../../communication/BtManager.h" //デバック用
 
 using namespace drive;
 
@@ -124,9 +123,6 @@ namespace strategy{
 
     void Map::makeRoute1(){
 
-        //とりあえず通るブロック置き場の羅列ができるようにする
-        //getrouteBlockPlace() で確認
-
         //ブロックの目的地設定
         blockDestination_["RED"]    = blockPlaces_[14];
         blockDestination_["BLUE"]   = blockPlaces_[9];
@@ -151,18 +147,12 @@ namespace strategy{
             blockIs_[nextCarryBlockColor_] =  blockDestination_[nextCarryBlockColor_];
 
         }
-        // Todo
-        // 初期位置で黒ブロックが赤色置き場に置かれてた場合の処理
 
-                                            sprintf(message, "-------退出開始-------\n");
-                                           communication::BtManager::getInstance()->setMessage(message);
-                                           communication::BtManager::getInstance()->send();
-        //ブロック並べエリアから退出するためのルート
+        //ブロック並べエリアから退出するためのルート算出
         makePath(blockPlaces_[11]);
         makePath(blockPlaces_[4]);
         //終了に行動パターンを変更
         routeMovePattern_[routeMovePattern_.size()] = MovePattern::END;
-
     }
 
 
@@ -212,43 +202,17 @@ namespace strategy{
             }
             else{
                 routeBlockPlace_.push_back(candidatePlace);//pathに追加
-                //addしたpathを出力
-                sprintf(message, "%d:",candidatePlace->getId());
-                communication::BtManager::getInstance()->setMessage(message);
-                communication::BtManager::getInstance()->send();
-
-                if(checkBlock(candidatePlace)){routeMovePattern_.push_back(MovePattern::AVOID);
-                                           sprintf(message, "AVOID->\n");
-                                           communication::BtManager::getInstance()->setMessage(message);
-                                           communication::BtManager::getInstance()->send();
-                }//ブロックがあったら避ける
-                else{routeMovePattern_.push_back(MovePattern::CATCH);
-                     sprintf(message, "CATCH->\n");
-                     communication::BtManager::getInstance()->setMessage(message);
-                    communication::BtManager::getInstance()->send();
-                }//ブロックがなかったら避けない
+                if(checkBlock(candidatePlace)){routeMovePattern_.push_back(MovePattern::AVOID);}//ブロックがあったら避ける
+                else{routeMovePattern_.push_back(MovePattern::CATCH);}//ブロックがなかったら避けない
             }
             ev3Is_ = candidatePlace;//位置更新
             goalDegree = ev3Is_->getDegree(goal);//角度更新
             candidatePlace = ev3Is_->getNextPlace(goalDegree);//次の置き場を聞く
         }
         routeBlockPlace_.push_back(candidatePlace);//pathに追加 ゴール
-        sprintf(message, "%d:",candidatePlace->getId());
-        communication::BtManager::getInstance()->setMessage(message);
-        communication::BtManager::getInstance()->send();
 
-        if(ev3HasBlock_){routeMovePattern_.push_back(MovePattern::PUT);
-                                           sprintf(message, "PUT->\n");
-                                           communication::BtManager::getInstance()->setMessage(message);
-                                           communication::BtManager::getInstance()->send();
-
-        }//目的地に着いたのでブロックを置く
-        else{routeMovePattern_.push_back(MovePattern::CATCH);
-                                           sprintf(message, "CATCH->\n");
-                                           communication::BtManager::getInstance()->setMessage(message);
-                                           communication::BtManager::getInstance()->send();
-
-        }//目的地に着いたのでブロックを取る
+        if(ev3HasBlock_){routeMovePattern_.push_back(MovePattern::PUT);}//目的地に着いたのでブロックを置く
+        else{routeMovePattern_.push_back(MovePattern::CATCH);}//目的地に着いたのでブロックを取る
         ev3Is_ = candidatePlace;//位置更新
     }
 
@@ -265,6 +229,8 @@ namespace strategy{
             else{
                 degreeForCatching = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]);
             }
+
+            //degreeForCatching の結果が-270度とか出すのでdrive::Catchingがエラー出さないように調整
             while(degreeForCatching<0){
                 degreeForCatching += 360;
             }
@@ -278,10 +244,6 @@ namespace strategy{
                             //計算した角度でcatching
                             if(catching_->run(routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),degreeForCatching))
                             {
-
-                                           sprintf(message, "patternNumber:%d 置き場:%d->%d---complete CATCH degree:%d\n",patternNumber,routeBlockPlace_[patternNumber]->getId(),routeBlockPlace_[patternNumber+1]->getId(),degreeForCatching);
-                                           communication::BtManager::getInstance()->setMessage(message);
-                                           communication::BtManager::getInstance()->send();
                                 patternNumber++;
                             }
                             break;
@@ -290,9 +252,6 @@ namespace strategy{
                                                  routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),
                                                  degreeForCatching))
                             {
-                                           sprintf(message, "patternNumber:%d 置き場:%d->%d---complete AVOID 今の距離:%d 次の距離:%d degree:%d\n",patternNumber,routeBlockPlace_[patternNumber]->getId(),routeBlockPlace_[patternNumber+1]->getId(),routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]),routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),degreeForCatching);
-                                           communication::BtManager::getInstance()->setMessage(message);
-                                           communication::BtManager::getInstance()->send();
                                 patternNumber++;
                             }
                             break;
@@ -301,9 +260,6 @@ namespace strategy{
                             switch(putProcess_){
                                 case PutProcess::PUT:
                                         if(catching_->putBlock() ){
-                                           sprintf(message, "patternNumber:%d 置き場:%d---complete PUT(PUT)\n",patternNumber,routeBlockPlace_[patternNumber]->getId());
-                                           communication::BtManager::getInstance()->setMessage(message);
-                                           communication::BtManager::getInstance()->send();
                                             putProcess_ = PutProcess::AVOID; //次のputProcess_へ
                                         }
                                         break;
@@ -312,36 +268,24 @@ namespace strategy{
                                                              routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),
                                                              routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]) ))
                                         {
-                                           sprintf(message, "patternNumber:%d 置き場:%d---complete AVOID 今の距離:%d 次の距離:%d degree:%d\n",patternNumber,routeBlockPlace_[patternNumber]->getId(),routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]),routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]));
-                                           communication::BtManager::getInstance()->setMessage(message);
-                                           communication::BtManager::getInstance()->send();
                                              putProcess_ = PutProcess::END; //次のputProcessへ
                                         }
                                      break;
                                 case PutProcess::END:
                                      break;
                             }
-
                             if(putProcess_ == PutProcess::END){
                                 putProcess_ = PutProcess::PUT;
                                 patternNumber++;
-
                             }
                             break;
                 case MovePattern::END:
                             //最後は何もしない
-                                            sprintf(message, "!!!!!!!!END\n");
-                                           communication::BtManager::getInstance()->setMessage(message);
-                                           communication::BtManager::getInstance()->send();
                             break;
             }//end switch
             return false;
         }//end if
-        else{
-                                           sprintf(message, "complete BlockArea\n");
-                                           communication::BtManager::getInstance()->setMessage(message);
-                                           communication::BtManager::getInstance()->send();
-            return true;}
+        else{return true;}//end runPath()
 
     }
 }
