@@ -1,16 +1,17 @@
 #include "ParkingL.h"
 
+using namespace detection;
 using namespace drive;
 using namespace measurement;
 
 namespace strategy{
     ParkingL::ParkingL(){
-        //arm_                   = new Arm();
-        curveRunning_          = new CurveRunning();
+        lineTrace_             = LineTrace::getInstance();
         pivotTurn_             = new PivotTurn();
         straightRunning_       = new StraightRunning();
         distanceMeasurement_   = new DistanceMeasurement();
         timeMeasurement_       = new TimeMeasurement();
+        lineDetection_         = new LineDetection();
 
         strategySuccess_ = false;
     }
@@ -33,35 +34,42 @@ namespace strategy{
 
     bool ParkingL::executePhase(Phase phase){
         switch(phase){
-            case Phase::ADJUST:
-                //ブロック並べ終点から,後退して位置調整
-                distanceMeasurement_->start(185);
-                straightRunning_->run(-25);
-                return distanceMeasurement_->getResult();
+            case Phase::ADJUST1:
+                //ブロック並べ終点から位置調整用
+                return true;
             
             case Phase::PIVOT_TURN1:
-                return pivotTurn_->turn(-75);
+                return pivotTurn_->circleTurn(-90);
 
             case Phase::APPROACH:
-                distanceMeasurement_->start(650); //要調整
-                straightRunning_->run(50);
-                //return arm_->up() && distanceMeasurement_->getResult();
-                return distanceMeasurement_->getResult();
+                distanceMeasurement_->start(100);
+                straightRunning_->run(40);
+                return lineDetection_->getResult() && distanceMeasurement_->getResult();
 
             case Phase::PIVOT_TURN2:
-                return pivotTurn_->turn(90);
+                return pivotTurn_->turn(75);
 
-            case Phase::ENTRY:
-                distanceMeasurement_->start(300); //要調整
-                straightRunning_->run(50);
+            case Phase::LINETRACE:
+                distanceMeasurement_->start(380); //要調整
+                lineTrace_->run(40,LineTraceEdge::LEFT);
                 return distanceMeasurement_->getResult();
 
             case Phase::PIVOT_TURN3:
-                return pivotTurn_->turn(-90);
+                return pivotTurn_->circleTurn(90);
+
+            case Phase::ENTRY:
+                distanceMeasurement_->start(50); //要調整
+                straightRunning_->run(30);
+                return distanceMeasurement_->getResult();
+
+            case Phase::PIVOT_TURN4:
+                return pivotTurn_->circleTurn(-90);
+
+            case Phase::FINISH:
+                straightRunning_->run(0);
+                return false;
 
             case Phase::WAIT:
-                straightRunning_->run(0);
-                //arm->down();
                 /*
                 //x秒経つまでfalse,経ったらtrueでphase終了,にしたい
                 timeMeasurement_->setBaseTime();

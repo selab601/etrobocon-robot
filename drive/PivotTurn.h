@@ -1,5 +1,5 @@
 /**
- * @brief  超信地旋回　クラス
+ * @brief  超信地旋回・信地旋回　クラス
  */
 
 #ifndef _PIVOT_TURN_H
@@ -22,13 +22,22 @@ namespace drive
             PivotTurn();
 
             /**
-             * @brief degree度回転させる 左が正，右が負
+             * @brief 超信地旋回 degree度回転させる 左が正，右が負
              * @details 左方向に90度回転させるとき:turn(90)
              * @param degree 回転させる角度
              * @param speed  回転させる速さ(0~100, デフォルト:20)
              * @return 終了した場合true
              */
             bool turn(int degree, int speed = DEFAULT_TURN_SPEED);
+
+            /**
+             * @brief 信地旋回 degree度回転させる 左が正，右が負
+             * @details 左方向に90度回転させるとき:turn(90)
+             * @param degree 回転させる角度
+             * @param speed  回転させる速さ(0~100, デフォルト:20)
+             * @return 終了した場合true
+             */
+            bool circleTurn(int degree, int speed = DEFAULT_TURN_SPEED);
 
     private:
         device::Motors* motor_;
