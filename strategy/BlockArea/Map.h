@@ -31,7 +31,8 @@ namespace strategy{
         enum class MovePattern{
             CATCH,              //ブロックを掴んで移動 ブロックがない台座を移動 (兼用)
             AVOID,              //ブロック置き場を避けて移動する
-            PUT                 //ブロックを置く
+            PUT,                //ブロックを置く
+            END                 //終了
         };
         std::vector<BlockPlace*> routeBlockPlace_;//ルート(台座の羅列)
         std::vector<MovePattern> routeMovePattern_;//ルートを通る時の行動パターン 下のMovePatternが入る

@@ -85,9 +85,9 @@ namespace strategy{
 
         blockPlaces_[13]->next[180]  = blockPlaces_[12];
         blockPlaces_[13]->next[120]  = blockPlaces_[8];
-        //blockPlaces_[13]->next[0]    = blockPlaces_[14];
+        blockPlaces_[13]->next[0]    = blockPlaces_[14];
         //上下のラインは幅が狭いので機体が通らないので、対処としてラインの存在を消した
-        //blockPlaces_[14]->next[180]  = blockPlaces_[13];
+        blockPlaces_[14]->next[180]  = blockPlaces_[13];
         blockPlaces_[14]->next[60]   = blockPlaces_[9];
         blockPlaces_[14]->next[0]    = blockPlaces_[15];
 
@@ -151,6 +151,18 @@ namespace strategy{
             blockIs_[nextCarryBlockColor_] =  blockDestination_[nextCarryBlockColor_];
 
         }
+        // Todo
+        // 初期位置で黒ブロックが赤色置き場に置かれてた場合の処理
+
+                                            sprintf(message, "-------退出開始-------\n");
+                                           communication::BtManager::getInstance()->setMessage(message);
+                                           communication::BtManager::getInstance()->send();
+        //ブロック並べエリアから退出するためのルート
+        makePath(blockPlaces_[11]);
+        makePath(blockPlaces_[4]);
+        //終了に行動パターンを変更
+        routeMovePattern_[routeMovePattern_.size()] = MovePattern::END;
+
     }
 
 
@@ -245,19 +257,24 @@ namespace strategy{
         int degreeForCatching;
 
         //pathを順に見てく
-        if(patternNumber < routeMovePattern_.size()){
+        if(patternNumber < routeMovePattern_.size()-1){
+            //patternNumber = 0 のときはCATCH　エリア進入時には前の台座は存在しないので定数で角度を計算
+            if(patternNumber == 0){
+                degreeForCatching = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - ev3DegreeAtEntry_;
+            }
+            else{
+                degreeForCatching = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]);
+            }
+            while(degreeForCatching<0){
+                degreeForCatching += 360;
+            }
+            degreeForCatching += 180;
+            degreeForCatching %= 360;
+            degreeForCatching -= 180;
 
             //その置き場での行動パターンを確認
             switch(routeMovePattern_[patternNumber]){
                 case MovePattern::CATCH:
-                            //patternNumber = 0 のときはCATCH　エリア進入時には前の台座は存在しないので定数で角度を計算
-                            if(patternNumber == 0){
-                                degreeForCatching = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - ev3DegreeAtEntry_;
-                                // sprintf(message, "patternNumber:%d 置き場:%d->%d---complete CATCH degree:%d - %d = %d\n",patternNumber,routeBlockPlace_[patternNumber]->getId(),routeBlockPlace_[patternNumber+1]->getId(),routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]),ev3DegreeAtEntry_,degreeForCatching);
-                                // communication::BtManager::getInstance()->setMessage(message);
-                                // communication::BtManager::getInstance()->send();
-                            }
-                            else{degreeForCatching = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]);}
                             //計算した角度でcatching
                             if(catching_->run(routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),degreeForCatching))
                             {
@@ -271,9 +288,9 @@ namespace strategy{
                 case MovePattern::AVOID:
                             if(avoidance_->runTo(routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]),
                                                  routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),
-                                                 routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]) ))
+                                                 degreeForCatching))
                             {
-                                           sprintf(message, "patternNumber:%d 置き場:%d->%d---complete AVOID 今の距離:%d 次の距離:%d degree:%d\n",patternNumber,routeBlockPlace_[patternNumber]->getId(),routeBlockPlace_[patternNumber+1]->getId(),routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]),routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]));
+                                           sprintf(message, "patternNumber:%d 置き場:%d->%d---complete AVOID 今の距離:%d 次の距離:%d degree:%d\n",patternNumber,routeBlockPlace_[patternNumber]->getId(),routeBlockPlace_[patternNumber+1]->getId(),routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]),routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),degreeForCatching);
                                            communication::BtManager::getInstance()->setMessage(message);
                                            communication::BtManager::getInstance()->send();
                                 patternNumber++;
@@ -311,10 +328,20 @@ namespace strategy{
 
                             }
                             break;
+                case MovePattern::END:
+                            //最後は何もしない
+                                            sprintf(message, "!!!!!!!!END\n");
+                                           communication::BtManager::getInstance()->setMessage(message);
+                                           communication::BtManager::getInstance()->send();
+                            break;
             }//end switch
             return false;
         }//end if
-        else{return true;}
+        else{
+                                           sprintf(message, "complete BlockArea\n");
+                                           communication::BtManager::getInstance()->setMessage(message);
+                                           communication::BtManager::getInstance()->send();
+            return true;}
 
     }
 }
