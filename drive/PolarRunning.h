@@ -35,6 +35,7 @@ namespace drive{
         int traceMaxPwm_;
         int maxPwm_ = 40;
         int isTurnInit_ = true;
+        int isBack_ = false;
 
         int currentDegree10_ = 0;
         int turnSpeed_ = 0;
@@ -125,6 +126,12 @@ namespace drive{
          */
         int getLeftDeg10();
 
+        /**
+         * @brief バックで移動するかセットする
+         *
+         * @param isBack バックで移動する時true
+         */
+        void back(bool isBack);
     private:
 
         /**

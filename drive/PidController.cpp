@@ -44,6 +44,11 @@ namespace drive{
             rPwm_ = maxPwm_;
             lPwm_ = getRateByDeltaRad(deltaRad) * (double)maxPwm_;
         }
+        if (0 > maxPwm_){ // 後ろに進むときは左右逆にする
+            int lTmp = lPwm_;
+            lPwm_ = rPwm_;
+            rPwm_ = lTmp;
+        }
     }
 
     double PidController::calculatePid(int controllTarget){
