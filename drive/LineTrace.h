@@ -17,12 +17,6 @@
 #include "../measurement/DistanceMeasurement.h"
 #include <Clock.h>
 
-//ほぼ直線用のデフォルト値
-//linetrace_->setPid();でこの値になる。
-#define DEFAULT_KP          0.003F /* PID処理のデフォルトのP値 */
-#define DEFAULT_KI          0.00000003333333F    /* PID処理のデフォルトのI値 */
-#define DEFAULT_KD          0.2F   /* PID処理のデフォルトのD値 */
-
 #define DEFAULT_TARGET      0.5F    /* 明るさセンサの目標値となる値の黒の割合のデフォルト値*/
 #define DEFAULT_MAXPWM      80      /* デフォルトのmaxPwm値*/
 
@@ -172,7 +166,7 @@ namespace drive{
          * @param kd D制御の係数
          * @sa run
          */
-        void setPid(double kp = DEFAULT_KP, double ki = DEFAULT_KI, double kd = DEFAULT_KD);
+        void setPid(double kp, double ki, double kd);
 
 
         /**

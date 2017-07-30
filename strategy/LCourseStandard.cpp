@@ -38,7 +38,7 @@ namespace strategy{
         case Phase::LINETRACE1:
             startDistanceMeasurement(2500 - LCOURSE_SHORTCUT_LENGTH);
             lineTraceReset();
-            linetrace_->setPid();
+            linetrace_->setPid(LineTracePid::VERY_FAST);
             linetrace_->run(80,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
@@ -54,7 +54,7 @@ namespace strategy{
             //return fixedDistanceCurveLineTrace(700,-1050);
 
         case Phase::LINETRACE2:
-            linetrace_->setPid();
+            linetrace_->setPid(LineTracePid::VERY_FAST);
             return fixedDistanceLineTrace(1250 - LCOURSE_SHORTCUT_LENGTH,80,LineTraceEdge::RIGHT);
 
         case Phase::CURVE2:
@@ -63,7 +63,7 @@ namespace strategy{
             return fixedDistanceCurveLineTrace(700,380);
 
         case Phase::LINETRACE3:
-            linetrace_->setPid();
+            linetrace_->setPid(LineTracePid::VERY_FAST);
             return fixedDistanceLineTrace(300,40,LineTraceEdge::RIGHT);
 
         case Phase::CHANGEEDGE:
@@ -80,7 +80,7 @@ namespace strategy{
             return distanceMeasurement_->getResult();
 
         case Phase::LINETRACE4:
-            linetrace_->setPid();
+            linetrace_->setPid(LineTracePid::VERY_FAST);
             return fixedDistanceLineTrace(400,80,LineTraceEdge::LEFT);
 
         case Phase::CURVE3:
@@ -90,11 +90,11 @@ namespace strategy{
             return fixedDistanceCurveLineTrace(800,320);
 
         case Phase::LINETRACE5:
-            linetrace_->setPid();
+            linetrace_->setPid(LineTracePid::VERY_FAST);
             return fixedDistanceLineTrace(300,40,LineTraceEdge::LEFT);
 
         case Phase::LINETRACE6:
-            linetrace_->setPid();
+            linetrace_->setPid(LineTracePid::VERY_FAST);
             return fixedDistanceLineTrace(800,70,LineTraceEdge::RIGHT);
 
         //ライン無視走行

@@ -101,7 +101,7 @@ namespace drive{
         //台座に向かうライントレース
         case Phase::LINETRACE_TO_DAIZA:
             // lineTraceReset();
-            lineTrace_->setPid();
+            lineTrace_->setPid(LineTracePid::MID);
             lineTrace_->run(15,startEdge_,0.4);
             return colorDetection_->isFourColors();
 

@@ -5,7 +5,6 @@
  */
 #include "Course.h"
 #include "../strategy/ETSumoNeo.h"
-#include "../strategy/PrizeTailVer.h"
 #include "../strategy/Shippofurifuri.h"
 
 using namespace strategy;
@@ -34,8 +33,6 @@ namespace contest_pkg{
         sections_.emplace_back(new LCourseStandard());
         //相撲
         sections_.emplace_back(new ETSumoNeo());
-        //懸賞
-        sections_.emplace_back(new PrizeTailVer());
 
         // ゴール後にしっぽふりふり
         // タッチセンサ押したら上向けて止める

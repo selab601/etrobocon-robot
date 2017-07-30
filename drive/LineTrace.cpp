@@ -21,7 +21,7 @@ namespace drive{
         whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
         setMaxPwm();
         setEdge(LineTraceEdge::RIGHT);
-        setPid();
+        setPid(LineTracePid::MID);
         setTarget();
     }
 
