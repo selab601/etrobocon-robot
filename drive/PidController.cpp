@@ -25,7 +25,10 @@ namespace drive{
     }
     void PidController::run(int controllTarget){
         calculatePwm( 1000 * calculatePid(controllTarget) );
+        run();
+    }
 
+    void PidController::run(){
         motors_->setPWM(device::MOTOR_LEFT, lPwm_);
         motors_->setPWM(device::MOTOR_RIGHT, rPwm_);
     }

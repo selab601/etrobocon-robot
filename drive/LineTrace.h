@@ -11,11 +11,10 @@
 #ifndef LINE_TRACE_
 #define LINE_TRACE_
 
-#include <math.h>
 #include "../device/ColorSensor.h"
 #include "../device/Motors.h"
 #include "../measurement/DistanceMeasurement.h"
-#include <Clock.h>
+#include "PidController.h"
 
 #define DEFAULT_TARGET      0.5F    /* 明るさセンサの目標値となる値の黒の割合のデフォルト値*/
 #define DEFAULT_MAXPWM      80      /* デフォルトのmaxPwm値*/
@@ -70,22 +69,10 @@ namespace drive{
             END
         };
 
-        // キャリブレーション値
-        int whiteValue_;            //白のキャリブレーション値を10倍したもの
-        int blackValue_;            //黒のキャリブレーション値を10倍したもの
+        //! PID制御
+        PidController pidController_;
 
-        int targetValue_ = 0;            // ターゲット値：ターゲット目標値を元に算出される(明るさセンサの値を10倍した時の)光センサの目標値
-
-        int diff_[2];               // 明るさの値を10倍し、ターゲット値との差分をとったもの
-        int timeMs_[2];
-        int integrated_ = 0;
-        bool usePid_ = false;
-
-        int maxPwm_;
-
-        double  kp_;
-        double  ki_;
-        double  kd_;
+        int targetValue10_ = 0;            // ターゲット値：ターゲット目標値を元に算出される(明るさセンサの値を10倍した時の)光センサの目標値
 
         int margin_;
 
@@ -94,6 +81,8 @@ namespace drive{
 
         //エッジ切り替えメソッドでの状態
         LineTraceEdgeChangePhase edgeChangeStatus_ = LineTraceEdgeChangePhase::ACROSS;
+        //! エッジ切り替えでメソッドで使う
+        int maxPwm_ = 0;
 
         // エッジ切り替え2での状態
         ChangeEdge2Phase changeEdge2Phase_ = ChangeEdge2Phase::INIT;
@@ -103,8 +92,8 @@ namespace drive{
 
         // Device
         device::ColorSensor* colorSensor_;
+        //! エッジ切り替えメソッドで使う
         device::Motors* motors_;
-        Clock clock_;
 
     public:
 
@@ -218,32 +207,6 @@ namespace drive{
         LineTraceEdge getEdge();
 
     private:
-
-        /**
-         * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
-         * @param edge  ライントレースするエッジ(RIGHT,LEFT)
-         * @param maxPwm モータのPWMの最大値
-         * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 左側に曲がるときが正の値
-
-         * @author Nagaoka
-         */
-        void calculatePwm(int maxPwm, int deltaRad, LineTraceEdge edge);
-
-        /**
-         * @brief PID制御の計算を行う
-         * @details ターゲット値よりも黒寄りにいる時、負の値を返す
-         * @author Nagaoka
-         **/
-        double calculatePid(int brightness, int timeMs);
-
-        /**
-         * @brief 内側のタイヤが進んだ距離あたりの角度の変化[milli rad]から、外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
-                  ソース内の計算式は上記の省略(証明略)
-         * @details
-         * @param deltaRad 内側のタイヤが進んだ距離あたりの車体の角度の変化(deltarad >= 0)[milli rad]
-         * @author Nagaoka
-         **/
-        double getRateByDeltaRad(int deltaRad);
 
     }; //end of class
 };

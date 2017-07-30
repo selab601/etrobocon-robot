@@ -5,7 +5,6 @@
  */
 
 #include "LineTrace.h"
-#include "../device/Display.h"
 
 namespace drive{
 
@@ -15,10 +14,8 @@ namespace drive{
         motors_ = device::Motors::getInstance();
         colorSensor_ = device::ColorSensor::getInstance();
         distanceMeasurement_ = new DistanceMeasurement();
-        clock_ = Clock();
         reset();
-        blackValue_ = 10 * colorSensor_->getBlackCalibratedValue();
-        whiteValue_ = 10 * colorSensor_->getWhiteCalibratedValue();
+
         setMaxPwm();
         setEdge(LineTraceEdge::RIGHT);
         setPid(LineTracePid::MID);
@@ -33,22 +30,26 @@ namespace drive{
 
     void LineTrace::run(int maxPwm,LineTraceEdge edge ,double relativeTarget){
         setTarget(relativeTarget);
+        setEdge(edge);
         setMaxPwm(maxPwm);
-        calculatePwm(maxPwm, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,edge);
+        run();
     }
 
     void LineTrace::run(){
-        calculatePwm(maxPwm_, (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,edge_);
+        runCurve(0);
     }
 
     void LineTrace::runCurve(int deltaRad){
-        if(edge_ == LineTraceEdge::LEFT){
-            deltaRad *= -1;
+        int controllValue = targetValue10_ - colorSensor_->getBrightness()*10;
+        if(edge_ == LineTraceEdge::RIGHT){
+            controllValue *= -1;
         }
-        calculatePwm(maxPwm_, deltaRad + (int)(calculatePid(colorSensor_->getBrightness(), clock_.now()) * (double)1000) ,edge_);
+        pidController_.calculatePwm(1000*pidController_.calculatePid(controllValue) + deltaRad);
+        pidController_.run();
     }
 
     void LineTrace::setMaxPwm(int maxPwm){
+        pidController_.setMaxPwm(maxPwm);
         maxPwm_ = maxPwm;
     }
 
@@ -56,10 +57,12 @@ namespace drive{
         edge_ = edge;
     }
 
+    LineTraceEdge LineTrace::getEdge(){
+        return edge_;
+    }
+
     void LineTrace::setPid(double kp, double ki, double kd){
-        kp_ = kp;
-        ki_ = ki;
-        kd_ = kd;
+        pidController_.setPid(kp, ki, kd);
     }
 
     void LineTrace::setPid(LineTracePid pidPattern){
@@ -82,90 +85,20 @@ namespace drive{
         }
     }
 
-    double LineTrace::getRateByDeltaRad(int deltaRad){
-        return 1000.0 / (double)(LINETRACE_TREAD * deltaRad + 1000);
-    }
-
-    LineTraceEdge LineTrace::getEdge(){
-        return edge_;
-    }
-
-    void LineTrace::calculatePwm(int maxPwm, int deltaRad ,LineTraceEdge edge){
-
-        int lPwm;
-        int rPwm;
-
-        if(edge == LineTraceEdge::RIGHT){
-            if (deltaRad < 0 ){
-                deltaRad *= -1;
-                lPwm = maxPwm;
-                rPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
-            }
-            else{
-                rPwm = maxPwm;
-                lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
-            }
-        }
-        else{/*Edge == LEFT*/
-            if (deltaRad < 0 ){
-                deltaRad *= -1;
-                rPwm = maxPwm;
-                lPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
-            }
-            else{
-                lPwm = maxPwm;
-                rPwm = getRateByDeltaRad(deltaRad) * (double)maxPwm;
-            }
-        }
-        motors_->setPWM(device::MOTOR_LEFT, lPwm);
-        motors_->setPWM(device::MOTOR_RIGHT, rPwm);
-
-        device::Display::getInstance()->updateDisplay("deltaRad", deltaRad, 7); // TODO: delete
-        device::Display::getInstance()->updateDisplay("rate", 100.0 * getRateByDeltaRad(deltaRad), 8);// TODO: delete
-        device::Display::getInstance()->updateDisplay("PWM L", lPwm, 9);// TODO: delete
-        device::Display::getInstance()->updateDisplay("PWM R", rPwm, 10);// TODO: delete
-    }
-
-    double LineTrace::calculatePid(int brightness, int timeMs){
-        diff_[1] = diff_[0];
-        timeMs_[1] = timeMs_[0];
-
-        diff_[0] = brightness*10 - targetValue_;
-        timeMs_[0] = timeMs;
-
-        int timeDiff = timeMs_[0] - timeMs_[1];
-
-        // 積分の計算
-        integrated_ += timeDiff * (diff_[1] + diff_[0]) / 2;
-
-        // I、D制御の情報が揃っていない時、P制御の値を返す
-        double turn;
-        if (usePid_ == false){
-            turn = kp_ * (double)diff_[0];
-            usePid_ = true;
-        }
-        else{
-            turn = kp_ * (double)diff_[0] +
-                   ki_ * (double)integrated_ +
-                   kd_ * (double)(diff_[0] - diff_[1]) / (double)timeDiff;
-        }
-        return turn;
-    }
 
     void LineTrace::setTarget(double relativeTarget){
+        int black10 = 10 * colorSensor_->getBlackCalibratedValue();
+        int white10 = 10 * colorSensor_->getWhiteCalibratedValue();
         if(relativeTarget <= 0.0 || 1.0 <= relativeTarget){
-            targetValue_ = blackValue_ + (whiteValue_ - blackValue_) * DEFAULT_TARGET;
+            targetValue10_ = black10 + (white10 - black10) * DEFAULT_TARGET;
         }
         else{
-            targetValue_ = blackValue_ + (whiteValue_ - blackValue_) * relativeTarget;
+            targetValue10_ = black10 + (white10 - black10) * relativeTarget;
         }
     }
 
     void LineTrace::reset(){
-        usePid_  = false;
-        integrated_ = 0;
-        diff_[1] = diff_[0] = 0;
-        timeMs_[1] = timeMs_[0] = clock_.now();
+        pidController_.reset();
 
         // エッジ切り替えの状態のリセット
         edgeChangeStatus_ = LineTraceEdgeChangePhase::ACROSS;
@@ -190,7 +123,7 @@ namespace drive{
                 }
 
                 //光の値から今いる場所を確認
-                margin_= colorSensor_->getBrightness()*10 - blackValue_;
+                margin_= colorSensor_->getBrightness()*10 - colorSensor_->getBlackCalibratedValue();
 
                 //黒のキャリブ値との差が一定以下(15以下)になったら設定エッジの変更
                 if(margin_ < 15){
@@ -230,7 +163,7 @@ namespace drive{
         static DistanceMeasurement distanceMeasurement = DistanceMeasurement();
         switch(changeEdge2Phase_){
             case ChangeEdge2Phase::INIT:
-                preTargetValue = targetValue_;
+                preTargetValue = targetValue10_;
 
                 changeEdge2Phase_ = ChangeEdge2Phase::TO_MID_LINE;
                 break;
@@ -248,8 +181,7 @@ namespace drive{
                     setEdge(nextEdge);
 
                     // ライントレース情報の初期化(reset())
-                    integrated_ = 0;
-                    diff_[1] = diff_[0] = 0;
+                    pidController_.reset();
                 }
                 break;
 
@@ -264,7 +196,7 @@ namespace drive{
 
                 // ターゲット値を戻して終了
             case ChangeEdge2Phase::END:
-                this->targetValue_ = preTargetValue; // ターゲット値を戻す
+                this->targetValue10_ = preTargetValue; // ターゲット値を戻す
                 changeEdge2Phase_ = ChangeEdge2Phase::INIT; // 初期状態に戻す
                 return true;
         }
