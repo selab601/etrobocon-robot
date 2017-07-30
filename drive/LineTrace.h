@@ -38,6 +38,27 @@ namespace drive{
         LEFT
     };
 
+    /**
+     * @brief ライントレースのPIDパラメータのパターン
+     * @details 上にあるものほど反応が悪く、下にあるものほど反応が良い
+     */
+    enum class LineTracePid{
+        //! 反応は悪いけど速い(PWM80とかにするとき)
+        VERY_FAST,
+
+        //! 少し反応が良い(PWM80で一応全部のカーブ曲がれる)
+        FAST,
+
+        //! 中間 (PWM30-70くらいのとき)
+        MID,
+
+        //! 安定してゆっくり走る (PWM30くらいのときかライン復帰したいとき)
+        SLOW,
+
+        //! 反応が極端に良く、ガクガクする(ライン復帰したい時だけ使う)
+        RETURN,
+    };
+
     class LineTrace{
     private:
         static LineTrace* instance_;
@@ -150,9 +171,17 @@ namespace drive{
          * @param ki I制御の係数
          * @param kd D制御の係数
          * @sa run
-         * @author Nagaoka
          */
         void setPid(double kp = DEFAULT_KP, double ki = DEFAULT_KI, double kd = DEFAULT_KD);
+
+
+        /**
+         * @brief パターンを指定してPIDパラメータをセットする
+         * @sa LineTracePid
+         *
+         * @param pidPattern 指定したいパターン
+         */
+        void setPid(LineTracePid pidPattern);
 
         /**
          * @brief ターゲット目標値をセットする(≠ターゲット値)

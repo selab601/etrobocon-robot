@@ -62,6 +62,26 @@ namespace drive{
         kd_ = kd;
     }
 
+    void LineTrace::setPid(LineTracePid pidPattern){
+        switch (pidPattern){
+            case LineTracePid::VERY_FAST:  //! 反応は悪いけど速い(PWM80くらいにするとき)
+                setPid(0.0042, 0, 0.38556);
+                break;
+            case LineTracePid::FAST:       //! 少し反応を良くした(PWM80で一応全部のカーブ曲がれる)
+                setPid(0.006, 0, 0.4808571429);
+                break;
+            case LineTracePid::MID:        //! 中間 ブレないで安定して走る (PWM30-60くらいのとき)
+                setPid(0.012, 0, 0.8874);
+                break;
+            case LineTracePid::SLOW:       //! 安定してゆっくり走る (PWM30-40くらいのとき)
+                setPid(0.0216, 0, 1.32192);
+                break;
+            case LineTracePid::RETURN:     //! 反応が極端に良く、ガクガクする(ライン復帰したい時だけ使う)
+                setPid(0.06, 0, 3.7485);
+                break;
+        }
+    }
+
     double LineTrace::getRateByDeltaRad(int deltaRad){
         return 1000.0 / (double)(LINETRACE_TREAD * deltaRad + 1000);
     }
