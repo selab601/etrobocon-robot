@@ -165,6 +165,29 @@ namespace strategy{
         case StrategyPhase::TO_BLOCK1:
             polar_.back(false);
             return polar_.runTo(175, 557 - bodyAngleMeasurement_->getRelative10());
+        case StrategyPhase::BACK:
+            polar_.back(true);
+            return polar_.runTo(175, -1800 +557 - bodyAngleMeasurement_->getRelative10());
+        case StrategyPhase::TO_BLOCK2:
+            polar_.back(false);
+            return polar_.runTo(175, 1243 - bodyAngleMeasurement_->getRelative10());
+        case StrategyPhase::BACK2:
+            polar_.back(true);
+            return polar_.runTo(175, -1800 +1243 - bodyAngleMeasurement_->getRelative10());
+
+        case StrategyPhase::TO_BLOCK3:
+            polar_.back(false);
+            return polar_.runTo(175, 2357 - bodyAngleMeasurement_->getRelative10());
+        case StrategyPhase::BACK3:
+            polar_.back(true);
+            return polar_.runTo(175, -1800 +2357 - bodyAngleMeasurement_->getRelative10());
+
+        case StrategyPhase::TO_BLOCK4:
+            polar_.back(false);
+            return polar_.runTo(175, 3043 - bodyAngleMeasurement_->getRelative10());
+        case StrategyPhase::BACK4:
+            polar_.back(true);
+            return polar_.runTo(175, -1800 +3043 - bodyAngleMeasurement_->getRelative10());
 
         //横を向くまで旋回
         case StrategyPhase::TURN_TO_SIDE:
