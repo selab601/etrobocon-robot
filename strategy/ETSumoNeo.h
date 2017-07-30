@@ -17,6 +17,7 @@
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/BodyAngleMeasurement.h"
 #include "../measurement/Train.h"
+#include "../drive/PolarRunning.h"
 #include <vector>
 
 namespace strategy{
@@ -34,6 +35,11 @@ namespace strategy{
             WAIT_2_SEC,
             TURN_LITTLE,
             CLIMB,
+            LINE_RETURN,
+            TO_RIGHT_ANGLE,
+            TO_CENTER,
+            TO_BLOCK1,
+
             TURN_TO_SIDE,
             BACK_TO_LINE,
             STRAIGHT_4_CM,
@@ -60,9 +66,27 @@ namespace strategy{
             StrategyPhase::LINE_TRACE_LITTLE,//土俵まで距離が足りないので追加
             StrategyPhase::STOP_ENTRY,       //新幹線検知するまで停止
             // StrategyPhase::WAIT_1_SEC,       //検知後に待つ
+
+            StrategyPhase::WAIT_2_SEC,
+
             StrategyPhase::TURN_LITTLE,      //すこし旋回
             StrategyPhase::CLIMB,            //登壇
-            StrategyPhase::WAIT_1_SEC,       //登壇後に機体が落ち着くまで待つ
+            StrategyPhase::WAIT_2_SEC,
+
+            // StrategyPhase::WAIT_1_SEC,       //登壇後に機体が落ち着くまで待つ
+            StrategyPhase::LINE_RETURN,
+            StrategyPhase::WAIT_2_SEC,
+            StrategyPhase::TO_RIGHT_ANGLE,
+            StrategyPhase::INIT,             //車体角度保存
+            StrategyPhase::WAIT_2_SEC,
+            StrategyPhase::TO_CENTER,
+            StrategyPhase::WAIT_2_SEC,
+            StrategyPhase::TO_BLOCK1,
+
+            StrategyPhase::WAIT_2_SEC,
+            StrategyPhase::WAIT_2_SEC,
+            StrategyPhase::WAIT_2_SEC,
+            StrategyPhase::WAIT_2_SEC,
             StrategyPhase::TURN_TO_SIDE,     //横を向く
             StrategyPhase::BACK_TO_LINE,     //中央線までバック
             StrategyPhase::STRAIGHT_4_CM,    //4cm直進
@@ -122,6 +146,7 @@ namespace strategy{
         drive::CurveRunning* curveRunning_;
         drive::LineTrace* linetrace_;
         drive::Efforts* efforts_;
+        drive::PolarRunning polar_;
 
         //検知
         detection::LineDetection* lineDetection_;

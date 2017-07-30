@@ -57,7 +57,7 @@ namespace strategy{
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
             distanceMeasurement_->start(1170);
-            linetrace_->setPid(0.0144,0.0,0.72);
+            linetrace_->setPid(LineTracePid::MID);
             linetrace_->setEdge(LineTraceEdge::RIGHT);
             linetrace_->runCurve(400);
             //距離検知or車体角度が土俵を向いたらtrue
@@ -65,7 +65,8 @@ namespace strategy{
 
         //すこしライントレース
         case StrategyPhase::LINE_TRACE_LITTLE:
-            distanceMeasurement_->start(80);
+            distanceMeasurement_->start(100);
+            linetrace_->setPid(LineTracePid::SLOW);
             linetrace_->run(30,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
@@ -130,11 +131,40 @@ namespace strategy{
 
         //登壇後の動作を安定させるため少し旋回
         case StrategyPhase::TURN_LITTLE:
-            return pivotTurn_->turn(7);
+            return pivotTurn_->turn(3);
 
         //登壇走行
         case StrategyPhase::CLIMB:
-            return climbingRunning_->run(50,600);
+            return climbingRunning_->run(50, 400);
+
+        case StrategyPhase::LINE_RETURN:
+            lineTraceReset();
+            distanceMeasurement_->start(160);
+            linetrace_->setTarget(0.4);
+            linetrace_->setMaxPwm(30);
+            linetrace_->setEdge(LineTraceEdge::LEFT);
+            linetrace_->setPid(LineTracePid::RETURN);
+            linetrace_->run();
+            return distanceMeasurement_->getResult();
+
+        case StrategyPhase::TO_RIGHT_ANGLE:
+            lineTraceReset();
+            linetrace_->setTarget(0.5);
+            linetrace_->setMaxPwm(20);
+            linetrace_->setPid(LineTracePid::SLOW);
+            linetrace_->run();
+            return rightAngledDetection_->getResult(4.0);
+
+
+        case StrategyPhase::TO_CENTER:
+            polar_.back(true);
+            polar_.setMaxPwm(30);
+            polar_.centerPivot(true);
+            return polar_.runToXY(-95, 0);
+
+        case StrategyPhase::TO_BLOCK1:
+            polar_.back(false);
+            return polar_.runTo(175, 557 - bodyAngleMeasurement_->getRelative10());
 
         //横を向くまで旋回
         case StrategyPhase::TURN_TO_SIDE:
