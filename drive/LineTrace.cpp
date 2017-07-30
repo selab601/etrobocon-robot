@@ -6,13 +6,15 @@
 
 #include "LineTrace.h"
 
+using namespace measurement;
+using namespace device;
 namespace drive{
 
     LineTrace* LineTrace::instance_ = 0;
     LineTrace::LineTrace()
     {
-        motors_ = device::Motors::getInstance();
-        colorSensor_ = device::ColorSensor::getInstance();
+        motors_ = Motors::getInstance();
+        colorSensor_ = ColorSensor::getInstance();
         distanceMeasurement_ = new DistanceMeasurement();
         reset();
 
