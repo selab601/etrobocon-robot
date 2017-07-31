@@ -85,7 +85,7 @@ namespace strategy{
         blockPlaces_[13]->next[180]  = blockPlaces_[12];
         blockPlaces_[13]->next[120]  = blockPlaces_[8];
         blockPlaces_[13]->next[0]    = blockPlaces_[14];
-        //上下のラインは幅が狭いので機体が通らないので、対処としてラインの存在を消した
+
         blockPlaces_[14]->next[180]  = blockPlaces_[13];
         blockPlaces_[14]->next[60]   = blockPlaces_[9];
         blockPlaces_[14]->next[0]    = blockPlaces_[15];
@@ -106,7 +106,6 @@ namespace strategy{
 
         //EV3の初期位置は10番置き場
         ev3Is_ = blockPlaces_[10];
-        //routeBlockPlace_.push_back(ev3Is_);
         ev3HasBlock_ = false;
 
         catching_ = new Catching();
@@ -184,8 +183,6 @@ namespace strategy{
                     nextCarryBlockColor_  = itr->first; //次に運ぶブロックの色
                 }
         }
-
-
     }
 
 
@@ -218,56 +215,51 @@ namespace strategy{
 
     bool Map::runPath(){
         static unsigned int patternNumber = 0;//実行中のpathのNo. routeBlockPlace_ と routeMovePattern_ は対応してるのでこれで一括管理
-        int degreeForCatching;
+        int preDistance  = 0;
+        int nextDistance = 0;
+        int degreeForRun = 0;
 
         //pathを順に見てく
         if(patternNumber < routeMovePattern_.size()-1){
+            //角度と距離の計算
             //patternNumber = 0 のときはCATCH　エリア進入時には前の台座は存在しないので定数で角度を計算
             if(patternNumber == 0){
-                degreeForCatching = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - ev3DegreeAtEntry_;
+                degreeForRun = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - ev3DegreeAtEntry_;
             }
             else{
-                degreeForCatching = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]);
+                degreeForRun = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]);
+                preDistance  = routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]);
             }
+            nextDistance = routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]);
 
-            //degreeForCatching の結果が-270度とか出すのでdrive::Catchingがエラー出さないように調整
-            while(degreeForCatching<0){
-                degreeForCatching += 360;
+            //degreeForRun の結果が-270度とか出すのでdrive::Catchingがエラー出さないように調整
+            while(degreeForRun<0){
+                degreeForRun += 360;
             }
-            degreeForCatching += 180;
-            degreeForCatching %= 360;
-            degreeForCatching -= 180;
+            degreeForRun += 180;
+            degreeForRun %= 360;
+            degreeForRun -= 180;
 
             //その置き場での行動パターンを確認
             switch(routeMovePattern_[patternNumber]){
                 case MovePattern::CATCH:
                             //計算した角度でcatching
-                            if(catching_->run(routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),degreeForCatching))
-                            {
-                                patternNumber++;
-                            }
+                            if(catching_->run(nextDistance,degreeForRun)){patternNumber++;}
                             break;
                 case MovePattern::AVOID:
-                            if(avoidance_->runTo(routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]),
-                                                 routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),
-                                                 degreeForCatching))
-                            {
-                                patternNumber++;
-                            }
+                            //計算した角度でavoid
+                            if(avoidance_->runTo(preDistance,nextDistance,degreeForRun)){patternNumber++;}
                             break;
                 case MovePattern::PUT:
                             //PUTの時はAVOIDもしないと次の置き場に移動できてない　のでputProcess_でPUT動作を管理
                             switch(putProcess_){
                                 case PutProcess::PUT:
-                                        if(catching_->putBlock() ){
+                                        if(catching_->putBlock()){
                                             putProcess_ = PutProcess::AVOID; //次のputProcess_へ
                                         }
                                         break;
                                 case PutProcess::AVOID:
-                                        if(avoidance_->runTo(routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]),
-                                                             routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]),
-                                                             routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]) ))
-                                        {
+                                        if(avoidance_->runTo(preDistance,nextDistance,degreeForRun)){
                                              putProcess_ = PutProcess::END; //次のputProcessへ
                                         }
                                      break;
