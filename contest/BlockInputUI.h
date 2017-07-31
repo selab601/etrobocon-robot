@@ -8,8 +8,6 @@
 #include "device/Display.h"
 #include "device/Buttons.h"
 
-using namespace strategy;
-
 namespace contest_pkg{
     class BlockInputUI{
         public:
