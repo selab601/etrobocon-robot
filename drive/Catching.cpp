@@ -52,7 +52,7 @@ namespace drive{
         //最初の旋回
         case Phase::PIVOT_FIRST:
             ev3_speaker_play_tone ( 500, 100);//音を出す
-            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){//0度の場合は旋回しない
+            if(degree == 0 || pivotTurn_->turn(degree / 2,CATCHING_PWM)){//0度の場合は旋回しない
                 phase_ = Phase::STRAIGHT;
              }
              break;
@@ -60,7 +60,7 @@ namespace drive{
         //二回目の旋回
         case Phase::PIVOT_SECOND:
             ev3_speaker_play_tone ( 700, 100);//音を出す
-            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){//0度の場合は旋回しない
+            if(degree == 0 || pivotTurn_->turn(degree / 2,CATCHING_PWM)){//0度の場合は旋回しない
                 phase_ = Phase::CALC_DISTANCE;
             }
             break;
