@@ -129,6 +129,12 @@ namespace measurement
         * @author 塩畑
         */
         int getAngle();
+
+        /*!
+        * @brief 走行体の向いている方向を角度で返す
+        * @return 角度を10倍したもの[0.1Deg]
+        */
+        int getAngle10();
         /*!
         * @brief mapクラス初期化
         * Mapクラスの使用 に 必須の関数 ではない

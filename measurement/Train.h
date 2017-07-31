@@ -8,11 +8,12 @@ namespace measurement{
 
 #define IN_CYCLE_TIME   9048    // 新幹線が内側を1周するときの時間[msec]
 #define OUT_CYCLE_TIME  12613   // 新幹線が外側を1周するときの時間[msec]
-#define TRAIN_LENGTH    5000    // 新幹線の長さ(時間)[msec]
+#define TRAIN_LENGTH    4000    // 新幹線の長さ(時間)[msec]
+#define EXTEND_PER_CYCLE 2000   // 1週ごとに増やす新幹線の長さ[msec]
 // 新幹線の位置をもっと先にいることにする時: +
 // 新幹線のいちをもっと後ろに居ることにする時: -
 // ex. 1秒分先に居ることにする時: 1000[msec]
-#define ADJUST_LENGTH   0       // 新幹線位置の調整(時間)[msec]
+#define ADJUST_LENGTH   -3000       // 新幹線位置の調整(時間)[msec]
 
     class Train {
 
@@ -37,6 +38,7 @@ namespace measurement{
          *          新幹線が外側と内側どちらを走っているかは、近い方を選択する
          */
         void setEntrance();
+        void setCenter();
 
 
         /**
@@ -58,6 +60,7 @@ namespace measurement{
          */
         bool atExit();
 
+
     private:
         static Train * instance_;
 
@@ -78,6 +81,24 @@ namespace measurement{
          * @return 1周期ごとの時間
          */
         int32_t getCycleTime();
+
+        int32_t getCycleTime(int32_t time);
+
+
+        /**
+         * @brief 新幹線が通過する時間を返す
+         * @details 時間の経過によるズレを考慮し、時間に比例して長くする
+         *
+         * @return 新幹線が通過する時間[ms]
+         */
+        int getPassTime();
+
+        /**
+         * @brief 最後に見たときから新幹線が何周したか返す
+         *
+         * @return 何周したかの10倍[0.1周]
+         */
+        int getCycleCount10();
     };
 };
 

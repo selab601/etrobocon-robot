@@ -25,7 +25,10 @@ namespace drive{
     }
     void PidController::run(int controllTarget){
         calculatePwm( 1000 * calculatePid(controllTarget) );
+        run();
+    }
 
+    void PidController::run(){
         motors_->setPWM(device::MOTOR_LEFT, lPwm_);
         motors_->setPWM(device::MOTOR_RIGHT, rPwm_);
     }
@@ -43,6 +46,11 @@ namespace drive{
         else{
             rPwm_ = maxPwm_;
             lPwm_ = getRateByDeltaRad(deltaRad) * (double)maxPwm_;
+        }
+        if (0 > maxPwm_){ // 後ろに進むときは左右逆にする
+            int lTmp = lPwm_;
+            lPwm_ = rPwm_;
+            rPwm_ = lTmp;
         }
     }
 

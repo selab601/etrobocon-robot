@@ -16,6 +16,7 @@
 #include "../measurement/TimeMeasurement.h"
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/BodyAngleMeasurement.h"
+#include "../measurement/Train.h"
 #include <vector>
 
 namespace strategy{
@@ -26,7 +27,9 @@ namespace strategy{
             INIT,
             LINE_TRACE,
             LINE_TRACE_LITTLE,
-            STOP,
+            STOP_ENTRY,
+            STOP_EXIT,
+            STOP_CENTER,
             WAIT_1_SEC,
             WAIT_2_SEC,
             TURN_LITTLE,
@@ -55,8 +58,8 @@ namespace strategy{
             StrategyPhase::INIT,             //車体角度保存
             StrategyPhase::LINE_TRACE,       //土俵を向くまでライントレース
             StrategyPhase::LINE_TRACE_LITTLE,//土俵まで距離が足りないので追加
-            StrategyPhase::STOP,             //新幹線検知するまで停止
-            StrategyPhase::WAIT_1_SEC,       //検知後に待つ
+            StrategyPhase::STOP_ENTRY,       //新幹線検知するまで停止
+            // StrategyPhase::WAIT_1_SEC,       //検知後に待つ
             StrategyPhase::TURN_LITTLE,      //すこし旋回
             StrategyPhase::CLIMB,            //登壇
             StrategyPhase::WAIT_1_SEC,       //登壇後に機体が落ち着くまで待つ
@@ -80,8 +83,8 @@ namespace strategy{
             StrategyPhase::FOURTH_EFFORTS,   //四回目の取組
             StrategyPhase::TURN_LEFT_90,     //左に旋回
             StrategyPhase::BACK_TO_LINE,     //近すぎるのでバック
-            StrategyPhase::STOP,             //新幹線検知まで停止
-            StrategyPhase::WAIT_2_SEC,       //通過するまで待つ
+            StrategyPhase::STOP_CENTER,      //新幹線検知まで停止
+            //StrategyPhase::WAIT_2_SEC,       //通過するまで待つ
 
             StrategyPhase::NEXT_STAGE,       //次のステージへ
 
@@ -105,11 +108,12 @@ namespace strategy{
             StrategyPhase::FOURTH_EFFORTS,   //八回目の取組
             StrategyPhase::TURN_LEFT_90,     //左に旋回
             StrategyPhase::BACK_TO_LINE,
-            StrategyPhase::STOP,             //新幹線検知まで停止
-            StrategyPhase::WAIT_2_SEC,       //通過するまで待つ
+            StrategyPhase::STOP_EXIT,        //新幹線検知まで停止
+            // StrategyPhase::WAIT_2_SEC,       //通過するまで待つ
             StrategyPhase::NEXT_STAGE,//仮置き
         };
 
+        unsigned int procedureNumber_ = 0;
 
         //走行
         drive::ClimbingRunning* climbingRunning_;
@@ -128,6 +132,7 @@ namespace strategy{
         measurement::DistanceMeasurement* distanceMeasurement_;
         measurement::TimeMeasurement* timeMeasurement_;
         measurement::BodyAngleMeasurement* bodyAngleMeasurement_;
+        measurement::Train* train_;
 
 
         //距離検知の設定などを一度だけ行うためのフラグ

@@ -11,29 +11,38 @@ namespace drive{
         xyState_ = State::INIT;
         degreeController_ = PidController();
         distanceController_ = PidController();
+
     }
 
-    bool PolarRunning::runTo(int distance, int polarDegree, int turnDegree){
+    bool PolarRunning::runTo(int distance, int polarDegree10, int turnDegree10){
+        static int turnDeg10 = 0;
         switch (state_){
             case State::INIT:
-                selfPositioin_->startMeasure();
-                bodyAngle_.setBaseAngle();
+                if (isInitialize_){
+                    selfPositioin_->startMeasure();
+                }
                 degreeController_.reset();
                 distanceController_.reset();
+                targetMm_ = distance;
+                targetDegree10_ = polarDegree10;
+                turnDeg10 = turnDegree10;
+                if (isBack_){   // バックするときは後ろ側を進行方向に向ける
+                    turnDeg10 = turnDegree10 <= 0? turnDegree10 +1800: turnDegree10-1800;
+                }
                 state_ = State::TURN;
                 ev3_speaker_play_tone(200, 100);
                 break;
 
             case State::TURN:
-                if ( bodyTurn(turnDegree, 30) ){
+                if ( bodyTurn(turnDeg10, 30) ){
                     state_ = State::TRACE;
                     ev3_speaker_play_tone(550, 100);
                 }
                 break;
 
             case State::TRACE:
-                calculateMaxPwm(distance);
-                traceDegree(polarDegree);
+                calculateMaxPwm();
+                traceDegree();
                 if (selfPositioin_->getPolarR() >= distance){
                     state_ = State::FINISHED;
                     ev3_speaker_play_tone(800, 100);
@@ -51,23 +60,23 @@ namespace drive{
         return false;
     }
 
-    bool PolarRunning::runTo(int distance, int degree){
-        return runTo(distance, degree, degree);
+    bool PolarRunning::runTo(int distance, int degree10){
+        return runTo(distance, degree10, degree10);
     }
 
     bool PolarRunning::runToXY(int xMm, int yMm){
         static int distance = 0;
-        static int degree = 0;
+        static int degree10 = 0;
         switch (xyState_){
             case State::INIT:
                 distance = sqrt( xMm*xMm + yMm*yMm );
-                degree = atan2(yMm, xMm) * 180 / M_PI;
+                degree10 = atan2(yMm, xMm) * 1800 / M_PI;
                 xyState_ = State::RUNTO;
                 ev3_speaker_play_tone(200, 100);
                 break;
 
             case State::RUNTO:
-                if ( runTo(distance, degree) ){
+                if ( runTo(distance, degree10) ){
                     xyState_ = State::INIT;
                     ev3_speaker_play_tone(1000, 100);
                     return true;
@@ -92,25 +101,33 @@ namespace drive{
         isTurnInit_ = true;
     }
 
-    bool PolarRunning::bodyTurn(int degree, int speed){
+    void PolarRunning::initialize(bool isInitialize){
+        isInitialize_ = isInitialize;
+    }
+
+    bool PolarRunning::bodyTurn(int degree10, int speed){
         if (isTurnInit_){
-            bodyAngle_.setBaseAngle();
+            if (isInitialize_){
+                bodyAngle_.setBaseAngle();
+            }
             degreeController_.setPd();
             isTurnInit_ = false;
         }
 
-        currentDegree10_ = bodyAngle_.getResult() * 10;
-        if (turn(degree, speed)){
+        currentDegree10_ = bodyAngle_.getRelative10();
+        if (turn(degree10, speed)){
             isTurnInit_ = true;
             return true;
         }
         return false;
     }
 
-    bool PolarRunning::polarTurn(int degree, int speed){
+    bool PolarRunning::polarTurn(int degree10, int speed){
         static bool isCenterPivot = isCenterPivot_;
         if (isTurnInit_){
-            selfPositioin_->startMeasure();
+            if (isInitialize_){
+                selfPositioin_->startMeasure();
+            }
             degreeController_.setPd();
             // 極座標を見るときは信地旋回しかしない
             isCenterPivot = isCenterPivot_; // 設定を保存しておく
@@ -119,7 +136,7 @@ namespace drive{
         }
 
         currentDegree10_ = selfPositioin_->getPolarTheta10();
-        if (turn(degree, speed)){
+        if (turn(degree10, speed)){
             isTurnInit_ = true;
             isCenterPivot_ = isCenterPivot; // フラグを戻す
             return true;
@@ -127,8 +144,8 @@ namespace drive{
         return false;
     }
 
-    bool PolarRunning::turn(int degree, int speed){
-        int diff = degree * 10 - currentDegree10_;
+    bool PolarRunning::turn(int degree10, int speed){
+        int diff = degree10 - currentDegree10_;
         // 差分が0付近のところでいきなり変わらないようにする(359->0とか)
         diff += 1800;
         diff %= 3600;
@@ -143,7 +160,7 @@ namespace drive{
 
         int lPwm = 0;
         int rPwm = 0;
-        if (0 <= degree){  // 左に回る
+        if (0 <= diff){  // 左に回る
             rPwm = resultspeed;
             // 軸が真ん中でないとき、内側を0にする
             lPwm = isCenterPivot_ ? -resultspeed : 0;
@@ -155,30 +172,27 @@ namespace drive{
         }
         motors_->setWheelPWM(lPwm, rPwm);
 
-        if ( abs(currentDegree10_) >= abs(degree*10) ){
+        if ( abs(diff) < 5 ){
             motors_->setWheelPWM(0, 0);
             return true;
         }
         return false;
     }
 
-    void PolarRunning::traceDegree(int degree){
-        int diff = degree*10 - selfPositioin_->getPolarTheta10();
-        // 差分が0付近のところでいきなり変わらないようにする(359->0とか)
-        diff += 1800;
-        diff %= 3600;
-        diff -= 1800;
+    void PolarRunning::traceDegree(){
+        int diff = getLeftDeg10();
         // 遠いところほど角度のズレに対する実際の位置のズレが激しくなる
         diff = diff * selfPositioin_->getPolarR();
         diff /= 2;
 
         degreeController_.setPd(0.000018, 0.01366875);
-        degreeController_.setMaxPwm(traceMaxPwm_);
+        int traceMaxPwm = isBack_ ? -traceMaxPwm_ : traceMaxPwm_;
+        degreeController_.setMaxPwm(traceMaxPwm);
         degreeController_.run(diff);
     }
 
-    void PolarRunning::calculateMaxPwm(int distance){
-        int diff = distance - selfPositioin_->getPolarR();
+    void PolarRunning::calculateMaxPwm(){
+        int diff = getLeftMm();
         if (50 < diff){
             distanceController_.setPid(0.003, 0.000000033, 0.4); // PID制御
         }
@@ -195,5 +209,23 @@ namespace drive{
         traceMaxPwm_ += 10;
         // maxPwm_で足切り
         traceMaxPwm_ = maxPwm_ < traceMaxPwm_ ? maxPwm_ : traceMaxPwm_;
+    }
+
+    int PolarRunning::getLeftMm(){
+        return targetMm_ - selfPositioin_->getPolarR();
+    }
+    int PolarRunning::getLeftDeg10(){
+        int diff = targetDegree10_ - selfPositioin_->getPolarTheta10();
+        // 差分が0付近のところでいきなり変わらないようにする(359->0とか)
+        while (diff < 0){   // 正の数にしてmod演算する
+            diff += 3600;
+        }
+        diff += 1800;
+        diff %= 3600;
+        diff -= 1800;
+        return diff;
+    }
+    void PolarRunning::back(bool isBack){
+        isBack_ = isBack;
     }
 }

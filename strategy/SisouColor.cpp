@@ -84,7 +84,7 @@ namespace strategy{
         //星取取得
         case StrategyPhase::HOSHITORI:
             //linetrace_->setPid(0.0144,0.0,0.72);
-            linetrace_->setPid();
+            linetrace_->setPid(LineTracePid::MID);
             linetrace_->run(20,LineTraceEdge::RIGHT);
             return hoshitoriDetection();
 

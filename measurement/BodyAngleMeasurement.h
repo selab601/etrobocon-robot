@@ -32,6 +32,17 @@ namespace measurement{
          */
         int getResult();
 
+        /**
+         * @brief 基底角度からの現在の角度を返す
+         */
+
+        /**
+         * @brief 基底角度からの現在の角度を返す(10倍)
+         *
+         * @return 角度の10倍[0.1Deg]
+         */
+        int getRelative10();
+
     };
 };
 

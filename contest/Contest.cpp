@@ -5,6 +5,7 @@
  */
 
 #include "Contest.h"
+#include "../measurement/Train.h"
 
 
 namespace contest_pkg {
@@ -34,6 +35,7 @@ namespace contest_pkg {
     /* 走行体制御 */
     void Contest::perform() {
         static bool initialized = false;
+        static bool trainStarted = false;
 
         /*スタートアップ*/
         if ( startUp_->isFinished() ){
@@ -62,6 +64,11 @@ namespace contest_pkg {
                     courseL_->capture();
                     break;
                     case 'R':
+                    // 新幹線がスタートしたことを知らせる
+                    if (!trainStarted){
+                        measurement::Train::getInstance()->start();
+                        trainStarted = true;
+                    }
                     courseR_->capture();
                     break;
                 }
