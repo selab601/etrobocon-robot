@@ -120,7 +120,7 @@ namespace strategy{
 
 
 
-    void Map::makeRoute1(){
+    void Map::makeRoute(){
 
         //ブロックの目的地設定
         blockDestination_["RED"]    = blockPlaces_[14];

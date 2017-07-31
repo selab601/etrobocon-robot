@@ -115,7 +115,7 @@ namespace strategy{
         /**
          * @brief ルートを作る(5角形に何にもない時用)
          */
-        void makeRoute1();
+        void makeRoute();
 
         /**
          * @brief 作ったルートをもとにdrive::Catching とdrive::Avoidanceを実行する
