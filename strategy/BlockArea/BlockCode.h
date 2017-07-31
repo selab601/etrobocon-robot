@@ -3,9 +3,9 @@
 
     #include "math.h"
     #include "stdio.h"
-    #include <array> 
+    #include <array>
 
-    namespace contest_pkg {
+    namespace strategy {
         /**
          * 2017年のブロック並べエリアでは初期位置コードによって
          * 赤、青、黄、黒のブロックの位置がわかるものだったのでそれを計算し、保存するクラス
@@ -20,14 +20,14 @@
             int red_;
             int blue_;
             int yellow_;
-            int green_ = 0;
+            int green_ = 3;
             int black_;
-            
+
             //それぞれの色の配置が黒ブロックでのどこに相当するかのリスト
             int redToBlalck_[11]   = {2,3,4,5,6,9,10,11,12,13,15};
             int blueToBlack_[11]   = {1,3,5,6,7,8,10,11,13,14,15};
             int yellowToBlack_[11] = {1,2,4,6,7,8,9,10,11,12,14};
-            
+
             /**
              * @brief 色によって位置番号が違うので黒での位置番号に統一
              * @param  redCode 赤ブロックの位置番号

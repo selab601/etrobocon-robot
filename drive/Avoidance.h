@@ -19,6 +19,8 @@ namespace drive{
             AVOID_TURN,
             TO_DST,
             TURN,
+            CALCULATE_EDGE,
+            PIVOT_TURN,
             FINISHED
         };
 

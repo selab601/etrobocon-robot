@@ -17,16 +17,27 @@ namespace drive{
         static int avoidY = 0;
         static int turnDegree10 = 0;
         static int avoidedDegree10 = 0;
+        static int fixedDegree = 0;
+
         switch (runToState_){
             case RunToState::INIT:
                 {
+                // -180 〜 180° にする
+                fixedDegree = degree;
+                while (fixedDegree < 0){
+                    fixedDegree += 360;
+                }
+                fixedDegree += 180;
+                fixedDegree %= 360;
+                fixedDegree -= 180;
+
                 bodyAngle_->setBaseAngle();
-                double rad = degree * M_PI /180;
+                double rad = fixedDegree * M_PI /180;
                 x = dstMMm * cos(rad) / 2;
                 y = dstMMm * sin(rad) / 2;
                 x += currentMm / 2;
                 avoidX = currentMm / 2;
-                avoidY = degree <= 0? -160 : 160;
+                avoidY = fixedDegree <= 0? -160 : 160;
                 if (lineTrace_->getEdge() == LineTraceEdge::RIGHT){
                     y       += 10; // 右エッジの時、Y方向を1cm増やす
                     avoidY  += 10;
@@ -40,10 +51,16 @@ namespace drive{
                 polar_.setMaxPwm(20);
                 edgeCount_ = 0;
                 atWhite_ = true;
-                if (abs(degree) < 55){
+                // 避けないとぶつかる時
+                if (abs(fixedDegree) < 55){
                     runToState_ = RunToState::AVOID;
                 }
-                else{
+                // 真後ろに行く時
+                else if (abs(fixedDegree) > 170){
+                    runToState_ = RunToState::PIVOT_TURN;
+                }
+                // 目的地にまっすぐ行くだけで良い時
+                else {
                     runToState_ = RunToState::TO_DST;
                 }
                 ev3_speaker_play_tone(200, 100);
@@ -74,7 +91,7 @@ namespace drive{
             case RunToState::TO_DST:
                 if (polar_.runToXY(x, y)){
                     runToState_ = RunToState::TURN;
-                    turnDegree10 = degree*10 - bodyAngle_->getRelative10();
+                    turnDegree10 = fixedDegree*10 - bodyAngle_->getRelative10();
                     ev3_speaker_play_tone(550, 100);
                 }
                 if (polar_.getLeftMm() < 150){
@@ -85,13 +102,13 @@ namespace drive{
             case RunToState::TURN:
                 polar_.centerPivot(true);
                 if ( polar_.bodyTurn(turnDegree10, 20) ){
-                    runToState_ = RunToState::FINISHED;
+                    runToState_ = RunToState::CALCULATE_EDGE;
                     ev3_speaker_play_tone(800, 100);
                 }
                 decrementEdge();
                 break;
 
-            case RunToState::FINISHED:
+            case RunToState::CALCULATE_EDGE:
                 if (0 < turnDegree10) {  // ラインを超えたら右エッジ
                     if (2 <= edgeCount_) {
                         lineTrace_->setEdge(LineTraceEdge::RIGHT);
@@ -115,8 +132,28 @@ namespace drive{
                 if (2 < edgeCount_ || 0 > edgeCount_){
                     ev3_speaker_play_tone(1000, 500); // エラーを知らせる
                 }
+                runToState_ = RunToState::FINISHED;
+                break;
+
+            case RunToState::PIVOT_TURN:
+                polar_.centerPivot(true);
+                if ( polar_.bodyTurn(1800, 20) ){
+                    runToState_ = RunToState::FINISHED;
+                    // エッジを逆にする
+                    if (lineTrace_->getEdge() == LineTraceEdge::LEFT){
+                        lineTrace_->setEdge(LineTraceEdge::RIGHT);
+                    }
+                    else{
+                        lineTrace_->setEdge(LineTraceEdge::LEFT);
+                    }
+                    ev3_speaker_play_tone(800, 100);
+                }
+                break;
+
+            case RunToState::FINISHED:
                 runToState_ = RunToState::INIT;
                 return true;
+
         }
         return false;
     }
