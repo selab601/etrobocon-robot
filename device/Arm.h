@@ -5,7 +5,7 @@
 #include "/home/vagrant/hrp2/sdk/common/library/libcpp-ev3/include/Motor.h"
 #include "../measurement/TimeMeasurement.h"
 
-#define ARM_ANGLE 35        // アームの初期角度（アームが下側にぶつかっている状態からの角度(degree)
+#define ARM_ANGLE 42        // アームの初期角度（アームが下側にぶつかっている状態からの角度(degree)
 #define ARM_MAX_PWM 30
 
 namespace device

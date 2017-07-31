@@ -38,7 +38,7 @@ namespace strategy{
         case Phase::STRAIGHT1:
             startDistanceMeasurement(2255 - RCOURSE_SHORTCUT_LENGTH);
             lineTraceReset();
-            linetrace_->setPid();
+            linetrace_->setPid(LineTracePid::VERY_FAST);
             linetrace_->run(100,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
@@ -72,7 +72,7 @@ namespace strategy{
             return fixedDistanceCurveLineTrace(1250,-20);
 
         case Phase::STRAIGHT2:
-            linetrace_->setPid();
+            linetrace_->setPid(LineTracePid::VERY_FAST);
             return fixedDistanceLineTrace(1950 - RCOURSE_SHORTCUT_LENGTH,100,LineTraceEdge::RIGHT);
 
 

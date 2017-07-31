@@ -3,39 +3,47 @@
  * @brief ライントレースクラス
  * @details  初期設定[maxPwm:デフォルト値][edge:RIGHT][pid:デフォルト値][target:デフォルト値]
             setMaxPwm(),setPid(),setTarget(),setEdge()で各種設定を行った後にrun()で走行
-            ライントレースのインスタンスを呼ぶ際は、キャリブレーションを行っているcontest.cppのstartUp_->getSelectedCourse()
-            以降で行ってください。
  * @author kuno
  */
 
 #ifndef LINE_TRACE_
 #define LINE_TRACE_
 
-#include <math.h>
 #include "../device/ColorSensor.h"
 #include "../device/Motors.h"
 #include "../measurement/DistanceMeasurement.h"
-#include <Clock.h>
-
-//ほぼ直線用のデフォルト値
-//linetrace_->setPid();でこの値になる。
-#define DEFAULT_KP          0.003F /* PID処理のデフォルトのP値 */
-#define DEFAULT_KI          0.00000003333333F    /* PID処理のデフォルトのI値 */
-#define DEFAULT_KD          0.2F   /* PID処理のデフォルトのD値 */
+#include "PidController.h"
 
 #define DEFAULT_TARGET      0.5F    /* 明るさセンサの目標値となる値の黒の割合のデフォルト値*/
 #define DEFAULT_MAXPWM      80      /* デフォルトのmaxPwm値*/
 
 #define LINETRACE_TREAD      1      /*未使用 きちんとした角速度に計算する定数*/
-
-using namespace ev3api;
-using namespace measurement;
-
 namespace drive{
 
     enum class LineTraceEdge{
         RIGHT,
         LEFT
+    };
+
+    /**
+     * @brief ライントレースのPIDパラメータのパターン
+     * @details 上にあるものほど反応が悪く、下にあるものほど反応が良い
+     */
+    enum class LineTracePid{
+        //! 反応は悪いけど速い(PWM80とかにするとき)
+        VERY_FAST,
+
+        //! 少し反応が良い(PWM80で一応全部のカーブ曲がれる)
+        FAST,
+
+        //! 中間 (PWM30-70くらいのとき)
+        MID,
+
+        //! 安定してゆっくり走る (PWM30くらいのときかライン復帰したいとき)
+        SLOW,
+
+        //! 反応が極端に良く、ガクガクする(ライン復帰したい時だけ使う)
+        RETURN,
     };
 
     class LineTrace{
@@ -55,22 +63,10 @@ namespace drive{
             END
         };
 
-        // キャリブレーション値
-        int whiteValue_;            //白のキャリブレーション値を10倍したもの
-        int blackValue_;            //黒のキャリブレーション値を10倍したもの
+        //! PID制御
+        PidController pidController_;
 
-        int targetValue_ = 0;            // ターゲット値：ターゲット目標値を元に算出される(明るさセンサの値を10倍した時の)光センサの目標値
-
-        int diff_[2];               // 明るさの値を10倍し、ターゲット値との差分をとったもの
-        int timeMs_[2];
-        int integrated_ = 0;
-        bool usePid_ = false;
-
-        int maxPwm_;
-
-        double  kp_;
-        double  ki_;
-        double  kd_;
+        int targetValue10_ = 0;            // ターゲット値：ターゲット目標値を元に算出される(明るさセンサの値を10倍した時の)光センサの目標値
 
         int margin_;
 
@@ -79,6 +75,8 @@ namespace drive{
 
         //エッジ切り替えメソッドでの状態
         LineTraceEdgeChangePhase edgeChangeStatus_ = LineTraceEdgeChangePhase::ACROSS;
+        //! エッジ切り替えでメソッドで使う
+        int maxPwm_ = 0;
 
         // エッジ切り替え2での状態
         ChangeEdge2Phase changeEdge2Phase_ = ChangeEdge2Phase::INIT;
@@ -88,8 +86,8 @@ namespace drive{
 
         // Device
         device::ColorSensor* colorSensor_;
+        //! エッジ切り替えメソッドで使う
         device::Motors* motors_;
-        Clock clock_;
 
     public:
 
@@ -150,9 +148,17 @@ namespace drive{
          * @param ki I制御の係数
          * @param kd D制御の係数
          * @sa run
-         * @author Nagaoka
          */
-        void setPid(double kp = DEFAULT_KP, double ki = DEFAULT_KI, double kd = DEFAULT_KD);
+        void setPid(double kp, double ki, double kd);
+
+
+        /**
+         * @brief パターンを指定してPIDパラメータをセットする
+         * @sa LineTracePid
+         *
+         * @param pidPattern 指定したいパターン
+         */
+        void setPid(LineTracePid pidPattern);
 
         /**
          * @brief ターゲット目標値をセットする(≠ターゲット値)
@@ -195,32 +201,6 @@ namespace drive{
         LineTraceEdge getEdge();
 
     private:
-
-        /**
-         * @brief PWMの最大値、車体の角速度からモータのPWMをセットする
-         * @param edge  ライントレースするエッジ(RIGHT,LEFT)
-         * @param maxPwm モータのPWMの最大値
-         * @param deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 左側に曲がるときが正の値
-
-         * @author Nagaoka
-         */
-        void calculatePwm(int maxPwm, int deltaRad, LineTraceEdge edge);
-
-        /**
-         * @brief PID制御の計算を行う
-         * @details ターゲット値よりも黒寄りにいる時、負の値を返す
-         * @author Nagaoka
-         **/
-        double calculatePid(int brightness, int timeMs);
-
-        /**
-         * @brief 内側のタイヤが進んだ距離あたりの角度の変化[milli rad]から、外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
-                  ソース内の計算式は上記の省略(証明略)
-         * @details
-         * @param deltaRad 内側のタイヤが進んだ距離あたりの車体の角度の変化(deltarad >= 0)[milli rad]
-         * @author Nagaoka
-         **/
-        double getRateByDeltaRad(int deltaRad);
 
     }; //end of class
 };
