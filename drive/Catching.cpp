@@ -129,14 +129,15 @@ namespace drive{
         case Phase::END_LINE_TRACE:
             //ブロック取得後のラインの半分の距離にタイヤの中心がくるように
             distanceMeasurement_->start(runningDistance_);//エッジの応じた距離走行
-            if(abs(degree) >= 175){//エッジが逆転する
+
+            if(abs(degree) < 105){//エッジそのまま
+                endEdge_ = startEdge_;
+            }else{//エッジ逆転
                 if(startEdge_ == LineTraceEdge::RIGHT){
                     endEdge_ = LineTraceEdge::LEFT;
                 }else{
                     endEdge_ = LineTraceEdge::RIGHT;
                 }
-            }else{
-                endEdge_ = startEdge_;
             }
             lineTrace_->setEdge(endEdge_);
             lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
