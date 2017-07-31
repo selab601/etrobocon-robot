@@ -218,37 +218,48 @@ namespace strategy{
         int preDistance  = 0;
         int nextDistance = 0;
         int degreeForRun = 0;
+        bool calculated  = false;
 
         //pathを順に見てく
         if(patternNumber < routeMovePattern_.size()-1){
-            //角度と距離の計算
-            //patternNumber = 0 のときはCATCH　エリア進入時には前の台座は存在しないので定数で角度を計算
-            if(patternNumber == 0){
+
+            //角度と距離の計算(4mごとに計算しないようにFlag管理)
+            if(!calculated){
+                //patternNumber = 0 のときはCATCH　エリア進入時には前の台座は存在しないので定数で角度を計算
+                if(patternNumber == 0){
                 degreeForRun = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - ev3DegreeAtEntry_;
-            }
-            else{
+                }
+                else{
                 degreeForRun = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - routeBlockPlace_[patternNumber-1]->getDegree(routeBlockPlace_[patternNumber]);
                 preDistance  = routeBlockPlace_[patternNumber-1]->getDistance(routeBlockPlace_[patternNumber]);
-            }
-            nextDistance = routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]);
+                }
+                nextDistance = routeBlockPlace_[patternNumber]->getDistance(routeBlockPlace_[patternNumber+1]);
 
-            //degreeForRun の結果が-270度とか出すのでdrive::Catchingがエラー出さないように調整
-            while(degreeForRun<0){
+                //degreeForRun の結果が-270度とか出すのでdrive::Catchingがエラー出さないように調整
+                while(degreeForRun<0){
                 degreeForRun += 360;
+                }
+                degreeForRun += 180;
+                degreeForRun %= 360;
+                degreeForRun -= 180;
+                calculated = true;
             }
-            degreeForRun += 180;
-            degreeForRun %= 360;
-            degreeForRun -= 180;
 
             //その置き場での行動パターンを確認
             switch(routeMovePattern_[patternNumber]){
                 case MovePattern::CATCH:
                             //計算した角度でcatching
-                            if(catching_->run(nextDistance,degreeForRun)){patternNumber++;}
+                            if(catching_->run(nextDistance,degreeForRun)){
+                                patternNumber++;
+                                calculated = false;
+                            }
                             break;
                 case MovePattern::AVOID:
                             //計算した角度でavoid
-                            if(avoidance_->runTo(preDistance,nextDistance,degreeForRun)){patternNumber++;}
+                            if(avoidance_->runTo(preDistance,nextDistance,degreeForRun)){
+                                patternNumber++;
+                                calculated = false;
+                            }
                             break;
                 case MovePattern::PUT:
                             //PUTの時はAVOIDもしないと次の置き場に移動できてない　のでputProcess_でPUT動作を管理
@@ -264,11 +275,10 @@ namespace strategy{
                                         }
                                      break;
                                 case PutProcess::END:
+                                        putProcess_ = PutProcess::PUT;
+                                        patternNumber++;
+                                        calculated = false;
                                      break;
-                            }
-                            if(putProcess_ == PutProcess::END){
-                                putProcess_ = PutProcess::PUT;
-                                patternNumber++;
                             }
                             break;
                 case MovePattern::END:
