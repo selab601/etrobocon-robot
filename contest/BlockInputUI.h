@@ -54,7 +54,7 @@ namespace contest_pkg{
             // ディスプレイの文字列操作用
             char message_[30];
 
-            BlockCode* blockCode_;
+            strategy::BlockCode* blockCode_;
             device::Display* display_;
             device::Buttons* buttons_;
 
