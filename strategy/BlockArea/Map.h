@@ -10,7 +10,7 @@
 #include "../../drive/Catching.h"
 #include "../../drive/Avoidance.h"
 
-class TestIterator;
+//#include "../../communication/BtManager.h"
 
 namespace strategy{
 
@@ -23,8 +23,9 @@ namespace strategy{
         bool ev3HasBlock_;//ブロック持ってるかどうかのフラグ false:持ってない true:持ってる
         const int ev3DegreeAtEntry_ = 60;//ブロックエリアに入る時の車体角度
 
-        std::unordered_map<std::string,BlockPlace*> blockIs_;//ブロックの現在地
-        std::unordered_map<std::string,BlockPlace*> blockDestination_;//ブロックの目的地
+        std::unordered_map<std::string,BlockPlace*> blockIs_;//ブロックの現在地         【string:ブロックの色 BlockPlace:置き場】
+        std::unordered_map<std::string,BlockPlace*> blockDestination_;//ブロックの目的地【string:ブロックの色 BlockPlace:置き場】
+        std::unordered_map<std::string,BlockPlace*> blockDisplace_;//ブロックの仮置き場 【string:置き場の色   BlockPlace:置き場】
         std::string nextCarryBlockColor_;//次に運ぶブロックの色
 
         //ブロック並べエリアで行う動作の種類
@@ -69,6 +70,13 @@ namespace strategy{
         bool checkFinish();
 
         /**
+         * @brief ５角形を作るブロック置き場が埋まっているか確認
+         * @return true :全て埋まっている
+         *         false:空いている場所がある
+         */
+        bool checkPentagon();
+
+        /**
          * @brief ブロックがその置き場に置かれているか確認
          * @param  checkPlace 確認する置き場
          * @return true  : ある
@@ -83,12 +91,21 @@ namespace strategy{
         void makePath(BlockPlace* goal);
 
         /**
+         * @brief ５角形からブロックを移動してデッドロックを解消するpathを足す
+         */
+        void makeDisplaceBlockPath();
+
+        /**
          * @brief 次に運ぶブロックを選択して、値をsetする
          *        nextCarryBlockIs 次運ぶブロックの場所
          *        nextCarryDestination 次運ぶブロックの目的地
-         * @return 次に運ぶブロックの場所
          */
         void selectCarryBlock();
+
+        /**
+         * @brief 5角形からずらすブロックを選択する
+         */
+        void selectDisplaceBlock();
 
     public:
 

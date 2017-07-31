@@ -129,7 +129,19 @@ namespace strategy{
         blockDestination_["YELLOW"] = blockPlaces_[13];
         blockDestination_["BLACK"]  = blockPlaces_[8];
 
+        //ブロックの目的地に近い場所
+        blockDisplace_["RED"]    = blockPlaces_[15];
+        blockDisplace_["BLUE"]   = blockPlaces_[7];
+        blockDisplace_["GREEN"]  = blockPlaces_[3];
+        blockDisplace_["YELLOW"] = blockPlaces_[12];
+        blockDisplace_["BLACK"]  = blockPlaces_[5];
+
         while(!checkFinish()){
+
+            //５角形が埋まってたら５角形の置き場からずらす
+            if(checkPentagon()){
+                makeDisplaceBlockPath();
+            }
 
             //次に運ぶブロックを選択
             selectCarryBlock();
@@ -164,6 +176,19 @@ namespace strategy{
         return true;
     }
 
+    bool Map::checkPentagon(){
+        //１つでも５角形以外の場所にブロックがあればfalse
+        bool checker = false;
+        for(auto is = blockIs_.begin(); is !=blockIs_.end();++is ){
+            for(auto dest = blockDestination_.begin(); dest !=blockDestination_.end();++dest ){
+                if(blockIs_[is->first]->getId() == blockDestination_[dest->first]->getId() ){checker = true;}
+            }
+            if(checker){checker=false;}
+            else{return false;}
+        }
+        return true;
+    }
+
     bool Map::checkBlock(BlockPlace* checkPlace){
         for(auto itr = blockIs_.begin(); itr !=blockIs_.end();++itr ){
            if(checkPlace->getId() == blockIs_[itr->first]->getId()){return true;}
@@ -173,18 +198,31 @@ namespace strategy{
 
     void Map::selectCarryBlock(){
 
-        int minDistance = 100000;//10000は適当　　次に運ぶブロックまでの距離
-        //マシンの位置から一番近いブロックを１つ選んで
-        //ブロックの位置と目的地を確認
-        //目的地に運び済みのブロックは運ばない
+        int minDistance = 100000;//10000は適当　　ev3から次に運ぶブロックまでの距離
+
         for(auto itr = blockIs_.begin(); itr != blockIs_.end();++itr ){
-                if( (minDistance > ev3Is_->getDistance(blockIs_[itr->first]) ) && (blockIs_[itr->first] != blockDestination_[itr->first]) ){
+                //【条件】 ev3の現在地から一番近い && 目的地に着いてない && 目的地に他のブロックが置いてない
+                if( (minDistance > ev3Is_->getDistance(blockIs_[itr->first]) ) && (blockIs_[itr->first] != blockDestination_[itr->first]) && !(checkBlock(blockDestination_[itr->first])) ){
                     minDistance           = ev3Is_->getDistance(blockIs_[itr->first]);  //一番近いブロックの距離に更新
                     nextCarryBlockColor_  = itr->first; //次に運ぶブロックの色
                 }
         }
+
     }
 
+    void Map::selectDisplaceBlock(){
+
+        int minDistance = 100000;//10000は適当　　ev3から次に運ぶブロックまでの距離
+
+        for(auto itr = blockIs_.begin(); itr != blockIs_.end();++itr ){
+                //【条件】 ev3の現在地から一番近い && 目的地に着いてない
+                if( (minDistance > ev3Is_->getDistance(blockIs_[itr->first]) ) && (blockIs_[itr->first] != blockDestination_[itr->first])  ){
+                    minDistance           = ev3Is_->getDistance(blockIs_[itr->first]);  //一番近いブロックの距離に更新
+                    nextCarryBlockColor_  = itr->first; //次に運ぶブロックの色
+                }
+        }
+
+    }
 
 
     void Map::makePath(BlockPlace* goal){
@@ -212,6 +250,24 @@ namespace strategy{
         else{routeMovePattern_.push_back(MovePattern::CATCH);}//目的地に着いたのでブロックを取る
         ev3Is_ = candidatePlace;//位置更新
     }
+
+    void Map::makeDisplaceBlockPath(){
+
+        //有効移動してないブロックを１つ選ぶ
+        selectDisplaceBlock();
+
+        //ブロックの位置まで移動()
+        makePath(blockIs_[nextCarryBlockColor_]);
+        ev3HasBlock_ = true;
+
+        //目的地まで移動()
+        makePath(blockDisplace_[nextCarryBlockColor_]);
+        ev3HasBlock_ = false;
+
+        //運んだのでブロックの位置を更新
+        blockIs_[nextCarryBlockColor_] =  blockDisplace_[nextCarryBlockColor_];
+    }
+
 
     bool Map::runPath(){
         static unsigned int patternNumber = 0;//実行中のpathのNo. routeBlockPlace_ と routeMovePattern_ は対応してるのでこれで一括管理
