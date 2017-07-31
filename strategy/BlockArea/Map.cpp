@@ -274,13 +274,12 @@ namespace strategy{
         int preDistance  = 0;
         int nextDistance = 0;
         int degreeForRun = 0;
-        static bool calculated  = false;
-
+        calculated_  = false;
         //pathを順に見てく
         if(patternNumber < routeMovePattern_.size()-1){
 
             //角度と距離の計算(4mごとに計算しないようにFlag管理)
-            if(!calculated){
+            if(!calculated_){
                 //patternNumber = 0 のときはCATCH　エリア進入時には前の台座は存在しないので定数で角度を計算
                 if(patternNumber == 0){
                 degreeForRun = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - ev3DegreeAtEntry_;
@@ -298,7 +297,7 @@ namespace strategy{
                 degreeForRun += 180;
                 degreeForRun %= 360;
                 degreeForRun -= 180;
-                calculated = true;
+                calculated_ = true;
             }
 
             //その置き場での行動パターンを確認
@@ -307,14 +306,14 @@ namespace strategy{
                             //計算した角度でcatching
                             if(catching_->run(nextDistance,degreeForRun)){
                                 patternNumber++;
-                                calculated = false;
+                                calculated_ = false;
                             }
                             break;
                 case MovePattern::AVOID:
                             //計算した角度でavoid
                             if(avoidance_->runTo(preDistance,nextDistance,degreeForRun)){
                                 patternNumber++;
-                                calculated = false;
+                                calculated_ = false;
                             }
                             break;
                 case MovePattern::PUT:
@@ -333,7 +332,7 @@ namespace strategy{
                                 case PutProcess::END:
                                         putProcess_ = PutProcess::PUT;
                                         patternNumber++;
-                                        calculated = false;
+                                        calculated_ = false;
                                      break;
                             }
                             break;

@@ -38,7 +38,7 @@ namespace strategy{
         std::vector<BlockPlace*> routeBlockPlace_;//ルート(台座の羅列)
         std::vector<MovePattern> routeMovePattern_;//ルートを通る時の行動パターン 下のMovePatternが入る
 
-
+        bool calculated_;//4mごとに計算しないようにFlag管理
 
         drive::Catching* catching_;
         drive::Avoidance* avoidance_;
