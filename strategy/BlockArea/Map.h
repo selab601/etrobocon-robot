@@ -96,6 +96,13 @@ namespace strategy{
         void makeDisplaceBlockPath();
 
         /**
+         * @brief 　エラー回避用メソッド
+         *         ブロックエリア進入時には前の置き場情報がないのでAvoidできない
+         *         よって、10番ブロック置き場でAvoidを実行しないように必ずどこかにブロックを移動させるpathを作成する
+         */
+        void makeDodgeAvoidancePath();
+
+        /**
          * @brief 次に運ぶブロックを選択して、値をsetする
          *        nextCarryBlockIs 次運ぶブロックの場所
          *        nextCarryDestination 次運ぶブロックの目的地
@@ -106,6 +113,11 @@ namespace strategy{
          * @brief 5角形からずらすブロックを選択する
          */
         void selectDisplaceBlock();
+
+        /**
+         * @brief 赤ブロックと黒ブロックの目的地を近いとことに修正する
+         */
+        void selectBlackDestination();
 
     public:
 

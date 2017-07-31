@@ -136,6 +136,14 @@ namespace strategy{
         blockDisplace_["YELLOW"] = blockPlaces_[12];
         blockDisplace_["BLACK"]  = blockPlaces_[5];
 
+        //黒ブロックのいい感じの置き場を確認
+        selectBlackDestination();
+
+
+        //10番ブロック置き場にブロックがあれば必ず始めに運ぶ
+        if(checkBlock(blockPlaces_[10])){
+            makeDodgeAvoidancePath();
+        }
         while(!checkFinish()){
 
             //５角形が埋まってたら５角形の置き場からずらす
@@ -198,7 +206,7 @@ namespace strategy{
 
     void Map::selectCarryBlock(){
 
-        int minDistance = 100000;//10000は適当　　ev3から次に運ぶブロックまでの距離
+        int minDistance = 100000;//10000は適当 ev3から次に運ぶブロックまでの距離
 
         for(auto itr = blockIs_.begin(); itr != blockIs_.end();++itr ){
                 //【条件】 ev3の現在地から一番近い && 目的地に着いてない && 目的地に他のブロックが置いてない
@@ -212,7 +220,7 @@ namespace strategy{
 
     void Map::selectDisplaceBlock(){
 
-        int minDistance = 100000;//10000は適当　　ev3から次に運ぶブロックまでの距離
+        int minDistance = 100000;//10000は適当 ev3から次に運ぶブロックまでの距離
 
         for(auto itr = blockIs_.begin(); itr != blockIs_.end();++itr ){
                 //【条件】 ev3の現在地から一番近い && 目的地に着いてない
@@ -220,6 +228,17 @@ namespace strategy{
                     minDistance           = ev3Is_->getDistance(blockIs_[itr->first]);  //一番近いブロックの距離に更新
                     nextCarryBlockColor_  = itr->first; //次に運ぶブロックの色
                 }
+        }
+
+    }
+
+    void Map::selectBlackDestination(){
+        //8番置き場までより,14番置き場までの方が近かったらそっちに置くように修正
+        if(blockIs_["BLACK"]->getDistance(blockPlaces_[8]) > blockIs_["BLACK"]->getDistance(blockPlaces_[14]) ){
+            blockDestination_["BLACK"] = blockPlaces_[14];
+            blockDestination_["RED"] = blockPlaces_[8];
+            blockDisplace_["RED"]    = blockPlaces_[5];
+            blockDisplace_["BLACK"]  = blockPlaces_[15];
         }
 
     }
@@ -237,6 +256,9 @@ namespace strategy{
             }
             else{
                 routeBlockPlace_.push_back(candidatePlace);//pathに追加
+        // sprintf(message, "%d->",candidatePlace->getId());
+        //  communication::BtManager::getInstance()->setMessage(message);
+        //  communication::BtManager::getInstance()->send();
                 if(checkBlock(candidatePlace)){routeMovePattern_.push_back(MovePattern::AVOID);}//ブロックがあったら避ける
                 else{routeMovePattern_.push_back(MovePattern::CATCH);}//ブロックがなかったら避けない
             }
@@ -245,6 +267,9 @@ namespace strategy{
             candidatePlace = ev3Is_->getNextPlace(goalDegree);//次の置き場を聞く
         }
         routeBlockPlace_.push_back(candidatePlace);//pathに追加 ゴール
+         //        sprintf(message, "%d->",candidatePlace->getId());
+         // communication::BtManager::getInstance()->setMessage(message);
+         // communication::BtManager::getInstance()->send();
 
         if(ev3HasBlock_){routeMovePattern_.push_back(MovePattern::PUT);}//目的地に着いたのでブロックを置く
         else{routeMovePattern_.push_back(MovePattern::CATCH);}//目的地に着いたのでブロックを取る
@@ -268,6 +293,43 @@ namespace strategy{
         blockIs_[nextCarryBlockColor_] =  blockDisplace_[nextCarryBlockColor_];
     }
 
+    void Map::makeDodgeAvoidancePath(){
+        //運ぶブロックの色を取得
+        selectDisplaceBlock();
+        //10番から運び始めることを設定
+        makePath(blockIs_[nextCarryBlockColor_]);
+        ev3HasBlock_ = true;
+
+        //目的地まで移動 → 運んだのでブロックの位置を更新
+        //優先度.1 目的地に邪魔なブロックがなければ運ぶ
+        //優先度.2 目的地のそば
+        //優先度.3 とりあえず近い12番置き場
+        //優先度.4 とりあえず近い5番置き場
+        //優先度.5 とりあえず近い2番置き場
+        if(!checkBlock(blockDestination_[nextCarryBlockColor_]) ){
+            makePath(blockDestination_[nextCarryBlockColor_]);
+            blockIs_[nextCarryBlockColor_] = blockDestination_[nextCarryBlockColor_];
+        }
+        else if(!checkBlock(blockDisplace_[nextCarryBlockColor_]) ){
+            makePath(blockDisplace_[nextCarryBlockColor_]);
+            blockIs_[nextCarryBlockColor_] = blockDisplace_[nextCarryBlockColor_];
+        }
+        else if(!checkBlock(blockPlaces_[12]) ){
+            makePath(blockPlaces_[12]);
+            blockIs_[nextCarryBlockColor_] = blockPlaces_[12];
+        }
+        else if(!checkBlock(blockPlaces_[5]) ){
+            makePath(blockPlaces_[5]);
+            blockIs_[nextCarryBlockColor_] = blockPlaces_[5];
+        }
+        else{
+            makePath(blockPlaces_[2]);
+            blockIs_[nextCarryBlockColor_] = blockPlaces_[2];
+        }
+        ev3HasBlock_ = false;
+
+    }
+
 
     bool Map::runPath(){
         static unsigned int patternNumber = 0;//実行中のpathのNo. routeBlockPlace_ と routeMovePattern_ は対応してるのでこれで一括管理
@@ -280,7 +342,7 @@ namespace strategy{
 
             //角度と距離の計算(4mごとに計算しないようにFlag管理)
             if(!calculated_){
-                //patternNumber = 0 のときはCATCH　エリア進入時には前の台座は存在しないので定数で角度を計算
+                //patternNumber = 0 のときはCATCH エリア進入時には前の台座は存在しないので定数で角度を計算
                 if(patternNumber == 0){
                 degreeForRun = routeBlockPlace_[patternNumber]->getDegree(routeBlockPlace_[patternNumber+1]) - ev3DegreeAtEntry_;
                 }
@@ -317,7 +379,7 @@ namespace strategy{
                             }
                             break;
                 case MovePattern::PUT:
-                            //PUTの時はAVOIDもしないと次の置き場に移動できてない　のでputProcess_でPUT動作を管理
+                            //PUTの時はAVOIDもしないと次の置き場に移動できてないのでputProcess_でPUT動作を管理
                             switch(putProcess_){
                                 case PutProcess::PUT:
                                         if(catching_->putBlock(preDistance)){
