@@ -265,7 +265,7 @@ namespace strategy{
                             //PUTの時はAVOIDもしないと次の置き場に移動できてない　のでputProcess_でPUT動作を管理
                             switch(putProcess_){
                                 case PutProcess::PUT:
-                                        if(catching_->putBlock()){
+                                        if(catching_->putBlock(preDistance)){
                                             putProcess_ = PutProcess::AVOID; //次のputProcess_へ
                                         }
                                         break;
