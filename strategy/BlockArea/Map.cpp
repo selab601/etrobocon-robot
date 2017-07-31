@@ -218,7 +218,7 @@ namespace strategy{
         int preDistance  = 0;
         int nextDistance = 0;
         int degreeForRun = 0;
-        bool calculated  = false;
+        static bool calculated  = false;
 
         //pathを順に見てく
         if(patternNumber < routeMovePattern_.size()-1){
