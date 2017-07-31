@@ -1,6 +1,6 @@
 #include "BlockCode.h"
 
-namespace contest_pkg {
+namespace strategy {
 
     BlockCode* BlockCode::instance_ = 0;
     BlockCode::BlockCode(){

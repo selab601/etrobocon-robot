@@ -1,5 +1,7 @@
 #include "BlockInputUI.h"
 
+using namespace strategy;
+
 namespace contest_pkg{
 
     BlockInputUI* BlockInputUI::instance_ = 0;

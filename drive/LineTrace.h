@@ -3,8 +3,6 @@
  * @brief ライントレースクラス
  * @details  初期設定[maxPwm:デフォルト値][edge:RIGHT][pid:デフォルト値][target:デフォルト値]
             setMaxPwm(),setPid(),setTarget(),setEdge()で各種設定を行った後にrun()で走行
-            ライントレースのインスタンスを呼ぶ際は、キャリブレーションを行っているcontest.cppのstartUp_->getSelectedCourse()
-            以降で行ってください。
  * @author kuno
  */
 
@@ -20,10 +18,6 @@
 #define DEFAULT_MAXPWM      80      /* デフォルトのmaxPwm値*/
 
 #define LINETRACE_TREAD      1      /*未使用 きちんとした角速度に計算する定数*/
-
-using namespace ev3api;
-using namespace measurement;
-
 namespace drive{
 
     enum class LineTraceEdge{
