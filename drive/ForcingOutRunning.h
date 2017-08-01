@@ -5,7 +5,9 @@
 #include "../drive/PivotTurn.h"
 #include "../device/Arm.h"
 #include "../measurement/BodyAngleMeasurement.h"
+#include "PolarRunning.h"
 #include <vector>
+#define DEFAULT_FORCING_DEGREE 50
 
 namespace drive{
     class ForcingOutRunning{
@@ -35,6 +37,8 @@ namespace drive{
         device::Arm* arm_;
         measurement::BodyAngleMeasurement* bodyAngleMeasurement_;
 
+        PolarRunning polar_;
+
         //成功したかどうか
         bool isSuccess_;
         //右に曲がるかどうか
@@ -43,6 +47,9 @@ namespace drive{
         unsigned int procedureNumber_;
         //走行スピード
         int speed_;
+
+        //! 信地旋回で押し出す角度
+        int degree_ = DEFAULT_FORCING_DEGREE;
 
 
     public:
@@ -64,6 +71,8 @@ namespace drive{
          * @details 複数回使う場合はreset()を挟んでください
          */
         void reset();
+
+        void setDegree(int degree = DEFAULT_FORCING_DEGREE);
 
     private:
         /**
