@@ -15,11 +15,13 @@ namespace drive{
         isRight_         = false;
         procedureNumber_ = 0;
         speed_           = 0;
+        polar_.centerPivot(false);
     }
 
     bool ForcingOutRunning::run(int speed ,bool isRight){
         isRight_ = isRight;
         speed_   = speed;
+        polar_.setMaxPwm(speed);
         if(!isSuccess_){
             //手順を1つずつ実行する
             if(executePhase(phaseProcedure_[procedureNumber_] ) ){
@@ -44,12 +46,11 @@ namespace drive{
 
         //信地旋回
         case Phase::CURVE:
+            polar_.back(false);
             if(isRight_){
-                curveRunning_->run(0,speed_);
-                return bodyAngleMeasurement_->getResult() <= -50;
+                return polar_.bodyTurn(-degree_*10, speed_);
             }else{
-                curveRunning_->run(speed_,0);
-                return bodyAngleMeasurement_->getResult() >= 50;
+                return polar_.bodyTurn(degree_*10, speed_);
             }
 
         //アームを上げる
@@ -63,12 +64,11 @@ namespace drive{
 
         //開始地点に戻る
         case Phase::BACK:
+            polar_.back(true);
             if(isRight_){
-                curveRunning_->run(0,-speed_);
-                return bodyAngleMeasurement_->getResult() >= 50;
+                return polar_.bodyTurn(degree_*10, speed_);
             }else{
-                curveRunning_->run(-speed_,0);
-                return bodyAngleMeasurement_->getResult() <= -50;
+                return polar_.bodyTurn(-degree_*10, speed_);
             }
 
         default: return false;
@@ -80,5 +80,9 @@ namespace drive{
         isRight_ = false;
         procedureNumber_ = 0;
         speed_ = 0;
+    }
+
+    void ForcingOutRunning::setDegree(int degree){
+        degree_ = degree;
     }
 }

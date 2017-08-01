@@ -15,6 +15,7 @@
 #include "strategy/LCourseStandard.h"
 #include "strategy/RCourseStandard.h"
 #include "strategy/BlockAreaGame.h"
+#include "strategy/ParkingR.h"
 
 //ライントレースや戦略をincludeする
 //#include "../strategy/aaa.h"

@@ -33,6 +33,7 @@ namespace drive{
         bool isCenterPivot_ = true;
         bool isInitialize_ = true;   // 最初に初期化するか(前回からの位置を指定したい場合false)
         int traceMaxPwm_;
+        int turnPwm_;
         int maxPwm_ = 40;
         int isTurnInit_ = true;
         int isBack_ = false;
@@ -132,6 +133,8 @@ namespace drive{
          * @param isBack バックで移動する時true
          */
         void back(bool isBack);
+
+        void setTurnPwm(int turnPwm = 30);
     private:
 
         /**

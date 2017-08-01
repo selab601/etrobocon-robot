@@ -11,6 +11,7 @@ namespace drive{
         xyState_ = State::INIT;
         degreeController_ = PidController();
         distanceController_ = PidController();
+        setTurnPwm();
 
     }
 
@@ -34,7 +35,7 @@ namespace drive{
                 break;
 
             case State::TURN:
-                if ( bodyTurn(turnDeg10, 30) ){
+                if ( bodyTurn(turnDeg10, turnPwm_) ){
                     state_ = State::TRACE;
                     ev3_speaker_play_tone(550, 100);
                 }
@@ -170,6 +171,11 @@ namespace drive{
             // 軸が真ん中でないとき、内側を0にする
             rPwm = isCenterPivot_ ? -resultspeed : 0;
         }
+        if (!isCenterPivot_ && isBack_){
+            int lTmp = lPwm;
+            lPwm = - rPwm;
+            rPwm = - lTmp;
+        }
         motors_->setWheelPWM(lPwm, rPwm);
 
         if ( abs(diff) < 5 ){
@@ -227,5 +233,9 @@ namespace drive{
     }
     void PolarRunning::back(bool isBack){
         isBack_ = isBack;
+    }
+
+    void PolarRunning::setTurnPwm(int turnPwm){
+        turnPwm_ = turnPwm;
     }
 }
