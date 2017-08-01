@@ -30,6 +30,11 @@ namespace detection{
         /* 現在のデータ数 */
         int counter_;
 
+        //! 黒の直角を判定するか
+        bool detectBlack_ = true;
+        //! 白の直角を判定するか
+        bool detectWhite_ = true;
+
     public:
         /**
          * @brief  コンストラクタ
@@ -44,6 +49,21 @@ namespace detection{
          * @return 直角を検知したとき: true, 検知していないとき: false
          */
         bool getResult(float changeRate = RAD_CHANGE_RATE);
+
+
+        /**
+         * @brief 白->黒の直角を判定するか指定する
+         *
+         * @param detectBlack 判定するか
+         */
+        void setDetectBlack(bool detectBlack);
+
+        /**
+         * @brief 黒->白の直角を判定するか指定する
+         *
+         * @param detectWhite 判定するか
+         */
+        void setDetectWhite(bool detectWhite);
     };
 }
  #endif
