@@ -23,6 +23,7 @@ namespace contest_pkg{
         if(course == SelectedCourse::R_COURSE){
         sections_.emplace_back(new RCourseStandard());
         sections_.emplace_back(new ETSumoNeo());
+        sections_.emplace_back(new ParkingR());
 
         // ゴール後にしっぽふりふり
         // タッチセンサ押したら上向けて止める
