@@ -7,6 +7,7 @@ using namespace measurement;
 namespace strategy{
     ParkingR::ParkingR(){
         lineTrace_             = LineTrace::getInstance();
+        straightRunning_       = new StraightRunning();
         distanceMeasurement_   = new DistanceMeasurement();
         timeMeasurement_       = new TimeMeasurement();
         rightAngledDetection_  = new RightAngledDetection();
@@ -34,18 +35,22 @@ namespace strategy{
     bool ParkingR::executePhase(Phase phase){
         switch(phase){
             case Phase::LINE_TRACE1:
-                //線に入射したとき直角検知するため、距離の条件追加
-                //開始後30cmは直角検知しないため，開始位置によっては調整してください
-                distanceMeasurement_->start(300);
-                lineTrace_->run(40,LineTraceEdge::RIGHT);
+                //誤検知防止のため開始後25cmは直角検知しないので，開始位置によっては調整してください
+                distanceMeasurement_->start(250);
+                lineTrace_->run(50,LineTraceEdge::RIGHT);
                 return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
+
+            case Phase::ADJUST1:
+                distanceMeasurement_->start(20);
+                straightRunning_->run(30);
+                return distanceMeasurement_->getResult();
 
             case Phase::TURN_RIGHT:
                 return pivotTurn_->turn(-90);
 
             case Phase::LINE_TRACE2:
                 distanceMeasurement_->start(400);
-                lineTrace_->run(40,LineTraceEdge::RIGHT);
+                lineTrace_->run(50,LineTraceEdge::RIGHT);
                 return distanceMeasurement_->getResult();
 
             case Phase::WAIT:

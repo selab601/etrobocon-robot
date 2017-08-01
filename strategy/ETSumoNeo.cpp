@@ -18,6 +18,7 @@ namespace strategy{
         timeMeasurement_        = new TimeMeasurement();
         distanceMeasurement_    = new DistanceMeasurement();
         bodyAngleMeasurement_   = new BodyAngleMeasurement();
+        train_                  = Train::getInstance();
 
         hasExecutedPhase_       = false;
         strategySuccess_        = false;
@@ -25,20 +26,19 @@ namespace strategy{
     }
 
     bool ETSumoNeo::capture(){
-        static unsigned int procedureNumber = 0;
         if(!strategySuccess_){
             //難所攻略手順を1つずつ実行する
-            if(executeStrategy(strategyProcedure_[procedureNumber])){
+            if(executeStrategy(strategyProcedure_[procedureNumber_])){
                 lineTraceReset();
                 distanceMeasurement_->reset();
                 efforts_->reset();
-                procedureNumber++;
+                procedureNumber_++;
                 hasExecutedPhase_ = false;//フラグを戻しておく
                 isLineTraceReset_ = false;
                 ev3_speaker_play_tone ( 500, 100);//音を出す
             }
         }
-        if(procedureNumber == strategyProcedure_.size()){//最後まで終わったら
+        if(procedureNumber_ == strategyProcedure_.size()){//最後まで終わったら
             strategySuccess_ = true;
             return true;
         }
@@ -56,22 +56,71 @@ namespace strategy{
 
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
-            distanceMeasurement_->start(1200);
+            distanceMeasurement_->start(1170);
             linetrace_->setPid(0.0144,0.0,0.72);
-            linetrace_->run(40,LineTraceEdge::RIGHT);
+            linetrace_->setEdge(LineTraceEdge::RIGHT);
+            linetrace_->runCurve(400);
             //距離検知or車体角度が土俵を向いたらtrue
             return distanceMeasurement_->getResult() || bodyAngleMeasurement_->getResult() >= 180;
 
         //すこしライントレース
         case StrategyPhase::LINE_TRACE_LITTLE:
-            distanceMeasurement_->start(50);
-            linetrace_->run(40,LineTraceEdge::RIGHT);
+            distanceMeasurement_->start(80);
+            linetrace_->run(30,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
-        //新幹線を検知するまで停止
-        case StrategyPhase::STOP:
+        // 入り口で新幹線を検知するまで停止
+        case StrategyPhase::STOP_ENTRY:
             straightRunning_->run(0);
-            return objectDetection_->getResult();
+            // 新幹線が入り口にいないと分かるとき(時間で)
+            if (!train_->atEntrance()){
+                ev3_speaker_play_tone(300, 4);
+                return true; // TODO: 入り口でも見なくて大丈夫か実験
+            }
+            else{
+                ev3_speaker_play_tone(900, 4);
+            }
+            if (objectDetection_->getResult()){
+                train_->setEntrance();  // 入り口で新幹線を見たことを知らせる
+                strategyProcedure_.insert( // 通過するのを待つ
+                        strategyProcedure_.begin() + procedureNumber_ + 1,
+                        StrategyPhase::WAIT_1_SEC);
+                ev3_speaker_play_tone(700, 2000);
+                return true;
+            }
+            return false;
+
+        // 中央で新幹線がいなくなるまで停止
+        case StrategyPhase::STOP_CENTER:
+            straightRunning_->run(0);
+            // 新幹線がいないと分かるとき(時間で)
+            if (!train_->atCenter()){
+                return true;
+            }
+            else{
+                ev3_speaker_play_tone(900, 4);
+            }
+            if (objectDetection_->getResult()){
+                train_->setCenter();  // 中央で新幹線を見たことを知らせる
+                strategyProcedure_.insert( // 通過するのを待つ
+                        strategyProcedure_.begin() + procedureNumber_ + 1,
+                        StrategyPhase::WAIT_1_SEC);
+                ev3_speaker_play_tone(700, 2000);
+                return true;
+            }
+            return false;
+
+        // 出口で新幹線がいなくなるまで停止
+        case StrategyPhase::STOP_EXIT:
+            straightRunning_->run(0);
+            // 新幹線がいないと分かるとき(時間で)
+            if (!train_->atExit()){
+                return true;
+            }
+            else{
+                ev3_speaker_play_tone(900, 4);
+            }
+            return false;
 
         //通り過ぎてから1秒間待つ
         case StrategyPhase::WAIT_1_SEC:

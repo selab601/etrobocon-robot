@@ -4,8 +4,6 @@
 #include "device/Motors.h"
 #include <Clock.h>
 
-//ほぼ直線用のデフォルト値
-//linetrace_->setPid();でこの値になる。
 #define PID_DEFAULT_KP          0.003F /* PID処理のデフォルトのP値 */
 #define PID_DEFAULT_KI          0.00000003333333F    /* PID処理のデフォルトのI値 */
 #define PID_DEFAULT_KD          0.2F   /* PID処理のデフォルトのD値 */
@@ -79,6 +77,12 @@ namespace drive{
          */
         void run(int controllTarget);
 
+
+        /**
+         * @brief セットされたPWM値で走る
+         */
+        void run();
+
         /**
          * @brief PID制御の内部の情報をリセットする
          * @details 積分の値、ひとつ前のセンサの値、時間の情報を初期化する。ライントレースを使うときには必ず使う直前に最初に呼ぶ
@@ -95,8 +99,6 @@ namespace drive{
         double calculatePid(int controllTarget);
 
 
-    private:
-
         /**
          * @brief 車体の角速度からモータのPWMを計算する
          * @details deltaRad 角速度[rad / 内側のタイヤが進んだ距離] 左側に曲がるときが正の値, 最大2000程度
@@ -105,6 +107,7 @@ namespace drive{
          */
         void calculatePwm(int deltaRad);
 
+    private:
         /**
          * @brief 内側のタイヤが進んだ距離あたりの角度の変化[milli rad]から、外側のタイヤの速さに対する内側のタイヤの速さの比率を返す
                   ソース内の計算式は上記の省略(証明略)

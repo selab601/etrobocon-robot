@@ -24,7 +24,7 @@ namespace drive{
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
             startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
-            lineTrace_->setPid();
+            lineTrace_->setPid(LineTracePid::MID);
             lineTrace_->setTarget();
             lineTrace_->setEdge(startEdge_);//セットしないとLineTrace._edgeが更新されない
             lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
@@ -40,7 +40,7 @@ namespace drive{
             straightRunning_->run(10);
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
-                if(abs(degree) == 180){//後ろに持ち帰る場合は別フェーズへ
+                if(abs(degree) >= 175){//後ろに持ち帰る場合は別フェーズへ(本来180が理想だが179が来るらしい)
                     bodyAngleMeasurement_->setBaseAngle();//角度保存
                     phase_ = Phase::TURN_90;
                 }else{
@@ -51,20 +51,23 @@ namespace drive{
 
         //最初の旋回
         case Phase::PIVOT_FIRST:
-            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){//0度の場合は旋回しない
+            ev3_speaker_play_tone ( 500, 100);//音を出す
+            if(degree == 0 || pivotTurn_->turn(degree / 2,CATCHING_PWM)){//0度の場合は旋回しない
                 phase_ = Phase::STRAIGHT;
              }
              break;
 
         //二回目の旋回
         case Phase::PIVOT_SECOND:
-            if(degree == 0 || pivotTurn_->turn(degree / 2,10)){//0度の場合は旋回しない
+            ev3_speaker_play_tone ( 700, 100);//音を出す
+            if(degree == 0 || pivotTurn_->turn(degree / 2,CATCHING_PWM)){//0度の場合は旋回しない
                 phase_ = Phase::CALC_DISTANCE;
             }
             break;
 
         //180度専用処理 90度右に信地旋回
         case Phase::TURN_90:
+            ev3_speaker_play_tone ( 500, 100);//音を出す
             curveRunning_->run(0,CATCHING_PWM);
             if(bodyAngleMeasurement_->getResult() <= -90){
                 bodyAngleMeasurement_->setBaseAngle();
@@ -74,6 +77,7 @@ namespace drive{
 
         //180度専用処理 270度左に信地旋回
         case Phase::TURN_270:
+            ev3_speaker_play_tone ( 600, 100);//音を出す
             curveRunning_->run(CATCHING_PWM,0);
             if(bodyAngleMeasurement_->getResult() >= 270){
                 phase_ = Phase::STRAIGHT_TREAD_DISTANCE;
@@ -82,6 +86,7 @@ namespace drive{
 
         //180度専用処理 走行体のトレッドの距離進む
         case Phase::STRAIGHT_TREAD_DISTANCE:
+            ev3_speaker_play_tone ( 700, 100);//音を出す
             distanceMeasurement_->start(TREAD);//measurement::SelfPositionMeasurement::TREAD
             straightRunning_->run(CATCHING_PWM);
             if(distanceMeasurement_->getResult()){
@@ -93,6 +98,7 @@ namespace drive{
 
         //直進走行
         case Phase::STRAIGHT:
+            ev3_speaker_play_tone ( 600, 100);//音を出す
             //円周角の定理から距離を算出
             distanceMeasurement_->start(cos((degree / 2) * M_PI / 180) * DAIZA_DIAMETER);
             straightRunning_->run(CATCHING_PWM);
@@ -129,14 +135,15 @@ namespace drive{
         case Phase::END_LINE_TRACE:
             //ブロック取得後のラインの半分の距離にタイヤの中心がくるように
             distanceMeasurement_->start(runningDistance_);//エッジの応じた距離走行
-            if(abs(degree) == 180){//エッジが逆転する
+
+            if(abs(degree) < 105){//エッジそのまま
+                endEdge_ = startEdge_;
+            }else{//エッジ逆転
                 if(startEdge_ == LineTraceEdge::RIGHT){
                     endEdge_ = LineTraceEdge::LEFT;
                 }else{
                     endEdge_ = LineTraceEdge::RIGHT;
                 }
-            }else{
-                endEdge_ = startEdge_;
             }
             lineTrace_->setEdge(endEdge_);
             lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
@@ -155,7 +162,7 @@ namespace drive{
         static bool isDaizaDetected = false;
         if(!isDaizaDetected){//台座を検知するまでライントレース
             startEdge_ = lineTrace_->getEdge();
-            lineTrace_->setPid();
+            lineTrace_->setPid(LineTracePid::MID);
             lineTrace_->setEdge(startEdge_);
             lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
             if(colorDetection_->isFourColors()){

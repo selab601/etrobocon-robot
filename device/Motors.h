@@ -7,8 +7,6 @@
 
 namespace device
 {
-    using namespace ev3api;
-
     enum motor_kind {
         MOTOR_ARM,
         MOTOR_LEFT,
@@ -20,13 +18,13 @@ namespace device
     {
     private:
         // 各モータのデバイスオブジェクト
-        Motor armMotor_;
-        Motor leftMotor_;
-        Motor rightMotor_;
-        Motor tailMotor_;
+        ev3api::Motor armMotor_;
+        ev3api::Motor leftMotor_;
+        ev3api::Motor rightMotor_;
+        ev3api::Motor tailMotor_;
 
         // ステアリング用デバイスオブジェクト
-        Steering steering_;
+        ev3api::Steering steering_;
 
         //! 共有インスタンス
         static Motors* instance_;
