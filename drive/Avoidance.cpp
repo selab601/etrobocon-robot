@@ -52,7 +52,7 @@ namespace drive{
                 edgeCount_ = 0;
                 atWhite_ = true;
                 // 避けないとぶつかる時
-                if (abs(fixedDegree) < 55){
+                if (abs(fixedDegree) < 55 || 400 > currentMm  || 400 > dstMMm){
                     runToState_ = RunToState::AVOID;
                 }
                 // 真後ろに行く時
@@ -84,7 +84,6 @@ namespace drive{
                 if ( polar_.bodyTurn(-avoidedDegree10, 20) ){
                     runToState_ = RunToState::TO_DST;
                     ev3_speaker_play_tone(800, 100);
-                    runToState_ = RunToState::TO_DST;
                 }
                 break;
 
@@ -174,6 +173,7 @@ namespace drive{
                 edgeCount_++;
                 atWhite_ = false;
                 ev3_led_set_color (LED_RED);
+                ev3_speaker_play_tone(800, 10);
             }
         }
         else{
@@ -181,6 +181,7 @@ namespace drive{
                 edgeCount_++;
                 atWhite_ = true;
                 ev3_led_set_color (LED_GREEN);
+                ev3_speaker_play_tone(400, 10);
             }
         }
     }
