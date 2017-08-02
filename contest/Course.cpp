@@ -31,10 +31,15 @@ namespace contest_pkg{
         }
 
         if(course == SelectedCourse::L_COURSE){
-        sections_.emplace_back(new LCourseStandard());
+        // TODO: ショートカットか普通のか選ぶ (どっちかコメントアウト消す)
+        sections_.emplace_back(new LCourseStandard());  // ラインにそって走る
+        // sections_.emplace_back(new LCourseShortcut());  // ショートカットする
 
         //ブロックエリア
         sections_.emplace_back(new BlockAreaGame());
+
+        // 駐車
+        sections_.emplace_back(new ParkingL());
 
         // ゴール後にしっぽふりふり
         // タッチセンサ押したら上向けて止める
