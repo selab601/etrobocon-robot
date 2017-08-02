@@ -36,7 +36,7 @@ namespace strategy{
         switch(phase){
 
         case Phase::STRAIGHT1:
-            startDistanceMeasurement(2255 - RCOURSE_SHORTCUT_LENGTH);
+            startDistanceMeasurement(2255);
             lineTraceReset();
             linetrace_->setPid(LineTracePid::VERY_FAST);
             linetrace_->run(80,LineTraceEdge::RIGHT);
@@ -44,13 +44,8 @@ namespace strategy{
 
         case Phase::BEND1:
             linetrace_->setPid(LineTracePid::FAST);
-            //linetrace_->setPid(0, 0, 0);
             linetrace_->setMaxPwm(80);
             linetrace_->setEdge(LineTraceEdge::RIGHT);
-
-            //startAngleMeasurement();
-            //linetrace_->runCurve(-1050);
-            //return bodyAngleMeasurement_.getResult() <= -165;
             return fixedDistanceCurveLineTrace(3100,-10);
 
         case Phase::BEND2:
@@ -73,14 +68,7 @@ namespace strategy{
 
         case Phase::STRAIGHT2:
             linetrace_->setPid(LineTracePid::VERY_FAST);
-            return fixedDistanceLineTrace(1950 - RCOURSE_SHORTCUT_LENGTH,80,LineTraceEdge::RIGHT);
-
-
-        //ライン無視走行
-        case Phase::LINE_IGNORE:
-            linetrace_->setPid(0,0,0);
-            linetrace_->setMaxPwm(60);
-            return fixedDistanceCurveLineTrace(200,320);
+            return fixedDistanceLineTrace(1950,80,LineTraceEdge::RIGHT);
 
         default: return false;
         }

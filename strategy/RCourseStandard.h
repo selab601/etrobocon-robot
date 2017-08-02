@@ -8,8 +8,6 @@
 #include "../measurement/BodyAngleMeasurement.h"
 #include <vector>
 
-#define RCOURSE_SHORTCUT_LENGTH 0     // ショートカットする長さ[mm]
-
 namespace strategy{
     class RCourseStandard : public IStrategy{
         private:
@@ -21,7 +19,6 @@ namespace strategy{
                 BEND2,
                 BEND3,
                 BEND4,
-                LINE_IGNORE,
             };
 
             std::vector<Phase> phaseProcedure_{
