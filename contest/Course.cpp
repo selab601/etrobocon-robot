@@ -38,6 +38,9 @@ namespace contest_pkg{
         //ブロックエリア
         sections_.emplace_back(new BlockAreaGame());
 
+        // 駐車
+        sections_.emplace_back(new ParkingL());
+
         // ゴール後にしっぽふりふり
         // タッチセンサ押したら上向けて止める
         sections_.emplace_back(new Shippofurifuri());
