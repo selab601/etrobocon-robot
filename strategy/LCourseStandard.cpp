@@ -96,15 +96,6 @@ namespace strategy{
             linetrace_->setPid(LineTracePid::FAST);
             return fixedDistanceLineTrace(900,60,LineTraceEdge::RIGHT);
 
-
-        case Phase::CHANGEEDGE:
-            return linetrace_->changeEdge();
-
-        case Phase::CHANGEEDGE_R_L:
-            startDistanceMeasurement(100);
-            curveRunning_->run(60,48);
-            return distanceMeasurement_->getResult();
-
         default: return false;
         }
     }
