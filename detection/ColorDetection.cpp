@@ -14,13 +14,20 @@ namespace detection{
 
         colorid_t result;
         // これ以下の各閾値は，実験から求めた．詳しくは2016年度のモデル参照
-        if (colorSensor_->getV() < 55) {//黒の上にセロハンテープがあると明るくなるのでこの値
+        if (colorSensor_->getV() < 30) {
             result = COLOR_BLACK;
-        } else if (colorSensor_->getS() <= 100) {
+        } else if (colorSensor_->getS() <= 160) {
             /* ここで板の色を切ってしまうと青や緑に影響する */
             /* 彩度が低い場合はモノクロと判断する */
             /* モノクロの場合，明度から白か黒かを判断する */
-            if (colorSensor_->getV() > 30) {
+
+            //2017年は紙の4色があり、夜の紙の青が[H:141,S:145,V:65]周辺となる
+            //青に合わせてS値の条件を緩めてしまうと白→黒のときに一瞬143付近まで上昇するため
+            //その時のH値が黄色付近となり黄色と判定してしまう
+            //ライントレース中にH値が青周辺になることはないので先に青を判定する
+            if (colorSensor_->getH() >= 135 && colorSensor_->getH() <= 220){
+                result = COLOR_BLUE;
+            }else if (colorSensor_->getV() > 30) {
                 result = COLOR_WHITE;
             } else {
                 result = COLOR_NONE;
