@@ -51,13 +51,13 @@ namespace drive{
                 polar_.setMaxPwm(20);
                 edgeCount_ = 0;
                 atWhite_ = true;
-                // 避けないとぶつかる時
-                if (abs(fixedDegree) < 55 || 400 > currentMm  || 400 > dstMMm){
-                    runToState_ = RunToState::AVOID;
-                }
                 // 真後ろに行く時
-                else if (abs(fixedDegree) > 170){
+                if (abs(fixedDegree) > 170){
                     runToState_ = RunToState::PIVOT_TURN;
+                }
+                // 避けないとぶつかる時
+                else if (abs(fixedDegree) < 55 || 400 > currentMm  || 400 > dstMMm){
+                    runToState_ = RunToState::AVOID;
                 }
                 // 目的地にまっすぐ行くだけで良い時
                 else {
