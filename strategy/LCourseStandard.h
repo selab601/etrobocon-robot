@@ -21,7 +21,6 @@ namespace strategy{
                 LINETRACE3,
                 LINETRACE4,
                 LINETRACE5,
-                LINETRACE6,
                 CHANGEEDGE,
                 CHANGEEDGE_R_L,
                 CHANGEEDGE_L_R,
@@ -43,7 +42,8 @@ namespace strategy{
                 Phase::CURVE4,
                 Phase::CURVE5,
                 Phase::LINETRACE4,
-                //Phase::LINE_IGNORE,
+                Phase::CHANGEEDGE_L_R,
+                Phase::LINETRACE5,
             };
 
             drive::LineTrace* linetrace_;
