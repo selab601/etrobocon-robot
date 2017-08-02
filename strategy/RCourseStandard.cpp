@@ -39,13 +39,13 @@ namespace strategy{
             startDistanceMeasurement(2255 - RCOURSE_SHORTCUT_LENGTH);
             lineTraceReset();
             linetrace_->setPid(LineTracePid::VERY_FAST);
-            linetrace_->run(100,LineTraceEdge::RIGHT);
+            linetrace_->run(80,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
         case Phase::BEND1:
-            linetrace_->setPid(0.006,0,0.4);
+            linetrace_->setPid(LineTracePid::FAST);
             //linetrace_->setPid(0, 0, 0);
-            linetrace_->setMaxPwm(100);
+            linetrace_->setMaxPwm(80);
             linetrace_->setEdge(LineTraceEdge::RIGHT);
 
             //startAngleMeasurement();
@@ -54,26 +54,26 @@ namespace strategy{
             return fixedDistanceCurveLineTrace(3100,-10);
 
         case Phase::BEND2:
-            linetrace_->setPid(0.006,0,0.4);
-            linetrace_->setMaxPwm(100);
+            linetrace_->setPid(LineTracePid::FAST);
+            linetrace_->setMaxPwm(80);
             linetrace_->setEdge(LineTraceEdge::RIGHT);
-            return fixedDistanceCurveLineTrace(650,900);
+            return fixedDistanceCurveLineTrace(700,100);
 
         case Phase::BEND3:
-            linetrace_->setPid(0.006,0,0.4);
-            linetrace_->setMaxPwm(100);
+            linetrace_->setPid(LineTracePid::FAST);
+            linetrace_->setMaxPwm(80);
             linetrace_->setEdge(LineTraceEdge::RIGHT);
-            return fixedDistanceCurveLineTrace(1150,1900);
+            return fixedDistanceCurveLineTrace(1100,1950);
 
         case Phase::BEND4:
-            linetrace_->setPid(0.006,0,0.4);
-            linetrace_->setMaxPwm(100);
+            linetrace_->setPid(LineTracePid::FAST);
+            linetrace_->setMaxPwm(80);
             linetrace_->setEdge(LineTraceEdge::RIGHT);
             return fixedDistanceCurveLineTrace(1250,-20);
 
         case Phase::STRAIGHT2:
             linetrace_->setPid(LineTracePid::VERY_FAST);
-            return fixedDistanceLineTrace(1950 - RCOURSE_SHORTCUT_LENGTH,100,LineTraceEdge::RIGHT);
+            return fixedDistanceLineTrace(1950 - RCOURSE_SHORTCUT_LENGTH,80,LineTraceEdge::RIGHT);
 
 
         //ライン無視走行
