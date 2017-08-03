@@ -18,6 +18,7 @@
 #include "strategy/ParkingR.h"
 #include "strategy/ParkingL.h"
 #include "strategy/LCourseShortcut.h"
+#include "strategy/Prize.h"
 
 //ライントレースや戦略をincludeする
 //#include "../strategy/aaa.h"
