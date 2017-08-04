@@ -14,6 +14,7 @@ namespace strategy{
     class ParkingR : public IStrategy{
         private:
             enum class Phase{
+                INIT,
                 LINE_TRACE1,
                 ADJUST1,
                 TURN_RIGHT,
@@ -22,6 +23,7 @@ namespace strategy{
             };
 
             std::vector<Phase> phaseProcedure_{
+                Phase::INIT,
                 Phase::LINE_TRACE1,
                 Phase::ADJUST1,
                 Phase::TURN_RIGHT,

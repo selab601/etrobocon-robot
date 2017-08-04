@@ -34,15 +34,20 @@ namespace strategy{
 
     bool ParkingR::executePhase(Phase phase){
         switch(phase){
+            case Phase::INIT:
+                lineTrace_->reset();
+                lineTrace_->setPid(LineTracePid::VERY_FAST);
+                return true;
+
             case Phase::LINE_TRACE1:
-                //誤検知防止のため開始後25cmは直角検知しないので，開始位置によっては調整してください
-                distanceMeasurement_->start(250);
-                lineTrace_->run(50,LineTraceEdge::RIGHT);
+                //誤検知防止のため開始後20cmは直角検知しないので，開始位置によっては調整してください
+                distanceMeasurement_->start(200);
+                lineTrace_->run(40,LineTraceEdge::RIGHT);
                 return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
 
             case Phase::ADJUST1:
                 distanceMeasurement_->start(20);
-                straightRunning_->run(30);
+                straightRunning_->run(15);
                 return distanceMeasurement_->getResult();
 
             case Phase::TURN_RIGHT:
@@ -50,7 +55,8 @@ namespace strategy{
 
             case Phase::LINE_TRACE2:
                 distanceMeasurement_->start(400);
-                lineTrace_->run(50,LineTraceEdge::RIGHT);
+                lineTrace_->setPid(LineTracePid::MID);
+                lineTrace_->run(40,LineTraceEdge::RIGHT);
                 return distanceMeasurement_->getResult();
 
             case Phase::WAIT:

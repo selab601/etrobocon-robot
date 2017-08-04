@@ -2,6 +2,8 @@
 #define PRIZE_H
 
 #include "IStrategy.h"
+#include "../detection/LineDetection.h"
+#include "../detection/ObjectDetection.h"
 #include "../drive/LineTrace.h"
 #include "../drive/StraightRunning.h"
 #include "../measurement/TimeMeasurement.h"
@@ -10,6 +12,7 @@
 #include "../measurement/Train.h"
 #include "../drive/PolarRunning.h"
 #include "../device/Arm.h"
+#include "../device/SonarSensor.h"
 #include <vector>
 
 namespace strategy{
@@ -20,60 +23,72 @@ namespace strategy{
             INIT,
             APPROACH1,
             SET_DIFFANGLE1,
-            ADJUST_ANGLE1,
+            TURN_SOUTH,
             ARM_DOWN,
             ACCESS1,
             PICKUP_PRIZE,
+            YOISHO,
             BACK1,
             SET_DIFFANGLE2,
-            TURN2,
-            WAIT_TRAIN,
+            TURN_EAST,
+            STOP_EXIT,
+            WAIT_1_SEC,
             LEAVE_AREA,
+            RECOVER,
             APPROACH2,
-            SET_DIFFANGLE3,
-            ADJUST_ANGLE3,
+            ADJUST_ANGLE_SOUTH,
             PUTDOWN_PRIZE,
             BACK2,
             SET_DIFFANGLE4,
-            TURN3,
-            ARM_RESET,
+            TURN_EAST2,
+            RETURN_LINE,
             EXIT,
+            ARM,
         };
 
 
         //難所攻略手順
         std::vector<StrategyPhase> strategyProcedure_{
+            //StrategyPhase::ARM,
             StrategyPhase::INIT,
+            StrategyPhase::SET_DIFFANGLE1,
+            StrategyPhase::TURN_SOUTH,
             StrategyPhase::APPROACH1,
             StrategyPhase::SET_DIFFANGLE1,
-            StrategyPhase::ADJUST_ANGLE1,
+            StrategyPhase::TURN_SOUTH,
             StrategyPhase::ARM_DOWN,
             StrategyPhase::ACCESS1,
             StrategyPhase::PICKUP_PRIZE,
             StrategyPhase::BACK1,
             StrategyPhase::SET_DIFFANGLE2,
-            StrategyPhase::TURN2,
-            StrategyPhase::WAIT_TRAIN,
+            StrategyPhase::TURN_EAST,
+            StrategyPhase::STOP_EXIT,
             StrategyPhase::LEAVE_AREA,
+            //StrategyPhase::WAIT_1_SEC,
+            StrategyPhase::RECOVER,
+            StrategyPhase::SET_DIFFANGLE1,
+            StrategyPhase::TURN_SOUTH,
             StrategyPhase::APPROACH2,
-            StrategyPhase::SET_DIFFANGLE3,
-            StrategyPhase::ADJUST_ANGLE3,
             StrategyPhase::PUTDOWN_PRIZE,
             StrategyPhase::BACK2,
             StrategyPhase::SET_DIFFANGLE4,
-            StrategyPhase::TURN3,
-            StrategyPhase::ARM_RESET,
+            StrategyPhase::TURN_EAST2,
             StrategyPhase::EXIT,
         };
 
         unsigned int procedureNumber_ = 0;
 
+        //検知
+        detection::LineDetection* lineDetection_;
+        detection::ObjectDetection* objectDetection_;
+
+        device::Arm* arm_;
+        device::SonarSensor* sonar_;
+
         //走行
         drive::LineTrace* linetrace_;
         drive::PolarRunning polar_;
         drive::StraightRunning* straightRunning_;
-
-        device::Arm* arm_;
 
         //計測
         measurement::DistanceMeasurement* distanceMeasurement_;
@@ -91,7 +106,6 @@ namespace strategy{
         //ライントレースのリセットを行ったかどうか
         bool isLineTraceReset_;
 
-        bool colorDetected_ = false;
         bool isRight_ = false;
 
     public:
@@ -124,8 +138,6 @@ namespace strategy{
          * @brief LineTrace::reset()を一度だけ実行する
          */
         void lineTraceReset();
-
-        bool polarToBlock(int degree10);
     };
 }
 
