@@ -5,11 +5,20 @@
 #include "TimeMeasurement.h"
 
 namespace measurement{
+// 新幹線が内側を1周するときの時間[msec]
+// 電池ない時: 9702 くらい
+// 電池ほぼ満タンの時: 7729 くらい
+#define IN_CYCLE_TIME   8231    // 7729 * 1.065
 
-#define IN_CYCLE_TIME   9048    // 新幹線が内側を1周するときの時間[msec]
-#define OUT_CYCLE_TIME  12613   // 新幹線が外側を1周するときの時間[msec]
-#define TRAIN_LENGTH    4000    // 新幹線の長さ(時間)[msec]
-#define EXTEND_PER_CYCLE 2000   // 1週ごとに増やす新幹線の長さ[msec]
+// 新幹線が外側を1周するときの時間[msec]
+// 電池ない時: 13566 くらい
+// 電池ほぼ満タンの時: 10825 くらい
+#define OUT_CYCLE_TIME  11529   // 10825 * 1.065
+#define TRAIN_LENGTH    2500    // 新幹線の長さ(時間)[msec]
+
+// 1週ごとに増やす新幹線の長さ[msec]
+#define EXTEND_PER_CYCLE 2500   // 電池がほぼ満タンのときでも対応できる
+
 // 新幹線の位置をもっと先にいることにする時: +
 // 新幹線のいちをもっと後ろに居ることにする時: -
 // ex. 1秒分先に居ることにする時: 1000[msec]
