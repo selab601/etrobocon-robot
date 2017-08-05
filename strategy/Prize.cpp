@@ -66,10 +66,16 @@ namespace strategy{
         case StrategyPhase::TURN_SOUTH:
             return polar_.bodyTurn(-900 - diffAngle, 20);
 
-        //10cm前進、補正後もう一回呼びます
+        //10cm前進
         case StrategyPhase::APPROACH1:
             arm_->down();
             return polar_.runTo(100, 0);
+            //return polar_.runTo(200, -900);
+
+        //方向修正を挟み再び15cm前進
+        case StrategyPhase::APPROACH2:
+            arm_->down();
+            return polar_.runTo(150, 0);
             //return polar_.runTo(200, -900);
 
         case StrategyPhase::ARM_DOWN:
@@ -125,6 +131,7 @@ namespace strategy{
         case StrategyPhase::TURN_EAST:
             return polar_.bodyTurn(0 - diffAngle, 20);
 
+        //逆向き
         case StrategyPhase::TURN_WEST:
             return polar_.bodyTurn(-1800 - diffAngle, 20);
 
@@ -170,15 +177,12 @@ namespace strategy{
             straightRunning_->run(15);
             return distanceMeasurement_->getResult();
 
-        //土俵を出る
+        //土俵を出る(バック版)ボツ
         case StrategyPhase::LEAVE_AREA_BACK:
             polar_.back(true);
             polar_.centerPivot(false);
             polar_.setMaxPwm(40);
             return polar_.runTo(500, 1800);
-            //distanceMeasurement_->start(500);
-            //straightRunning_->run(-30);
-            //return distanceMeasurement_->getResult();
 
         //懸賞の重さで前にコケる可能性があるので、一秒待った後ちょっと前進
         case StrategyPhase::RECOVER:
