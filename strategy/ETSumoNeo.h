@@ -21,6 +21,21 @@
 namespace strategy{
     class ETSumoNeo : public IStrategy{
     private:
+        // 土俵のブロック置き場の色
+        // TODO: 土俵の配置に合わせて変更
+        colorid_t blockPlaceColors_[8] = {
+            COLOR_YELLOW,   // 入り口から見て左奥
+            COLOR_RED,      // 入り口から見て左手前
+            COLOR_BLUE,     // 入り口から見て右手前
+            COLOR_GREEN,    // 入り口から見て右奥
+
+            // 土俵2つめ
+            COLOR_YELLOW,   // 左奥
+            COLOR_RED,      // 左手前
+            COLOR_BLUE,     // 右手前
+            COLOR_GREEN,    // 右奥
+        };
+
         //ET相撲Neoの走行状態
         enum class StrategyPhase{
             INIT,
@@ -28,7 +43,6 @@ namespace strategy{
             LINE_TRACE_LITTLE,
 
             STOP_ENTRY,
-            STOP_EXIT,
             STOP_CENTER,
 
             WAIT_1_SEC,
@@ -39,6 +53,7 @@ namespace strategy{
             STABILIZE,
             TO_RIGHT_ANGLE,
             TO_CENTER,
+            TURN_STRAIGHT,
             TO_BLOCK1,
             TO_LEFTEDGE,
             BACK1,
@@ -57,7 +72,6 @@ namespace strategy{
             ARM_NORMAL,
 
             NEXT_STAGE,
-            EXIT,
         };
 
 
@@ -80,8 +94,8 @@ namespace strategy{
 
             // 土俵1つめの相撲
             // 1つめのブロック(入り口から見て左奥)
-            StrategyPhase::ARM_HOLD,        // アームを上に向ける
             StrategyPhase::TO_BLOCK1,       // 1つ目のブロックに行く
+            StrategyPhase::ARM_HOLD,        // アームを上に向ける
             StrategyPhase::ARM_UP,          // 色を見るためにアームを上げる
             StrategyPhase::SEE_BLOCK,       // 色を見る
             StrategyPhase::ARM_HOLD,        // ブロックをつかむ
@@ -89,7 +103,6 @@ namespace strategy{
             StrategyPhase::BACK1,
 
             // 2つめのブロック(入り口から見て左手前)
-            StrategyPhase::ARM_HOLD,
             StrategyPhase::TO_BLOCK2,
             StrategyPhase::ARM_UP,
             StrategyPhase::SEE_BLOCK,
@@ -98,7 +111,6 @@ namespace strategy{
             StrategyPhase::BACK2,
 
             // 3つ目のブロック(入り口から見て右手前)
-            StrategyPhase::ARM_HOLD,
             StrategyPhase::TO_BLOCK3,
             StrategyPhase::ARM_UP,
             StrategyPhase::SEE_BLOCK,
@@ -107,7 +119,6 @@ namespace strategy{
             StrategyPhase::BACK3,
 
             // 4つめのブロック(入り口から見て右奥)
-            StrategyPhase::ARM_HOLD,
             StrategyPhase::TO_BLOCK4,
             StrategyPhase::ARM_UP,
             StrategyPhase::SEE_BLOCK,
@@ -115,8 +126,8 @@ namespace strategy{
             StrategyPhase::FORCING_OUT,
             StrategyPhase::BACK4,
 
-            StrategyPhase::ARM_NORMAL,
             StrategyPhase::TO_LINE_RETURN,  // ライン復帰に渡せる場所に移動
+            StrategyPhase::ARM_NORMAL,
             StrategyPhase::TO_LEFTEDGE,     // 左エッジに移動
             StrategyPhase::LINE_RETURN,     // ライン復帰
             StrategyPhase::STABILIZE,       // 角度を安定させる
@@ -135,8 +146,8 @@ namespace strategy{
 
             // 土俵2つめの相撲
             // 2つめの左奥
-            StrategyPhase::ARM_HOLD,
             StrategyPhase::TO_BLOCK1,
+            StrategyPhase::ARM_HOLD,
             StrategyPhase::ARM_UP,
             StrategyPhase::SEE_BLOCK,
             StrategyPhase::ARM_HOLD,
@@ -144,7 +155,6 @@ namespace strategy{
             StrategyPhase::BACK1,
 
             // 2つめの左手前
-            StrategyPhase::ARM_HOLD,
             StrategyPhase::TO_BLOCK2,
             StrategyPhase::ARM_UP,
             StrategyPhase::SEE_BLOCK,
@@ -153,7 +163,6 @@ namespace strategy{
             StrategyPhase::BACK2,
 
             // 2つめの右手前
-            StrategyPhase::ARM_HOLD,
             StrategyPhase::TO_BLOCK3,
             StrategyPhase::ARM_UP,
             StrategyPhase::SEE_BLOCK,
@@ -162,7 +171,6 @@ namespace strategy{
             StrategyPhase::BACK3,
 
             // 2つめの右奥
-            StrategyPhase::ARM_HOLD,
             StrategyPhase::TO_BLOCK4,
             StrategyPhase::ARM_UP,
             StrategyPhase::SEE_BLOCK,
@@ -170,28 +178,15 @@ namespace strategy{
             StrategyPhase::FORCING_OUT,
             StrategyPhase::BACK4,
 
-            StrategyPhase::ARM_NORMAL,
             StrategyPhase::TO_LINE_RETURN,
+            StrategyPhase::ARM_NORMAL,
             StrategyPhase::TO_LEFTEDGE,
             StrategyPhase::LINE_RETURN,
             StrategyPhase::STABILIZE,
             StrategyPhase::INIT,            // 車体角度保存
             StrategyPhase::TO_RIGHT_ANGLE,
-            StrategyPhase::STOP_EXIT,
-
-            StrategyPhase::EXIT,            // 土俵から出る
-        };
-
-        colorid_t blockPlaceColors_[8] = {
-            COLOR_YELLOW,
-            COLOR_RED,
-            COLOR_BLUE,
-            COLOR_GREEN,
-
-            COLOR_YELLOW,
-            COLOR_RED,
-            COLOR_BLUE,
-            COLOR_GREEN,
+            StrategyPhase::TO_CENTER,       // 土俵の真ん中に移動する
+            StrategyPhase::TURN_STRAIGHT,   // 車体の角度をラインに並行にする
         };
 
         unsigned int procedureNumber_ = 0;

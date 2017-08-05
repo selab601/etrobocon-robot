@@ -50,6 +50,7 @@ namespace strategy{
 
     //戦略手順を実行する
     bool ETSumoNeo::executeStrategy(StrategyPhase strategyPhase){
+        static int diffDegree10 = 0;
         switch(strategyPhase){
 
         //車体角度保存
@@ -69,7 +70,7 @@ namespace strategy{
 
         //すこしライントレース
         case StrategyPhase::LINE_TRACE_LITTLE:
-            distanceMeasurement_->start(80);
+            distanceMeasurement_->start(60);
             linetrace_->setPid(LineTracePid::RETURN);
             linetrace_->run(20,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
@@ -115,18 +116,6 @@ namespace strategy{
             }
             return false;
 
-        // 出口で新幹線がいなくなるまで停止
-        case StrategyPhase::STOP_EXIT:
-            straightRunning_->run(0);
-            // 新幹線がいないと分かるとき(時間で)
-            if (!train_->atExit()){
-                return true;
-            }
-            else{
-                ev3_speaker_play_tone(900, 4);
-            }
-            return false;
-
         //通り過ぎてから1秒間待つ
         case StrategyPhase::WAIT_1_SEC:
             startTimeMeasurement(1000);
@@ -141,11 +130,11 @@ namespace strategy{
         case StrategyPhase::CLIMB:
             polar_.setMaxPwm(50);
             polar_.back(false);
-            return polar_.runToXY(450, 20);
+            return polar_.runToXY(450, 25);
 
         case StrategyPhase::LINE_RETURN:
             lineTraceReset();
-            distanceMeasurement_->start(150);
+            distanceMeasurement_->start(140);
             linetrace_->setTarget(0.5);
             linetrace_->setMaxPwm(20);
             linetrace_->setEdge(LineTraceEdge::LEFT);
@@ -163,7 +152,7 @@ namespace strategy{
 
         case StrategyPhase::STABILIZE:
             lineTraceReset();
-            distanceMeasurement_->start(20);
+            distanceMeasurement_->start(40);
             linetrace_->setTarget(0.5);
             linetrace_->setMaxPwm(20);
             linetrace_->setPid(LineTracePid::SLOW);
@@ -174,7 +163,17 @@ namespace strategy{
             polar_.back(true);
             polar_.setMaxPwm(20);
             polar_.centerPivot(true);
-            return polar_.runToXY(-115, -10);
+            if (polar_.runTo(118, -1750 - bodyAngleMeasurement_->getRelative10()) ){
+                diffDegree10 = bodyAngleMeasurement_->getRelative10();
+                return true;
+            }
+            return false;
+
+        // 車体の角度をラインに並行にする
+        case StrategyPhase::TURN_STRAIGHT:
+            polar_.centerPivot(true);
+            polar_.back(false);
+            return polar_.bodyTurn(-diffDegree10 - 10, 15); // 足りない事が多いから1°多く曲げる
 
         case StrategyPhase::ARM_UP:
             return arm_->setDegree(60);
@@ -186,6 +185,7 @@ namespace strategy{
             return arm_->normal();
 
         case StrategyPhase::TO_BLOCK1:
+            arm_->setDegree(35);    // 高速化のため同時にアームを上げる
             return polarToBlock(557);
 
         case StrategyPhase::BACK1:
@@ -214,11 +214,13 @@ namespace strategy{
             return polar_.runTo(CENTER_TO_BLOCK_LENGTH, -1800 +3043+SLIP_DEGREE10*3 - bodyAngleMeasurement_->getRelative10());
 
         case StrategyPhase::TO_LINE_RETURN:
+            arm_->normal();     // 高速化のため同時にアームを戻す
             polar_.back(true);
-            return polar_.runTo(140, 1850 - bodyAngleMeasurement_->getRelative10());
+            return polar_.runTo(130, 1800 +SLIP_DEGREE10*3- bodyAngleMeasurement_->getRelative10());
+
         case StrategyPhase::TO_LEFTEDGE:
             polar_.back(false);
-            return polar_.bodyTurn(300, 30);
+            return polar_.bodyTurn(150, 30);
 
         case StrategyPhase::FORCING_OUT:
             if (forcingOut_.run(30, isRight_)){
@@ -255,12 +257,8 @@ namespace strategy{
         case StrategyPhase::NEXT_STAGE:
             polar_.setMaxPwm(50);
             polar_.back(false);
-            return polar_.runTo(380, 10 - bodyAngleMeasurement_->getRelative10());
+            return polar_.runTo(360, 10 - bodyAngleMeasurement_->getRelative10());
 
-        case StrategyPhase::EXIT:
-            polar_.setMaxPwm(50);
-            polar_.back(false);
-            return polar_.runTo(400, -36 -bodyAngleMeasurement_->getRelative10());
         default: return false;
         }
         return false;
