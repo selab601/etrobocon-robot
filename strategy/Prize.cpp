@@ -54,6 +54,7 @@ namespace strategy{
         //車体角度保存
         case StrategyPhase::INIT:
             bodyAngleMeasurement_->setBaseAngle();//始めの角度をセット
+            polar_.setMaxPwm(20);
             return true;
 
         //現在の相対角度をセット
@@ -65,10 +66,10 @@ namespace strategy{
         case StrategyPhase::TURN_SOUTH:
             return polar_.bodyTurn(-900 - diffAngle, 20);
 
-        //懸賞の5cm手前に移動し停止
+        //10cm前進、補正後もう一回呼びます
         case StrategyPhase::APPROACH1:
             arm_->down();
-            return polar_.runTo(200, 0);
+            return polar_.runTo(100, 0);
             //return polar_.runTo(200, -900);
 
         case StrategyPhase::ARM_DOWN:
@@ -80,7 +81,7 @@ namespace strategy{
 
         //懸賞を持ち上げる, 2秒以上詰まったら一度下げる
         case StrategyPhase::PICKUP_PRIZE:
-            startTimeMeasurement(2000);
+            startTimeMeasurement(1000);
             if(timeMeasurement_->getResult()){
                 strategyProcedure_.insert(
                     strategyProcedure_.begin() + procedureNumber_ + 1,
@@ -124,6 +125,9 @@ namespace strategy{
         case StrategyPhase::TURN_EAST:
             return polar_.bodyTurn(0 - diffAngle, 20);
 
+        case StrategyPhase::TURN_WEST:
+            return polar_.bodyTurn(-1800 - diffAngle, 20);
+
         //出口の新幹線を待つ
         case StrategyPhase::STOP_EXIT:
             straightRunning_->run(0);
@@ -150,9 +154,31 @@ namespace strategy{
             return timeMeasurement_->getResult();
 
         //土俵を出る
-        case StrategyPhase::LEAVE_AREA:
+        case StrategyPhase::LEAVE_AREA1:
+            //polar_.setMaxPwm(40);
+            //return polar_.runTo(500, 0);
+            distanceMeasurement_->start(300);
+            straightRunning_->run(30);
+            return distanceMeasurement_->getResult();
+
+        //土俵を出る
+        case StrategyPhase::LEAVE_AREA2:
+            //polar_.setMaxPwm(40);
+            //return polar_.runTo(500, 0);
+            polar_.centerPivot(false);
+            distanceMeasurement_->start(200);
+            straightRunning_->run(15);
+            return distanceMeasurement_->getResult();
+
+        //土俵を出る
+        case StrategyPhase::LEAVE_AREA_BACK:
+            polar_.back(true);
+            polar_.centerPivot(false);
             polar_.setMaxPwm(40);
-            return polar_.runTo(500, 0);
+            return polar_.runTo(500, 1800);
+            //distanceMeasurement_->start(500);
+            //straightRunning_->run(-30);
+            //return distanceMeasurement_->getResult();
 
         //懸賞の重さで前にコケる可能性があるので、一秒待った後ちょっと前進
         case StrategyPhase::RECOVER:
@@ -161,7 +187,7 @@ namespace strategy{
         //台に接近
         case StrategyPhase::APPROACH2:
             polar_.setMaxPwm(20);
-            return polar_.runTo(150, 0);
+            return polar_.runTo(80, 0);
         
         //懸賞を置く
         case StrategyPhase::PUTDOWN_PRIZE:

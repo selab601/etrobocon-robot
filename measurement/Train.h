@@ -6,10 +6,10 @@
 
 namespace measurement{
 
-#define IN_CYCLE_TIME   9048    // 新幹線が内側を1周するときの時間[msec]
-#define OUT_CYCLE_TIME  12613   // 新幹線が外側を1周するときの時間[msec]
-#define TRAIN_LENGTH    4000    // 新幹線の長さ(時間)[msec]
-#define EXTEND_PER_CYCLE 2000   // 1週ごとに増やす新幹線の長さ[msec]
+#define IN_CYCLE_TIME   7960    // 新幹線が内側を1周するときの時間[msec]
+#define OUT_CYCLE_TIME  11150   // 新幹線が外側を1周するときの時間[msec]
+#define TRAIN_LENGTH    2500    // 新幹線の長さ(時間)[msec]
+#define EXTEND_PER_CYCLE 2500   // 1週ごとに増やす新幹線の長さ[msec]
 // 新幹線の位置をもっと先にいることにする時: +
 // 新幹線のいちをもっと後ろに居ることにする時: -
 // ex. 1秒分先に居ることにする時: 1000[msec]
