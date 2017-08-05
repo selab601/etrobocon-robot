@@ -18,6 +18,7 @@ namespace drive{
         static int turnDegree10 = 0;
         static int avoidedDegree10 = 0;
         static int fixedDegree = 0;
+        static int turnSpeed = 20;
 
         switch (runToState_){
             case RunToState::INIT:
@@ -51,12 +52,18 @@ namespace drive{
                 polar_.setMaxPwm(20);
                 edgeCount_ = 0;
                 atWhite_ = true;
+                turnSpeed = 20;
                 // 真後ろに行く時
                 if (abs(fixedDegree) > 170){
                     runToState_ = RunToState::PIVOT_TURN;
                 }
                 // 避けないとぶつかる時
-                else if (abs(fixedDegree) < 55 || 400 > currentMm  || 400 > dstMMm){
+                else if (abs(fixedDegree) < 55){
+                    runToState_ = RunToState::AVOID;
+                }
+                else if (400 >currentMm || 400 > dstMMm){
+                    avoidY = avoidY * 3 /2; // ぶつかりやすいから多めに避ける
+                    turnSpeed = 12;
                     runToState_ = RunToState::AVOID;
                 }
                 // 目的地にまっすぐ行くだけで良い時
@@ -100,7 +107,7 @@ namespace drive{
 
             case RunToState::TURN:
                 polar_.centerPivot(true);
-                if ( polar_.bodyTurn(turnDegree10, 20) ){
+                if ( polar_.bodyTurn(turnDegree10, turnSpeed) ){
                     runToState_ = RunToState::CALCULATE_EDGE;
                     ev3_speaker_play_tone(800, 100);
                 }
