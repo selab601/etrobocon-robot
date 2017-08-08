@@ -12,6 +12,7 @@
 #include "../measurement/Train.h"
 #include "../drive/PolarRunning.h"
 #include "../device/Arm.h"
+#include "../device/GyroSensor.h"
 #include "../device/SonarSensor.h"
 #include <vector>
 
@@ -21,51 +22,62 @@ namespace strategy{
         //懸賞運びの走行状態
         enum class StrategyPhase{
             INIT,
-            APPROACH1,
-            APPROACH2,
+            EXIT,
+
+            //回転
             SET_DIFFANGLE1,
-            TURN_SOUTH,
-            ARM_DOWN,
-            ACCESS1,
-            PICKUP_PRIZE,
-            YOISHO,
-            BACK1,
             SET_DIFFANGLE2,
+            SET_DIFFANGLE4,
             TURN_EAST,
+            TURN_EAST2,
             TURN_WEST,
-            STOP_EXIT,
-            WAIT_1_SEC,
-            LEAVE_AREA_BACK,
+            TURN_SOUTH,
+            TURN_SOUTH2,
+            ADJUST_ANGLE_SOUTH,
+
+            //移動
+            APPROACH5CM,
+            APPROACH10CM,
+            APPROACH12CM,
+            APPROACH16CM,
+            APPROACH16CM_SONAR,
+            APPROACH_KENSHO,
+            BACK1,
+            BACKTOLINE,
             LEAVE_AREA1,
             LEAVE_AREA2,
             RECOVER,
-            APPROACH2,
-            ADJUST_ANGLE_SOUTH,
-            PUTDOWN_PRIZE,
-            BACK2,
-            SET_DIFFANGLE4,
-            TURN_EAST2,
+            RECOVER_GYRO,
             RETURN_LINE,
-            EXIT,
-            ARM,
+
+            //アーム
+            ARM_DOWN,
+            PICKUP_PRIZE,
+            PUTDOWN_PRIZE,
+            YOISHO,
+
+            STOP_EXIT,
+            WAIT_1_SEC,
+
+            TEST,
+            FALS,
         };
 
 
         //難所攻略手順
         std::vector<StrategyPhase> strategyProcedure_{
-            //StrategyPhase::ARM,
             StrategyPhase::INIT,
-            StrategyPhase::SET_DIFFANGLE1,
-            StrategyPhase::TURN_SOUTH, 
-            StrategyPhase::APPROACH1,
-            StrategyPhase::SET_DIFFANGLE1,
-            StrategyPhase::TURN_SOUTH,
-            StrategyPhase::APPROACH2,
             StrategyPhase::SET_DIFFANGLE1,
             StrategyPhase::TURN_SOUTH,
             StrategyPhase::ARM_DOWN,
-            StrategyPhase::ACCESS1,
+            StrategyPhase::APPROACH10CM,
+            StrategyPhase::SET_DIFFANGLE1,
+            StrategyPhase::TURN_SOUTH,
+            StrategyPhase::APPROACH16CM,
+            StrategyPhase::SET_DIFFANGLE1,
+            StrategyPhase::TURN_SOUTH,
             StrategyPhase::PICKUP_PRIZE,
+
             StrategyPhase::BACK1,
             StrategyPhase::SET_DIFFANGLE2,
             StrategyPhase::TURN_EAST,
@@ -74,11 +86,13 @@ namespace strategy{
             StrategyPhase::LEAVE_AREA2,
             //StrategyPhase::WAIT_1_SEC,
             StrategyPhase::RECOVER,
+
             StrategyPhase::SET_DIFFANGLE1,
             StrategyPhase::TURN_SOUTH,
-            StrategyPhase::APPROACH2,
+            StrategyPhase::APPROACH16CM,
             StrategyPhase::PUTDOWN_PRIZE,
-            StrategyPhase::BACK2,
+            
+            StrategyPhase::BACKTOLINE,
             StrategyPhase::SET_DIFFANGLE4,
             StrategyPhase::TURN_EAST2,
             StrategyPhase::EXIT,
@@ -91,6 +105,7 @@ namespace strategy{
         detection::ObjectDetection* objectDetection_;
 
         device::Arm* arm_;
+        device::GyroSensor* gyro_;
         device::SonarSensor* sonar_;
 
         //走行
