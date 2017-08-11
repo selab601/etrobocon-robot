@@ -52,6 +52,7 @@ namespace drive{
                 polar_.setMaxPwm(20);
                 edgeCount_ = 0;
                 atWhite_ = true;
+                resetArray();   // isWhite配列を初期化
                 turnSpeed = 20;
                 // 真後ろに行く時
                 if (abs(fixedDegree) > 170){
@@ -169,43 +170,77 @@ namespace drive{
     }
 
     bool Avoidance::isWhite(){
-        int threshold = colorSensor_->getBlackCalibratedValue();
-        threshold += (colorSensor_->getWhiteCalibratedValue() - colorSensor_->getBlackCalibratedValue()) / 5;
-        return colorSensor_->getBrightness() >= threshold;
+        for (int i = 0; i < ISWHITE_ARRAY_SIZE; i++){
+            if (!isWhiteArray[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool Avoidance::isBlack(){
+        for (int i = 0; i < ISWHITE_ARRAY_SIZE; i++){
+            if (isWhiteArray[i]){
+                return false;
+            }
+        }
+        return true;
     }
 
     void Avoidance::incrementEdge(){
+        updateIsWhite();
         if (atWhite_){
-            if (!isWhite()){
+            if (isBlack()){
                 edgeCount_++;
                 atWhite_ = false;
-                ev3_led_set_color (LED_RED);
-                ev3_speaker_play_tone(800, 10);
+                ev3_led_set_color (LED_OFF);
+                ev3_speaker_play_tone(300, 40);
             }
         }
         else{
             if (isWhite()){
                 edgeCount_++;
                 atWhite_ = true;
-                ev3_led_set_color (LED_GREEN);
-                ev3_speaker_play_tone(400, 10);
+                ev3_led_set_color (LED_ORANGE);
+                ev3_speaker_play_tone(700, 40);
             }
         }
     }
     void Avoidance::decrementEdge(){
+        updateIsWhite();
         if (atWhite_){
-            if (!isWhite()){
-                edgeCount_++;
+            if (isBlack()){
+                edgeCount_--;
                 atWhite_ = false;
-                ev3_led_set_color (LED_RED);
+                ev3_led_set_color (LED_OFF);
+                ev3_speaker_play_tone(300, 40);
             }
         }
         else{
             if (isWhite()){
-                edgeCount_++;
+                edgeCount_--;
                 atWhite_ = true;
-                ev3_led_set_color (LED_GREEN);
+                ev3_led_set_color (LED_ORANGE);
+                ev3_speaker_play_tone(700, 40);
             }
         }
+    }
+
+    void Avoidance::resetArray(){
+        // true と false を交互に入れる
+        for (int i = 0; i < ISWHITE_ARRAY_SIZE; i++){
+            isWhiteArray[i] = (i% 2 == 0);
+        }
+    }
+
+    void Avoidance::updateIsWhite(){
+        // 値を1つ後ろにずらす
+        for (int i = ISWHITE_ARRAY_SIZE-1; i > 0; i--){
+            isWhiteArray[i] = isWhiteArray[i-1];
+        }
+        int threshold = colorSensor_->getBlackCalibratedValue();
+        threshold += (colorSensor_->getWhiteCalibratedValue() - colorSensor_->getBlackCalibratedValue()) / 3;
+
+        isWhiteArray[0] = colorSensor_->getBrightness() >= threshold;
     }
 }
