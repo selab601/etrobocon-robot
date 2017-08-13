@@ -48,7 +48,6 @@ namespace strategy{
             LEAVE_AREA2,
             RECOVER,
             RECOVER_GYRO,
-            RETURN_LINE,
 
             //アーム
             ARM_DOWN,
