@@ -24,7 +24,7 @@ namespace drive{
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
             startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
-            lineTrace_->setPid(LineTracePid::MID);
+            lineTrace_->setPid(LineTracePid::FAST);
             lineTrace_->setTarget();
             lineTrace_->setEdge(startEdge_);//セットしないとLineTrace._edgeが更新されない
             lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
@@ -162,7 +162,7 @@ namespace drive{
         static bool isDaizaDetected = false;
         if(!isDaizaDetected){//台座を検知するまでライントレース
             startEdge_ = lineTrace_->getEdge();
-            lineTrace_->setPid(LineTracePid::MID);
+            lineTrace_->setPid(LineTracePid::FAST);
             lineTrace_->setEdge(startEdge_);
             lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
             if(colorDetection_->isFourColors()){
