@@ -37,7 +37,7 @@ namespace drive{
         case Phase::STRAIGHT_LITTLE:
             //タイヤの中心からカラーセンサまでの距離から色検知中に走行した距離を引いた距離走行する
             distanceMeasurement_->start(WHEEL_TO_COLOR_SENSOR - COLOR_DETECTION_DISTANCE);
-            straightRunning_->run(10);
+            straightRunning_->run(CATCHING_LINETRACE_PWM);
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
                 if(abs(degree) >= 175){//後ろに持ち帰る場合は別フェーズへ(本来180が理想だが179が来るらしい)
@@ -170,7 +170,7 @@ namespace drive{
             }
         }else{//直前に走行していたラインの中心にタイヤの中心がくるようにバック走行
             distanceMeasurement_->start(int(lineDistance / 2) - DAIZA_DIAMETER / 2 - WHEEL_TO_COLOR_SENSOR + COLOR_DETECTION_DISTANCE);
-            straightRunning_->run(-CATCHING_LINETRACE_PWM);
+            straightRunning_->run(-20);//速いと急バックによる車体のぶれとモーターの個体差によるずれがあるため
             if(distanceMeasurement_->getResult()){
                 isDaizaDetected =false;//フラグを戻しておく
                 distanceMeasurement_->reset();
