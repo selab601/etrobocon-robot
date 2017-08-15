@@ -72,6 +72,9 @@ namespace detection{
     }
 
     colorid_t ColorDetection::confirmedColor(){
+        if(result_ == COLOR_BLUE){//青のH値に到達するまで時間がかかるので例外処理
+            return result_;
+        }
         if(deltaResult_ == result_){//前回(4ms前)と同じでないと色として確定しない
             return result_;
         }else{
