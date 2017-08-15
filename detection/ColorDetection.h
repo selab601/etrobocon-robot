@@ -11,6 +11,8 @@ namespace detection{
     class ColorDetection{
     private:
         device::ColorSensor* colorSensor_;
+        colorid_t result_;
+        colorid_t deltaResult_ = COLOR_NONE;
     public:
         ColorDetection();
 
@@ -25,6 +27,10 @@ namespace detection{
          * @return 赤青黃緑:true,それ以外:false
          */
         bool isFourColors();
+
+    private:
+
+        colorid_t confirmedColor();
     };
 }
 
