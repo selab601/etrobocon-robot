@@ -136,7 +136,7 @@ namespace drive{
             //ブロック取得後のラインの半分の距離にタイヤの中心がくるように
             distanceMeasurement_->start(runningDistance_);//エッジの応じた距離走行
 
-            if(abs(degree) < 105){//エッジそのまま
+            if(abs(degree) < 90){//エッジそのまま
                 endEdge_ = startEdge_;
             }else{//エッジ逆転
                 if(startEdge_ == LineTraceEdge::RIGHT){
