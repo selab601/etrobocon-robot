@@ -39,7 +39,9 @@ namespace detection{
             } else if (colorSensor_->getH() >= 40 && colorSensor_->getH() <= 80) {
                 /* 彩度が高ければ黄色と判断する
                    彩度が低ければ板の色(白)と判断する*/
-                if(colorSensor_->getS() >= 190){
+                if(colorSensor_->getV() <= 160){
+                    result_ = COLOR_BLACK;
+                }else if(colorSensor_->getS() >= 190){
                     result_ = COLOR_YELLOW;
                 }else{
                     result_ = COLOR_WHITE;
