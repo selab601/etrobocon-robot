@@ -76,6 +76,7 @@ namespace detection{
             return result_;
         }
         if(deltaResult_ == result_){//前回(4ms前)と同じでないと色として確定しない
+            deltaResult_ = COLOR_NONE;//リセット
             return result_;
         }else{
             deltaResult_ = result_;
