@@ -232,6 +232,10 @@ namespace strategy{
         case StrategyPhase::SEE_BLOCK:
             {
             colorid_t color = colorDetection_.getResult();
+            if(!colorDetected_){
+                colorDetected_ = true;
+                return false;
+            }
             isRight_ = (color == blockPlaceColors_[blockPlaceNum_]);
             // 奇数番号だったら寄り切りと押出しが左右逆になる
             if (blockPlaceNum_ % 2){
