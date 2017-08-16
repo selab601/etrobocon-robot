@@ -260,7 +260,10 @@ namespace strategy{
         //  communication::BtManager::getInstance()->setMessage(message);
         //  communication::BtManager::getInstance()->send();
                 if(checkBlock(candidatePlace)){routeMovePattern_.push_back(MovePattern::AVOID);}//ブロックがあったら避ける
-                else{routeMovePattern_.push_back(MovePattern::CATCH);}//ブロックがなかったら避けない
+                else{//ブロックがなかったら避けない
+                    if(ev3HasBlock_){routeMovePattern_.push_back(MovePattern::CATCH);}
+                    else{routeMovePattern_.push_back(MovePattern::PASS);}
+                }
             }
             ev3Is_ = candidatePlace;//位置更新
             goalDegree = ev3Is_->getDegree(goal);//角度更新
@@ -365,7 +368,15 @@ namespace strategy{
             //その置き場での行動パターンを確認
             switch(routeMovePattern_[patternNumber]){
                 case MovePattern::CATCH:
-                            //計算した角度でcatching
+                            //計算した角度でcatching(ブロックを持っている)
+                            ev3HasBlock_ = true;
+                            if(catching_->run(nextDistance,degreeForRun)){
+                                patternNumber++;
+                                calculated_ = false;
+                            }
+                            break;
+                case MovePattern::PASS:
+                            //計算した角度でcatching(ブロックを持ってない)
                             if(catching_->run(nextDistance,degreeForRun)){
                                 patternNumber++;
                                 calculated_ = false;
@@ -373,6 +384,7 @@ namespace strategy{
                             break;
                 case MovePattern::AVOID:
                             //計算した角度でavoid
+                            avoidance_->hasBlock(ev3HasBlock_);
                             if(avoidance_->runTo(preDistance,nextDistance,degreeForRun)){
                                 patternNumber++;
                                 calculated_ = false;
@@ -380,6 +392,7 @@ namespace strategy{
                             break;
                 case MovePattern::PUT:
                             //PUTの時はAVOIDもしないと次の置き場に移動できてないのでputProcess_でPUT動作を管理
+                            ev3HasBlock_ = false;
                             switch(putProcess_){
                                 case PutProcess::PUT:
                                         if(catching_->putBlock(preDistance)){
