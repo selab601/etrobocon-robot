@@ -12,8 +12,8 @@
 #include <stdlib.h>
 
 #define CATCHING_PWM 20//キャッチするときの旋回スピード
-#define CATCHING_180_PWM 50//180度用の旋回スピード
-#define CATCHING_LINETRACE_PWM 30//ライントレースのスピード
+#define CATCHING_180_PWM 40//180度用の旋回スピード
+#define CATCHING_LINETRACE_PWM 40//ライントレースのスピード
 #define DAIZA_DIAMETER 100//円の直径[mm]
 #define WHEEL_TO_COLOR_SENSOR 45//タイヤの中心からカラーセンサの中心までの距離[mm]
 #define COLOR_DETECTION_DISTANCE 15//色検知中に動いてしまう距離(pwm20)[mm]
@@ -37,6 +37,10 @@ namespace drive
                 TURN_270_1,               //２７０度カーブ
                 TURN_270_2,
                 STRAIGHT_TREAD_DISTANCE,//走行体のトレッドの距離走行
+                //ブロック持ってないときの走行
+                STRAIGHT_RADIUS_1,      //半径進む
+                STRAIGHT_RADIUS_2,
+                PIVOT,                  //超信地旋回
             };
 
             Phase phase_ = Phase::START_LINE_TRACE;
@@ -58,6 +62,8 @@ namespace drive
             int dstDegree_;//現在地から目的地までの角度
             int runningDistance_;//カーブ後に走る距離
 
+            bool hasBlock_ = false;//ブロックを持っているか
+
         public:
             //コンストラクタ
             Catching();
@@ -78,6 +84,14 @@ namespace drive
              * @return true:設置完了,false:設置中
              */
             bool putBlock(int lineDistance = 450);
+
+            /**
+             * @brief ブロックを持っているか知らせる
+             * @details ブロックを持っていなかったら超信地旋回を使う
+             *
+             * @param hasBlock true:ブロックを持っている,false:ブロックを持っていない
+             */
+            void hasBlock(bool hasBlock);
 
         private:
 

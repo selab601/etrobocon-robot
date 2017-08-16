@@ -24,9 +24,35 @@ namespace device
         hsv_.h = hsv_.s = hsv_.v = 0;
     }
 
+
+    int8_t ColorSensor::getBrightness(){
+        return ev3api::ColorSensor::getBrightness();
+    }
+
+    double ColorSensor::getRelativeBrightness(bool useHsv){
+        int diff = 0;   // 白と黒の差
+        double relative = 0;
+        if (useHsv){
+            updateColor();
+            diff = getVWhiteValue() - getVBlackValue();
+            relative = getV() - getVBlackValue();
+        }
+        else{
+            diff = getWhiteCalibratedValue() - getBlackCalibratedValue();
+            relative = getBrightness() - getBlackCalibratedValue();
+        }
+        relative = relative * 100.0 / diff;
+        return relative;
+    }
+
     void ColorSensor::setCalibrateValue(int8_t whiteValue, int8_t blackValue){
         this->whiteCalibratedValue_ = whiteValue;
         this->blackCalibratedValue_ = blackValue;
+    }
+
+    void ColorSensor::setVValue(int whiteValue, int blackValue){
+        this->vWhiteValue_ = whiteValue;
+        this->vBlackValue_ = blackValue;
     }
 
     int8_t ColorSensor::getWhiteCalibratedValue(){
@@ -35,6 +61,13 @@ namespace device
 
     int8_t ColorSensor::getBlackCalibratedValue(){
         return blackCalibratedValue_;
+    }
+
+    int ColorSensor::getVWhiteValue(){
+        return vWhiteValue_;
+    }
+    int ColorSensor::getVBlackValue(){
+        return vBlackValue_;
     }
 
     void ColorSensor::getRawColor(rgb_raw_t& rgb){
