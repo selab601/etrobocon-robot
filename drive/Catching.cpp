@@ -68,7 +68,7 @@ namespace drive{
         //180度専用処理 90度右に信地旋回
         case Phase::TURN_90:
             ev3_speaker_play_tone ( 500, 100);//音を出す
-            curveRunning_->run(0,CATCHING_PWM);
+            curveRunning_->run(0,CATCHING_180_PWM);
             if(bodyAngleMeasurement_->getResult() <= -90){
                 bodyAngleMeasurement_->setBaseAngle();
                 phase_ = Phase::TURN_270;
@@ -78,7 +78,7 @@ namespace drive{
         //180度専用処理 270度左に信地旋回
         case Phase::TURN_270:
             ev3_speaker_play_tone ( 600, 100);//音を出す
-            curveRunning_->run(CATCHING_PWM,0);
+            curveRunning_->run(CATCHING_180_PWM,0);
             if(bodyAngleMeasurement_->getResult() >= 270){
                 phase_ = Phase::STRAIGHT_TREAD_DISTANCE;
             }
@@ -88,7 +88,7 @@ namespace drive{
         case Phase::STRAIGHT_TREAD_DISTANCE:
             ev3_speaker_play_tone ( 700, 100);//音を出す
             distanceMeasurement_->start(TREAD);//measurement::SelfPositionMeasurement::TREAD
-            straightRunning_->run(CATCHING_PWM);
+            straightRunning_->run(CATCHING_180_PWM);
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
                 phase_ = Phase::CALC_DISTANCE;
