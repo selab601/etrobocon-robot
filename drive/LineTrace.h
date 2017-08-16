@@ -67,6 +67,7 @@ namespace drive{
         PidController pidController_;
 
         int targetValue10_ = 0;            // ターゲット値：ターゲット目標値を元に算出される(明るさセンサの値を10倍した時の)光センサの目標値
+        bool useHsv_ = false;
 
         int margin_;
 
@@ -98,6 +99,14 @@ namespace drive{
          * @author Nagaoka
          */
         static LineTrace* getInstance();
+
+
+        /**
+         * @brief HSVのV値を使うか輝度値を使うか指定する
+         *
+         * @param useHsv HSVのV値を使う場合true
+         */
+        void useHsv(bool useHsv = true);
 
         /**
          * @brief ライントレースを行う
