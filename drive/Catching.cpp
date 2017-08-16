@@ -44,6 +44,8 @@ namespace drive{
                 distanceMeasurement_->reset();
                 if(abs(degree) >= 175){//後ろに持ち帰る場合は別フェーズへ(本来180が理想だが179が来るらしい)
                     phase_ = Phase::TURN_90;
+                }else if(abs(degree) <= 5){
+                    phase_ = Phase::STRAIGHT;
                 }else{
                     phase_ = Phase::PIVOT_FIRST;
                 }
@@ -53,7 +55,7 @@ namespace drive{
         //最初の旋回
         case Phase::PIVOT_FIRST:
             ev3_speaker_play_tone ( 500, 100);//音を出す
-            if(degree == 0 || pivotTurn_->turn(degree / 2,CATCHING_PWM)){//0度の場合は旋回しない
+            if(pivotTurn_->turn(degree / 2,CATCHING_PWM)){
                 phase_ = Phase::STRAIGHT;
              }
              break;
@@ -61,7 +63,7 @@ namespace drive{
         //二回目の旋回
         case Phase::PIVOT_SECOND:
             ev3_speaker_play_tone ( 700, 100);//音を出す
-            if(degree == 0 || pivotTurn_->turn(degree / 2,CATCHING_PWM)){//0度の場合は旋回しない
+            if(pivotTurn_->turn(degree / 2,CATCHING_PWM)){
                 phase_ = Phase::CALC_DISTANCE;
             }
             break;
@@ -108,7 +110,11 @@ namespace drive{
             distanceMeasurement_->start(cos((degree / 2) * M_PI / 180) * DAIZA_DIAMETER);
             straightRunning_->run(CATCHING_PWM);
             if(distanceMeasurement_->getResult()){
-                phase_ = Phase::PIVOT_SECOND;
+                if(abs(degree) <= 5){
+                    phase_ = Phase::CALC_DISTANCE;
+                }else{
+                    phase_ = Phase::PIVOT_SECOND;
+                }
                 distanceMeasurement_->reset();
             }
             break;
@@ -117,7 +123,7 @@ namespace drive{
         case Phase::CALC_DISTANCE:
             //目的ラインの半分　ー　円の半径　進む
             runningDistance_ = dstMm / 2 - DAIZA_DIAMETER / 2;
-            if(degree == 0 || abs(degree) == 180){//degree=0,180,-180は補正なし
+            if(abs(degree) <= 5 || abs(degree) >= 175){//degree=0,180,-180は補正なし
                 phase_ = Phase::END_LINE_TRACE;
             }else if(degree < 0){//左カーブの場合
                 if(startEdge_ == LineTraceEdge::RIGHT){//右エッジの場合
