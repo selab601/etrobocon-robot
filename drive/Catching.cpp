@@ -25,6 +25,7 @@ namespace drive{
 
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
+            lineTrace_->useHsv(true);           // HSV値を使ってライントレース
             startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
             lineTrace_->setPid(LineTracePid::FAST);
             lineTrace_->setTarget();

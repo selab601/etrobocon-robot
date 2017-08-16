@@ -30,6 +30,10 @@ namespace drive{
         return instance_;
     }
 
+    void LineTrace::useHsv(bool useHsv){
+        useHsv_ = useHsv;
+    }
+
     void LineTrace::run(int maxPwm,LineTraceEdge edge ,double relativeTarget){
         setTarget(relativeTarget);
         setEdge(edge);
@@ -42,7 +46,9 @@ namespace drive{
     }
 
     void LineTrace::runCurve(int deltaRad){
-        int controllValue = targetValue10_ - colorSensor_->getBrightness()*10;
+        int controllValue = targetValue10_ - colorSensor_->getRelativeBrightness(useHsv_)*10;
+        // 生の輝度値を使っていたときのPIDパラメータを使うため応急処置
+        controllValue *= 0.7;
         if(edge_ == LineTraceEdge::RIGHT){
             controllValue *= -1;
         }
@@ -89,13 +95,11 @@ namespace drive{
 
 
     void LineTrace::setTarget(double relativeTarget){
-        int black10 = 10 * colorSensor_->getBlackCalibratedValue();
-        int white10 = 10 * colorSensor_->getWhiteCalibratedValue();
         if(relativeTarget <= 0.0 || 1.0 <= relativeTarget){
-            targetValue10_ = black10 + (white10 - black10) * DEFAULT_TARGET;
+            targetValue10_ = 1000 * DEFAULT_TARGET;
         }
         else{
-            targetValue10_ = black10 + (white10 - black10) * relativeTarget;
+            targetValue10_ = 1000 * relativeTarget;
         }
     }
 
