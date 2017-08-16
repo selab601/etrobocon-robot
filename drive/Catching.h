@@ -1,7 +1,6 @@
 #ifndef CATCHING_H
 #define CATCHING_H
 
-#include "../measurement/BodyAngleMeasurement.h"
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/SelfPositionEstimation.h"
 #include "./CurveRunning.h"
@@ -42,7 +41,6 @@ namespace drive
 
             Phase phase_ = Phase::START_LINE_TRACE;
 
-            measurement::BodyAngleMeasurement* bodyAngleMeasurement_;
             measurement::DistanceMeasurement* distanceMeasurement_;
             measurement::SelfPositionEstimation* selfPositionEstimation_;
 

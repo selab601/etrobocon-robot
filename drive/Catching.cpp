@@ -12,7 +12,6 @@ namespace drive{
         pivotTurn_ = new PivotTurn();
         polarRunning_ = new PolarRunning();
         colorDetection_ = new ColorDetection();
-        bodyAngleMeasurement_ = new BodyAngleMeasurement();
         distanceMeasurement_ = new DistanceMeasurement();
         selfPositionEstimation_ = SelfPositionEstimation::getInstance();
 
@@ -44,7 +43,6 @@ namespace drive{
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
                 if(abs(degree) >= 175){//後ろに持ち帰る場合は別フェーズへ(本来180が理想だが179が来るらしい)
-                    bodyAngleMeasurement_->setBaseAngle();//角度保存
                     phase_ = Phase::TURN_90;
                 }else{
                     phase_ = Phase::PIVOT_FIRST;
