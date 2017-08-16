@@ -1,5 +1,6 @@
 #ifndef _AVOIDANCE_
 #define _AVOIDANCE_
+#define ISWHITE_ARRAY_SIZE 10
 
 #include "device/ColorSensor.h"
 #include "measurement/BodyAngleMeasurement.h"
@@ -35,6 +36,7 @@ namespace drive{
 
         int edgeCount_ = 0;
         bool atWhite_ = true;
+        bool isWhiteArray[ISWHITE_ARRAY_SIZE];
 
     public:
 
@@ -67,8 +69,15 @@ namespace drive{
 
     private:
         bool isWhite();
+        bool isBlack();
         void incrementEdge();
         void decrementEdge();
+        void resetArray();
+
+        /**
+         * @brief isWhiteArrayを更新する, エッジの判定のために使う
+         */
+        void updateIsWhite();
 
     };
 
