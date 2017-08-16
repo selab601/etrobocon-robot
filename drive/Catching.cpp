@@ -24,7 +24,7 @@ namespace drive{
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
             startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
-            lineTrace_->setPid(LineTracePid::MID);
+            lineTrace_->setPid(LineTracePid::FAST);
             lineTrace_->setTarget();
             lineTrace_->setEdge(startEdge_);//セットしないとLineTrace._edgeが更新されない
             lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
@@ -37,7 +37,7 @@ namespace drive{
         case Phase::STRAIGHT_LITTLE:
             //タイヤの中心からカラーセンサまでの距離から色検知中に走行した距離を引いた距離走行する
             distanceMeasurement_->start(WHEEL_TO_COLOR_SENSOR - COLOR_DETECTION_DISTANCE);
-            straightRunning_->run(10);
+            straightRunning_->run(CATCHING_LINETRACE_PWM);
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
                 if(abs(degree) >= 175){//後ろに持ち帰る場合は別フェーズへ(本来180が理想だが179が来るらしい)
@@ -136,8 +136,22 @@ namespace drive{
             //ブロック取得後のラインの半分の距離にタイヤの中心がくるように
             distanceMeasurement_->start(runningDistance_);//エッジの応じた距離走行
 
-            if(abs(degree) < 105){//エッジそのまま
+            if(abs(degree) < 85){//エッジそのまま
                 endEdge_ = startEdge_;
+            }else if(abs(degree) < 95){//90度付近の場合
+                if(startEdge_ == LineTraceEdge::RIGHT){//右エッジ＆右カーブの時エッジ変える
+                    if(degree < 0){
+                        endEdge_ = LineTraceEdge::LEFT;
+                    }else{
+                        endEdge_ = startEdge_;
+                    }
+                }else{//左エッジ＆左カーブの時エッジ変える
+                    if(degree > 0){
+                        endEdge_ = LineTraceEdge::RIGHT;
+                    }else{
+                        endEdge_ = startEdge_;
+                    }
+                }
             }else{//エッジ逆転
                 if(startEdge_ == LineTraceEdge::RIGHT){
                     endEdge_ = LineTraceEdge::LEFT;
@@ -162,7 +176,7 @@ namespace drive{
         static bool isDaizaDetected = false;
         if(!isDaizaDetected){//台座を検知するまでライントレース
             startEdge_ = lineTrace_->getEdge();
-            lineTrace_->setPid(LineTracePid::MID);
+            lineTrace_->setPid(LineTracePid::FAST);
             lineTrace_->setEdge(startEdge_);
             lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
             if(colorDetection_->isFourColors()){
@@ -170,7 +184,7 @@ namespace drive{
             }
         }else{//直前に走行していたラインの中心にタイヤの中心がくるようにバック走行
             distanceMeasurement_->start(int(lineDistance / 2) - DAIZA_DIAMETER / 2 - WHEEL_TO_COLOR_SENSOR + COLOR_DETECTION_DISTANCE);
-            straightRunning_->run(-CATCHING_LINETRACE_PWM);
+            straightRunning_->run(-20);//速いと急バックによる車体のぶれとモーターの個体差によるずれがあるため
             if(distanceMeasurement_->getResult()){
                 isDaizaDetected =false;//フラグを戻しておく
                 distanceMeasurement_->reset();
