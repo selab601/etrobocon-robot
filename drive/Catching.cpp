@@ -16,8 +16,6 @@ namespace drive{
         selfPositionEstimation_ = SelfPositionEstimation::getInstance();
 
         polarRunning_->centerPivot(false);//信地旋回する
-        //テスト用
-        hasBlock_ = false;
     }
 
     bool Catching::run(int dstMm, int degree){
@@ -84,14 +82,14 @@ namespace drive{
         //180度専用処理 270度左に信地旋回(135度を2回)
         case Phase::TURN_270_1:
             ev3_speaker_play_tone ( 600, 100);//音を出す
-            if(polarRunning_->bodyTurn(1350,CATCHING_180_PWM)){
+            if(polarRunning_->bodyTurn(1360,CATCHING_180_PWM)){
                 phase_ = Phase::TURN_270_2;
             }
             break;
 
         case Phase::TURN_270_2:
             ev3_speaker_play_tone ( 600, 100);//音を出す
-            if(polarRunning_->bodyTurn(1350,CATCHING_180_PWM)){
+            if(polarRunning_->bodyTurn(1360,CATCHING_180_PWM)){
                 phase_ = Phase::STRAIGHT_TREAD_DISTANCE;
             }
             break;
