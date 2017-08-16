@@ -49,7 +49,8 @@ namespace drive{
                 }
 
                 polar_.centerPivot(!hasBlock_);  // ブロックを離さないように
-                polar_.setMaxPwm(20);
+                polar_.setMaxPwm(hasBlock_? 20: 36);
+                polar_.setTurnPwm(36);
                 edgeCount_ = 0;
                 atWhite_ = true;
                 resetArray();   // isWhite配列を初期化
@@ -144,7 +145,7 @@ namespace drive{
 
             case RunToState::PIVOT_TURN:
                 polar_.centerPivot(true);
-                if ( polar_.bodyTurn(1800, 20) ){
+                if ( polar_.bodyTurn(1800, 40) ){
                     runToState_ = RunToState::FINISHED;
                     // エッジを逆にする
                     if (lineTrace_->getEdge() == LineTraceEdge::LEFT){

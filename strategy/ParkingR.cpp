@@ -40,8 +40,8 @@ namespace strategy{
                 return true;
 
             case Phase::LINE_TRACE1:
-                //誤検知防止のため開始後20cmは直角検知しないので，開始位置によっては調整してください
-                distanceMeasurement_->start(200);
+                //誤検知防止のため開始後15cmは直角検知しないので，開始位置によっては調整してください
+                distanceMeasurement_->start(150);
                 lineTrace_->run(40,LineTraceEdge::RIGHT);
                 return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
 
