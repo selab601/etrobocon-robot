@@ -181,9 +181,9 @@ namespace drive{
         static bool isDaizaDetected = false;
         if(!isDaizaDetected){//台座を検知するまでライントレース
             startEdge_ = lineTrace_->getEdge();
-            lineTrace_->setPid(LineTracePid::FAST);
+            lineTrace_->setPid(LineTracePid::MID);
             lineTrace_->setEdge(startEdge_);
-            lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
+            lineTrace_->run(20,startEdge_);//置くときはゆっくり
             if(colorDetection_->isFourColors()){
                 isDaizaDetected = true;
             }
