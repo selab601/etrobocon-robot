@@ -21,9 +21,12 @@ namespace device
 
         // キャリブレーション値
         //! 白基準値
-        int8_t whiteCalibratedValue_;
+        int8_t whiteCalibratedValue_ = 0;
         //! 黒基準値
-        int8_t blackCalibratedValue_;
+        int8_t blackCalibratedValue_ = 0;
+
+        int vWhiteValue_ = 0;
+        int vBlackValue_ = 0;
 
         rgb_raw_t rgb_;
         hsv_raw_t hsv_;
@@ -36,10 +39,25 @@ namespace device
         static ColorSensor* getInstance();
 
         void setCalibrateValue(int8_t whiteValue, int8_t blackValue);
+        void setVValue(int whiteValue, int blackValue);
 
         int8_t getWhiteCalibratedValue();
 
         int8_t getBlackCalibratedValue();
+
+        int getVWhiteValue();
+        int getVBlackValue();
+
+        int8_t getBrightness();
+
+        /**
+         * @brief 白を100, 黒を0としたときの明るさを返す
+         *
+         * @param useHsv HSVのV値を使う場合true
+         *
+         * @return 相対的な明るさ
+         */
+        double getRelativeBrightness(bool useHsv = false);
 
         /**
          * @brief (Override) RGB Raw値を測定する
