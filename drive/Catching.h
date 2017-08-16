@@ -1,18 +1,18 @@
 #ifndef CATCHING_H
 #define CATCHING_H
 
-#include "../measurement/BodyAngleMeasurement.h"
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/SelfPositionEstimation.h"
 #include "./CurveRunning.h"
 #include "./LineTrace.h"
 #include "./StraightRunning.h"
 #include "./PivotTurn.h"
+#include "./PolarRunning.h"
 #include "../detection/ColorDetection.h"
 #include <stdlib.h>
 
 #define CATCHING_PWM 20//キャッチするときの旋回スピード
-#define CATCHING_180_PWM 20//180度用の旋回スピード
+#define CATCHING_180_PWM 50//180度用の旋回スピード
 #define CATCHING_LINETRACE_PWM 30//ライントレースのスピード
 #define DAIZA_DIAMETER 100//円の直径[mm]
 #define WHEEL_TO_COLOR_SENSOR 45//タイヤの中心からカラーセンサの中心までの距離[mm]
@@ -34,13 +34,13 @@ namespace drive
                 CALC_DISTANCE,          //エッジに応じた距離を計算する
                 END_LINE_TRACE,         //カーブ後のライントレース
                 TURN_90,                //９０度カーブ
-                TURN_270,               //２７０度カーブ
+                TURN_270_1,               //２７０度カーブ
+                TURN_270_2,
                 STRAIGHT_TREAD_DISTANCE,//走行体のトレッドの距離走行
             };
 
             Phase phase_ = Phase::START_LINE_TRACE;
 
-            measurement::BodyAngleMeasurement* bodyAngleMeasurement_;
             measurement::DistanceMeasurement* distanceMeasurement_;
             measurement::SelfPositionEstimation* selfPositionEstimation_;
 
@@ -50,6 +50,7 @@ namespace drive
             LineTrace* lineTrace_;
             StraightRunning* straightRunning_;
             PivotTurn* pivotTurn_;
+            PolarRunning* polarRunning_;
 
             LineTraceEdge startEdge_;
             LineTraceEdge endEdge_;
