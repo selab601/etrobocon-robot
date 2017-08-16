@@ -79,6 +79,8 @@ namespace contest_pkg{
 
             int whiteValue_ = 0;
             int blackValue_ = 0;
+            int vWhiteValue_ = 0;
+            int vBlackValue_ = 0;
 
 
             // オートキャリブレーションの状態
@@ -131,6 +133,7 @@ namespace contest_pkg{
              * @details 最小値を黒の値、最大値を白の値とし、blackValue_, whiteValue_にセットする
              */
             void findCalibratedValue();
+            void findHsvValue();
 
     };
 }

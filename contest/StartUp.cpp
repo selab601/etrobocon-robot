@@ -209,10 +209,13 @@ namespace contest_pkg{
                 break;
 
             case AutoCalibrationState::BACK:
-                Shippo::getInstance()->furifuri();
+                findHsvValue();
                 display_-> updateDisplay("            BACK            ", 4);
                 if (runAndStop(-30, -40)){
                 autoCalibrationState_ = AutoCalibrationState::SHOW_RESULT;
+
+                // キャリブレーション値をセットする
+                brightnessInfo_->setVValue(vWhiteValue_, vBlackValue_);
                 // 終了したら音を出す
                 ev3_speaker_play_tone ( 500, 100);
                 }
@@ -223,10 +226,15 @@ namespace contest_pkg{
                     Shippo::getInstance()->furifuri();
                     display_-> updateDisplay("  CALIBRATION FINISHED  ", 2);
 
-                    display_->updateDisplay("Color W,B,C",
+                    display_->updateDisplay("Bri W,B,C",
                             brightnessInfo_->getWhiteCalibratedValue(),
                             brightnessInfo_->getBlackCalibratedValue(),
                             brightnessInfo_->getBrightness(), 4);
+
+                    display_->updateDisplay("Hsv(V) W, B",
+                            brightnessInfo_->getVWhiteValue(),
+                            brightnessInfo_->getVBlackValue(),
+                            5);
 
                     if (touch_->isClicked()){
                         autoCalibrationState_ = AutoCalibrationState::STOP_FURIFURI;
@@ -303,6 +311,24 @@ namespace contest_pkg{
         }
         if (brightness < blackValue_){
             blackValue_ = brightness;
+        }
+    }
+
+    void StartUp::findHsvValue(){
+        static bool initialized = false;
+        brightnessInfo_->updateColor();
+        int brightness = brightnessInfo_->getV();
+        if (!initialized){
+            initialized = true;
+            vWhiteValue_ = brightness;
+            vBlackValue_ = brightness;
+        }
+
+        if (brightness > vWhiteValue_){
+            vWhiteValue_ = brightness;
+        }
+        if (brightness < vBlackValue_){
+            vBlackValue_ = brightness;
         }
     }
 
