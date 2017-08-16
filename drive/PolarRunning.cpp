@@ -178,7 +178,7 @@ namespace drive{
         }
         motors_->setWheelPWM(lPwm, rPwm);
 
-        if ( abs(diff) < 5 ){
+        if ( abs(diff) <= 2 ){
             motors_->setWheelPWM(0, 0);
             return true;
         }
@@ -200,10 +200,10 @@ namespace drive{
     void PolarRunning::calculateMaxPwm(){
         int diff = getLeftMm();
         if (50 < diff){
-            distanceController_.setPid(0.003, 0.000000033, 0.4); // PID制御
+            distanceController_.setPid(0.005, 0.000000033, 0.5); // PID制御
         }
         else {
-            distanceController_.setPd(0.003, 0.4);// PD制御
+            distanceController_.setPd(0.005, 0.5);// PD制御
         }
 
         // 50で足切り (最後の5cmだけ制御)

@@ -39,7 +39,9 @@ namespace detection{
             } else if (colorSensor_->getH() >= 40 && colorSensor_->getH() <= 80) {
                 /* 彩度が高ければ黄色と判断する
                    彩度が低ければ板の色(白)と判断する*/
-                if(colorSensor_->getS() >= 190){
+                if(colorSensor_->getV() <= 160){
+                    result_ = COLOR_BLACK;
+                }else if(colorSensor_->getS() >= 190){
                     result_ = COLOR_YELLOW;
                 }else{
                     result_ = COLOR_WHITE;
@@ -70,7 +72,11 @@ namespace detection{
     }
 
     colorid_t ColorDetection::confirmedColor(){
+        if(result_ == COLOR_BLUE){//青のH値に到達するまで時間がかかるので例外処理
+            return result_;
+        }
         if(deltaResult_ == result_){//前回(4ms前)と同じでないと色として確定しない
+            deltaResult_ = COLOR_NONE;//リセット
             return result_;
         }else{
             deltaResult_ = result_;
