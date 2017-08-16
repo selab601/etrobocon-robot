@@ -10,10 +10,13 @@ namespace drive{
         straightRunning_ = new StraightRunning();
         curveRunning_ = new CurveRunning();
         pivotTurn_ = new PivotTurn();
+        polarRunning_ = new PolarRunning();
         colorDetection_ = new ColorDetection();
         bodyAngleMeasurement_ = new BodyAngleMeasurement();
         distanceMeasurement_ = new DistanceMeasurement();
         selfPositionEstimation_ = SelfPositionEstimation::getInstance();
+
+        polarRunning_->centerPivot(false);//信地旋回する
     }
 
     bool Catching::run(int dstMm, int degree){
@@ -68,18 +71,22 @@ namespace drive{
         //180度専用処理 90度右に信地旋回
         case Phase::TURN_90:
             ev3_speaker_play_tone ( 500, 100);//音を出す
-            curveRunning_->run(0,CATCHING_180_PWM);
-            if(bodyAngleMeasurement_->getResult() <= -90){
-                bodyAngleMeasurement_->setBaseAngle();
-                phase_ = Phase::TURN_270;
+            if(polarRunning_->bodyTurn(-900,CATCHING_180_PWM)){
+                phase_ = Phase::TURN_270_1;
             }
             break;
 
-        //180度専用処理 270度左に信地旋回
-        case Phase::TURN_270:
+        //180度専用処理 270度左に信地旋回(135度を2回)
+        case Phase::TURN_270_1:
             ev3_speaker_play_tone ( 600, 100);//音を出す
-            curveRunning_->run(CATCHING_180_PWM,0);
-            if(bodyAngleMeasurement_->getResult() >= 270){
+            if(polarRunning_->bodyTurn(1350,CATCHING_180_PWM)){
+                phase_ = Phase::TURN_270_2;
+            }
+            break;
+
+        case Phase::TURN_270_2:
+            ev3_speaker_play_tone ( 600, 100);//音を出す
+            if(polarRunning_->bodyTurn(1350,CATCHING_180_PWM)){
                 phase_ = Phase::STRAIGHT_TREAD_DISTANCE;
             }
             break;
