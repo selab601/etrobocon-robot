@@ -27,7 +27,7 @@ namespace drive{
         case Phase::START_LINE_TRACE:
             lineTrace_->useHsv(true);           // HSV値を使ってライントレース
             startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
-            lineTrace_->setPid(LineTracePid::FAST);
+            lineTrace_->setPid(LineTracePid::MID);
             lineTrace_->setTarget();
             lineTrace_->setEdge(startEdge_);//セットしないとLineTrace._edgeが更新されない
             lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
