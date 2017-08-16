@@ -16,6 +16,8 @@ namespace drive{
         selfPositionEstimation_ = SelfPositionEstimation::getInstance();
 
         polarRunning_->centerPivot(false);//信地旋回する
+        //テスト用
+        hasBlock_ = false;
     }
 
     bool Catching::run(int dstMm, int degree){
@@ -47,6 +49,8 @@ namespace drive{
                     phase_ = Phase::TURN_90;
                 }else if(abs(degree) <= 5){
                     phase_ = Phase::STRAIGHT;
+                }else if(!hasBlock_){//0度は同じ動作、持ってない時に180度は存在しない
+                    phase_ = Phase::STRAIGHT_RADIUS_1;
                 }else{
                     phase_ = Phase::PIVOT_FIRST;
                 }
@@ -104,6 +108,34 @@ namespace drive{
             break;
 
 
+        //ブロック持ってない時用
+        case Phase::STRAIGHT_RADIUS_1:
+            ev3_speaker_play_tone(500 ,100);
+            distanceMeasurement_->start(DAIZA_DIAMETER / 2);//台座の半分進む
+            straightRunning_->run(CATCHING_LINETRACE_PWM);
+            if(distanceMeasurement_->getResult()){
+                phase_ = Phase::PIVOT;
+                distanceMeasurement_->reset();
+            }
+            break;
+
+        case Phase::PIVOT:
+            ev3_speaker_play_tone(600,100);
+            if(pivotTurn_->turn(degree, CATCHING_PWM)){
+                phase_ = Phase::STRAIGHT_RADIUS_2;
+            }
+            break;
+
+        case Phase::STRAIGHT_RADIUS_2:
+            ev3_speaker_play_tone(700,100);
+            distanceMeasurement_->start(DAIZA_DIAMETER / 2);//台座の半分進む
+            straightRunning_->run(CATCHING_LINETRACE_PWM);
+            if(distanceMeasurement_->getResult()){
+                phase_ = Phase::CALC_DISTANCE;
+                distanceMeasurement_->reset();
+            }
+            break;
+
         //直進走行
         case Phase::STRAIGHT:
             ev3_speaker_play_tone ( 600, 100);//音を出す
@@ -149,7 +181,17 @@ namespace drive{
             distanceMeasurement_->start(runningDistance_);//エッジの応じた距離走行
 
             if(abs(degree) < 85){//エッジそのまま
-                endEdge_ = startEdge_;
+                if(!hasBlock_ && abs(degree) <= 65 && abs(degree) >= 55){//ブロック持ってなくて60度の場合
+                    if(degree > 0 && startEdge_ == LineTraceEdge::LEFT){//左カーブ左エッジの場合
+                        endEdge_ = LineTraceEdge::RIGHT;
+                    }else if(degree < 0 && startEdge_ == LineTraceEdge::RIGHT){//右カーブ右エッジの場合
+                        endEdge_ = LineTraceEdge::LEFT;
+                    }else{
+                        endEdge_ = startEdge_;
+                    }
+                }else{
+                    endEdge_ = startEdge_;
+                }
             }else if(abs(degree) < 95){//90度付近の場合
                 if(startEdge_ == LineTraceEdge::RIGHT){//右エッジ＆右カーブの時エッジ変える
                     if(degree < 0){
@@ -206,5 +248,8 @@ namespace drive{
         return false;
     }
 
+    void Catching::hasBlock(bool hasBlock){
+        hasBlock_ = hasBlock;
+    }
 
 }
