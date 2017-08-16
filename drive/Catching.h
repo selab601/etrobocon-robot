@@ -12,7 +12,7 @@
 #include <stdlib.h>
 
 #define CATCHING_PWM 20//キャッチするときの旋回スピード
-#define CATCHING_180_PWM 40//180度用の旋回スピード
+#define CATCHING_180_PWM 50//180度用の旋回スピード
 #define CATCHING_LINETRACE_PWM 30//ライントレースのスピード
 #define DAIZA_DIAMETER 100//円の直径[mm]
 #define WHEEL_TO_COLOR_SENSOR 45//タイヤの中心からカラーセンサの中心までの距離[mm]
