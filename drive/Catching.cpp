@@ -27,7 +27,7 @@ namespace drive{
         case Phase::START_LINE_TRACE:
             lineTrace_->useHsv(true);           // HSV値を使ってライントレース
             startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
-            lineTrace_->setPid(LineTracePid::FAST);
+            lineTrace_->setPid(LineTracePid::MID);
             lineTrace_->setTarget();
             lineTrace_->setEdge(startEdge_);//セットしないとLineTrace._edgeが更新されない
             lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
@@ -57,49 +57,49 @@ namespace drive{
 
         //最初の旋回
         case Phase::PIVOT_FIRST:
-            ev3_speaker_play_tone ( 500, 100);//音を出す
             if(pivotTurn_->turn(degree / 2,CATCHING_PWM)){
+                ev3_speaker_play_tone ( 500, 100);//音を出す
                 phase_ = Phase::STRAIGHT;
              }
              break;
 
         //二回目の旋回
         case Phase::PIVOT_SECOND:
-            ev3_speaker_play_tone ( 700, 100);//音を出す
             if(pivotTurn_->turn(degree / 2,CATCHING_PWM)){
+                ev3_speaker_play_tone ( 700, 100);//音を出す
                 phase_ = Phase::CALC_DISTANCE;
             }
             break;
 
         //180度専用処理 90度右に信地旋回
         case Phase::TURN_90:
-            ev3_speaker_play_tone ( 500, 100);//音を出す
             if(polarRunning_->bodyTurn(-900,CATCHING_180_PWM)){
+                ev3_speaker_play_tone ( 500, 100);//音を出す
                 phase_ = Phase::TURN_270_1;
             }
             break;
 
         //180度専用処理 270度左に信地旋回(135度を2回)
         case Phase::TURN_270_1:
-            ev3_speaker_play_tone ( 600, 100);//音を出す
             if(polarRunning_->bodyTurn(1360,CATCHING_180_PWM)){
+                ev3_speaker_play_tone ( 600, 100);//音を出す
                 phase_ = Phase::TURN_270_2;
             }
             break;
 
         case Phase::TURN_270_2:
-            ev3_speaker_play_tone ( 600, 100);//音を出す
             if(polarRunning_->bodyTurn(1360,CATCHING_180_PWM)){
+                ev3_speaker_play_tone ( 600, 100);//音を出す
                 phase_ = Phase::STRAIGHT_TREAD_DISTANCE;
             }
             break;
 
         //180度専用処理 走行体のトレッドの距離進む
         case Phase::STRAIGHT_TREAD_DISTANCE:
-            ev3_speaker_play_tone ( 700, 100);//音を出す
             distanceMeasurement_->start(TREAD);//measurement::SelfPositionMeasurement::TREAD
             straightRunning_->run(CATCHING_180_PWM);
             if(distanceMeasurement_->getResult()){
+                ev3_speaker_play_tone ( 700, 100);//音を出す
                 distanceMeasurement_->reset();
                 phase_ = Phase::CALC_DISTANCE;
             }
@@ -108,27 +108,28 @@ namespace drive{
 
         //ブロック持ってない時用
         case Phase::STRAIGHT_RADIUS_1:
-            ev3_speaker_play_tone(500 ,100);
+
             distanceMeasurement_->start(DAIZA_DIAMETER / 2);//台座の半分進む
             straightRunning_->run(CATCHING_LINETRACE_PWM);
             if(distanceMeasurement_->getResult()){
+            ev3_speaker_play_tone(500 ,100);
                 phase_ = Phase::PIVOT;
                 distanceMeasurement_->reset();
             }
             break;
 
         case Phase::PIVOT:
-            ev3_speaker_play_tone(600,100);
             if(pivotTurn_->turn(degree, CATCHING_PWM)){
+                ev3_speaker_play_tone(600,100);
                 phase_ = Phase::STRAIGHT_RADIUS_2;
             }
             break;
 
         case Phase::STRAIGHT_RADIUS_2:
-            ev3_speaker_play_tone(700,100);
             distanceMeasurement_->start(DAIZA_DIAMETER / 2);//台座の半分進む
             straightRunning_->run(CATCHING_LINETRACE_PWM);
             if(distanceMeasurement_->getResult()){
+                ev3_speaker_play_tone(700,100);
                 phase_ = Phase::CALC_DISTANCE;
                 distanceMeasurement_->reset();
             }
@@ -136,7 +137,6 @@ namespace drive{
 
         //直進走行
         case Phase::STRAIGHT:
-            ev3_speaker_play_tone ( 600, 100);//音を出す
             //円周角の定理から距離を算出
             distanceMeasurement_->start(cos((degree / 2) * M_PI / 180) * DAIZA_DIAMETER);
             straightRunning_->run(CATCHING_PWM);
@@ -147,6 +147,7 @@ namespace drive{
                     phase_ = Phase::PIVOT_SECOND;
                 }
                 distanceMeasurement_->reset();
+                ev3_speaker_play_tone ( 600, 100);//音を出す
             }
             break;
 
