@@ -370,6 +370,7 @@ namespace strategy{
                 case MovePattern::CATCH:
                             //計算した角度でcatching(ブロックを持っている)
                             ev3HasBlock_ = true;
+                            catching_->hasBlock(ev3HasBlock_);
                             if(catching_->run(nextDistance,degreeForRun)){
                                 patternNumber++;
                                 calculated_ = false;
@@ -377,6 +378,7 @@ namespace strategy{
                             break;
                 case MovePattern::PASS:
                             //計算した角度でcatching(ブロックを持ってない)
+                            catching_->hasBlock(ev3HasBlock_);
                             if(catching_->run(nextDistance,degreeForRun)){
                                 patternNumber++;
                                 calculated_ = false;
