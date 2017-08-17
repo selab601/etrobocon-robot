@@ -197,7 +197,7 @@ namespace drive{
             distanceMeasurement_->start(runningDistance_);//エッジの応じた距離走行
 
             if(abs(degree) < 85){//エッジそのまま
-                if(!hasBlock_ && abs(degree) <= 65 && abs(degree) >= 55){//ブロック持ってなくて60度の場合
+                if(abs(degree) <= 65 && abs(degree) >= 55){//60度の場合
                     if(degree > 0 && startEdge_ == LineTraceEdge::LEFT){//左カーブ左エッジの場合
                         endEdge_ = LineTraceEdge::RIGHT;
                     }else if(degree < 0 && startEdge_ == LineTraceEdge::RIGHT){//右カーブ右エッジの場合
