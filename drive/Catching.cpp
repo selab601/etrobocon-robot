@@ -26,7 +26,7 @@ namespace drive{
 
         case Phase::INIT:
             //ラインアウト検知
-            colorSensor_->getRelativeBrightness(true) < 80 ? hasLineReturn_ = true : hasLineReturn_ = false;
+            hasLineReturn_ = colorSensor_->getRelativeBrightness(true) < 80;
             if(abs(degree) >= 145 && abs(degree) <= 155){correction_150_ = 10;}//150度のときはゆっくり
             phase_ = Phase::START_LINE_TRACE;
             break;
