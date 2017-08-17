@@ -65,6 +65,7 @@ namespace drive
 
             int dstDegree_;//現在地から目的地までの角度
             int runningDistance_;//カーブ後に走る距離
+            int correction_150_ = 0;//30度(150度旋回)用の補正
 
             bool hasBlock_ = false;//ブロックを持っているか
             bool hasLineReturn_ = false;//ライン復帰したか

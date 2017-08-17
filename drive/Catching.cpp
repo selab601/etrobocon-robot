@@ -27,6 +27,7 @@ namespace drive{
         case Phase::INIT:
             //ラインアウト検知
             colorSensor_->getRelativeBrightness(true) < 80 ? hasLineReturn_ = true : hasLineReturn_ = false;
+            if(abs(degree) >= 145 && abs(degree) <= 155){correction_150_ = 10;}//150度のときはゆっくり
             phase_ = Phase::START_LINE_TRACE;
             break;
 
@@ -73,7 +74,7 @@ namespace drive{
 
         //最初の旋回
         case Phase::PIVOT_FIRST:
-            if(pivotTurn_->turn(degree / 2,CATCHING_PWM)){
+            if(pivotTurn_->turn(degree / 2,CATCHING_PWM - correction_150_)){
                 ev3_speaker_play_tone ( 500, 100);//音を出す
                 phase_ = Phase::STRAIGHT;
              }
@@ -81,7 +82,7 @@ namespace drive{
 
         //二回目の旋回
         case Phase::PIVOT_SECOND:
-            if(pivotTurn_->turn(degree / 2,CATCHING_PWM)){
+            if(pivotTurn_->turn(degree / 2,CATCHING_PWM - correction_150_)){
                 ev3_speaker_play_tone ( 700, 100);//音を出す
                 phase_ = Phase::CALC_DISTANCE;
             }
@@ -155,7 +156,7 @@ namespace drive{
         case Phase::STRAIGHT:
             //円周角の定理から距離を算出
             distanceMeasurement_->start(cos((degree / 2) * M_PI / 180) * DAIZA_DIAMETER);
-            straightRunning_->run(CATCHING_PWM);
+            straightRunning_->run(CATCHING_PWM - correction_150_);
             if(distanceMeasurement_->getResult()){
                 if(abs(degree) <= 5){
                     phase_ = Phase::CALC_DISTANCE;
@@ -232,6 +233,7 @@ namespace drive{
             lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
+                correction_150_ = 0;
                 phase_ = Phase::INIT;
                 return true;
             }
