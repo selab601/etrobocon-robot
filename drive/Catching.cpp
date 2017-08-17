@@ -14,6 +14,7 @@ namespace drive{
         colorDetection_ = new ColorDetection();
         distanceMeasurement_ = new DistanceMeasurement();
         selfPositionEstimation_ = SelfPositionEstimation::getInstance();
+        colorSensor_ = ColorSensor::getInstance();
 
         polarRunning_->centerPivot(false);//信地旋回する
     }
@@ -23,16 +24,31 @@ namespace drive{
 
         switch(phase_){
 
+        case Phase::INIT:
+            //ラインアウト検知
+            colorSensor_->getRelativeBrightness(true) < 80 ? hasLineReturn_ = true : hasLineReturn_ = false;
+            phase_ = Phase::START_LINE_TRACE;
+            break;
+
         //色検知するまでライントレース
         case Phase::START_LINE_TRACE:
             lineTrace_->useHsv(true);           // HSV値を使ってライントレース
             startEdge_ = lineTrace_->getEdge();//直前のライントレースのエッジをもらう
-            lineTrace_->setPid(LineTracePid::MID);
             lineTrace_->setTarget();
-            lineTrace_->setEdge(startEdge_);//セットしないとLineTrace._edgeが更新されない
-            lineTrace_->run(CATCHING_LINETRACE_PWM,startEdge_);
+            lineTrace_->setEdge(startEdge_);//セットしないとLineTrace.edge_が更新されない
+            if(colorSensor_->getRelativeBrightness(true) > 50 && !hasLineReturn_){//完全復帰まで
+                lineTrace_->setPid(LineTracePid::RETURN);//復帰に専念する
+                lineTrace_->setMaxPwm(20);
+                ev3_speaker_play_tone ( 900, 100);//音を出す
+            }else{
+                hasLineReturn_ = true;
+                lineTrace_->setPid(LineTracePid::MID);
+                lineTrace_->setMaxPwm(CATCHING_LINETRACE_PWM);
+            }
+            lineTrace_->run();
             if(colorDetection_->isFourColors()){
                 phase_ = Phase::STRAIGHT_LITTLE;
+                hasLineReturn_ = false;
             }
             break;
 
@@ -216,7 +232,7 @@ namespace drive{
             lineTrace_->run(CATCHING_LINETRACE_PWM,endEdge_);
             if(distanceMeasurement_->getResult()){
                 distanceMeasurement_->reset();
-                phase_ = Phase::START_LINE_TRACE;
+                phase_ = Phase::INIT;
                 return true;
             }
             break;
