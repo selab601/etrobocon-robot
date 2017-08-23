@@ -9,7 +9,7 @@
 #include "../measurement/SelfPositionEstimation.h"
 
 #define RAD_DATA_SIZE 30    //RADはRightAngledDetectionの略
-#define RAD_CHANGE_RATE 3.5
+#define RAD_CHANGE_RATE 5.0
 
 namespace detection{
     /**

@@ -22,7 +22,7 @@ namespace detection{
             brightnessHistory_[i] = brightnessHistory_[i - 1];
             distanceHistory_[i] = distanceHistory_[i - 1];
         }
-        brightnessHistory_[0] = color_->getBrightness();
+        brightnessHistory_[0] = color_->getRelativeBrightness();
         distanceHistory_[0] = selfPos_->getMigrationLength();
 
        for (int start = 1;  start < counter_;  start++){
