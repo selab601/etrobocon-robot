@@ -3,6 +3,7 @@
 
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/SelfPositionEstimation.h"
+#include "../device/ColorSensor.h"
 #include "./CurveRunning.h"
 #include "./LineTrace.h"
 #include "./StraightRunning.h"
@@ -26,6 +27,7 @@ namespace drive
             //走行状態
             enum class Phase
             {
+                INIT,                   //ラインアウト検知
                 START_LINE_TRACE,       //色検知までライントレース
                 STRAIGHT_LITTLE,        //タイヤの中心を円周上まで移動させる
                 PIVOT_FIRST,            //引数の半分の角度旋回する（１回目）
@@ -43,10 +45,12 @@ namespace drive
                 PIVOT,                  //超信地旋回
             };
 
-            Phase phase_ = Phase::START_LINE_TRACE;
+            Phase phase_ = Phase::INIT;
 
             measurement::DistanceMeasurement* distanceMeasurement_;
             measurement::SelfPositionEstimation* selfPositionEstimation_;
+
+            device::ColorSensor* colorSensor_;
 
             detection::ColorDetection* colorDetection_;
 
@@ -61,8 +65,10 @@ namespace drive
 
             int dstDegree_;//現在地から目的地までの角度
             int runningDistance_;//カーブ後に走る距離
+            int correction_150_ = 0;//30度(150度旋回)用の補正
 
             bool hasBlock_ = false;//ブロックを持っているか
+            bool hasLineReturn_ = false;//ライン復帰したか
 
         public:
             //コンストラクタ
