@@ -135,7 +135,7 @@ namespace strategy{
         case StrategyPhase::LINE_RETURN:
             lineTraceReset();
             distanceMeasurement_->start(140);
-            linetrace_->setTarget(0.5);
+            linetrace_->setTarget(0.3); // 板の色が黒に近いため黒寄りにしておく
             linetrace_->setMaxPwm(20);
             linetrace_->setEdge(LineTraceEdge::LEFT);
             linetrace_->setPid(0.09, 0, 4.3605);
@@ -144,16 +144,16 @@ namespace strategy{
 
         case StrategyPhase::TO_RIGHT_ANGLE:
             lineTraceReset();
-            linetrace_->setTarget(0.5);
+            linetrace_->setTarget(0.3);
             linetrace_->setMaxPwm(20);
             linetrace_->setPid(LineTracePid::VERY_FAST);
             linetrace_->run();
-            return rightAngledDetection_->getResult(4.5);
+            return rightAngledDetection_->getResult(6.0);
 
         case StrategyPhase::STABILIZE:
             lineTraceReset();
             distanceMeasurement_->start(40);
-            linetrace_->setTarget(0.5);
+            linetrace_->setTarget(0.3);
             linetrace_->setMaxPwm(20);
             linetrace_->setPid(LineTracePid::SLOW);
             linetrace_->run();
@@ -163,7 +163,7 @@ namespace strategy{
             polar_.back(true);
             polar_.setMaxPwm(20);
             polar_.centerPivot(true);
-            if (polar_.runTo(118, -1750 - bodyAngleMeasurement_->getRelative10()) ){
+            if (polar_.runTo(108, -1750 - bodyAngleMeasurement_->getRelative10()) ){
                 diffDegree10 = bodyAngleMeasurement_->getRelative10();
                 return true;
             }
@@ -173,7 +173,7 @@ namespace strategy{
         case StrategyPhase::TURN_STRAIGHT:
             polar_.centerPivot(true);
             polar_.back(false);
-            return polar_.bodyTurn(-diffDegree10 - 10, 15); // 足りない事が多いから1°多く曲げる
+            return polar_.bodyTurn(-diffDegree10, 15);
 
         case StrategyPhase::ARM_UP:
             return arm_->setDegree(60);
@@ -232,6 +232,10 @@ namespace strategy{
         case StrategyPhase::SEE_BLOCK:
             {
             colorid_t color = colorDetection_.getResult();
+            if(!colorDetected_){
+                colorDetected_ = true;
+                return false;
+            }
             isRight_ = (color == blockPlaceColors_[blockPlaceNum_]);
             // 奇数番号だったら寄り切りと押出しが左右逆になる
             if (blockPlaceNum_ % 2){

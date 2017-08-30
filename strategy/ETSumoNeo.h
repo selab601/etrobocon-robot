@@ -17,7 +17,7 @@
 #include <vector>
 
 #define CENTER_TO_BLOCK_LENGTH 180  // 真ん中からブロック置き場に行く時の走る距離
-#define SLIP_DEGREE10 15    // 1回ブロック置き場に行って帰ってきたごとにずれる角度の10倍
+#define SLIP_DEGREE10 20    // 1回ブロック置き場に行って帰ってきたごとにずれる角度の10倍
 namespace strategy{
     class ETSumoNeo : public IStrategy{
     private:
