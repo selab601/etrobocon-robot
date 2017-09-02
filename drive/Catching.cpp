@@ -98,14 +98,7 @@ namespace drive{
 
         //180度専用処理 270度信地旋回(135度を2回)
         case Phase::TURN_270_1:
-            if(polarRunning_->bodyTurn(startEdge_ == LineTraceEdge::LEFT ? 1360 : -1360,CATCHING_180_PWM)){
-                ev3_speaker_play_tone ( 600, 100);//音を出す
-                phase_ = Phase::TURN_270_2;
-            }
-            break;
-
-        case Phase::TURN_270_2:
-            if(polarRunning_->bodyTurn(startEdge_ == LineTraceEdge::LEFT ? 1360 : -1360,CATCHING_180_PWM)){
+            if(polarRunning_->bodyTurn(startEdge_ == LineTraceEdge::LEFT ? 2720 : -2720,CATCHING_180_PWM)){
                 ev3_speaker_play_tone ( 600, 100);//音を出す
                 phase_ = Phase::STRAIGHT_TREAD_DISTANCE;
             }
