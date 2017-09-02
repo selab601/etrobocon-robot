@@ -68,7 +68,7 @@ namespace strategy{
 
         case Phase::STRAIGHT2:
             linetrace_->setPid(LineTracePid::VERY_FAST);
-            return fixedDistanceLineTrace(1950,80,LineTraceEdge::RIGHT);
+            return fixedDistanceLineTrace(1730,80,LineTraceEdge::RIGHT);
 
         default: return false;
         }
