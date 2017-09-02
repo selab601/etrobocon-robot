@@ -148,9 +148,9 @@ namespace drive{
     bool PolarRunning::turn(int degree10, int speed){
         int diff = degree10 - currentDegree10_;
         // 差分が0付近のところでいきなり変わらないようにする(359->0とか)
-        diff += 1800;
-        diff %= 3600;
-        diff -= 1800;
+        diff += 3600;
+        diff %= 7200;
+        diff -= 3600;
         // 足切り
         diff =  150 < diff ?  150 : diff;
         diff = -150 > diff ? -150 : diff;
