@@ -215,11 +215,19 @@ namespace drive{
                         endEdge_ = startEdge_;
                     }
                 }
-            }else{//エッジ逆転
+            }else{//一部を除いてエッジ逆転
                 if(startEdge_ == LineTraceEdge::RIGHT){
-                    endEdge_ = LineTraceEdge::LEFT;
+                    if(abs(degree) >= 115 && abs(degree) <= 125 && degree > 0){//120度左カーブ
+                        endEdge_ = startEdge_;
+                    }else{
+                        endEdge_ = LineTraceEdge::LEFT;
+                    }
                 }else{
-                    endEdge_ = LineTraceEdge::RIGHT;
+                    if(abs(degree) >= 115 && abs(degree) <= 125 && degree < 0){//120度右カーブ
+                        endEdge_ = startEdge_;
+                    }else{
+                        endEdge_ = LineTraceEdge::RIGHT;
+                    }
                 }
             }
             lineTrace_->setEdge(endEdge_);
