@@ -114,7 +114,7 @@ namespace strategy{
         case StrategyPhase::APPROACH12CM:
             polar_.setMaxPwm(20);
             return polar_.runTo(120, 0);
-       
+
         //16cm前進
         case StrategyPhase::APPROACH16CM:
             return polar_.runTo(160, 0);
@@ -138,7 +138,7 @@ namespace strategy{
             polar_.back(true);
             polar_.setMaxPwm(20);
             return polar_.runTo(320, 1800);
-   
+
         //ラインまでバック(安定のため距離条件追加)
         case StrategyPhase::BACKTOLINE:
             distanceMeasurement_->start(50);
@@ -196,10 +196,10 @@ namespace strategy{
         //懸賞を置く
         case StrategyPhase::PUTDOWN_PRIZE:
             return arm_->normal();
-     
+
         //引っかかった場合、アームを一旦下げる
         case StrategyPhase::YOISHO:
-            if(arm_->setDegree(50)){
+            if(arm_->setDegree(40)){
                 strategyProcedure_.insert(
                     strategyProcedure_.begin() + procedureNumber_ + 1,
                     StrategyPhase::PICKUP_PRIZE

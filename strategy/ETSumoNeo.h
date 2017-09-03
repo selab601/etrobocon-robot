@@ -24,16 +24,16 @@ namespace strategy{
         // 土俵のブロック置き場の色
         // TODO: 土俵の配置に合わせて変更
         colorid_t blockPlaceColors_[8] = {
-            COLOR_YELLOW,   // 入り口から見て左奥
-            COLOR_RED,      // 入り口から見て左手前
-            COLOR_BLUE,     // 入り口から見て右手前
-            COLOR_GREEN,    // 入り口から見て右奥
+            COLOR_RED,      // 入り口から見て左奥
+            COLOR_YELLOW,   // 入り口から見て左手前
+            COLOR_GREEN,    // 入り口から見て右手前
+            COLOR_BLUE,     // 入り口から見て右奥
 
-            // 土俵2つめ
-            COLOR_YELLOW,   // 左奥
-            COLOR_RED,      // 左手前
-            COLOR_BLUE,     // 右手前
-            COLOR_GREEN,    // 右奥
+
+            COLOR_RED,      // 入り口から見て左奥
+            COLOR_YELLOW,   // 入り口から見て左手前
+            COLOR_GREEN,    // 入り口から見て右手前
+            COLOR_BLUE,     // 入り口から見て右奥
         };
 
         //ET相撲Neoの走行状態

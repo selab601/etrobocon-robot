@@ -20,7 +20,7 @@
             int red_;
             int blue_;
             int yellow_;
-            int green_ = 3;
+            int green_ = 2;
             int black_;
 
             //それぞれの色の配置が黒ブロックでのどこに相当するかのリスト
