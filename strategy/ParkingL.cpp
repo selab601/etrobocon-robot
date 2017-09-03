@@ -37,7 +37,7 @@ namespace strategy{
             case Phase::ADJUST1:
                 //ブロック並べ終点から位置調整用
                 return true;
-            
+
             case Phase::PIVOT_TURN1:
                 return pivotTurn_->circleTurn(-90);
 
@@ -58,7 +58,7 @@ namespace strategy{
                 return pivotTurn_->circleTurn(90);
 
             case Phase::ENTRY:
-                distanceMeasurement_->start(50); //要調整
+                distanceMeasurement_->start(60); //要調整
                 straightRunning_->run(30);
                 return distanceMeasurement_->getResult();
 
@@ -78,8 +78,8 @@ namespace strategy{
                 */
                 return false;
                 //現状無限にfalse返して停止してます,改良するかも
-            
-            default: 
+
+            default:
                 return false;
         }
     }
