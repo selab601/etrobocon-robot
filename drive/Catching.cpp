@@ -98,14 +98,7 @@ namespace drive{
 
         //180度専用処理 270度信地旋回(135度を2回)
         case Phase::TURN_270_1:
-            if(polarRunning_->bodyTurn(startEdge_ == LineTraceEdge::LEFT ? 1360 : -1360,CATCHING_180_PWM)){
-                ev3_speaker_play_tone ( 600, 100);//音を出す
-                phase_ = Phase::TURN_270_2;
-            }
-            break;
-
-        case Phase::TURN_270_2:
-            if(polarRunning_->bodyTurn(startEdge_ == LineTraceEdge::LEFT ? 1360 : -1360,CATCHING_180_PWM)){
+            if(polarRunning_->bodyTurn(startEdge_ == LineTraceEdge::LEFT ? 2720 : -2720,CATCHING_180_PWM)){
                 ev3_speaker_play_tone ( 600, 100);//音を出す
                 phase_ = Phase::STRAIGHT_TREAD_DISTANCE;
             }
@@ -222,11 +215,19 @@ namespace drive{
                         endEdge_ = startEdge_;
                     }
                 }
-            }else{//エッジ逆転
+            }else{//一部を除いてエッジ逆転
                 if(startEdge_ == LineTraceEdge::RIGHT){
-                    endEdge_ = LineTraceEdge::LEFT;
+                    if(abs(degree) >= 115 && abs(degree) <= 125 && degree > 0){//120度左カーブ
+                        endEdge_ = startEdge_;
+                    }else{
+                        endEdge_ = LineTraceEdge::LEFT;
+                    }
                 }else{
-                    endEdge_ = LineTraceEdge::RIGHT;
+                    if(abs(degree) >= 115 && abs(degree) <= 125 && degree < 0){//120度右カーブ
+                        endEdge_ = startEdge_;
+                    }else{
+                        endEdge_ = LineTraceEdge::RIGHT;
+                    }
                 }
             }
             lineTrace_->setEdge(endEdge_);

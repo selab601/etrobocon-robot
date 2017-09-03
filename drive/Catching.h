@@ -37,7 +37,6 @@ namespace drive
                 END_LINE_TRACE,         //カーブ後のライントレース
                 TURN_90,                //９０度カーブ
                 TURN_270_1,               //２７０度カーブ
-                TURN_270_2,
                 STRAIGHT_TREAD_DISTANCE,//走行体のトレッドの距離走行
                 //ブロック持ってないときの走行
                 STRAIGHT_RADIUS_1,      //半径進む
