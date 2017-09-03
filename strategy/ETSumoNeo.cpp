@@ -60,11 +60,13 @@ namespace strategy{
 
         //土俵を向くまでライントレース
         case StrategyPhase::LINE_TRACE:
-            linetrace_->setMaxPwm(50);
-            distanceMeasurement_->start(1200);
-            linetrace_->setPid(LineTracePid::MID);
+            linetrace_->setMaxPwm(40);
+            distanceMeasurement_->start(1420);
+            linetrace_->setPid(LineTracePid::SLOW);
             linetrace_->setEdge(LineTraceEdge::RIGHT);
-            linetrace_->runCurve(400);
+            linetrace_->setTarget(0.6);//白より
+            // linetrace_->runCurve(400);
+            linetrace_->run();
             //距離検知or車体角度が土俵を向いたらtrue
             return distanceMeasurement_->getResult() || bodyAngleMeasurement_->getResult() >= 180;
 
@@ -163,7 +165,7 @@ namespace strategy{
             polar_.back(true);
             polar_.setMaxPwm(20);
             polar_.centerPivot(true);
-            if (polar_.runTo(108, -1750 - bodyAngleMeasurement_->getRelative10()) ){
+            if (polar_.runTo(113, -1750 - bodyAngleMeasurement_->getRelative10()) ){
                 diffDegree10 = bodyAngleMeasurement_->getRelative10();
                 return true;
             }
