@@ -91,7 +91,7 @@ namespace strategy{
             case Phase::POLAR_TO_GOAL_FROM_GATE2:
                 polar_.setMaxPwm(80);
                 polar_.centerPivot(false);
-                if (polar_.runTo(3350, 1107 - bodyAngleMeasurement_.getRelative10(), 0)){
+                if (polar_.runTo(3300, 1107 - bodyAngleMeasurement_.getRelative10(), 0)){
                     return true;
                 }
                 return false;
