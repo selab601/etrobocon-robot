@@ -191,7 +191,7 @@ namespace strategy{
                 );
                 return true;
             }
-            return arm_->up();
+            return arm_->up(20);
 
         //懸賞を置く
         case StrategyPhase::PUTDOWN_PRIZE:
