@@ -123,8 +123,8 @@ namespace strategy{
 
             case Phase::LINETRACE_TO_BLOCKAREA:
                 distanceMeasurement_->start(700);
-                linetrace_->setPid(LineTracePid::MID);
-                linetrace_->setMaxPwm(60);
+                linetrace_->setPid(LineTracePid::SLOW);
+                linetrace_->setMaxPwm(40);
                 linetrace_->run();
 
                 if (distanceMeasurement_->getResult()){
