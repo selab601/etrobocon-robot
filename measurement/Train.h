@@ -10,14 +10,14 @@ namespace measurement{
 // 電池ほぼ満タンの時: 7729 くらい
 // 試走会2 7610 くらい
 // 東京地区大会 遊佐くんが測ってくれたやつの平均: 8373
-#define IN_CYCLE_TIME   8373
+#define IN_CYCLE_TIME   7462
 
 // 新幹線が外側を1周するときの時間[msec]
 // 電池ない時: 13566 くらい
 // 電池ほぼ満タンの時: 10825 くらい
 // 試走会2 1080 くらい
 // 東京地区大会 遊佐くんが測ってくれたやつの平均: 11696
-#define OUT_CYCLE_TIME  11696
+#define OUT_CYCLE_TIME  10355
 #define TRAIN_LENGTH    2500    // 新幹線の長さ(時間)[msec]
 
 // 1週ごとに増やす新幹線の長さ[msec]
