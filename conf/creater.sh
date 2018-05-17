@@ -3,7 +3,7 @@
 #
 # パス指定
 #
-base_dir_path=/vagrant/src/ET2017
+base_dir_path=/vagrant/src/ET2018
 conf_dir_path=$base_dir_path/conf
 parts_dir_path=$conf_dir_path/parts
 tmp_file_path=$conf_dir_path/tmp.txt
