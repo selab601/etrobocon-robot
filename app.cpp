@@ -21,7 +21,7 @@ void main_task(intptr_t unused)
 {
     /* LCD画面表示 */
     Display* disp = Display::getInstance();
-    disp->updateDisplay("ET2017!!", 1);
+    disp->updateDisplay("ET2018!!", 1);
 
     /**
      * Main loop
