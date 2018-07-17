@@ -39,8 +39,9 @@ namespace strategy{
             startDistanceMeasurement(2255);
             lineTraceReset();
             linetrace_->setPid(LineTracePid::VERY_FAST);
-            linetrace_->run(80,LineTraceEdge::RIGHT);
-            return distanceMeasurement_->getResult();
+            linetrace_->run(80,LineTraceEdge::LEFT);
+            //return distanceMeasurement_->getResult();
+            return false;
 
         case Phase::BEND1:
             linetrace_->setPid(LineTracePid::FAST);
