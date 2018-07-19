@@ -5,6 +5,15 @@ namespace measurement{
         clock           = ev3api::Clock();
         baseTime_      = 0;
         targetTime_    = 0;
+        isStart_ = false;
+    }
+
+    bool TimeMeasurement::start(int target){
+        if(!isStart_){
+            setBaseTime();
+            setTargetTime(target);
+            isStart_ = true;
+        }
     }
 
     bool TimeMeasurement::getResult(){
@@ -32,5 +41,11 @@ namespace measurement{
 
     void TimeMeasurement::setTargetTime(uint32_t targetTime){
         targetTime_ = targetTime;
+    }
+
+    void TimeMeasurement::reset(){
+        baseTime_ = 0;
+        targetTime_ = 0;
+        isStart_ = false;
     }
 };

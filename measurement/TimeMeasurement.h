@@ -24,6 +24,14 @@ namespace measurement{
         TimeMeasurement();
 
         /**
+         * @brief setBaseTime,setTargetTimeを同時に実行
+         * 単位はミリ秒なので10秒を目標時間にしたかったら「10000」を引数に指定してください
+         * フラグ管理をしているので実行前にreset()が必要
+         * @target 目標時間(target > 0)
+         */
+        void start(int target);
+
+        /**
          * @brief 目標時間に達したかどうかを検知する
          * 目標時間は基底時間からの経過時間を指す
          * @return 目標時間に達した(true)，してない(false)
@@ -64,6 +72,11 @@ namespace measurement{
          * 単位はミリ秒なので10秒を目標時間にしたかったら「10000」を引数に指定してください
           */
         void setTargetTime(uint32_t targetTime);
+
+        /**
+         * @brief baseTime, TargetTime, フラグをリセット
+         */
+        void reset();
     };
 };
 
