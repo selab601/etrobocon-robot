@@ -40,8 +40,8 @@ namespace strategy{
             lineTraceReset();
             linetrace_->setPid(LineTracePid::VERY_FAST);
             linetrace_->run(80,LineTraceEdge::LEFT);
-            //return distanceMeasurement_->getResult();
-            return false;
+            return distanceMeasurement_->getResult();
+            //return false;
 
         case Phase::BEND1:
             linetrace_->setPid(LineTracePid::FAST);
