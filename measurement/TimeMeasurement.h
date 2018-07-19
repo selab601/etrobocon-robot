@@ -16,6 +16,9 @@ namespace measurement{
         //! 目標時間
         uint32_t targetTime_;
 
+        //時間計測中はtrueになり上書きを防止
+        bool isStart_;
+
 
     public:
         /**
@@ -27,9 +30,9 @@ namespace measurement{
          * @brief setBaseTime,setTargetTimeを同時に実行
          * 単位はミリ秒なので10秒を目標時間にしたかったら「10000」を引数に指定してください
          * フラグ管理をしているので実行前にreset()が必要
-         * @target 目標時間(target > 0)
+         * @target 目標時間(targetTime > 0)
          */
-        void start(int target);
+        void start(uint32_t targetTime);
 
         /**
          * @brief 目標時間に達したかどうかを検知する

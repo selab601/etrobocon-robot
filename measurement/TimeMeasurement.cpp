@@ -8,10 +8,10 @@ namespace measurement{
         isStart_ = false;
     }
 
-    bool TimeMeasurement::start(int target){
+    void TimeMeasurement::start(uint32_t targetTime){
         if(!isStart_){
             setBaseTime();
-            setTargetTime(target);
+            setTargetTime(targetTime);
             isStart_ = true;
         }
     }
