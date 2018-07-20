@@ -41,18 +41,10 @@ namespace strategy{
             linetrace_->setPid(LineTracePid::VERY_FAST);//VERY_FAST
 
         case Phase::STRAIGHT1:
-<<<<<<< HEAD
             linetrace_->run(40,LineTraceEdge::LEFT);//runで速度渡してる
             if(distanceMeasurement_->getResult()){
                 linetrace_->run(0,LineTraceEdge::LEFT);
             }
-=======
-            startDistanceMeasurement(2255);
-            lineTraceReset();
-            linetrace_->setPid(LineTracePid::VERY_FAST);
-            linetrace_->run(80,LineTraceEdge::LEFT);
-            //return distanceMeasurement_->getResult();
->>>>>>> 5eb50690fae7112a01f01a6ebecb7a39273bb028
             return false;
 
         case Phase::BEND1:

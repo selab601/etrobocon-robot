@@ -14,13 +14,8 @@
 #include "../measurement/DistanceMeasurement.h"
 #include "PidController.h"
 
-<<<<<<< HEAD
 #define DEFAULT_TARGET      0.5F    /* 明るさセンサの目標値となる値の黒の割合のデフォルト値*/
 #define DEFAULT_MAXPWM      40      /* デフォルトのmaxPwm値*/
-=======
-#define DEFAULT_TARGET      0.7F    /* 明るさセンサの目標値となる値の黒の割合のデフォルト値*/
-#define DEFAULT_MAXPWM      80      /* デフォルトのmaxPwm値*/
->>>>>>> 5eb50690fae7112a01f01a6ebecb7a39273bb028
 
 #define LINETRACE_TREAD      1      /*未使用 きちんとした角速度に計算する定数*/
 namespace drive{
