@@ -28,7 +28,7 @@ void main_task(intptr_t unused)
      */
     while(1) {
         contest_pkg::Contest::getInstance()->perform();
-        tslp_tsk(4); /* 4msec 周期起動 */
+        tslp_tsk(10); /* 4msec 周期起動 */ //止まる時間
     }
 
     ext_tsk();

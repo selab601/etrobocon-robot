@@ -20,6 +20,7 @@ namespace strategy{
         if(!strategySuccess_){
             if(executePhase(phaseProcedure_[procedureNumber])){
                 lineTraceReset();
+                distanceMeasurement_->reset();
                 procedureNumber++;
                 hasExecutedPhase_ = false;
                 ev3_speaker_set_volume(6);
@@ -35,13 +36,16 @@ namespace strategy{
     bool RCourseStandard::executePhase(Phase phase){
         switch(phase){
 
+        case Phase::INIT:
+            distanceMeasurement_->start(10000);
+            linetrace_->setPid(LineTracePid::VERY_FAST);//VERY_FAST
+
         case Phase::STRAIGHT1:
-            startDistanceMeasurement(2255);
-            lineTraceReset();
-            linetrace_->setPid(LineTracePid::VERY_FAST);
-            linetrace_->run(80,LineTraceEdge::LEFT);
-            return distanceMeasurement_->getResult();
-            //return false;
+            linetrace_->run(40,LineTraceEdge::LEFT);//runで速度渡してる
+            if(distanceMeasurement_->getResult()){
+                linetrace_->run(0,LineTraceEdge::LEFT);
+            }
+            return false;
 
         case Phase::BEND1:
             linetrace_->setPid(LineTracePid::FAST);
