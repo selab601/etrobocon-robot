@@ -37,8 +37,8 @@ namespace strategy{
         switch(phase){
 
         case Phase::INIT:
-            distanceMeasurement_->start(10000);
-            linetrace_->setPid(LineTracePid::VERY_FAST);//VERY_FAST
+            distanceMeasurement_->start(7000);
+            linetrace_->setPid(LineTracePid::MID);//VERY_FAST
 
         case Phase::STRAIGHT1:
             linetrace_->run(40,LineTraceEdge::LEFT);//runで速度渡してる
