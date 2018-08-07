@@ -17,7 +17,7 @@ namespace detection{
      * @details 進んだ距離あたりのカラーセンサの値の変化量から直角検知を行う
      * ライントレースの速度を遅くする必要がある(pwm20以下で)
      */
-    class RightAngledDetection
+    class RightAngledDetection //黒い線見つけたらtrue返す
     {
     private:
         measurement::SelfPositionEstimation* selfPos_;

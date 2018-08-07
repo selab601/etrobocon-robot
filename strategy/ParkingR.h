@@ -6,6 +6,7 @@
 #include "../drive/PivotTurn.h"
 #include "../drive/StraightRunning.h"
 #include "../detection/RightAngledDetection.h"
+#include "../detection/ColorDetection.h"
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/TimeMeasurement.h"
 #include <vector>
@@ -15,19 +16,19 @@ namespace strategy{
         private:
             enum class Phase{
                 INIT,
-                LINE_TRACE1,
+                STRAIGHT1,
                 ADJUST1,
-                TURN_RIGHT,
-                LINE_TRACE2,
+                TURN_LEFT,
+                STRAIGHT2,
                 WAIT,
             };
 
             std::vector<Phase> phaseProcedure_{
                 Phase::INIT,
-                Phase::LINE_TRACE1,
+                Phase::STRAIGHT1,
                 Phase::ADJUST1,
-                Phase::TURN_RIGHT,
-                Phase::LINE_TRACE2,
+                Phase::TURN_LEFT,
+                Phase::STRAIGHT2,
                 Phase::WAIT,
             };
 
@@ -35,8 +36,10 @@ namespace strategy{
             drive::PivotTurn* pivotTurn_;
             drive::StraightRunning* straightRunning_;
             detection::RightAngledDetection* rightAngledDetection_;
+            device::ColorSensor* colorSensor_;
             measurement::DistanceMeasurement* distanceMeasurement_;
             measurement::TimeMeasurement* timeMeasurement_;
+
 
             bool strategySuccess_;
 
