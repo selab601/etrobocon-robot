@@ -8,21 +8,22 @@ namespace strategy{
     Map::Map(){
 
         //ブロック置き場のデータを登録
-        blockPlaces_[1]  = new BlockPlace(1,BlockAreaColor::RED,-1350*sqrt(3),0);
-        blockPlaces_[2]  = new BlockPlace(2,BlockAreaColor::BLUE,-900*sqrt(3),0);
-        blockPlaces_[3]  = new BlockPlace(3,BlockAreaColor::YELLOW,-450*sqrt(3),0);
-        blockPlaces_[4]  = new BlockPlace(4,BlockAreaColor::BLUE,0,0);
-        blockPlaces_[5]  = new BlockPlace(5,BlockAreaColor::YELLOW,-2250*sqrt(3)/2,-450/2);
-        blockPlaces_[6]  = new BlockPlace(6,BlockAreaColor::GREEN,-1350*sqrt(3)/2,-450/2);
-        blockPlaces_[7]  = new BlockPlace(7,BlockAreaColor::RED,-450*sqrt(3)/2,-450/2);
-        blockPlaces_[8]  = new BlockPlace(8,BlockAreaColor::RED,-900*sqrt(3),-450);
-        blockPlaces_[9]  = new BlockPlace(9,BlockAreaColor::BLUE,-450*sqrt(3),-450);
-        blockPlaces_[10] = new BlockPlace(10,BlockAreaColor::GREEN,-450*(5*sqrt(3)+1)/2,-450*(sqrt(3)+1)/2);
-        blockPlaces_[11] = new BlockPlace(11,BlockAreaColor::GREEN,-450*(sqrt(3)-1)/2,-450*(sqrt(3)+1)/2);
-        blockPlaces_[12] = new BlockPlace(12,BlockAreaColor::BLUE,-450*(4*sqrt(3)+1)/2,-450*(sqrt(3)+2)/2);
-        blockPlaces_[13] = new BlockPlace(13,BlockAreaColor::YELLOW,-450*(4*sqrt(3)-1)/2,-450*(sqrt(3)+2)/2);
-        blockPlaces_[14] = new BlockPlace(14,BlockAreaColor::RED,-450*(2*sqrt(3)+1)/2,-450*(sqrt(3)+2)/2);
-        blockPlaces_[15] = new BlockPlace(15,BlockAreaColor::YELLOW,-450*(2*sqrt(3)-1)/2,-450*(sqrt(3)+2)/2);
+        blockPlaces_[0]  = new BlockPlace(0,BlockAreaColor::RED,0,3);
+        blockPlaces_[1]  = new BlockPlace(1,BlockAreaColor::YELLOW,1,3);
+        blockPlaces_[2]  = new BlockPlace(2,BlockAreaColor::BLUE,2,3);
+        blockPlaces_[3]  = new BlockPlace(3,BlockAreaColor::GREEN,3,3);
+        blockPlaces_[4]  = new BlockPlace(4,BlockAreaColor::BLUE,0,2);
+        blockPlaces_[5]  = new BlockPlace(5,BlockAreaColor::GREEN,1,2);
+        blockPlaces_[6]  = new BlockPlace(6,BlockAreaColor::RED,2,2);
+        blockPlaces_[7]  = new BlockPlace(7,BlockAreaColor::YELLOW,3,2);
+        blockPlaces_[8]  = new BlockPlace(8,BlockAreaColor::RED,0,1);
+        blockPlaces_[9]  = new BlockPlace(9,BlockAreaColor::YELLOW,1,1);
+        blockPlaces_[10] = new BlockPlace(10,BlockAreaColor::BLUE,2,1);
+        blockPlaces_[11] = new BlockPlace(11,BlockAreaColor::GREEN,3,1);
+        blockPlaces_[12] = new BlockPlace(12,BlockAreaColor::BLUE,0,0);
+        blockPlaces_[13] = new BlockPlace(13,BlockAreaColor::GREEN,1,0);
+        blockPlaces_[14] = new BlockPlace(14,BlockAreaColor::RED,2,0);
+        blockPlaces_[15] = new BlockPlace(15,BlockAreaColor::YELLOW,3,0);
 
         //隣接してる台座の登録
         //left  +
