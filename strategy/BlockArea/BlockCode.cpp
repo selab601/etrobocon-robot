@@ -4,11 +4,10 @@ namespace strategy {
 
     BlockCode* BlockCode::instance_ = 0;
     BlockCode::BlockCode(){
-        //green_ は.h で定義
-        red_    = 0;
-        blue_   = 0;
-        yellow_ = 0;
-        black_  = 0;
+        block1_    = 0;
+        block2_   = 0;
+        block3_ = 0;
+        block4_  = 0;
     }
 
     BlockCode* BlockCode::getInstance(){
@@ -20,42 +19,27 @@ namespace strategy {
 
     void BlockCode::setCode(int initPositionCode){
         //競技規約での変換方法
-        black_  =  initPositionCode / 1331 + 1;
-        red_    =( initPositionCode - 1331*(black_-1) ) / 121 + 1;
-        yellow_ =( initPositionCode - 1331*(black_-1) - 121*(red_-1) ) / 11 + 1;
-        blue_   =  initPositionCode - 1331*(black_-1) - 121*(red_-1) - 11*(yellow_-1) + 1;
-
-        //黒ブロックでの位置番号に統一
-        red_ = encodeRed(red_-1);
-        blue_ = encodeBlue(blue_-1);
-        yellow_ = encodeYellow(yellow_-1);
+        block1_ =    initPositionCode / 65536;
+        block2_ =(   initPositionCode - 65536*(block1_) ) / 4096;
+        block3_ =((  initPositionCode - 65536*(block1_) ) - 4096*(block2_) ) / 256;
+        block4_ =((( initPositionCode - 65536*(block1_) ) - 4096*(block2_) ) - 256*(block3_) ) / 16;
+        power_block_code_ =((( initPositionCode - 65536*(block1_) ) - 4096*(block2_) ) - 256*(block3_) ) - 16*(block4_);
     }
 
-    int BlockCode::getIdRed(){
-        return red_;
+    int BlockCode::getIdBlock1(){
+        return block1_;
     }
-    int BlockCode::getIdBlue(){
-        return blue_;
+    int BlockCode::getIdBlock2(){
+        return block2_;
     }
-    int BlockCode::getIdYellow(){
-        return yellow_;
+    int BlockCode::getIdBlock3(){
+        return block3_;
     }
-    int BlockCode::getIdGreen(){
-        return green_;
+    int BlockCode::getIdBlock4(){
+        return block4_;
     }
-    int BlockCode::getIdBlack(){
-        return black_;
-    }
-
-
-    int BlockCode::encodeRed(int redCode){
-        return redToBlalck_[redCode];
-    }
-    int BlockCode::encodeBlue(int blueCode){
-        return blueToBlack_[blueCode];
-    }
-    int BlockCode::encodeYellow(int yellowCode){
-        return yellowToBlack_[yellowCode];
+    int BlockCode::getIdPowerBlockCode(){
+        return power_block_code_;
     }
 
 }
