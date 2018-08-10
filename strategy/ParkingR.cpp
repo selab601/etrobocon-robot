@@ -45,7 +45,7 @@ namespace strategy{
                 //誤検知防止のため開始後15cmは直角検知しないので，開始位置によっては調整してください
                 distanceMeasurement_->start(500);
                 straightRunning_->run(40);
-                return distanceMeasurement_->getResult() && colorSensor_->getBlackCalibratedValue();
+                return distanceMeasurement_->getResult() || (ev3_color_sensor_get_color(EV3_PORT_3)==COLOR_BLACK);
 
             case Phase::ADJUST1:
                 distanceMeasurement_->start(20);
@@ -56,7 +56,7 @@ namespace strategy{
                 return pivotTurn_->turn(90);
 
             case Phase::STRAIGHT2:
-                distanceMeasurement_->start(550);
+                distanceMeasurement_->start(600);
                 straightRunning_->run(40);
                 return distanceMeasurement_->getResult();
 
