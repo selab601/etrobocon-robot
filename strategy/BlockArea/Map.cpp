@@ -97,11 +97,11 @@ namespace strategy{
 
         //ブロックの初期位置取得
         blockCode_ = BlockCode::getInstance();
-        blockIs_["RED"]    = blockPlaces_[blockCode_->getIdRed()];
-        blockIs_["BLUE"]   = blockPlaces_[blockCode_->getIdBlue()];
-        blockIs_["GREEN"]  = blockPlaces_[blockCode_->getIdGreen()];
-        blockIs_["YELLOW"] = blockPlaces_[blockCode_->getIdYellow()];
-        blockIs_["BLACK"]  = blockPlaces_[blockCode_->getIdBlack()];
+        blockIs_["BLOCK1"] = blockPlaces_[blockCode_->getIdBlock1()];
+        blockIs_["BLOCK2"] = blockPlaces_[blockCode_->getIdBlock2()];
+        blockIs_["BLOCK3"] = blockPlaces_[blockCode_->getIdBlock3()];
+        blockIs_["BLOCK4"] = blockPlaces_[blockCode_->getIdBlock4()];
+        blockIs_["POWER BLOCK"]  = blockPlaces_[blockCode_->getIdPowerBlockCode()];
 
 
 
