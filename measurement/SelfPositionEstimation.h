@@ -15,7 +15,7 @@ namespace measurement
     /* ホイール半径 */
     #define WHEEL_RADIUS 50 //mm
     /* トレッド */
-    #define TREAD 143  //mm
+    #define TREAD 148  //mm
 
     class SelfPositionEstimation
     {
