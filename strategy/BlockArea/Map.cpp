@@ -28,72 +28,70 @@ namespace strategy{
         //隣接してる台座の登録
         //left  +
         //right -
+        blockPlaces_[0]->next[0]     = blockPlaces_[1];
+        blockPlaces_[0]->next[-90]   = blockPlaces_[4];
+
+        blockPlaces_[1]->next[180]   = blockPlaces_[0];
         blockPlaces_[1]->next[0]     = blockPlaces_[2];
-        blockPlaces_[1]->next[-30]   = blockPlaces_[5];
-        blockPlaces_[1]->next[-75]   = blockPlaces_[10];
+        blockPlaces_[1]->next[-90]   = blockPlaces_[5];
 
         blockPlaces_[2]->next[180]   = blockPlaces_[1];
         blockPlaces_[2]->next[0]     = blockPlaces_[3];
-        blockPlaces_[2]->next[-30]   = blockPlaces_[6];
-        blockPlaces_[2]->next[-150]  = blockPlaces_[5];
+        blockPlaces_[2]->next[-90]   = blockPlaces_[6];
 
         blockPlaces_[3]->next[180]   = blockPlaces_[2];
-        blockPlaces_[3]->next[0]     = blockPlaces_[4];
-        blockPlaces_[3]->next[-30]   = blockPlaces_[7];
-        blockPlaces_[3]->next[-150]  = blockPlaces_[6];
+        blockPlaces_[3]->next[-90]   = blockPlaces_[7];
 
-        blockPlaces_[4]->next[180]   = blockPlaces_[3];
-        blockPlaces_[4]->next[-105]  = blockPlaces_[11];
-        blockPlaces_[4]->next[-150]  = blockPlaces_[7];
+        blockPlaces_[4]->next[90]    = blockPlaces_[0];
+        blockPlaces_[4]->next[0]     = blockPlaces_[5];
+        blockPlaces_[4]->next[-90]   = blockPlaces_[8];
 
-        blockPlaces_[5]->next[150]   = blockPlaces_[1];
-        blockPlaces_[5]->next[30]    = blockPlaces_[2];
-        blockPlaces_[5]->next[-30]   = blockPlaces_[8];
-        blockPlaces_[5]->next[-120]  = blockPlaces_[10];
+        blockPlaces_[5]->next[90]    = blockPlaces_[1];
+        blockPlaces_[5]->next[180]   = blockPlaces_[4];
+        blockPlaces_[5]->next[0]     = blockPlaces_[6];
+        blockPlaces_[5]->next[-90]   = blockPlaces_[9];
 
-        blockPlaces_[6]->next[150]   = blockPlaces_[2];
-        blockPlaces_[6]->next[30]    = blockPlaces_[3];
-        blockPlaces_[6]->next[-30]   = blockPlaces_[9];
-        blockPlaces_[6]->next[-150]  = blockPlaces_[8];
+        blockPlaces_[6]->next[90]    = blockPlaces_[2];
+        blockPlaces_[6]->next[180]   = blockPlaces_[5];
+        blockPlaces_[6]->next[0]     = blockPlaces_[7];
+        blockPlaces_[6]->next[-90]   = blockPlaces_[10];
 
-        blockPlaces_[7]->next[150]   = blockPlaces_[3];
-        blockPlaces_[7]->next[30]    = blockPlaces_[4];
-        blockPlaces_[7]->next[-60]   = blockPlaces_[11];
-        blockPlaces_[7]->next[-150]  = blockPlaces_[9];
+        blockPlaces_[7]->next[90]    = blockPlaces_[3];
+        blockPlaces_[7]->next[180]   = blockPlaces_[6];
+        blockPlaces_[7]->next[-90]   = blockPlaces_[11];
 
-        blockPlaces_[8]->next[150]   = blockPlaces_[5];
-        blockPlaces_[8]->next[30]    = blockPlaces_[6];
-        blockPlaces_[8]->next[-60]   = blockPlaces_[13];
-        blockPlaces_[8]->next[-120]  = blockPlaces_[12];
+        blockPlaces_[8]->next[90]    = blockPlaces_[4];
+        blockPlaces_[8]->next[0]     = blockPlaces_[9];
+        blockPlaces_[8]->next[-90]   = blockPlaces_[12];
 
-        blockPlaces_[9]->next[150]   = blockPlaces_[6];
-        blockPlaces_[9]->next[30]    = blockPlaces_[7];
-        blockPlaces_[9]->next[-60]   = blockPlaces_[15];
-        blockPlaces_[9]->next[-120]  = blockPlaces_[14];
+        blockPlaces_[9]->next[90]    = blockPlaces_[5];
+        blockPlaces_[9]->next[180]   = blockPlaces_[8];
+        blockPlaces_[9]->next[0]     = blockPlaces_[10];
+        blockPlaces_[9]->next[-90]   = blockPlaces_[13];
 
-        blockPlaces_[10]->next[105]  = blockPlaces_[1];
-        blockPlaces_[10]->next[60]   = blockPlaces_[5];
-        blockPlaces_[10]->next[-30]  = blockPlaces_[12];
+        blockPlaces_[10]->next[90]   = blockPlaces_[6];
+        blockPlaces_[10]->next[180]  = blockPlaces_[9];
+        blockPlaces_[10]->next[0]    = blockPlaces_[11];
+        blockPlaces_[10]->next[-90]  = blockPlaces_[14];
 
-        blockPlaces_[11]->next[120]  = blockPlaces_[7];
-        blockPlaces_[11]->next[75]   = blockPlaces_[4];
-        blockPlaces_[11]->next[-150] = blockPlaces_[15];
+        blockPlaces_[11]->next[90]   = blockPlaces_[7];
+        blockPlaces_[11]->next[180]  = blockPlaces_[10];
+        blockPlaces_[11]->next[-90]  = blockPlaces_[15];
 
-        blockPlaces_[12]->next[150]  = blockPlaces_[10];
-        blockPlaces_[12]->next[60]   = blockPlaces_[8];
+        blockPlaces_[12]->next[90]   = blockPlaces_[8];
         blockPlaces_[12]->next[0]    = blockPlaces_[13];
 
+        blockPlaces_[13]->next[90]   = blockPlaces_[9];
         blockPlaces_[13]->next[180]  = blockPlaces_[12];
-        blockPlaces_[13]->next[120]  = blockPlaces_[8];
         blockPlaces_[13]->next[0]    = blockPlaces_[14];
 
+        blockPlaces_[14]->next[90]   = blockPlaces_[10];
         blockPlaces_[14]->next[180]  = blockPlaces_[13];
-        blockPlaces_[14]->next[60]   = blockPlaces_[9];
         blockPlaces_[14]->next[0]    = blockPlaces_[15];
 
+        blockPlaces_[15]->next[90]   = blockPlaces_[11];
         blockPlaces_[15]->next[180]  = blockPlaces_[14];
-        blockPlaces_[15]->next[120]  = blockPlaces_[9];
-        blockPlaces_[15]->next[30]   = blockPlaces_[11];
+
 
         //ブロックの初期位置取得
         blockCode_ = BlockCode::getInstance();

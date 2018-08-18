@@ -4,10 +4,10 @@ namespace strategy {
 
     BlockCode* BlockCode::instance_ = 0;
     BlockCode::BlockCode(){
-        block1_    = 0;
-        block2_   = 0;
+        block1_ = 0;
+        block2_ = 0;
         block3_ = 0;
-        block4_  = 0;
+        block4_ = 0;
     }
 
     BlockCode* BlockCode::getInstance(){
