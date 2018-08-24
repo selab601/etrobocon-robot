@@ -47,7 +47,7 @@ namespace contest_pkg{
                 display_->updateDisplay("      Block2 ID", blockCode_->getIdBlock2(), TOP_MARGIN +6);
                 display_->updateDisplay("      Block3 ID", blockCode_->getIdBlock3(), TOP_MARGIN +7);
                 display_->updateDisplay("      Block4 ID", blockCode_->getIdBlock4(), TOP_MARGIN +8);
-                display_->updateDisplay("      PowerBlock", blockCode_->getIdPowerBlockCode(), TOP_MARGIN +9);
+                display_->updateDisplay("  PowerBlock ID", blockCode_->getIdPowerBlockCode(), TOP_MARGIN +9);
                 display_->updateDisplay("      CODE", getCode(), TOP_MARGIN +10);
                 display_ ->updateDisplay("   Push [ENTER] or [BACK]    ", TOP_MARGIN + 2);
 
