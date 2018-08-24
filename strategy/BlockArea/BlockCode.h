@@ -21,11 +21,12 @@
             int block2_;
             int block3_;
             int block4_;
-            int power_block_code_;
+            int powerBlockCode_;
+            bool isPowerSpot_[16] = {false};
 
             //使わないかも,パワーブロックコードから判定,2018の規約参照
-            int power_block1_;
-            int power_block2_;
+            int powerBlock1_;
+            int powerBlock2_;
 
     public:
         static BlockCode* getInstance();
@@ -41,6 +42,13 @@
         int getIdBlock3();
         int getIdBlock4();
         int getIdPowerBlockCode();
+
+        /**
+         * @brief 引数のスポットがパワースポットか返す
+         * true == パワースポット
+         */
+        bool isPowerSpot(int placeNum);
+
     };
 
 }
