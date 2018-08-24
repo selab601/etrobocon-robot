@@ -14,27 +14,19 @@ namespace strategy{
     class ParkingL : public IStrategy{
         private:
             enum class Phase{
-                ADJUST1,
-                PIVOT_TURN1,
-                APPROACH,
-                PIVOT_TURN2,
                 LINETRACE,
-                PIVOT_TURN3,
-                ENTRY,
-                PIVOT_TURN4,
+                TURN_LEFT_60,
+                STRAIGHT_36,
+                TURN_RIGHT_90,
                 FINISH,
                 WAIT,
             };
 
             std::vector<Phase> phaseProcedure_{
-                Phase::ADJUST1,
-                Phase::PIVOT_TURN1,
-                Phase::APPROACH,
-                Phase::PIVOT_TURN2,
                 Phase::LINETRACE,
-                Phase::PIVOT_TURN3,
-                Phase::ENTRY,
-                Phase::PIVOT_TURN4,
+                Phase::TURN_LEFT_60,
+                Phase::STRAIGHT_36,
+                Phase::TURN_RIGHT_90,
                 Phase::FINISH,
                 Phase::WAIT,
             };
