@@ -22,8 +22,8 @@ namespace strategy{
         BlockAreaColor color_;//台座の色
 
     public:
-        int x_;//左下(blockplace12)を原点としたx座標
-        int y_;//左下(blockplace12)を原点としたy座標
+        int x_;//左下(blockplace12)を原点としたx座標(mm)
+        int y_;//左下(blockplace12)を原点としたy座標(mm)
         //繋がってる台座があればhashで管理
         //(next[30] = daiza4 30度の方向に方向に４番の台座が繋がってる)
         std::unordered_map<int,BlockPlace*> next;

@@ -8,22 +8,22 @@ namespace strategy{
     Map::Map(){
 
         //ブロック置き場のデータを登録
-        blockPlaces_[0]  = new BlockPlace(0,BlockAreaColor::RED,0,3);
-        blockPlaces_[1]  = new BlockPlace(1,BlockAreaColor::YELLOW,1,3);
-        blockPlaces_[2]  = new BlockPlace(2,BlockAreaColor::BLUE,2,3);
-        blockPlaces_[3]  = new BlockPlace(3,BlockAreaColor::GREEN,3,3);
-        blockPlaces_[4]  = new BlockPlace(4,BlockAreaColor::BLUE,0,2);
-        blockPlaces_[5]  = new BlockPlace(5,BlockAreaColor::GREEN,1,2);
-        blockPlaces_[6]  = new BlockPlace(6,BlockAreaColor::RED,2,2);
-        blockPlaces_[7]  = new BlockPlace(7,BlockAreaColor::YELLOW,3,2);
-        blockPlaces_[8]  = new BlockPlace(8,BlockAreaColor::RED,0,1);
-        blockPlaces_[9]  = new BlockPlace(9,BlockAreaColor::YELLOW,1,1);
-        blockPlaces_[10] = new BlockPlace(10,BlockAreaColor::BLUE,2,1);
-        blockPlaces_[11] = new BlockPlace(11,BlockAreaColor::GREEN,3,1);
+        blockPlaces_[0]  = new BlockPlace(0,BlockAreaColor::RED,0,120);
+        blockPlaces_[1]  = new BlockPlace(1,BlockAreaColor::YELLOW,45,120);
+        blockPlaces_[2]  = new BlockPlace(2,BlockAreaColor::BLUE,90,120);
+        blockPlaces_[3]  = new BlockPlace(3,BlockAreaColor::GREEN,135,120);
+        blockPlaces_[4]  = new BlockPlace(4,BlockAreaColor::BLUE,0,80);
+        blockPlaces_[5]  = new BlockPlace(5,BlockAreaColor::GREEN,45,80);
+        blockPlaces_[6]  = new BlockPlace(6,BlockAreaColor::RED,90,80);
+        blockPlaces_[7]  = new BlockPlace(7,BlockAreaColor::YELLOW,135,80);
+        blockPlaces_[8]  = new BlockPlace(8,BlockAreaColor::RED,0,40);
+        blockPlaces_[9]  = new BlockPlace(9,BlockAreaColor::YELLOW,45,40);
+        blockPlaces_[10] = new BlockPlace(10,BlockAreaColor::BLUE,90,40);
+        blockPlaces_[11] = new BlockPlace(11,BlockAreaColor::GREEN,135,40);
         blockPlaces_[12] = new BlockPlace(12,BlockAreaColor::BLUE,0,0);
-        blockPlaces_[13] = new BlockPlace(13,BlockAreaColor::GREEN,1,0);
-        blockPlaces_[14] = new BlockPlace(14,BlockAreaColor::RED,2,0);
-        blockPlaces_[15] = new BlockPlace(15,BlockAreaColor::YELLOW,3,0);
+        blockPlaces_[13] = new BlockPlace(13,BlockAreaColor::GREEN,45,0);
+        blockPlaces_[14] = new BlockPlace(14,BlockAreaColor::RED,90,0);
+        blockPlaces_[15] = new BlockPlace(15,BlockAreaColor::YELLOW,135,0);
 
         //隣接してる台座の登録
         //left  +
@@ -103,17 +103,17 @@ namespace strategy{
 
 
 
-        //EV3の初期位置は10番置き場
-        ev3Is_ = blockPlaces_[10];
+        //EV3の初期位置は8番置き場
+        ev3Is_ = blockPlaces_[8];
         ev3HasBlock_ = false;
 
         catching_ = new Catching();
         avoidance_ = new Avoidance();
 
         //デバック用
-        // sprintf(message, "%d",blockIs_["RED"]->getId());
-        // communication::BtManager::getInstance()->setMessage(message);
-        // communication::BtManager::getInstance()->send();
+        sprintf(message, "%d",blockIs_["BLOCK1"]->getId());
+        communication::BtManager::getInstance()->setMessage(message);
+        communication::BtManager::getInstance()->send();
     }
 
 
@@ -122,33 +122,39 @@ namespace strategy{
     void Map::makeRoute(){
 
         //ブロックの目的地設定
-        blockDestination_["RED"]    = blockPlaces_[14];
-        blockDestination_["BLUE"]   = blockPlaces_[9];
-        blockDestination_["GREEN"]  = blockPlaces_[6];
-        blockDestination_["YELLOW"] = blockPlaces_[13];
-        blockDestination_["BLACK"]  = blockPlaces_[8];
+        blockDestination_["BLOCK1"] = blockPlaces_[5];
+        blockDestination_["BLOCK2"] = blockPlaces_[6];
+        blockDestination_["BLOCK3"] = blockPlaces_[9];
+        blockDestination_["BLOCK4"] = blockPlaces_[10];
 
+        /*
         //ブロックの目的地に近い場所
         blockDisplace_["RED"]    = blockPlaces_[15];
         blockDisplace_["BLUE"]   = blockPlaces_[7];
         blockDisplace_["GREEN"]  = blockPlaces_[3];
         blockDisplace_["YELLOW"] = blockPlaces_[12];
-        blockDisplace_["BLACK"]  = blockPlaces_[5];
+        
 
         //黒ブロックのいい感じの置き場を確認
         selectBlackDestination();
-
+        
 
         //10番ブロック置き場にブロックがあれば必ず始めに運ぶ
         if(checkBlock(blockPlaces_[10])){
             makeDodgeAvoidancePath();
         }
+        */
+
+        makePath(blockPlaces_[11]);
+
         while(!checkFinish()){
 
+            /*
             //５角形が埋まってたら５角形の置き場からずらす
             if(checkPentagon()){
                 makeDisplaceBlockPath();
             }
+            */
 
             //次に運ぶブロックを選択
             selectCarryBlock();
@@ -167,8 +173,8 @@ namespace strategy{
         }
 
         //ブロック並べエリアから退出するためのルート算出
+        makePath(blockPlaces_[7]);
         makePath(blockPlaces_[11]);
-        makePath(blockPlaces_[4]);
         //終了に行動パターンを変更
         routeMovePattern_[routeMovePattern_.size()] = MovePattern::END;
     }
@@ -255,9 +261,9 @@ namespace strategy{
             }
             else{
                 routeBlockPlace_.push_back(candidatePlace);//pathに追加
-        // sprintf(message, "%d->",candidatePlace->getId());
-        //  communication::BtManager::getInstance()->setMessage(message);
-        //  communication::BtManager::getInstance()->send();
+                sprintf(message, "%d->",candidatePlace->getId());
+                communication::BtManager::getInstance()->setMessage(message);
+                communication::BtManager::getInstance()->send();
                 if(checkBlock(candidatePlace)){routeMovePattern_.push_back(MovePattern::AVOID);}//ブロックがあったら避ける
                 else{//ブロックがなかったら避けない
                     if(ev3HasBlock_){routeMovePattern_.push_back(MovePattern::CATCH);}
