@@ -32,7 +32,7 @@ namespace contest_pkg{
                 break;
             case State::SELECT_COURCE:
                 if (selectCourse()){
-                    if ('L' == getSelectedCourse()){
+                    if ('R' == getSelectedCourse()){
                         state_ = State::INPUT_BLOCK_CODE;
                     }
                     else{
@@ -151,7 +151,7 @@ namespace contest_pkg{
                     brightnessInfo_->getWhiteCalibratedValue(),
                     brightnessInfo_->getBlackCalibratedValue(),
                     brightnessInfo_->getBrightness(), 6);
-            if ('L' == getSelectedCourse()){
+            if ('R' == getSelectedCourse()){
                 display_->updateDisplay("Block Code",
                         BlockInputUI::getInstance()->getCode(), 7);
             }
