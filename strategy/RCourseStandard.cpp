@@ -9,6 +9,8 @@ namespace strategy{
         distanceMeasurement_ = new DistanceMeasurement();
         bodyAngleMeasurement_ = BodyAngleMeasurement();
         curveRunning_ = new CurveRunning();
+        straightRunning_ = new StraightRunning();
+        //motor_ = Motors::getInstance();
 
         strategySuccess_ = false;
         hasExecutedPhase_ = false;
@@ -37,9 +39,7 @@ namespace strategy{
 
         case Phase::STRAIGHT1:
             startDistanceMeasurement(2056);
-            lineTraceReset();
             linetrace_->setPid(LineTracePid::VERY_FAST);
-            //linetrace_->setTarget(0.3);
             linetrace_->run(80,LineTraceEdge::LEFT);
             return distanceMeasurement_->getResult();
 
@@ -47,29 +47,43 @@ namespace strategy{
             linetrace_->setPid(LineTracePid::FAST);
             linetrace_->setMaxPwm(70);
             linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(1800,230);
-
-        case Phase::BEND2:
-            linetrace_->setPid(LineTracePid::FAST);
-            linetrace_->setMaxPwm(80);
-            linetrace_->setEdge(LineTraceEdge::RIGHT);
-            return fixedDistanceCurveLineTrace(700,100);
-
-        case Phase::BEND3:
-            linetrace_->setPid(LineTracePid::FAST);
-            linetrace_->setMaxPwm(80);
-            linetrace_->setEdge(LineTraceEdge::RIGHT);
-            return fixedDistanceCurveLineTrace(1100,1950);
-
-        case Phase::BEND4:
-            linetrace_->setPid(LineTracePid::FAST);
-            linetrace_->setMaxPwm(80);
-            linetrace_->setEdge(LineTraceEdge::RIGHT);
-            return fixedDistanceCurveLineTrace(1250,-20);
+            return fixedDistanceCurveLineTrace(1850,230);
 
         case Phase::STRAIGHT2:
+            startDistanceMeasurement(450);
             linetrace_->setPid(LineTracePid::VERY_FAST);
-            return fixedDistanceLineTrace(1730,80,LineTraceEdge::RIGHT);
+            linetrace_->run(75,LineTraceEdge::LEFT);
+            return distanceMeasurement_->getResult();
+
+        case Phase::BEND2:
+            linetrace_->setPid(LineTracePid::MID);
+            linetrace_->setMaxPwm(65);
+            linetrace_->setEdge(LineTraceEdge::LEFT);
+            return fixedDistanceCurveLineTrace(650,450);
+
+        case Phase::BEND3:
+            linetrace_->setPid(LineTracePid::MID);//改良の余地あり　感度強く、遅く
+            linetrace_->setMaxPwm(50);
+            linetrace_->setEdge(LineTraceEdge::LEFT);
+            return fixedDistanceCurveLineTrace(700,-480);
+
+        case Phase::STRAIGHT3:
+            startDistanceMeasurement(600); //同じくいじるか否か
+            linetrace_->setPid(LineTracePid::MID);
+            linetrace_->run(50,LineTraceEdge::LEFT);
+            return distanceMeasurement_->getResult();
+
+        case Phase::BEND4:
+            linetrace_->setPid(LineTracePid::MID);
+            linetrace_->setMaxPwm(50);
+            linetrace_->setEdge(LineTraceEdge::LEFT);
+            return fixedDistanceCurveLineTrace(1200,-480);
+
+        case Phase::STRAIGHT4:
+            startDistanceMeasurement(2600);
+            linetrace_->setPid(LineTracePid::VERY_FAST);
+            linetrace_->run(80,LineTraceEdge::LEFT);
+            return distanceMeasurement_->getResult();
 
         case Phase::STOP:
             linetrace_->run(0,LineTraceEdge::RIGHT);

@@ -2,8 +2,10 @@
 #define _RCOURSE_STANDARD_H
 
 #include "IStrategy.h"
+//#include "device/Motors.h"
 #include "drive/LineTrace.h"
 #include "drive/CurveRunning.h"
+#include "drive/StraightRunning.h"
 #include "measurement/DistanceMeasurement.h"
 #include "../measurement/BodyAngleMeasurement.h"
 #include <vector>
@@ -15,6 +17,8 @@ namespace strategy{
             {
                 STRAIGHT1,
                 STRAIGHT2,
+                STRAIGHT3,
+                STRAIGHT4,
                 BEND1,
                 BEND2,
                 BEND3,
@@ -25,11 +29,18 @@ namespace strategy{
             std::vector<Phase> phaseProcedure_{
                 Phase::STRAIGHT1,
                 Phase::BEND1,
+                Phase::STRAIGHT2,
+                Phase::BEND2,
+                Phase::BEND3,
+                Phase::STRAIGHT3,
+                Phase::BEND4,
+                Phase::STRAIGHT4,
                 Phase::STOP,
             };
 
             drive::LineTrace* linetrace_;
             drive::CurveRunning* curveRunning_;
+            drive::StraightRunning* straightRunning_;
             measurement::DistanceMeasurement* distanceMeasurement_;
             measurement::BodyAngleMeasurement bodyAngleMeasurement_;
 
