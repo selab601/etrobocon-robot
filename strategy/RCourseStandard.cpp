@@ -36,17 +36,18 @@ namespace strategy{
         switch(phase){
 
         case Phase::STRAIGHT1:
-            startDistanceMeasurement(2255);
+            startDistanceMeasurement(2056);
             lineTraceReset();
             linetrace_->setPid(LineTracePid::VERY_FAST);
-            linetrace_->run(80,LineTraceEdge::RIGHT);
+            //linetrace_->setTarget(0.3);
+            linetrace_->run(80,LineTraceEdge::LEFT);
             return distanceMeasurement_->getResult();
 
         case Phase::BEND1:
-            linetrace_->setPid(LineTracePid::FAST);
-            linetrace_->setMaxPwm(80);
-            linetrace_->setEdge(LineTraceEdge::RIGHT);
-            return fixedDistanceCurveLineTrace(3100,-10);
+            linetrace_->setPid(LineTracePid::MID);
+            linetrace_->setMaxPwm(30);
+            linetrace_->setEdge(LineTraceEdge::LEFT);
+            return fixedDistanceCurveLineTrace(3600,10);
 
         case Phase::BEND2:
             linetrace_->setPid(LineTracePid::FAST);
@@ -70,6 +71,9 @@ namespace strategy{
             linetrace_->setPid(LineTracePid::VERY_FAST);
             return fixedDistanceLineTrace(1730,80,LineTraceEdge::RIGHT);
 
+        case Phase::STOP:
+            linetrace_->run(0,LineTraceEdge::RIGHT);
+            return false;
         default: return false;
         }
     }

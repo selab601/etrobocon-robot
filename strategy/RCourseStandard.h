@@ -19,15 +19,13 @@ namespace strategy{
                 BEND2,
                 BEND3,
                 BEND4,
+                STOP,
             };
 
             std::vector<Phase> phaseProcedure_{
                 Phase::STRAIGHT1,
                 Phase::BEND1,
-                Phase::BEND2,
-                Phase::BEND3,
-                Phase::BEND4,
-                Phase::STRAIGHT2,
+                Phase::STOP,
             };
 
             drive::LineTrace* linetrace_;
