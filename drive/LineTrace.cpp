@@ -76,10 +76,10 @@ namespace drive{
     void LineTrace::setPid(LineTracePid pidPattern){
         switch (pidPattern){
             case LineTracePid::VERY_FAST:  //! 反応は悪いけど速い(PWM80くらいにするとき)
-                setPid(0.0042, 0, 0.38556);
+                setPid(0.0005, 0, 0.1556);
                 break;
             case LineTracePid::FAST:       //! 少し反応を良くした(PWM80で一応全部のカーブ曲がれる)
-                setPid(0.006, 0, 0.4808571429);
+                setPid(0.0006, 0, 0.16);
                 break;
             case LineTracePid::MID:        //! 中間 ブレないで安定して走る (PWM30-60くらいのとき)
                 setPid(0.012, 0, 0.8874);

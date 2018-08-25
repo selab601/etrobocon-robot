@@ -44,10 +44,10 @@ namespace strategy{
             return distanceMeasurement_->getResult();
 
         case Phase::BEND1:
-            linetrace_->setPid(LineTracePid::MID);
-            linetrace_->setMaxPwm(30);
+            linetrace_->setPid(LineTracePid::FAST);
+            linetrace_->setMaxPwm(70);
             linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(3600,10);
+            return fixedDistanceCurveLineTrace(1800,230);
 
         case Phase::BEND2:
             linetrace_->setPid(LineTracePid::FAST);
