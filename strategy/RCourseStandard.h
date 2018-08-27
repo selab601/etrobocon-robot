@@ -19,10 +19,13 @@ namespace strategy{
                 STRAIGHT2,
                 STRAIGHT3,
                 STRAIGHT4,
+                STRAIGHT5,
                 BEND1,
                 BEND2,
                 BEND3,
                 BEND4,
+                BEND5,
+                BEND6,
                 STOP,
             };
 
@@ -35,6 +38,9 @@ namespace strategy{
                 Phase::STRAIGHT3,
                 Phase::BEND4,
                 Phase::STRAIGHT4,
+                Phase::BEND5,
+                Phase::STRAIGHT5,
+                Phase::BEND6,
                 Phase::STOP,
             };
 

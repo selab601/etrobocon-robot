@@ -84,12 +84,12 @@ namespace drive{
             case LineTracePid::MID:        //! 中間 ブレないで安定して走る (PWM30-60くらいのとき)
                 setPid(0.0012, 0,0.1);
                 break;
-            case LineTracePid::SLOW:       //! 安定してゆっくり走る (PWM30-40くらいのとき)
+            case LineTracePid::SLOW:       //! 安定してゆっくり走る (PWM30-40くらいのとき) 以前のMID
                 //setPid(0.0216, 0, 1.32192);
                 setPid(0.012, 0, 0.8874);
                 break;
             case LineTracePid::RETURN:     //! 反応が極端に良く、ガクガクする(ライン復帰したい時だけ使う)
-                setPid(0.06, 0, 3.7485);
+                setPid(0.02, 0, 2);
                 break;
         }
     }
