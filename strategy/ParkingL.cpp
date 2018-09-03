@@ -34,8 +34,13 @@ namespace strategy{
 
     bool ParkingL::executePhase(Phase phase){
         switch(phase){
-            case Phase::LINETRACE:
+/*            case Phase::LINETRACE:
                 distanceMeasurement_->start(500); //要調整
+                lineTrace_->run(40,LineTraceEdge::LEFT);
+                return distanceMeasurement_->getResult();
+*/
+            case Phase::LINETRACE:
+                distanceMeasurement_->start(100); //要調整 //調整しました（山川）
                 lineTrace_->run(40,LineTraceEdge::LEFT);
                 return distanceMeasurement_->getResult();
 
@@ -43,7 +48,7 @@ namespace strategy{
                 return pivotTurn_->circleTurn(60);
             
             case Phase::STRAIGHT_36:
-                distanceMeasurement_->start(360);
+                distanceMeasurement_->start(380);//調整しました（山川）
                 straightRunning_->run(40);
                 return distanceMeasurement_->getResult();
             
