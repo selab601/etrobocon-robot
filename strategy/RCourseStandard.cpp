@@ -22,6 +22,7 @@ namespace strategy{
         if(!strategySuccess_){
             if(executePhase(phaseProcedure_[procedureNumber])){
                 lineTraceReset();
+                distanceMeasurement_->reset();
                 procedureNumber++;
                 hasExecutedPhase_ = false;
                 ev3_speaker_set_volume(6);
