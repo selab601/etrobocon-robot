@@ -37,7 +37,7 @@ namespace strategy{
 
     bool RCourseStandard::executePhase(Phase phase){
         switch(phase){
-                
+
         case Phase::STRAIGHT1:
             startDistanceMeasurement(2056);
             linetrace_->setPid(LineTracePid::VERY_FAST);
