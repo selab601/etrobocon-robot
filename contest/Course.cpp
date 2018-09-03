@@ -18,7 +18,7 @@ namespace contest_pkg{
         selfPositionEstimation_->initMap();
         sectionNumber_ = 0;
 
-        //それぞれのコースの戦略やライントレースを追加していく //フェーズのフェーズ
+        //それぞれのコースの戦略やライントレースを追加していく
         if(course == SelectedCourse::R_COURSE){
         sections_.emplace_back(new RCourseStandard());
         sections_.emplace_back(new BlockAreaGame());
