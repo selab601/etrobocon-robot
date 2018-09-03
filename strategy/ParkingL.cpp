@@ -34,35 +34,25 @@ namespace strategy{
 
     bool ParkingL::executePhase(Phase phase){
         switch(phase){
-            case Phase::ADJUST1:
-                //ブロック並べ終点から位置調整用
-                return true;
-
-            case Phase::PIVOT_TURN1:
-                return pivotTurn_->circleTurn(-90);
-
-            case Phase::APPROACH:
-                distanceMeasurement_->start(100);
-                straightRunning_->run(40);
-                return lineDetection_->getResult() && distanceMeasurement_->getResult();
-
-            case Phase::PIVOT_TURN2:
-                return pivotTurn_->turn(75);
-
+/*            case Phase::LINETRACE:
+                distanceMeasurement_->start(500); //要調整
+                lineTrace_->run(40,LineTraceEdge::LEFT);
+                return distanceMeasurement_->getResult();
+*/
             case Phase::LINETRACE:
-                distanceMeasurement_->start(380); //要調整
+                distanceMeasurement_->start(100); //要調整 //調整しました（山川）
                 lineTrace_->run(40,LineTraceEdge::LEFT);
                 return distanceMeasurement_->getResult();
 
-            case Phase::PIVOT_TURN3:
-                return pivotTurn_->circleTurn(90);
-
-            case Phase::ENTRY:
-                distanceMeasurement_->start(60); //要調整
-                straightRunning_->run(30);
+            case Phase::TURN_LEFT_60:
+                return pivotTurn_->circleTurn(60);
+            
+            case Phase::STRAIGHT_36:
+                distanceMeasurement_->start(380);//調整しました（山川）
+                straightRunning_->run(40);
                 return distanceMeasurement_->getResult();
-
-            case Phase::PIVOT_TURN4:
+            
+            case Phase::TURN_RIGHT_90:
                 return pivotTurn_->circleTurn(-90);
 
             case Phase::FINISH:

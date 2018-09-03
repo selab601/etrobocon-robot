@@ -4,7 +4,6 @@
  * @aurhor usui kakeru
  */
 #include "Course.h"
-#include "../strategy/ETSumoNeo.h"
 #include "../strategy/Shippofurifuri.h"
 
 using namespace strategy;
@@ -21,27 +20,20 @@ namespace contest_pkg{
 
         //それぞれのコースの戦略やライントレースを追加していく //フェーズのフェーズ
         if(course == SelectedCourse::R_COURSE){
-        //sections_.emplace_back(new RCourseStandard());
-        //sections_.emplace_back(new ETSumoNeo());
-        //sections_.emplace_back(new Prize());
+        sections_.emplace_back(new RCourseStandard());
+        sections_.emplace_back(new BlockAreaGame());
         sections_.emplace_back(new ParkingR());
-
         // ゴール後にしっぽふりふり
         // タッチセンサ押したら上向けて止める
-        sections_.emplace_back(new Shippofurifuri());
+        //sections_.emplace_back(new Shippofurifuri());
         }
 
         if(course == SelectedCourse::L_COURSE){
         // TODO: ショートカットか普通のか選ぶ (どっちかコメントアウト消す)
-        // sections_.emplace_back(new LCourseStandard());  // ラインにそって走る
-        sections_.emplace_back(new LCourseShortcut());  // ショートカットする
-
-        //ブロックエリア
-        sections_.emplace_back(new BlockAreaGame());
-
-        // 駐車
+        sections_.emplace_back(new LCourseStandard());  // ラインにそって走る
+        //sections_.emplace_back(new LCourseShortcut());  // ショートカットする
+        //sections_.emplace_back(new AIAnswer()); //AIアンサー実装したらコメント消してください
         sections_.emplace_back(new ParkingL());
-
         // ゴール後にしっぽふりふり
         // タッチセンサ押したら上向けて止める
         sections_.emplace_back(new Shippofurifuri());

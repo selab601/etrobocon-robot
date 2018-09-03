@@ -1,7 +1,7 @@
 #ifndef BLOCK_INPUT_H_
 #define BLOCK_INPUT_H_
-#define CODE_DIGITS_NUM 5   // 初期位置コードの桁数
-#define LEFT_MARGIN     10  // 表示するときの左側の余白
+#define CODE_DIGITS_NUM 6   // 初期位置コードの桁数
+#define LEFT_MARGIN     9  // 表示するときの左側の余白
 #define TOP_MARGIN      3   // 表示するときの上の余白
 
 #include "../strategy/BlockArea/BlockCode.h"
@@ -47,8 +47,8 @@ namespace contest_pkg{
 
             State state_ = State::INIT;
 
-            // コードの各桁の値(10進数, 1の位:[4])
-            int8_t codeDigits_[CODE_DIGITS_NUM] = {0, 0, 0, 0, 0};
+            // コードの各桁の値(10進数, 1の位:[5])
+            int8_t codeDigits_[CODE_DIGITS_NUM] = {0, 0, 0, 0, 0, 0};
             int8_t selected_ = 0;
 
             // ディスプレイの文字列操作用

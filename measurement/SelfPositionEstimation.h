@@ -13,9 +13,9 @@ namespace measurement
     /* ギア比 */
     #define ENCORDER_GEAR 360 //360*(GEAR2_TOOTH/GEAR1_TOOTH)
     /* ホイール半径 */
-    #define WHEEL_RADIUS 50 //mm 
+    #define WHEEL_RADIUS 50 //mm
     /* トレッド */
-    #define TREAD 143  //mm //中心から外側の線までの長さ
+    #define TREAD 148  //mm
 
     class SelfPositionEstimation
     {
