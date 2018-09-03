@@ -13,7 +13,6 @@ namespace strategy{
         private:
             enum class Phase
             {
-                INIT,
                 STRAIGHT1,
                 STRAIGHT2,
                 BEND1,
@@ -23,7 +22,6 @@ namespace strategy{
             };
 
             std::vector<Phase> phaseProcedure_{
-                Phase::INIT,
                 Phase::STRAIGHT1,
                 Phase::BEND1,
                 Phase::BEND2,
