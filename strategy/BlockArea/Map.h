@@ -10,7 +10,7 @@
 #include "../../drive/Catching.h"
 #include "../../drive/Avoidance.h"
 
-//#include "../../communication/BtManager.h"
+#include "../../communication/BtManager.h"
 
 namespace strategy{
 

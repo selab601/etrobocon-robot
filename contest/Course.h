@@ -14,11 +14,10 @@
 //#include "strategy/TestStrategy.h"
 #include "strategy/LCourseStandard.h"
 #include "strategy/RCourseStandard.h"
+//#include "strategy/AIAnswer.h" //実装したらコメント消してください
 #include "strategy/BlockAreaGame.h"
 #include "strategy/ParkingR.h"
 #include "strategy/ParkingL.h"
-#include "strategy/LCourseShortcut.h"
-#include "strategy/Prize.h"
 
 //ライントレースや戦略をincludeする
 //#include "../strategy/aaa.h"
