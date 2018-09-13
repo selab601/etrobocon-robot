@@ -36,7 +36,7 @@ namespace contest_pkg{
         sections_.emplace_back(new ParkingL());
         // ゴール後にしっぽふりふり
         // タッチセンサ押したら上向けて止める
-        sections_.emplace_back(new Shippofurifuri());
+        //sections_.emplace_back(new Shippofurifuri());
         }
     }
 
