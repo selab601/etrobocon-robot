@@ -77,30 +77,33 @@ namespace strategy{
 
         //置いてバック
         case StrategyPhase::BACK:
-            distanceMeasurement_->start(100);
+            distanceMeasurement_->start(150);
             straightRunning_->run(-10);
             return distanceMeasurement_->getResult();
 
         //台座を避ける
         case StrategyPhase::AVOID1:
             //return polar_.runTo(300, 450, 450);
-            return pivotTurn_->turn(45 - bodyAngleMeasurement_->getResult(),10);
+            //return pivotTurn_->turn(45 - bodyAngleMeasurement_->getResult(),10);
+            return pivotTurn_->circleTurn(45, 20);
 
         case StrategyPhase::AVOID2:
             //polar_.runTo(500, -900, -900);
             straightRunning_->run(20);
-            return lineDetection_->getResult();
+            return rightAngledDetection_->getResult();
 
         case StrategyPhase::AVOID3:
             //return polar_.bodyTurn(450, 10);
-            return pivotTurn_->turn(-45 - bodyAngleMeasurement_->getResult(),10);
+            //return pivotTurn_->turn(-45 - bodyAngleMeasurement_->getResult(),10);
+            return pivotTurn_->circleTurn(-90, 20);
 
         case StrategyPhase::AVOID4:
             straightRunning_->run(20);
-            return lineDetection_->getResult();
+            return rightAngledDetection_->getResult();
 
         case StrategyPhase::AVOID5:
-            return pivotTurn_->turn(0 - bodyAngleMeasurement_->getResult(),10);
+            //return pivotTurn_->turn(0 - bodyAngleMeasurement_->getResult(),10);
+            return pivotTurn_->circleTurn(45, 20);
 
         case StrategyPhase::LINE_TRACE:
             distanceMeasurement_->start(200);

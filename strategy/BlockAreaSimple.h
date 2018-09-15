@@ -37,7 +37,7 @@ namespace strategy{
         //難所攻略手順
         std::vector<StrategyPhase> strategyProcedure_{
             StrategyPhase::INIT,
-            StrategyPhase::ENTRY,
+            //StrategyPhase::ENTRY,
             //StrategyPhase::TOSSHIN,
             StrategyPhase::TO_BLUE,
             StrategyPhase::BACK,
