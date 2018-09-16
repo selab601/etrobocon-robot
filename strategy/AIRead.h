@@ -81,6 +81,8 @@ int number_degital=NUM_DEG;
             NEXT_STAGE,
 
             TURN_LEFT_90,
+            FORWARD_10,
+            FORWARD_20,
             FORWARD_50,
             FORWARD_100,
             FORWARD_150,
@@ -99,6 +101,7 @@ int number_degital=NUM_DEG;
             LINE_TRACE_300L,
             LINE_TRACE_150L,
             LINE_TRACE_350L,
+            BACK_10,            
             BACK_50,
             BACK_100,
             BACK_150,
@@ -110,6 +113,11 @@ int number_degital=NUM_DEG;
             READ_4,
             READ_5,
             READ_6,
+            READ_7,
+            READ_8,
+            READ_9,
+            READ_10,
+            READ_11,
             TURN_RIGHT_90,
             JUDGE_D,
             JUDGE_A,
@@ -122,32 +130,81 @@ int number_degital=NUM_DEG;
            //デジタル検知
            StrategyPhase::TURN_LEFT_90,
            StrategyPhase::FORWARD_100,
+           StrategyPhase::INIT,
            StrategyPhase::TURN_RIGHT_90,
            StrategyPhase::FORWARD_150,
+           StrategyPhase::INIT,
            StrategyPhase::READ_0,//デジタル1検知
            StrategyPhase::READ_5,//デジタル6検知
            StrategyPhase::FORWARD_50,
+           StrategyPhase::INIT,
            StrategyPhase::TURN_LEFT_90,
            StrategyPhase::FORWARD_150,
+           StrategyPhase::INIT,
            StrategyPhase::TURN_LEFT_90,
            StrategyPhase::READ_6,//デジタル7検知
            StrategyPhase::READ_1,//デジタル2検知
+           StrategyPhase::INIT,
            StrategyPhase::TURN_RIGHT_90,
            StrategyPhase::FORWARD_150,
            StrategyPhase::TURN_RIGHT_90,
+           StrategyPhase::INIT,
            StrategyPhase::FORWARD_150,
            StrategyPhase::TURN_RIGHT_90,
+           StrategyPhase::INIT,
            StrategyPhase::READ_4,//デジタル5検知
            StrategyPhase::READ_3,//デジタル4検知
            StrategyPhase::READ_2,//デジタル3検知
+           StrategyPhase::INIT,
            StrategyPhase::TURN_LEFT_90,
            //デジタル判別　パターンから数字を決定変数NUMDEGに代入
+           //StrategyPhase::JUDGE_D,
            //アナログへ
-                //向きを変え、移動する
+           //25cm前へ
+           StrategyPhase::FORWARD_150,
+           StrategyPhase::FORWARD_100,  
+          // StrategyPhase::FORWARD_100, 
+           //anastart
+           StrategyPhase::FORWARD_50,
+           StrategyPhase::FORWARD_20,
+           StrategyPhase::TURN_LEFT_90,
+           StrategyPhase::FORWARD_100,
+           StrategyPhase::FORWARD_20,
+           StrategyPhase::FORWARD_20,
+           StrategyPhase::READ_7,//アナログ0検知
+           StrategyPhase::FORWARD_100,
+           StrategyPhase::FORWARD_20,
+           StrategyPhase::READ_8,//ana1
+           StrategyPhase::FORWARD_20,
+           StrategyPhase::FORWARD_20,      
+           StrategyPhase::FORWARD_20,
+           StrategyPhase::READ_9,//ana2
+           StrategyPhase::BACK_50,
+           StrategyPhase::BACK_10,
+           StrategyPhase::TURN_RIGHT_90,
+           StrategyPhase::FORWARD_50,
+           StrategyPhase::FORWARD_20,
+           StrategyPhase::FORWARD_10,
+           StrategyPhase::READ_10,//ana3
+           StrategyPhase::FORWARD_50,
+           StrategyPhase::FORWARD_20,
+           StrategyPhase::FORWARD_10,
+           StrategyPhase::READ_11,//ana4
+         
+                //向きを変え、移動する            
            //アナログ検知
            //アナログ判別
-           //回答方面に向かう
 
+            StrategyPhase::TURN_LEFT_90,
+            StrategyPhase::FORWARD_100,
+            StrategyPhase::FORWARD_100,
+            StrategyPhase::FORWARD_100,
+            StrategyPhase::JUDGE_D,
+            StrategyPhase::JUDGE_A,
+
+            StrategyPhase::TURN_LEFT_90,
+           //回答方面に向かう
+             StrategyPhase::LINE_TRACE_300R,
         /*   
            StrategyPhase::LINE_TRACE_350L,
            StrategyPhase::INIT,

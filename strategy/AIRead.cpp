@@ -1,5 +1,5 @@
 #include "AIRead.h"
-#include "AIAnswer.h"
+#include "strategy/AIAnswer.h"
 
 using namespace drive;
 using namespace device;
@@ -200,6 +200,14 @@ namespace strategy{
 
 
   //進む 
+          case StrategyPhase::FORWARD_10:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(10);
+            return distanceMeasurement_->getResult();
+          case StrategyPhase::FORWARD_20:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(20);
+            return distanceMeasurement_->getResult();
         case StrategyPhase::FORWARD_50:
             straightRunning_->run(10);
             distanceMeasurement_->start(50);
@@ -280,6 +288,50 @@ namespace strategy{
             }
             return distanceMeasurement_->getResult();
 
+         case StrategyPhase::READ_7://アナログ0
+            straightRunning_->run(10);
+            distanceMeasurement_->start(5);
+            if (lineDetection_->getResult()){
+                analogBars[0] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();  
+
+         case StrategyPhase::READ_8://アナログ1
+            straightRunning_->run(10);
+            distanceMeasurement_->start(5);
+            if (lineDetection_->getResult()){
+                analogBars[1] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();  
+
+         case StrategyPhase::READ_9://アナログ2
+            straightRunning_->run(10);
+            distanceMeasurement_->start(5);
+            if (lineDetection_->getResult()){
+                analogBars[2] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();  
+         case StrategyPhase::READ_10://アナログ3
+            straightRunning_->run(10);
+            distanceMeasurement_->start(5);
+            if (lineDetection_->getResult()){
+                analogBars[3] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();  
+
+         case StrategyPhase::READ_11://アナログ4
+            straightRunning_->run(10);
+            distanceMeasurement_->start(5);
+            if (lineDetection_->getResult()){
+                analogBars[4] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();  
+
         case StrategyPhase::JUDGE_D:
         if(degitalBars[0]){
             if(degitalBars[5]){
@@ -310,7 +362,7 @@ namespace strategy{
                 degitalBars[6] = true;
                 ev3_speaker_play_tone(880, 1000);
             }*/
-            return distanceMeasurement_->getResult();
+            return true;
 
         case StrategyPhase::JUDGE_A:
         if(analogBars[0]){
@@ -347,7 +399,12 @@ namespace strategy{
                 degitalBars[6] = true;
                 ev3_speaker_play_tone(880, 1000);
             }*/
-            return distanceMeasurement_->getResult();
+            return true;
+            
+        case StrategyPhase::BACK_10:
+            straightRunning_->run(-10);
+            distanceMeasurement_->start(10);
+            return distanceMeasurement_->getResult();  
 
         case StrategyPhase::BACK_50:
             straightRunning_->run(-10);
