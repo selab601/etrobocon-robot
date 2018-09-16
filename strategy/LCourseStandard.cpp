@@ -52,7 +52,7 @@ namespace strategy{
 
         case Phase::LINETRACE2:
             linetrace_->setPid(LineTracePid::VERY_FAST);
-            return fixedDistanceLineTrace(1455,80,LineTraceEdge::LEFT);
+            return fixedDistanceLineTrace(1470,80,LineTraceEdge::LEFT);
 
         case Phase::CURVE2:
             linetrace_->setPid(LineTracePid::FAST);
@@ -66,34 +66,20 @@ namespace strategy{
 
         case Phase::CURVE3:
             linetrace_->setPid(LineTracePid::MID);
-            linetrace_->setMaxPwm(50);
+            linetrace_->setMaxPwm(40);
             linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(880,-300);
+            return fixedDistanceCurveLineTrace(700,-300);
 
         case Phase::LINETRACE4:
-            linetrace_->setPid(LineTracePid::VERY_FAST);
-            return fixedDistanceLineTrace(2700,80,LineTraceEdge::LEFT);//goalまで
+            linetrace_->setPid(LineTracePid::FAST);
+            linetrace_->setMaxPwm(70);
+            return fixedDistanceLineTrace(2400,80,LineTraceEdge::LEFT);//goalまで
 
         case Phase::CURVE4:
-            linetrace_->setPid(LineTracePid::FAST);
-            linetrace_->setMaxPwm(80);
+            linetrace_->setPid(LineTracePid::SLOW);
+            linetrace_->setMaxPwm(35);
             linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(1000,400);
-
-        case Phase::CURVE5:
-            linetrace_->setPid(LineTracePid::MID);
-            linetrace_->setMaxPwm(80);
-            linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(950,-100);
-
-        case Phase::CHANGEEDGE_L_R:
-            startDistanceMeasurement(100);
-            curveRunning_->run(48,60);
-            return distanceMeasurement_->getResult();
-
-        case Phase::LINETRACE5:
-            linetrace_->setPid(LineTracePid::FAST);
-            return fixedDistanceLineTrace(900,60,LineTraceEdge::RIGHT);
+            return fixedDistanceCurveLineTrace(1200,400);
 
         default:
             return false;

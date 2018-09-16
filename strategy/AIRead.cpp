@@ -56,6 +56,10 @@ namespace strategy{
         bool degitalBars[7]={false};
         bool analogBars[5]={false};
         switch(strategyPhase){
+        case StrategyPhase::A:
+            straightRunning_->run(-10);
+            distanceMeasurement_->start(100);
+            return distanceMeasurement_->getResult();
 
         //車体角度保存
         case StrategyPhase::INIT:
