@@ -36,6 +36,7 @@ namespace strategy{
                 Phase::LINETRACE3,
                 Phase::CURVE3,
                 Phase::LINETRACE4,
+                Phase::CURVE4,
                 Phase::STOP,
             
             };

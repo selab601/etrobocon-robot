@@ -66,10 +66,10 @@ namespace strategy{
             linetrace_->setPid(LineTracePid::MID);//改良の余地あり　感度強く、遅くMID
             linetrace_->setMaxPwm(45);
             linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(690,-480);
+            return fixedDistanceCurveLineTrace(650,-480); //690
 
         case Phase::STRAIGHT3:
-            startDistanceMeasurement(510); //同じくいじるか否かMID
+            startDistanceMeasurement(550); //同じくいじるか否かMID
             linetrace_->setPid(LineTracePid::FAST);
             linetrace_->run(50,LineTraceEdge::LEFT);
             return distanceMeasurement_->getResult();
@@ -78,7 +78,7 @@ namespace strategy{
             linetrace_->setPid(LineTracePid::MID);
             linetrace_->setMaxPwm(50);
             linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(1190,-480);
+            return fixedDistanceCurveLineTrace(1250,-480);
 
         case Phase::STRAIGHT4:
             startDistanceMeasurement(2600);
@@ -88,19 +88,20 @@ namespace strategy{
 
         case Phase::BEND5:
             linetrace_->setPid(LineTracePid::MID);
-            linetrace_->setMaxPwm(65);
+            linetrace_->setTarget(0.7);
+            linetrace_->setMaxPwm(50);
             linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(520,880);
+            return fixedDistanceCurveLineTrace(470,700);//520,800
 
         case Phase::STRAIGHT5:
-            startDistanceMeasurement(380);
-            linetrace_->setPid(LineTracePid::FAST);
-            linetrace_->run(50,LineTraceEdge::LEFT);
+            startDistanceMeasurement(1850);//380
+            linetrace_->setPid(LineTracePid::RETURN);
+            linetrace_->run(30,LineTraceEdge::LEFT,0.7);
             return distanceMeasurement_->getResult();
 
         case Phase::BEND6:
-            linetrace_->setPid(LineTracePid::RETURN);
-            linetrace_->setMaxPwm(40);
+            linetrace_->setPid(LineTracePid::MID);
+            linetrace_->setMaxPwm(450);
             linetrace_->setEdge(LineTraceEdge::LEFT);
             return fixedDistanceCurveLineTrace(2000,600);
 
