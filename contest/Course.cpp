@@ -4,6 +4,8 @@
  * @aurhor usui kakeru
  */
 #include "Course.h"
+#include "strategy/AIRead.h"
+#include "strategy/AIAnswer.h"
 #include "../strategy/Shippofurifuri.h"
 
 using namespace strategy;
@@ -32,8 +34,8 @@ namespace contest_pkg{
         if(course == SelectedCourse::L_COURSE){
         // TODO: ショートカットか普通のか選ぶ (どっちかコメントアウト消す)
         sections_.emplace_back(new LCourseStandard());  // ラインにそって走る
-        //sections_.emplace_back(new LCourseShortcut());  // ショートカットする
-        sections_.emplace_back(new AIAnswer()); //AIアンサー実装したらコメント消してください
+        sections_.emplace_back(new AIRead()); //AIアンサー実装したらコメント消してください
+        sections_.push_back(new AIAnswer());
         sections_.emplace_back(new ParkingL());
         // ゴール後にしっぽふりふり
         // タッチセンサ押したら上向けて止める

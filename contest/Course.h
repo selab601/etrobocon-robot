@@ -14,7 +14,6 @@
 //#include "strategy/TestStrategy.h"
 #include "strategy/LCourseStandard.h"
 #include "strategy/RCourseStandard.h"
-//#include "strategy/AIAnswer.h" //実装したらコメント消してください
 #include "strategy/BlockAreaGame.h"
 #include "strategy/BlockAreaSimple.h"
 #include "strategy/ParkingR.h"

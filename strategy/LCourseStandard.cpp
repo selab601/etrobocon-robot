@@ -95,10 +95,8 @@ namespace strategy{
             linetrace_->setPid(LineTracePid::FAST);
             return fixedDistanceLineTrace(900,60,LineTraceEdge::RIGHT);
 
-        case Phase::STOP:
-            linetrace_->run(0,LineTraceEdge::RIGHT);
+        default:
             return false;
-        default: return false;
         }
     }
 
