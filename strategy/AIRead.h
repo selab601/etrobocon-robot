@@ -121,6 +121,12 @@ int number_degital=NUM_DEG;
             TURN_RIGHT_90,
             JUDGE_D,
             JUDGE_A,
+            B,
+            C,
+            D,
+            E,
+            F,
+
         };
 
 
@@ -201,186 +207,12 @@ int number_degital=NUM_DEG;
             StrategyPhase::FORWARD_100,
             StrategyPhase::JUDGE_D,
             StrategyPhase::JUDGE_A,
+            StrategyPhase::B,
+            StrategyPhase::C,
+            StrategyPhase::D,
+            StrategyPhase::E,
+            StrategyPhase::F,
 
-            StrategyPhase::TURN_LEFT_90,
-           //回答方面に向かう
-             StrategyPhase::LINE_TRACE_300R,
-        /*   
-           StrategyPhase::LINE_TRACE_350L,
-           StrategyPhase::INIT,
-           StrategyPhase::TURN_LEFT_90,
-           StrategyPhase::LINE_TRACE_100L,
-           StrategyPhase::FORCING_OUT_DEG4,
-           StrategyPhase::BACK_100,
-           StrategyPhase::INIT,
-           StrategyPhase::TURN_LEFT_180,
-           StrategyPhase::LINE_TRACE_100R,
-           StrategyPhase::FORWARD_50,
-           StrategyPhase::FORCING_OUT_ANA4,
-           StrategyPhase::BACK_100,
-           StrategyPhase::INIT,
-           StrategyPhase::TURN_LEFT_180,
-           StrategyPhase::LINE_TRACE_50L,
-
-           StrategyPhase::INIT,
-           StrategyPhase::TURN_RIGHT_90,
-
-           StrategyPhase::LINE_TRACE_300L,
-
-           StrategyPhase::INIT,
-           StrategyPhase::TURN_LEFT_90,
-           StrategyPhase::LINE_TRACE_100L,
-           StrategyPhase::FORCING_OUT_DEG2,
-           StrategyPhase::BACK_100,
-           StrategyPhase::INIT,
-           StrategyPhase::TURN_LEFT_180,
-           StrategyPhase::LINE_TRACE_100R,
-           StrategyPhase::FORWARD_50,
-           StrategyPhase::FORCING_OUT_ANA2,
-           StrategyPhase::BACK_100,
-           StrategyPhase::INIT,
-           StrategyPhase::TURN_LEFT_180,
-           StrategyPhase::LINE_TRACE_50L,
-          StrategyPhase::INIT,
-           StrategyPhase::TURN_RIGHT_90,
-
-           StrategyPhase::LINE_TRACE_300L,
-
-           StrategyPhase::INIT,
-           StrategyPhase::TURN_LEFT_90,
-           StrategyPhase::LINE_TRACE_100L,
-           StrategyPhase::FORCING_OUT_DEG1,
-           StrategyPhase::BACK_100,
-           StrategyPhase::INIT,
-           StrategyPhase::TURN_LEFT_180,
-           StrategyPhase::LINE_TRACE_100R,
-           StrategyPhase::FORWARD_50,
-           StrategyPhase::FORCING_OUT_ANA1,
-           StrategyPhase::BACK_100,
-           StrategyPhase::INIT,
-           StrategyPhase::TURN_LEFT_180,
-           StrategyPhase::LINE_TRACE_50L,
-
-           StrategyPhase::INIT,
-           StrategyPhase::TURN_RIGHT_90,
-
-           StrategyPhase::LINE_TRACE_300L,
-
-*/
-
-
-/*
-            StrategyPhase::INIT,             //車体角度保存
-            StrategyPhase::LINE_TRACE,       //土俵を向くまでライントレース
-            StrategyPhase::LINE_TRACE_LITTLE,//土俵まで距離が足りないので追加
-            StrategyPhase::STABILIZE,
-            StrategyPhase::STOP_ENTRY,       //新幹線検知するまで停止
-
-            StrategyPhase::CLIMB,            //登壇
-
-            StrategyPhase::TO_LEFTEDGE,     // 左エッジに行くように旋回する
-            StrategyPhase::LINE_RETURN,     // ライン復帰する
-            StrategyPhase::STABILIZE,       // 車体角度を安定させる
-            StrategyPhase::INIT,            //車体角度保存
-            StrategyPhase::TO_RIGHT_ANGLE,  // 直角検知するまで進む
-            StrategyPhase::TO_CENTER,       // 土俵の真ん中に移動する
-
-            // 土俵1つめの相撲
-            // 1つめのブロック(入り口から見て左奥)
-            StrategyPhase::TO_BLOCK1,       // 1つ目のブロックに行く
-            StrategyPhase::ARM_HOLD,        // アームを上に向ける
-            StrategyPhase::ARM_UP,          // 色を見るためにアームを上げる
-            StrategyPhase::SEE_BLOCK,       // 色を見る
-            StrategyPhase::ARM_HOLD,        // ブロックをつかむ
-            StrategyPhase::FORCING_OUT,     // 寄り切りか押出をする
-            StrategyPhase::BACK1,
-
-            // 2つめのブロック(入り口から見て左手前)
-            StrategyPhase::TO_BLOCK2,
-            StrategyPhase::ARM_UP,
-            StrategyPhase::SEE_BLOCK,
-            StrategyPhase::ARM_HOLD,
-            StrategyPhase::FORCING_OUT,
-            StrategyPhase::BACK2,
-
-            // 3つ目のブロック(入り口から見て右手前)
-            StrategyPhase::TO_BLOCK3,
-            StrategyPhase::ARM_UP,
-            StrategyPhase::SEE_BLOCK,
-            StrategyPhase::ARM_HOLD,
-            StrategyPhase::FORCING_OUT,
-            StrategyPhase::BACK3,
-
-            // 4つめのブロック(入り口から見て右奥)
-            StrategyPhase::TO_BLOCK4,
-            StrategyPhase::ARM_UP,
-            StrategyPhase::SEE_BLOCK,
-            StrategyPhase::ARM_HOLD,
-            StrategyPhase::FORCING_OUT,
-            StrategyPhase::BACK4,
-
-            StrategyPhase::TO_LINE_RETURN,  // ライン復帰に渡せる場所に移動
-            StrategyPhase::ARM_NORMAL,
-            StrategyPhase::TO_LEFTEDGE,     // 左エッジに移動
-            StrategyPhase::LINE_RETURN,     // ライン復帰
-            StrategyPhase::STABILIZE,       // 角度を安定させる
-            StrategyPhase::INIT,            // 車体角度保存
-            StrategyPhase::TO_RIGHT_ANGLE,  // 直角検知まで移動
-
-            // 次の土俵に移動する
-            StrategyPhase::STOP_CENTER,     // 中央の新幹線を待つ
-            StrategyPhase::NEXT_STAGE,      // 次の土俵に移動
-            StrategyPhase::TO_LEFTEDGE,     // 左エッジに移動
-            StrategyPhase::LINE_RETURN,     // ライン復帰
-            StrategyPhase::STABILIZE,
-            StrategyPhase::INIT,            // 車体角度保存
-            StrategyPhase::TO_RIGHT_ANGLE,
-            StrategyPhase::TO_CENTER,
-
-            // 土俵2つめの相撲
-            // 2つめの左奥
-            StrategyPhase::TO_BLOCK1,
-            StrategyPhase::ARM_HOLD,
-            StrategyPhase::ARM_UP,
-            StrategyPhase::SEE_BLOCK,
-            StrategyPhase::ARM_HOLD,
-            StrategyPhase::FORCING_OUT,
-            StrategyPhase::BACK1,
-
-            // 2つめの左手前
-            StrategyPhase::TO_BLOCK2,
-            StrategyPhase::ARM_UP,
-            StrategyPhase::SEE_BLOCK,
-            StrategyPhase::ARM_HOLD,
-            StrategyPhase::FORCING_OUT,
-            StrategyPhase::BACK2,
-
-            // 2つめの右手前
-            StrategyPhase::TO_BLOCK3,
-            StrategyPhase::ARM_UP,
-            StrategyPhase::SEE_BLOCK,
-            StrategyPhase::ARM_HOLD,
-            StrategyPhase::FORCING_OUT,
-            StrategyPhase::BACK3,
-
-            // 2つめの右奥
-            StrategyPhase::TO_BLOCK4,
-            StrategyPhase::ARM_UP,
-            StrategyPhase::SEE_BLOCK,
-            StrategyPhase::ARM_HOLD,
-            StrategyPhase::FORCING_OUT,
-            StrategyPhase::BACK4,
-
-            StrategyPhase::TO_LINE_RETURN,
-            StrategyPhase::ARM_NORMAL,
-            StrategyPhase::TO_LEFTEDGE,
-            StrategyPhase::LINE_RETURN,
-            StrategyPhase::STABILIZE,
-            StrategyPhase::INIT,            // 車体角度保存
-            StrategyPhase::TO_RIGHT_ANGLE,
-            StrategyPhase::TO_CENTER,       // 土俵の真ん中に移動する
-            StrategyPhase::TURN_STRAIGHT,   // 車体の角度をラインに並行にする
-            */
         };
 
         unsigned int procedureNumber_ = 0;
@@ -405,6 +237,7 @@ int number_degital=NUM_DEG;
         measurement::TimeMeasurement* timeMeasurement_;
         measurement::BodyAngleMeasurement* bodyAngleMeasurement_;
         measurement::Train* train_;
+        drive::PivotTurn pivot;
 
 
         //距離検知の設定などを一度だけ行うためのフラグ
@@ -418,6 +251,7 @@ int number_degital=NUM_DEG;
 
         bool colorDetected_ = false;
         bool isRight_ = false;
+        
 
     public:
         //コンストラクタ
