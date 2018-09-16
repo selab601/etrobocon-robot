@@ -68,7 +68,7 @@ namespace strategy{
             linetrace_->setPid(LineTracePid::MID);
             linetrace_->setMaxPwm(50);
             linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(880,-300);
+            return fixedDistanceCurveLineTrace(700,-300);
 
         case Phase::LINETRACE4:
             linetrace_->setPid(LineTracePid::VERY_FAST);
