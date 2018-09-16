@@ -137,7 +137,9 @@ int number_degital=NUM_DEG;
            StrategyPhase::FORWARD_150,
            StrategyPhase::INIT,
            StrategyPhase::READ_0,//デジタル1検知
+            StrategyPhase::FORWARD_50,
            StrategyPhase::READ_5,//デジタル6検知
+            StrategyPhase::FORWARD_50,
            StrategyPhase::FORWARD_50,
            StrategyPhase::INIT,
            StrategyPhase::TURN_LEFT_90,
@@ -145,7 +147,9 @@ int number_degital=NUM_DEG;
            StrategyPhase::INIT,
            StrategyPhase::TURN_LEFT_90,
            StrategyPhase::READ_6,//デジタル7検知
+            StrategyPhase::FORWARD_50,
            StrategyPhase::READ_1,//デジタル2検知
+            StrategyPhase::FORWARD_50,
            StrategyPhase::INIT,
            StrategyPhase::TURN_RIGHT_90,
            StrategyPhase::FORWARD_150,
@@ -155,8 +159,11 @@ int number_degital=NUM_DEG;
            StrategyPhase::TURN_RIGHT_90,
            StrategyPhase::INIT,
            StrategyPhase::READ_4,//デジタル5検知
+            StrategyPhase::FORWARD_50,
            StrategyPhase::READ_3,//デジタル4検知
+            StrategyPhase::FORWARD_50,
            StrategyPhase::READ_2,//デジタル3検知
+            StrategyPhase::FORWARD_50,
            StrategyPhase::INIT,
            StrategyPhase::TURN_LEFT_90,
            //デジタル判別　パターンから数字を決定変数NUMDEGに代入
@@ -205,6 +212,8 @@ int number_degital=NUM_DEG;
             StrategyPhase::TURN_RIGHT_90,
             StrategyPhase::FORWARD_100,
             StrategyPhase::FORWARD_100,
+            StrategyPhase::FORWARD_20,
+            StrategyPhase::FORWARD_20,
 
             StrategyPhase::JUDGE_D,
             StrategyPhase::JUDGE_A,

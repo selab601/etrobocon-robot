@@ -231,7 +231,7 @@ namespace strategy{
 
         case StrategyPhase::READ_0:
             straightRunning_->run(10);
-            distanceMeasurement_->start(150);
+            distanceMeasurement_->start(100);
             if (lineDetection_->getResult()){
                 degitalBars[0] = true;
                 ev3_speaker_play_tone(880, 1000);
@@ -240,7 +240,7 @@ namespace strategy{
 
         case StrategyPhase::READ_1:
             straightRunning_->run(10);
-            distanceMeasurement_->start(150);
+            distanceMeasurement_->start(100);
             if (lineDetection_->getResult()){
                 degitalBars[1] = true;
                 ev3_speaker_play_tone(880, 1000);
@@ -249,7 +249,7 @@ namespace strategy{
                     
         case StrategyPhase::READ_2:
             straightRunning_->run(10);
-            distanceMeasurement_->start(150);
+            distanceMeasurement_->start(100);
             if (lineDetection_->getResult()){
                 degitalBars[2] = true;
                 ev3_speaker_play_tone(880, 1000);
@@ -258,7 +258,7 @@ namespace strategy{
                     
         case StrategyPhase::READ_3:
             straightRunning_->run(10);
-            distanceMeasurement_->start(150);
+            distanceMeasurement_->start(100);
             if (lineDetection_->getResult()){
                 degitalBars[3] = true;
                 ev3_speaker_play_tone(880, 1000);
@@ -267,7 +267,7 @@ namespace strategy{
         
         case StrategyPhase::READ_4:
             straightRunning_->run(10);
-            distanceMeasurement_->start(150);
+            distanceMeasurement_->start(100);
             if (lineDetection_->getResult()){
                 degitalBars[4] = true;
                 ev3_speaker_play_tone(880, 1000);
@@ -276,7 +276,7 @@ namespace strategy{
                     
         case StrategyPhase::READ_5:
             straightRunning_->run(10);
-            distanceMeasurement_->start(150);
+            distanceMeasurement_->start(100);
             if (lineDetection_->getResult()){
                 degitalBars[5] = true;
                 ev3_speaker_play_tone(880, 1000);
@@ -285,7 +285,7 @@ namespace strategy{
 
         case StrategyPhase::READ_6:
             straightRunning_->run(10);
-            distanceMeasurement_->start(150);
+            distanceMeasurement_->start(100);
             if (lineDetection_->getResult()){
                 degitalBars[6] = true;
                 ev3_speaker_play_tone(880, 1000);

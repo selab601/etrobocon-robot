@@ -52,26 +52,26 @@ namespace strategy{
 
         case Phase::LINETRACE2:
             linetrace_->setPid(LineTracePid::VERY_FAST);
-            return fixedDistanceLineTrace(1470,80,LineTraceEdge::LEFT);
+            return fixedDistanceLineTrace(1500,80,LineTraceEdge::LEFT);
 
         case Phase::CURVE2:
-            linetrace_->setPid(LineTracePid::FAST);
-            linetrace_->setMaxPwm(70);
+            linetrace_->setPid(LineTracePid::MID);
+            linetrace_->setMaxPwm(55);
             linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(780,-403);
+            return fixedDistanceCurveLineTrace(780,-360);
 
         case Phase::LINETRACE3:
-            linetrace_->setPid(LineTracePid::VERY_FAST);
+            linetrace_->setPid(LineTracePid::FAST);
             return fixedDistanceLineTrace(500,80,LineTraceEdge::LEFT);
 
         case Phase::CURVE3:
             linetrace_->setPid(LineTracePid::MID);
-            linetrace_->setMaxPwm(40);
+            linetrace_->setMaxPwm(45);
             linetrace_->setEdge(LineTraceEdge::LEFT);
             return fixedDistanceCurveLineTrace(700,-300);
 
         case Phase::LINETRACE4:
-            linetrace_->setPid(LineTracePid::FAST);
+            linetrace_->setPid(LineTracePid::MID);
             linetrace_->setMaxPwm(70);
             return fixedDistanceLineTrace(2400,80,LineTraceEdge::LEFT);//goalまで
 
@@ -79,7 +79,7 @@ namespace strategy{
             linetrace_->setPid(LineTracePid::SLOW);
             linetrace_->setMaxPwm(35);
             linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(1200,400);
+            return fixedDistanceCurveLineTrace(1210,400);
 
         default:
             return false;
