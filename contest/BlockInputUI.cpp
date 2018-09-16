@@ -43,11 +43,11 @@ namespace contest_pkg{
                     message_[LEFT_MARGIN + i*2] = codeDigits_[i] + '0';
                 }
                 display_ ->updateDisplay(message_, TOP_MARGIN + 4);
-                display_->updateDisplay("      Black ID", blockCode_->getIdBlack(), TOP_MARGIN +5);
-                display_->updateDisplay("      Red ID", blockCode_->getIdRed(), TOP_MARGIN +6);
-                display_->updateDisplay("      Yellow ID", blockCode_->getIdYellow(), TOP_MARGIN +7);
-                display_->updateDisplay("      Blue ID", blockCode_->getIdBlue(), TOP_MARGIN +8);
-                display_->updateDisplay("      Green ID", blockCode_->getIdGreen(), TOP_MARGIN +9);
+                display_->updateDisplay("      Block1 ID", blockCode_->getIdBlock1(), TOP_MARGIN +5);
+                display_->updateDisplay("      Block2 ID", blockCode_->getIdBlock2(), TOP_MARGIN +6);
+                display_->updateDisplay("      Block3 ID", blockCode_->getIdBlock3(), TOP_MARGIN +7);
+                display_->updateDisplay("      Block4 ID", blockCode_->getIdBlock4(), TOP_MARGIN +8);
+                display_->updateDisplay("  PowerBlock ID", blockCode_->getIdPowerBlockCode(), TOP_MARGIN +9);
                 display_->updateDisplay("      CODE", getCode(), TOP_MARGIN +10);
                 display_ ->updateDisplay("   Push [ENTER] or [BACK]    ", TOP_MARGIN + 2);
 

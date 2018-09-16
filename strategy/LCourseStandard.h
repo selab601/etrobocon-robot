@@ -25,20 +25,18 @@ namespace strategy{
                 CURVE3,
                 CURVE4,
                 CURVE5,
+                STOP,
             };
 
             std::vector<Phase> phaseProcedure_{
                 Phase::LINETRACE1,
                 Phase::CURVE1,
-                Phase::CURVE2,
                 Phase::LINETRACE2,
-                Phase::CURVE3,
+                Phase::CURVE2,
                 Phase::LINETRACE3,
-                Phase::CURVE4,
-                Phase::CURVE5,
+                Phase::CURVE3,
                 Phase::LINETRACE4,
-                Phase::CHANGEEDGE_L_R,
-                Phase::LINETRACE5,
+                Phase::CURVE4,
             };
 
             drive::LineTrace* linetrace_;

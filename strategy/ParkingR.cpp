@@ -1,4 +1,5 @@
 #include "ParkingR.h"
+#include "detection/ColorDetection.h"
 
 using namespace drive;
 using namespace detection;
@@ -12,6 +13,7 @@ namespace strategy{
         timeMeasurement_       = new TimeMeasurement();
         rightAngledDetection_  = new RightAngledDetection();
         pivotTurn_             = new PivotTurn();
+        colorSensor_           = device::ColorSensor::getInstance();
 
         strategySuccess_ = false;
     }
@@ -39,24 +41,23 @@ namespace strategy{
                 lineTrace_->setPid(LineTracePid::VERY_FAST);
                 return true;
 
-            case Phase::LINE_TRACE1:
+            case Phase::STRAIGHT1:
                 //誤検知防止のため開始後15cmは直角検知しないので，開始位置によっては調整してください
                 distanceMeasurement_->start(150);
-                lineTrace_->run(40,LineTraceEdge::RIGHT);
+                straightRunning_->run(20);
                 return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
 
             case Phase::ADJUST1:
                 distanceMeasurement_->start(20);
-                straightRunning_->run(15);
+                straightRunning_->run(20);
                 return distanceMeasurement_->getResult();
 
-            case Phase::TURN_RIGHT:
-                return pivotTurn_->turn(-90);
+            case Phase::TURN_LEFT:
+                return pivotTurn_->turn(90);
 
-            case Phase::LINE_TRACE2:
-                distanceMeasurement_->start(400);
-                lineTrace_->setPid(LineTracePid::MID);
-                lineTrace_->run(40,LineTraceEdge::RIGHT);
+            case Phase::STRAIGHT2:
+                distanceMeasurement_->start(600);
+                straightRunning_->run(20);
                 return distanceMeasurement_->getResult();
 
             case Phase::WAIT:
