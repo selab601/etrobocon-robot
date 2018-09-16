@@ -36,8 +36,7 @@ namespace strategy{
                 Phase::LINETRACE3,
                 Phase::CURVE3,
                 Phase::LINETRACE4,
-                Phase::STOP,
-            
+                Phase::CURVE4,
             };
 
             drive::LineTrace* linetrace_;
