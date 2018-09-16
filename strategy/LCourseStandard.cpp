@@ -80,20 +80,6 @@ namespace strategy{
             linetrace_->setEdge(LineTraceEdge::LEFT);
             return fixedDistanceCurveLineTrace(1000,400);
 
-        case Phase::CURVE5:
-            linetrace_->setPid(LineTracePid::MID);
-            linetrace_->setMaxPwm(80);
-            linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(950,-100);
-
-        case Phase::CHANGEEDGE_L_R:
-            startDistanceMeasurement(100);
-            curveRunning_->run(48,60);
-            return distanceMeasurement_->getResult();
-
-        case Phase::LINETRACE5:
-            linetrace_->setPid(LineTracePid::FAST);
-            return fixedDistanceLineTrace(900,60,LineTraceEdge::RIGHT);
 
         default:
             return false;
