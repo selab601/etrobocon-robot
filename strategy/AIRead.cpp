@@ -56,25 +56,10 @@ namespace strategy{
         bool degitalBars[7]={false};
         bool analogBars[5]={false};
         switch(strategyPhase){
-        case StrategyPhase::B:
-            straightRunning_->run(20);
-            return rightAngledDetection_->getResult();
-
-        case StrategyPhase::C:
-            pivot.turn(90, 30);
-            return true;
-
-        case StrategyPhase::D:
-            straightRunning_->run(20);
-            return rightAngledDetection_->getResult();
-            
-        case StrategyPhase::E:
-            pivot.turn(-90, 30);
-            return true;
-
-        case StrategyPhase::F:
+        case StrategyPhase::A:
             straightRunning_->run(-10);
-            return rightAngledDetection_->getResult();
+            distanceMeasurement_->start(100);
+            return distanceMeasurement_->getResult();
 
         //車体角度保存
         case StrategyPhase::INIT:

@@ -121,11 +121,7 @@ int number_degital=NUM_DEG;
             TURN_RIGHT_90,
             JUDGE_D,
             JUDGE_A,
-            B,
-            C,
-            D,
-            E,
-            F,
+            A
 
         };
 
@@ -202,16 +198,16 @@ int number_degital=NUM_DEG;
            //アナログ判別
 
             StrategyPhase::TURN_LEFT_90,
+            StrategyPhase::FORWARD_150,
+
+            StrategyPhase::TURN_LEFT_90,
+            StrategyPhase::FORWARD_100,
+            StrategyPhase::TURN_RIGHT_90,
             StrategyPhase::FORWARD_100,
             StrategyPhase::FORWARD_100,
-            StrategyPhase::FORWARD_100,
+
             StrategyPhase::JUDGE_D,
             StrategyPhase::JUDGE_A,
-            StrategyPhase::B,
-            StrategyPhase::C,
-            StrategyPhase::D,
-            StrategyPhase::E,
-            StrategyPhase::F,
 
         };
 

@@ -52,7 +52,7 @@ namespace strategy{
 
         case Phase::LINETRACE2:
             linetrace_->setPid(LineTracePid::VERY_FAST);
-            return fixedDistanceLineTrace(1455,80,LineTraceEdge::LEFT);
+            return fixedDistanceLineTrace(1470,80,LineTraceEdge::LEFT);
 
         case Phase::CURVE2:
             linetrace_->setPid(LineTracePid::FAST);
@@ -66,7 +66,7 @@ namespace strategy{
 
         case Phase::CURVE3:
             linetrace_->setPid(LineTracePid::MID);
-            linetrace_->setMaxPwm(30);
+            linetrace_->setMaxPwm(40);
             linetrace_->setEdge(LineTraceEdge::LEFT);
             return fixedDistanceCurveLineTrace(700,-300);
 
