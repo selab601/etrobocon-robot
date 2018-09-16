@@ -1,17 +1,17 @@
-#include "AIANSWER.h"
+#include "AIREAD.h"
+#include "AIAnswer.h"
 
 using namespace drive;
 using namespace device;
 using namespace detection;
 using namespace measurement;
-int digitalNum =0;
-int analogNum =0;
 
 namespace strategy{
-    AIAnswer::AIAnswer(){
+    AIRead::AIRead(){
         linetrace_              = LineTrace::getInstance();
         objectDetection_        = new ObjectDetection();
         rightAngledDetection_   = new RightAngledDetection();
+        lineDetection_          = new LineDetection();
         timeMeasurement_        = new TimeMeasurement();
         distanceMeasurement_    = new DistanceMeasurement();
         bodyAngleMeasurement_   = new BodyAngleMeasurement();
@@ -29,7 +29,7 @@ namespace strategy{
         rightAngledDetection_->setDetectWhite(true);
     }
 
-    bool AIAnswer::capture(){
+    bool AIRead::capture(){
         if(!strategySuccess_){
             //難所攻略手順を1つずつ実行する
             if(executeStrategy(strategyProcedure_[procedureNumber_])){
@@ -51,8 +51,10 @@ namespace strategy{
     }
 
     //戦略手順を実行する
-    bool AIAnswer::executeStrategy(StrategyPhase strategyPhase){
+    bool AIRead::executeStrategy(StrategyPhase strategyPhase){
         static int diffDegree10 = 0;
+        bool degitalBars[7]={false};
+        bool analogBars[5]={false};
         switch(strategyPhase){
 
         //車体角度保存
@@ -118,6 +120,12 @@ namespace strategy{
             linetrace_->run(20,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
+        case StrategyPhase::LINE_TRACE_150R:
+            distanceMeasurement_->start(150);
+            linetrace_->setPid(LineTracePid::SLOW);
+            linetrace_->run(20,LineTraceEdge::RIGHT);
+            return distanceMeasurement_->getResult();
+
         case StrategyPhase::LINE_TRACE_300R:
             distanceMeasurement_->start(300);
             linetrace_->setPid(LineTracePid::SLOW);
@@ -145,6 +153,12 @@ namespace strategy{
 
         case StrategyPhase::LINE_TRACE_100L:
             distanceMeasurement_->start(100);
+            linetrace_->setPid(LineTracePid::SLOW);
+            linetrace_->run(20,LineTraceEdge::LEFT);
+            return distanceMeasurement_->getResult();
+
+        case StrategyPhase::LINE_TRACE_150L:
+            distanceMeasurement_->start(150);
             linetrace_->setPid(LineTracePid::SLOW);
             linetrace_->run(20,LineTraceEdge::LEFT);
             return distanceMeasurement_->getResult();
@@ -190,13 +204,151 @@ namespace strategy{
             straightRunning_->run(10);
             distanceMeasurement_->start(50);
             return distanceMeasurement_->getResult();
-
+        case StrategyPhase::FORWARD_100:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(100);
+            return distanceMeasurement_->getResult();
+        case StrategyPhase::FORWARD_150:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(150);
+            return distanceMeasurement_->getResult();
         case StrategyPhase::FORWARD_300:
             straightRunning_->run(20);
             distanceMeasurement_->start(300);
             return distanceMeasurement_->getResult();
 
-                  
+        case StrategyPhase::READ_0:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(150);
+            if (lineDetection_->getResult()){
+                degitalBars[0] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();
+
+        case StrategyPhase::READ_1:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(150);
+            if (lineDetection_->getResult()){
+                degitalBars[1] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();
+                    
+        case StrategyPhase::READ_2:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(150);
+            if (lineDetection_->getResult()){
+                degitalBars[2] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();
+                    
+        case StrategyPhase::READ_3:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(150);
+            if (lineDetection_->getResult()){
+                degitalBars[3] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();
+        
+        case StrategyPhase::READ_4:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(150);
+            if (lineDetection_->getResult()){
+                degitalBars[4] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();
+                    
+        case StrategyPhase::READ_5:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(150);
+            if (lineDetection_->getResult()){
+                degitalBars[5] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();
+
+        case StrategyPhase::READ_6:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(150);
+            if (lineDetection_->getResult()){
+                degitalBars[6] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }
+            return distanceMeasurement_->getResult();
+
+        case StrategyPhase::JUDGE_D:
+        if(degitalBars[0]){
+            if(degitalBars[5]){
+                if(degitalBars[2]){
+                    if(degitalBars[4]){
+                       digitalNum = 0;
+                    }else{
+                        digitalNum = 7;
+                    }
+                }else{
+                    digitalNum = 4;
+                }
+            }else{
+                if(degitalBars[6]){
+                    digitalNum = 2;
+                }else{
+                    digitalNum = 1;
+                }
+            }
+        }else{
+            if(degitalBars[6]){
+                digitalNum = 6;
+            }else{
+                digitalNum = 5;
+            }
+        }
+        /*    if (lineDetection_->getResult()){
+                degitalBars[6] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }*/
+            return distanceMeasurement_->getResult();
+
+        case StrategyPhase::JUDGE_A:
+        if(analogBars[0]){
+            if(analogBars[1]){
+                if(analogBars[4]){
+                    analogNum = 0;
+                }else{
+                    analogNum = 3;
+                }
+            }else{
+                if(analogBars[2]){
+                    analogNum = 2;
+                }else{
+                    analogNum = 7;
+                }
+            }
+        }else{
+            if(analogBars[4]){
+                if(analogBars[3]){
+                    analogNum = 4;
+                }else{
+                    analogNum = 6;
+                }
+            }else{
+                if(analogBars[1]){
+                    analogNum = 5;
+                }else{
+                    analogNum = 1;
+                }
+            }
+        }
+
+        /*    if (lineDetection_->getResult()){
+                degitalBars[6] = true;
+                ev3_speaker_play_tone(880, 1000);
+            }*/
+            return distanceMeasurement_->getResult();
+
         case StrategyPhase::BACK_50:
             straightRunning_->run(-10);
             distanceMeasurement_->start(50);
@@ -217,98 +369,6 @@ namespace strategy{
             distanceMeasurement_->start(300);
             return distanceMeasurement_->getResult();
 
-  //おす
-        case StrategyPhase::FORCING_OUT_TTT:       
-            forcingOut_.setDegree(40);
-        
-        //押し出し
-        case StrategyPhase::FORCING_OUT_DEG4:
-            if(number_degital - 4 >= 0){
-                if (forcingOut_.run(30, 0)){
-             //   straightRunning_->run(-10);
-              //  distanceMeasurement_->start(50);
-                 number_degital = number_degital-4;
-                 return true;
-                }
-            }
-            else{
-                if (forcingOut_.run(40, 1)){
-              //  straightRunning_->run(-10);
-              //  distanceMeasurement_->start(50);
-                 return true;
-                }
-            }
-            return false;
-
-        case StrategyPhase::FORCING_OUT_DEG2:
-            if(number_degital - 2 >= 0){
-                if (forcingOut_.run(30, 0)){
-                 number_degital = number_degital-2;
-                 return true;
-                }
-            }
-            else{
-                if (forcingOut_.run(40, 1)){
-                 return true;
-                }
-            }
-            return false;
-
-        case StrategyPhase::FORCING_OUT_DEG1:
-            if(number_degital - 1 >= 0){
-                if (forcingOut_.run(30, 0)){
-                 number_degital = number_degital-1;
-                 return true;
-                }
-            }
-            else{
-                if (forcingOut_.run(40, 1)){
-                 return true;
-                }
-            }
-            return false;
-
-        case StrategyPhase::FORCING_OUT_ANA4:
-            if(number_analog - 4 >= 0){
-                if (forcingOut_.run(30, 1)){
-                 number_analog = number_analog-4;
-                 return true;
-                }
-            }
-            else{
-                if (forcingOut_.run(40, 0)){
-                 return true;
-                }
-            }
-            return false;
-        case StrategyPhase::FORCING_OUT_ANA2:
-            if(number_analog - 2 >= 0){
-                if (forcingOut_.run(30, 1)){
-                 number_analog = number_analog-2;
-                 return true;
-                }
-            }
-            else{
-                if (forcingOut_.run(40, 0)){
-                 return true;
-                }
-            }
-            return false;
-
-        case StrategyPhase::FORCING_OUT_ANA1:
-            if(number_analog - 1 >= 0){
-                if (forcingOut_.run(30, 1)){
-                 number_analog = number_analog-1;
-                 return true;
-                }
-            }
-            else{
-                if (forcingOut_.run(40, 0)){
-                 return true;
-                }
-            }
-            return false;
-//押し出しここまで
 
 
         case StrategyPhase::TURN_LEFT_180: // 車体の角度をデジタルの方に向ける(左180度)
@@ -372,12 +432,6 @@ namespace strategy{
             polar_.back(false);
             return polar_.bodyTurn(150, 30);
 
-        case StrategyPhase::FORCING_OUT:
-            if (forcingOut_.run(30, isRight_)){
-                blockPlaceNum_++;
-                return true;
-            }
-            return false;
 
         case StrategyPhase::SEE_BLOCK:
             {
@@ -419,7 +473,7 @@ namespace strategy{
     }
 
 
-    void AIAnswer::lineTraceReset(){
+    void AIRead::lineTraceReset(){
         if(!isLineTraceReset_){
             linetrace_->reset();
             isLineTraceReset_ = true;
