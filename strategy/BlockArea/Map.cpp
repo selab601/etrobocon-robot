@@ -25,6 +25,9 @@ namespace strategy{
         blockPlaces_[14] = new BlockPlace(14,BlockAreaColor::RED,90,0);
         blockPlaces_[15] = new BlockPlace(15,BlockAreaColor::YELLOW,135,0);
 
+        //ブロックエリア8に侵入する際のルートをつくるための応急措置,8の左側にあると仮定します
+        blockPlaces_[16] = new BlockPlace(16,BlockAreaColor::NONE,-1,40);
+
         //隣接してる台座の登録
         //left  +
         //right -
@@ -92,6 +95,10 @@ namespace strategy{
         blockPlaces_[15]->next[90]   = blockPlaces_[11];
         blockPlaces_[15]->next[180]  = blockPlaces_[14];
 
+        //応急措置
+        blockPlaces_[16]->next[0]  = blockPlaces_[8];
+
+
 
         //ブロックの初期位置取得
         blockCode_ = BlockCode::getInstance();
@@ -103,17 +110,18 @@ namespace strategy{
 
 
 
-        //EV3の初期位置は8番置き場
-        ev3Is_ = blockPlaces_[8];
+        //EV3の初期位置は8番置き場（にしたいのですが，応急的に17番目のスポットを8の左に仮定します）
+        ev3Is_ = blockPlaces_[16];
+        //ev3Is_ = blockPlaces_[8];
         ev3HasBlock_ = false;
 
         catching_ = new Catching();
         avoidance_ = new Avoidance();
 
         //デバック用
-        sprintf(message, "%d",blockIs_["BLOCK1"]->getId());
-        communication::BtManager::getInstance()->setMessage(message);
-        communication::BtManager::getInstance()->send();
+        //sprintf(message, "%d",blockIs_["BLOCK1"]->getId());
+        //communication::BtManager::getInstance()->setMessage(message);
+        //communication::BtManager::getInstance()->send();
     }
 
 
@@ -121,13 +129,14 @@ namespace strategy{
 
     void Map::makeRoute(){
 
+        /*
         //ブロックの目的地設定
         blockDestination_["BLOCK1"] = blockPlaces_[5];
         blockDestination_["BLOCK2"] = blockPlaces_[6];
         blockDestination_["BLOCK3"] = blockPlaces_[9];
         blockDestination_["BLOCK4"] = blockPlaces_[10];
 
-        /*
+        
         //ブロックの目的地に近い場所
         blockDisplace_["RED"]    = blockPlaces_[15];
         blockDisplace_["BLUE"]   = blockPlaces_[7];
@@ -143,18 +152,18 @@ namespace strategy{
         if(checkBlock(blockPlaces_[10])){
             makeDodgeAvoidancePath();
         }
-        */
+        
 
         makePath(blockPlaces_[11]);
 
         while(!checkFinish()){
 
-            /*
+            
             //５角形が埋まってたら５角形の置き場からずらす
             if(checkPentagon()){
                 makeDisplaceBlockPath();
             }
-            */
+            
 
             //次に運ぶブロックを選択
             selectCarryBlock();
@@ -174,6 +183,7 @@ namespace strategy{
 
         //ブロック並べエリアから退出するためのルート算出
         makePath(blockPlaces_[7]);
+        */
         makePath(blockPlaces_[11]);
         //終了に行動パターンを変更
         routeMovePattern_[routeMovePattern_.size()] = MovePattern::END;
@@ -256,28 +266,30 @@ namespace strategy{
         while(candidatePlace->getId() != goal->getId()){
 
             //1個前と同じ置き場だったらとぱす(応急処置)
-            if( (!routeBlockPlace_.empty()) && routeBlockPlace_.back()->getId() == candidatePlace->getId() ){
+            //if( (!routeBlockPlace_.empty()) && routeBlockPlace_.back()->getId() == candidatePlace->getId() ){
                 //とばす
-            }
-            else{
+            //}
+            //else{
                 routeBlockPlace_.push_back(candidatePlace);//pathに追加
-                sprintf(message, "%d->",candidatePlace->getId());
+                sprintf(message, "goaldegree:%d",ev3Is_->getDegree(goal));
                 communication::BtManager::getInstance()->setMessage(message);
                 communication::BtManager::getInstance()->send();
-                if(checkBlock(candidatePlace)){routeMovePattern_.push_back(MovePattern::AVOID);}//ブロックがあったら避ける
+                if(checkBlock(candidatePlace)){ //ブロックがあったら避ける
+                    routeMovePattern_.push_back(MovePattern::AVOID);
+                }
                 else{//ブロックがなかったら避けない
                     if(ev3HasBlock_){routeMovePattern_.push_back(MovePattern::CATCH);}
                     else{routeMovePattern_.push_back(MovePattern::PASS);}
                 }
-            }
+            //}
             ev3Is_ = candidatePlace;//位置更新
             goalDegree = ev3Is_->getDegree(goal);//角度更新
             candidatePlace = ev3Is_->getNextPlace(goalDegree);//次の置き場を聞く
         }
         routeBlockPlace_.push_back(candidatePlace);//pathに追加 ゴール
-         //        sprintf(message, "%d->",candidatePlace->getId());
-         // communication::BtManager::getInstance()->setMessage(message);
-         // communication::BtManager::getInstance()->send();
+        //sprintf(message, "%d->",candidatePlace->getId());
+        //communication::BtManager::getInstance()->setMessage(message);
+        //communication::BtManager::getInstance()->send();
 
         if(ev3HasBlock_){routeMovePattern_.push_back(MovePattern::PUT);}//目的地に着いたのでブロックを置く
         else{routeMovePattern_.push_back(MovePattern::CATCH);}//目的地に着いたのでブロックを取る
