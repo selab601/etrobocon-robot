@@ -29,7 +29,7 @@ namespace strategy{
             AVOID4,
             AVOID5,
             LINE_TRACE,
-            SET_DIFFANGLE,
+            EXIT,
             FIX_ANGLE,
         };
 
@@ -37,17 +37,16 @@ namespace strategy{
         //難所攻略手順
         std::vector<StrategyPhase> strategyProcedure_{
             StrategyPhase::INIT,
-            //StrategyPhase::ENTRY,
-            //StrategyPhase::TOSSHIN,
-            StrategyPhase::TO_BLUE,
+            StrategyPhase::ENTRY,
+            StrategyPhase::TOSSHIN,
+            //StrategyPhase::TO_BLUE,
             StrategyPhase::BACK,
             StrategyPhase::AVOID1,
             StrategyPhase::AVOID2,
             StrategyPhase::AVOID3,
             StrategyPhase::AVOID4,
             StrategyPhase::AVOID5,
-            StrategyPhase::LINE_TRACE,
-            StrategyPhase::SET_DIFFANGLE,
+            StrategyPhase::EXIT,
             StrategyPhase::FIX_ANGLE,
         };
 

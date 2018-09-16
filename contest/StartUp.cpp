@@ -32,12 +32,15 @@ namespace contest_pkg{
                 break;
             case State::SELECT_COURCE:
                 if (selectCourse()){
+                    /*
                     if ('R' == getSelectedCourse()){
                         state_ = State::INPUT_BLOCK_CODE;
                     }
                     else{
                         state_ = State::CALIBRATE;
                     }
+                    */
+                    state_ = State::CALIBRATE;
                 }
                 break;
 
