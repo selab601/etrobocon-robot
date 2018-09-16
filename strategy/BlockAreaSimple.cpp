@@ -87,6 +87,11 @@ namespace strategy{
             straightRunning_->run(20);
             return rightAngledDetection_->getResult();
 
+        case StrategyPhase::ADJUST:
+            distanceMeasurement_->start(20);
+            straightRunning_->run(20);
+            return distanceMeasurement_->getResult();
+
         case StrategyPhase::AVOID5:
             return pivotTurn_->circleTurn(55, 20);
 

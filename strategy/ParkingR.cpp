@@ -53,10 +53,10 @@ namespace strategy{
                 return distanceMeasurement_->getResult();
 
             case Phase::TURN_LEFT:
-                return pivotTurn_->turn(90);
+                return pivotTurn_->circleTurn(100);
 
             case Phase::STRAIGHT2:
-                distanceMeasurement_->start(600);
+                distanceMeasurement_->start(500);
                 straightRunning_->run(20);
                 return distanceMeasurement_->getResult();
 
