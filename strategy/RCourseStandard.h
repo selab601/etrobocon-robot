@@ -40,7 +40,7 @@ namespace strategy{
                 Phase::STRAIGHT4,
                 Phase::BEND5,
                 Phase::STRAIGHT5,
-                Phase::BEND6,
+                //Phase::BEND6,
                 Phase::STOP,
             };
 
