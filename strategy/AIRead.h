@@ -1,5 +1,5 @@
-#ifndef AIANSWER_H
-#define AIANSWER_H
+#ifndef AIREAD_H
+#define AIREAD_H
 
 #define NUM_ANA 7 //デバック用
 #define NUM_DEG 0 //デバック用
@@ -10,6 +10,7 @@
 #include "../detection/ColorDetection.h"
 #include "../detection/ObjectDetection.h"
 #include "../detection/RightAngledDetection.h"
+#include "../detection/LineDetection.h"
 #include "../measurement/TimeMeasurement.h"
 #include "../measurement/DistanceMeasurement.h"
 #include "../measurement/BodyAngleMeasurement.h"
@@ -21,10 +22,8 @@
 
 #define CENTER_TO_BLOCK_LENGTH 180  // 真ん中からブロック置き場に行く時の走る距離
 #define SLIP_DEGREE10 20    // 1回ブロック置き場に行って帰ってきたごとにずれる角度の10倍
-extern int digitalNum;
-extern int analogNum;
 namespace strategy{
-    class AIAnswer : public IStrategy{
+    class AIRead : public IStrategy{
 
 int number_analog=NUM_ANA;
 int number_degital=NUM_DEG;
@@ -74,7 +73,6 @@ int number_degital=NUM_DEG;
             BACK4,
             TO_LINE_RETURN,
 
-            FORCING_OUT,
             SEE_BLOCK,
             ARM_UP,
             ARM_HOLD,
@@ -84,37 +82,73 @@ int number_degital=NUM_DEG;
 
             TURN_LEFT_90,
             FORWARD_50,
-            FORCING_OUT_DEG4,
-            FORCING_OUT_DEG2,
-            FORCING_OUT_DEG1,
+            FORWARD_100,
+            FORWARD_150,
             TURN_LEFT_180,
             FORWARD_300,
-            FORCING_OUT_ANA4,
-            FORCING_OUT_ANA2,
-            FORCING_OUT_ANA1,
+
             LINE_TRACE_25R, 
             LINE_TRACE_50R,
             LINE_TRACE_100R,
             LINE_TRACE_300R,
             LINE_TRACE_350R,
+            LINE_TRACE_150R,
             LINE_TRACE_25L, 
             LINE_TRACE_50L,
             LINE_TRACE_100L,
             LINE_TRACE_300L,
+            LINE_TRACE_150L,
             LINE_TRACE_350L,
             BACK_50,
             BACK_100,
             BACK_150,
             BACK_300,
-            FORCING_OUT_TTT,
-
+            READ_0,
+            READ_1,
+            READ_2,
+            READ_3,
+            READ_4,
+            READ_5,
+            READ_6,
             TURN_RIGHT_90,
+            JUDGE_D,
+            JUDGE_A,
         };
 
 
         //難所攻略手順
         
         std::vector<StrategyPhase> strategyProcedure_{
+           //デジタル検知
+           StrategyPhase::TURN_LEFT_90,
+           StrategyPhase::FORWARD_100,
+           StrategyPhase::TURN_RIGHT_90,
+           StrategyPhase::FORWARD_150,
+           StrategyPhase::READ_0,//デジタル1検知
+           StrategyPhase::READ_5,//デジタル6検知
+           StrategyPhase::FORWARD_50,
+           StrategyPhase::TURN_LEFT_90,
+           StrategyPhase::FORWARD_150,
+           StrategyPhase::TURN_LEFT_90,
+           StrategyPhase::READ_6,//デジタル7検知
+           StrategyPhase::READ_1,//デジタル2検知
+           StrategyPhase::TURN_RIGHT_90,
+           StrategyPhase::FORWARD_150,
+           StrategyPhase::TURN_RIGHT_90,
+           StrategyPhase::FORWARD_150,
+           StrategyPhase::TURN_RIGHT_90,
+           StrategyPhase::READ_4,//デジタル5検知
+           StrategyPhase::READ_3,//デジタル4検知
+           StrategyPhase::READ_2,//デジタル3検知
+           StrategyPhase::TURN_LEFT_90,
+           //デジタル判別　パターンから数字を決定変数NUMDEGに代入
+           //アナログへ
+                //向きを変え、移動する
+           //アナログ検知
+           //アナログ判別
+           //回答方面に向かう
+
+        /*   
            StrategyPhase::LINE_TRACE_350L,
            StrategyPhase::INIT,
            StrategyPhase::TURN_LEFT_90,
@@ -175,7 +209,7 @@ int number_degital=NUM_DEG;
 
            StrategyPhase::LINE_TRACE_300L,
 
-
+*/
 
 
 /*
@@ -307,6 +341,7 @@ int number_degital=NUM_DEG;
         detection::ObjectDetection* objectDetection_;
         detection::RightAngledDetection* rightAngledDetection_;
         detection::ColorDetection colorDetection_;
+        detection::LineDetection* lineDetection_;
 
         //計測
         measurement::DistanceMeasurement* distanceMeasurement_;
@@ -329,7 +364,7 @@ int number_degital=NUM_DEG;
 
     public:
         //コンストラクタ
-        AIAnswer();
+        AIRead();
 
         /**
          * @brief ET相撲Neoを攻略する
