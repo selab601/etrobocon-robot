@@ -26,7 +26,7 @@ namespace strategy{
         blockPlaces_[15] = new BlockPlace(15,BlockAreaColor::YELLOW,135,0);
 
         //ブロックエリア8に侵入する際のルートをつくるための応急措置,8の左側にあると仮定します
-        blockPlaces_[16] = new BlockPlace(16,BlockAreaColor::NONE,-1,40);
+        blockPlaces_[16] = new BlockPlace(16,BlockAreaColor::BLACK,-1,40);
 
         //隣接してる台座の登録
         //left  +
