@@ -27,6 +27,7 @@ namespace strategy{
                 BEND5,
                 BEND6,
                 STOP,
+                SLOWDOWN,
             };
 
             std::vector<Phase> phaseProcedure_{
@@ -40,8 +41,9 @@ namespace strategy{
                 Phase::STRAIGHT4,
                 Phase::BEND5,
                 Phase::STRAIGHT5,
+                Phase::SLOWDOWN,
                 //Phase::BEND6,
-                Phase::STOP,
+                //Phase::STOP,
             };
 
             drive::LineTrace* linetrace_;

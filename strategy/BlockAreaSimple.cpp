@@ -42,9 +42,6 @@ namespace strategy{
     //戦略手順を実行する
     bool BlockAreaSimple::executeStrategy(StrategyPhase strategyPhase){
 
-        //baseAngleに対する車体の相対角度を保存
-        static int diffAngle;
-
         switch(strategyPhase){
 
         //基底となるbaseAngleを保存
@@ -52,18 +49,11 @@ namespace strategy{
             bodyAngleMeasurement_->setBaseAngle();
             polar_.setMaxPwm(20);
             lineTrace_->setPid(LineTracePid::MID);
-            //diffAngle = bodyAngleMeasurement_->getRelative10();
             return true;
 
         case StrategyPhase::ENTRY:
-            distanceMeasurement_->start(100);
             lineTrace_->run(10,LineTraceEdge::LEFT);
-            if(distanceMeasurement_->getResult() && rightAngledDetection_->getResult(4.0)){
-                ev3_speaker_play_tone(100, 3000);
-                return true;
-            }
-            //return distanceMeasurement_->getResult();
-            return false;
+            return rightAngledDetection_->getResult(2.5);
 
         //青台座まで極座標で突進版
         case StrategyPhase::TOSSHIN:
@@ -83,41 +73,33 @@ namespace strategy{
 
         //台座を避ける
         case StrategyPhase::AVOID1:
-            //return polar_.runTo(300, 450, 450);
-            //return pivotTurn_->turn(45 - bodyAngleMeasurement_->getResult(),10);
             return pivotTurn_->circleTurn(45, 20);
 
         case StrategyPhase::AVOID2:
-            //polar_.runTo(500, -900, -900);
+            distanceMeasurement_->start(180);
             straightRunning_->run(20);
-            return rightAngledDetection_->getResult();
+            return distanceMeasurement_->getResult();
 
         case StrategyPhase::AVOID3:
-            //return polar_.bodyTurn(450, 10);
-            //return pivotTurn_->turn(-45 - bodyAngleMeasurement_->getResult(),10);
-            return pivotTurn_->circleTurn(-90, 20);
+            return pivotTurn_->circleTurn(-100, 20);
 
         case StrategyPhase::AVOID4:
             straightRunning_->run(20);
             return rightAngledDetection_->getResult();
 
         case StrategyPhase::AVOID5:
-            //return pivotTurn_->turn(0 - bodyAngleMeasurement_->getResult(),10);
-            return pivotTurn_->circleTurn(45, 20);
+            return pivotTurn_->circleTurn(55, 20);
 
         case StrategyPhase::LINE_TRACE:
             distanceMeasurement_->start(200);
             lineTrace_->run(20,LineTraceEdge::LEFT);
-            //return rightAngledDetection_->getResult(4.0);
             return distanceMeasurement_->getResult();
 
-        case StrategyPhase::SET_DIFFANGLE:
-            diffAngle = bodyAngleMeasurement_->getRelative10();
-            return true;
+        case StrategyPhase::EXIT:
+            return polar_.runTo(200, 0);
 
         case StrategyPhase::FIX_ANGLE:
             return pivotTurn_->turn(-bodyAngleMeasurement_->getResult(), 10);
-            //return polar_.bodyTurn(-diffAngle, 10);
 
         default:
             return false;
