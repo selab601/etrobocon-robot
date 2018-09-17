@@ -81,7 +81,7 @@ namespace strategy{
             return fixedDistanceCurveLineTrace(1200,-480);
 
         case Phase::STRAIGHT4:
-            startDistanceMeasurement(2600);
+            startDistanceMeasurement(2550);
             linetrace_->setPid(LineTracePid::VERY_FAST);
             linetrace_->run(80,LineTraceEdge::LEFT);
             return distanceMeasurement_->getResult();
@@ -91,7 +91,7 @@ namespace strategy{
             linetrace_->setTarget(0.7);
             linetrace_->setMaxPwm(50);
             linetrace_->setEdge(LineTraceEdge::LEFT);
-            return fixedDistanceCurveLineTrace(470,550);//520,800
+            return fixedDistanceCurveLineTrace(470,650);//520,800
 
         case Phase::STRAIGHT5:
             startDistanceMeasurement(1300);//380

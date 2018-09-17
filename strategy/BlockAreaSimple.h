@@ -46,7 +46,7 @@ namespace strategy{
             StrategyPhase::AVOID2,
             StrategyPhase::AVOID3,
             StrategyPhase::AVOID4,
-            StrategyPhase::ADJUST,
+            //StrategyPhase::ADJUST,
             StrategyPhase::AVOID5,
             StrategyPhase::EXIT,
             StrategyPhase::FIX_ANGLE,
