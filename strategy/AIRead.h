@@ -121,8 +121,10 @@ int number_degital=NUM_DEG;
             TURN_RIGHT_90,
             JUDGE_D,
             JUDGE_A,
-            A
-
+            STOP,
+            FORWARD_LINE,
+            TURN_RIGHT_90_SHINCHI,
+            TURN_LEFT_90_SHINCHI,
         };
 
 
@@ -205,15 +207,18 @@ int number_degital=NUM_DEG;
            //アナログ判別
 
             StrategyPhase::TURN_LEFT_90,
-            StrategyPhase::FORWARD_150,
+            //StrategyPhase::FORWARD_150,
+            StrategyPhase::FORWARD_LINE,
 
             StrategyPhase::TURN_LEFT_90,
             StrategyPhase::FORWARD_100,
-            StrategyPhase::TURN_RIGHT_90,
+            StrategyPhase::TURN_RIGHT_90_SHINCHI,
+            /*
             StrategyPhase::FORWARD_100,
             StrategyPhase::FORWARD_100,
             StrategyPhase::FORWARD_20,
             StrategyPhase::FORWARD_20,
+            */
 
             StrategyPhase::JUDGE_D,
             StrategyPhase::JUDGE_A,

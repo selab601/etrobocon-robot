@@ -68,6 +68,11 @@ namespace strategy{
             linetrace_->run(20,LineTraceEdge::RIGHT);
             return distanceMeasurement_->getResult();
 
+        case StrategyPhase::LINE_TRACE_TO_LINE:
+            distanceMeasurement_->start(100);
+            linetrace_->setPid(LineTracePid::SLOW);
+            linetrace_->run(20,LineTraceEdge::LEFT);
+            return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
 
         case StrategyPhase::LINE_RETURN:
             lineTraceReset();
@@ -184,6 +189,13 @@ namespace strategy{
             polar_.back(false);
             return polar_.bodyTurn(-900, 10);
 
+         case StrategyPhase::TURN_RIGHT_90_SHINCHI: // 車体の角度をデジタルの方に向ける(左90度)
+            polar_.back(false);
+            return polar_.polarTurn(-900, 20);
+
+         case StrategyPhase::TURN_LEFT_90_SHINCHI: // 車体の角度をデジタルの方に向ける(左90度)
+            polar_.back(false);
+            return polar_.polarTurn(450, 20);
 
   //進む 
         case StrategyPhase::FORWARD_50:

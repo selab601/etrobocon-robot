@@ -109,13 +109,18 @@ int number_degital=NUM_DEG;
             FORCING_OUT_TTT,
 
             TURN_RIGHT_90,
+            STOP,
+            LINE_TRACE_TO_LINE,
+            TURN_RIGHT_90_SHINCHI,
+            TURN_LEFT_90_SHINCHI,
         };
 
 
         //難所攻略手順
         
         std::vector<StrategyPhase> strategyProcedure_{
-           StrategyPhase::LINE_TRACE_350L,
+           //StrategyPhase::LINE_TRACE_350L,
+           StrategyPhase::LINE_TRACE_TO_LINE,
            StrategyPhase::INIT,
            StrategyPhase::TURN_LEFT_90,
            StrategyPhase::LINE_TRACE_100L,
@@ -134,7 +139,7 @@ int number_degital=NUM_DEG;
            StrategyPhase::INIT,
            StrategyPhase::TURN_RIGHT_90,
 
-           StrategyPhase::LINE_TRACE_300L,
+           StrategyPhase::LINE_TRACE_TO_LINE,
 
            StrategyPhase::INIT,
            StrategyPhase::TURN_LEFT_90,
@@ -153,7 +158,7 @@ int number_degital=NUM_DEG;
           StrategyPhase::INIT,
            StrategyPhase::TURN_RIGHT_90,
 
-           StrategyPhase::LINE_TRACE_300L,
+           StrategyPhase::LINE_TRACE_TO_LINE,
 
            StrategyPhase::INIT,
            StrategyPhase::TURN_LEFT_90,

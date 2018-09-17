@@ -56,10 +56,6 @@ namespace strategy{
         bool degitalBars[7]={false};
         bool analogBars[5]={false};
         switch(strategyPhase){
-        case StrategyPhase::A:
-            straightRunning_->run(-10);
-            distanceMeasurement_->start(100);
-            return distanceMeasurement_->getResult();
 
         //車体角度保存
         case StrategyPhase::INIT:
@@ -202,6 +198,13 @@ namespace strategy{
             polar_.back(false);
             return polar_.bodyTurn(-900, 10);
 
+         case StrategyPhase::TURN_LEFT_90_SHINCHI: // 車体の角度をデジタルの方に向ける(左90度)
+            polar_.back(false);
+            return polar_.polarTurn(900, 10);
+
+         case StrategyPhase::TURN_RIGHT_90_SHINCHI: // 車体の角度をデジタルの方に向ける(左90度)
+            polar_.back(false);
+            return polar_.polarTurn(-900, 10);
 
   //進む 
           case StrategyPhase::FORWARD_10:
@@ -228,6 +231,11 @@ namespace strategy{
             straightRunning_->run(20);
             distanceMeasurement_->start(300);
             return distanceMeasurement_->getResult();
+
+        case StrategyPhase::FORWARD_LINE:
+            straightRunning_->run(10);
+            distanceMeasurement_->start(100);
+            return distanceMeasurement_->getResult() && rightAngledDetection_->getResult();
 
         case StrategyPhase::READ_0:
             straightRunning_->run(10);
